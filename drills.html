@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drill Library — DugoutLab</title>
+<meta name="description" content="54 baseball and softball drills for Little League coaches. Filter by age, category, and skill level. Full setup and coaching cues for every drill.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+    <ul class="nav-links">
+    <li><a href="builder.html">Build a Practice</a></li>
+    <li><a href="drills.html">Drill Library</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="train.html">Train Solo</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="progression.html">Season Plan</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="builder.html">Build a Practice</a>
+  <a href="drills.html">Drill Library</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="train.html">Train Solo</a>
+  <a href="articles.html">Articles</a>
+  <a href="stages.html">The 4 Stages</a>
+  <a href="progression.html">Season Plan</a>
+  <a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="eyebrow">Evidence-Based Practice</div>
+    <h1>Drill Library</h1>
+    <p>Every drill includes full setup, how to run it, one coaching cue, and why it works. Tap any drill to see everything.</p>
+  </div>
+</div>
+
+<section class="section section-cream" style="padding-top:1.5rem">
+  <div class="container-lg">
+
+    <!-- Filters -->
+    <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow)">
+
+      <div class="filter-group">
+        <div class="filter-group-label">Age Group</div>
+        <div class="filter-bar" style="margin-bottom:0">
+          <button class="filter-btn age-btn active" onclick="dlSetAge('all',this)">All Ages</button>
+          <button class="filter-btn age-btn" onclick="dlSetAge('tball',this)">T-Ball (4-7)</button>
+          <button class="filter-btn age-btn" onclick="dlSetAge('young',this)">Ages 7-9</button>
+          <button class="filter-btn age-btn" onclick="dlSetAge('middle',this)">Ages 10-12</button>
+          <button class="filter-btn age-btn" onclick="dlSetAge('teen',this)">Ages 13+</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-group-label">Category</div>
+        <div class="filter-bar" style="margin-bottom:0">
+          <button class="filter-btn cat-btn active" onclick="dlSetCat('all',this)">All</button>
+          <button class="filter-btn cat-btn" onclick="dlSetCat('warmup',this)">Warm-Up</button>
+          <button class="filter-btn cat-btn" onclick="dlSetCat('fielding',this)">Fielding</button>
+          <button class="filter-btn cat-btn" onclick="dlSetCat('hitting',this)">Hitting</button>
+          <button class="filter-btn cat-btn" onclick="dlSetCat('throwing',this)">Throwing</button>
+          <button class="filter-btn cat-btn" onclick="dlSetCat('baserunning',this)">Baserunning</button>
+          <button class="filter-btn cat-btn" onclick="dlSetCat('small-sided',this)">Games</button>
+          <button class="filter-btn cat-btn" onclick="dlSetCat('pitching',this)">Pitching</button>
+          <button class="filter-btn cat-btn" onclick="dlSetCat('mental',this)">Mental</button>
+        </div>
+      </div>
+
+      <div class="filter-group" style="margin-bottom:0">
+        <div class="filter-group-label">Skill Level</div>
+        <div class="filter-bar" style="margin-bottom:0">
+          <button class="filter-btn skill-btn active" onclick="dlSetSkill('all',this)">All Levels</button>
+          <button class="filter-btn skill-btn" onclick="dlSetSkill('first-year',this)">Beginners</button>
+          <button class="filter-btn skill-btn" onclick="dlSetSkill('developing',this)">Developing</button>
+          <button class="filter-btn skill-btn" onclick="dlSetSkill('experienced',this)">Experienced</button>
+        </div>
+      </div>
+
+      <div class="filter-group" style="margin-bottom:0">
+        <div class="filter-group-label">Sport</div>
+        <div class="filter-bar" style="margin-bottom:0">
+          <button class="filter-btn sport-btn active" onclick="dlSetSport('all',this)">All Sports</button>
+          <button class="filter-btn sport-btn" onclick="dlSetSport('baseball',this)">Baseball</button>
+          <button class="filter-btn sport-btn" onclick="dlSetSport('softball',this)">Softball</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Count -->
+    <div style="font-size:0.82rem;color:var(--text-light);margin-bottom:1rem">
+      Showing <span id="drill-count">54 drills</span>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid-3" id="drill-grid">
+      <!-- Populated by drills.js -->
+    </div>
+
+  </div>
+</section>
+
+<!-- DRILL MODAL -->
+<div class="modal-overlay" id="drill-modal" onclick="if(event.target===this)closeDrillModal()">
+  <div class="modal-box">
+    <div class="modal-header" id="modal-header">
+      <div>
+        <div class="modal-header-cat" id="modal-cat"></div>
+        <div class="modal-header-name" id="modal-name"></div>
+      </div>
+      <button class="modal-close" onclick="closeDrillModal()">&#x2715;</button>
+    </div>
+    <div class="modal-meta">
+      <span class="modal-pill" id="modal-dur"></span>
+      <span class="modal-pill" id="modal-players"></span>
+      <span class="modal-pill" id="modal-equip"></span>
+      <span class="modal-pill" id="modal-sport" style="background:#f0f4ff;color:#1A5276;font-weight:700"></span>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-field-label">Setup</div>
+        <div class="modal-field-text" id="modal-setup"></div>
+      </div>
+      <div>
+        <div class="modal-field-label">How to Run It</div>
+        <div class="modal-field-text" id="modal-exec"></div>
+      </div>
+      <div class="modal-cue-box">
+        <div class="modal-field-label">Coaching Cue</div>
+        <div class="modal-field-text" id="modal-cue"></div>
+      </div>
+      <div class="modal-why-box">
+        <div class="modal-field-label">Why This Works</div>
+        <div class="modal-field-text" id="modal-why"></div>
+      </div>
+      <div style="background:#fff8e8;border:1px solid #f0c040;border-radius:8px;padding:0.75rem 0.9rem">
+        <div class="modal-field-label" style="color:#b07800">Watch For</div>
+        <div class="modal-field-text" id="modal-watch"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
+        <div style="background:#f0faf4;border:1px solid #b2dfcc;border-radius:8px;padding:0.7rem 0.85rem">
+          <div class="modal-field-label" style="color:#2d6a4a">Make It Harder</div>
+          <div class="modal-field-text" id="modal-prog" style="font-size:0.82rem"></div>
+        </div>
+        <div style="background:#f5f5f5;border:1px solid #ddd;border-radius:8px;padding:0.7rem 0.85rem">
+          <div class="modal-field-label" style="color:#666">Make It Easier</div>
+          <div class="modal-field-text" id="modal-reg" style="font-size:0.82rem"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="builder.html">Practice Builder</a></li>
+        <li><a href="drills.html">Drill Library</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">All Articles</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2025 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script src="js/drills-data.js"></script>
+<script src="js/site.js"></script>
+<script src="js/drills.js"></script>
+</body>
+</html>

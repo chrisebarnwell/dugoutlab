@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Lineup Builder — DugoutLab</title>
+<meta name="description" content="Build a complete 5-inning position lineup matrix for your youth baseball or softball team. Handles tiers, pitching rotations, catching splits, EH slots, and development priorities.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+/* ── WIZARD CHROME ─────────────────────────────────────────────── */
+.wizard-wrap {
+  max-width: 820px;
+  margin: 2rem auto;
+  padding: 0 1.25rem;
+}
+
+.step-bar {
+  display: flex;
+  gap: 0;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.step-pip {
+  flex: 1;
+  padding: 0.55rem 0.4rem;
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-light);
+  background: var(--cream);
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+  line-height: 1.3;
+}
+.step-pip:last-child { border-right: none; }
+.step-pip.active { background: var(--forest); color: white; }
+.step-pip.done { background: var(--forest2); color: white; }
+
+.wizard-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.25rem;
+}
+.wizard-card h2 {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  color: var(--forest);
+  margin-bottom: 0.25rem;
+}
+.wizard-card .step-desc {
+  font-size: 0.85rem;
+  color: var(--text-mid);
+  margin-bottom: 1.25rem;
+}
+
+/* ── FORM CONTROLS ─────────────────────────────────────────────── */
+.field-group { margin-bottom: 1rem; }
+.field-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--forest);
+  margin-bottom: 0.4rem;
+}
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-bottom: 0.4rem;
+  display: block;
+}
+input[type="text"], input[type="number"], select, textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  color: var(--text);
+  background: white;
+  transition: border-color 0.15s;
+}
+input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--forest2);
+  box-shadow: 0 0 0 2px rgba(45,106,74,0.1);
+}
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+.input-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* ── TOGGLE GROUP ──────────────────────────────────────────────── */
+.toggle-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.toggle-btn {
+  padding: 0.45rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: white;
+  color: var(--text-mid);
+  transition: all 0.15s;
+  font-family: var(--sans);
+}
+.toggle-btn.active {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: white;
+}
+.toggle-btn:hover:not(.active) {
+  border-color: var(--forest2);
+  color: var(--forest);
+}
+
+/* ── ROSTER TABLE ──────────────────────────────────────────────── */
+.roster-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--cream);
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  padding: 0.4rem 0.6rem;
+}
+.player-row input[type="text"] {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.2rem 0;
+  font-size: 0.85rem;
+}
+.player-row input[type="text"]:focus {
+  box-shadow: none;
+}
+.tier-select {
+  width: 72px;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.35rem;
+  border-radius: 4px;
+}
+.remove-btn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 2px;
+  line-height: 1;
+}
+.remove-btn:hover { color: #c0392b; }
+.add-player-btn {
+  background: var(--cream);
+  border: 1.5px dashed var(--border);
+  border-radius: 7px;
+  padding: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--forest2);
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  font-family: var(--sans);
+  transition: all 0.15s;
+}
+.add-player-btn:hover {
+  background: white;
+  border-color: var(--forest2);
+}
+
+/* ── PITCHER / CATCHER ASSIGNMENT ─────────────────────────────── */
+.inning-assign {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.inning-col {
+  background: var(--cream);
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  padding: 0.5rem;
+}
+.inning-col-head {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--forest);
+  text-align: center;
+  margin-bottom: 0.4rem;
+}
+.inning-col select {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.4rem;
+}
+
+/* ── PRIORITY SLIDER ───────────────────────────────────────────── */
+.priority-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+}
+.priority-card {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  background: white;
+}
+.priority-card:hover { border-color: var(--forest2); }
+.priority-card.active { border-color: var(--forest); background: rgba(26,58,42,0.05); }
+.priority-card .pc-icon { font-size: 1.4rem; margin-bottom: 0.3rem; }
+.priority-card .pc-name { font-weight: 700; font-size: 0.85rem; color: var(--forest); margin-bottom: 0.25rem; }
+.priority-card .pc-desc { font-size: 0.73rem; color: var(--text-mid); line-height: 1.4; }
+
+/* ── SPECIAL RULES ─────────────────────────────────────────────── */
+.rule-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.rule-row select { width: 160px; }
+.rule-row .rule-verb { font-size: 0.82rem; color: var(--text-mid); white-space: nowrap; }
+.rule-row select.pos-select { width: 90px; }
+
+/* ── CHECKBOX ROWS ─────────────────────────────────────────────── */
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 0.65rem;
+}
+.check-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--forest);
+}
+.check-label { font-size: 0.85rem; color: var(--text-mid); line-height: 1.45; }
+.check-label strong { color: var(--text); }
+
+/* ── WIZARD FOOTER ─────────────────────────────────────────────── */
+.wizard-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+.btn-prev {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  color: var(--text-mid);
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-prev:hover { border-color: var(--forest2); color: var(--forest); }
+.btn-next {
+  background: var(--forest);
+  border: none;
+  color: white;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-next:hover { background: var(--forest2); }
+.btn-generate {
+  background: var(--gold);
+  border: none;
+  color: white;
+  padding: 0.7rem 2rem;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-generate:hover { background: #a85f12; }
+.btn-generate:disabled { background: var(--border); cursor: not-allowed; }
+
+/* ── GENERATING STATE ──────────────────────────────────────────── */
+.generating-overlay {
+  display: none;
+  text-align: center;
+  padding: 3rem 2rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1.25rem;
+}
+.generating-overlay.show { display: block; }
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--forest2);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── LINEUP OUTPUT ─────────────────────────────────────────────── */
+.lineup-output {
+  display: none;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+.lineup-output.show { display: block; }
+.lineup-header {
+  background: var(--forest);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.lineup-header h3 { color: white; font-family: var(--serif); font-size: 1.1rem; }
+.lineup-actions { display: flex; gap: 0.5rem; }
+.btn-print, .btn-pdf {
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.15s;
+}
+.btn-print { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; }
+.btn-print:hover { background: rgba(255,255,255,0.25); }
+.btn-pdf { background: var(--gold); border: none; color: white; }
+.btn-pdf:hover { background: #a85f12; }
+
+.lineup-table-wrap { overflow-x: auto; padding: 1.25rem; }
+.lineup-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.lineup-table th {
+  background: var(--cream);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--forest);
+  border: 1px solid var(--border2);
+  text-align: center;
+}
+.lineup-table th.player-col { text-align: left; }
+.lineup-table td {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border2);
+  text-align: center;
+  vertical-align: middle;
+}
+.lineup-table td.player-name {
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text);
+  white-space: nowrap;
+}
+.lineup-table tr:nth-child(even) td { background: var(--cream2); }
+
+/* Position badges */
+.pos-badge {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  min-width: 36px;
+}
+.pos-P  { background: #1a3a2a; color: white; }
+.pos-C  { background: #555; color: white; }
+.pos-SS, .pos-2B, .pos-1B, .pos-3B { background: white; border: 1.5px solid #333; color: #222; }
+.pos-LF, .pos-CF, .pos-RF, .pos-LC, .pos-RC { color: #555; font-weight: 600; }
+.pos-EH { color: var(--text-light); font-style: italic; font-weight: 400; }
+
+/* ── API KEY PROMPT ────────────────────────────────────────────── */
+.api-banner {
+  background: rgba(200,120,26,0.08);
+  border: 1.5px solid var(--gold);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.api-banner p { font-size: 0.83rem; color: var(--text-mid); flex: 1; margin: 0; }
+.api-banner input { width: 240px; flex-shrink: 0; }
+.api-banner .btn-save {
+  background: var(--forest);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--sans);
+}
+
+/* ── ERROR STATE ───────────────────────────────────────────────── */
+.error-box {
+  background: rgba(192,57,43,0.07);
+  border: 1px solid rgba(192,57,43,0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  color: #c0392b;
+  margin-bottom: 1rem;
+  display: none;
+}
+.error-box.show { display: block; }
+
+/* ── PRINT STYLES ──────────────────────────────────────────────── */
+@media print {
+  body * { visibility: hidden; }
+  .lineup-output, .lineup-output * { visibility: visible; }
+  .lineup-output { position: absolute; left: 0; top: 0; width: 100%; border: none; }
+  .lineup-actions { display: none; }
+  .nav, .page-hero, .wizard-wrap > *:not(.lineup-output) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="builder.html">Build a Practice</a></li>
+    <li><a href="drills.html">Drill Library</a></li>
+    <li><a href="lineup.html" class="active">Lineup Builder</a></li>
+    <li><a href="train.html">Train Solo</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="progression.html">Season Plan</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="builder.html">Build a Practice</a>
+  <a href="drills.html">Drill Library</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="train.html">Train Solo</a>
+  <a href="articles.html">Articles</a>
+  <a href="stages.html">The 4 Stages</a>
+  <a href="progression.html">Season Plan</a>
+  <a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="eyebrow">AI Lineup Builder</div>
+    <h1>Build Your Lineup Matrix</h1>
+    <p>Answer 8 questions. Get a complete position-by-inning lineup — with pitching, catching, EH slots, and development priorities all handled.</p>
+  </div>
+</div>
+
+<div class="wizard-wrap">
+
+  <!-- API KEY BANNER -->
+  <div class="api-banner" id="api-banner" style="display:none">
+    <p><strong>One-time setup:</strong> Enter your Anthropic API key to enable AI lineup generation. Stored locally on your device only.</p>
+    <input type="password" id="api-key-input" placeholder="sk-ant-..." />
+    <button class="btn-save" onclick="saveApiKey()">Save Key</button>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-box" id="error-box"></div>
+
+  <!-- STEP PROGRESS BAR -->
+  <div class="step-bar" id="step-bar">
+    <div class="step-pip active" onclick="goToStep(1)">1<br>Roster</div>
+    <div class="step-pip" onclick="goToStep(2)">2<br>Format</div>
+    <div class="step-pip" onclick="goToStep(3)">3<br>Priority</div>
+    <div class="step-pip" onclick="goToStep(4)">4<br>Pitching</div>
+    <div class="step-pip" onclick="goToStep(5)">5<br>Catching</div>
+    <div class="step-pip" onclick="goToStep(6)">6<br>Rotation</div>
+    <div class="step-pip" onclick="goToStep(7)">7<br>EH Rules</div>
+    <div class="step-pip" onclick="goToStep(8)">8<br>Special</div>
+  </div>
+
+  <!-- ── STEP 1: ROSTER ─────────────────────────────────────────── -->
+  <div class="wizard-card" id="step-1">
+    <h2>Step 1 — Roster</h2>
+    <p class="step-desc">Enter each player's name and assign a tier. Tier 1 = strongest, Tier 2 = developing, Tier 3 = beginners.</p>
+
+    <div class="field-group">
+      <div class="field-label">Team Name</div>
+      <input type="text" id="team-name" placeholder="e.g. Trash Pandas" style="max-width:280px">
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Players <span id="player-count" style="font-weight:400;color:var(--text-light)">(0 added)</span></div>
+      <div id="player-list" class="roster-grid"></div>
+      <button class="add-player-btn" onclick="addPlayer()">+ Add Player</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: FORMAT ─────────────────────────────────────────── -->
+  <div class="wizard-card" id="step-2" style="display:none">
+    <h2>Step 2 — Game Format</h2>
+    <p class="step-desc">Set the game length and field configuration. EH slots are calculated automatically.</p>
+
+    <div class="input-row">
+      <div class="field-group">
+        <div class="field-label">Number of Innings</div>
+        <input type="number" id="innings" value="5" min="1" max="9">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Field Positions</div>
+        <input type="number" id="field-pos" value="9" min="6" max="12">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Outfield Format</div>
+      <div class="toggle-group" id="of-format-toggle">
+        <button class="toggle-btn active" onclick="setToggle('of-format','3of',this)">3 OF — LF / CF / RF</button>
+        <button class="toggle-btn" onclick="setToggle('of-format','4of',this)">4 OF — LF / LC / RC / RF</button>
+      </div>
+    </div>
+
+    <div class="field-group" style="background:var(--cream);border-radius:8px;padding:0.75rem 1rem">
+      <div class="field-label" style="margin-bottom:0.15rem">EH Slots per Inning</div>
+      <div style="font-size:1.25rem;font-weight:700;color:var(--forest)" id="eh-display">—</div>
+      <div style="font-size:0.78rem;color:var(--text-light);margin-top:0.2rem">Roster size minus field positions. Updates automatically.</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: PRIORITY ───────────────────────────────────────── -->
+  <div class="wizard-card" id="step-3" style="display:none">
+    <h2>Step 3 — Game Priority</h2>
+    <p class="step-desc">How should the lineup balance development and winning?</p>
+
+    <div class="priority-cards" id="priority-cards">
+      <div class="priority-card active" onclick="selectPriority('win',this)">
+        <div class="pc-icon">🏆</div>
+        <div class="pc-name">Win Mode</div>
+        <div class="pc-desc">Tier 1 stays at premium IF positions. Tier 2/3 rotate through OF and EH.</div>
+      </div>
+      <div class="priority-card" onclick="selectPriority('balanced',this)">
+        <div class="pc-icon">⚖️</div>
+        <div class="pc-name">Balanced</div>
+        <div class="pc-desc">Tier 1 gets IF priority but Tier 2 gets meaningful IF reps.</div>
+      </div>
+      <div class="priority-card" onclick="selectPriority('dev',this)">
+        <div class="pc-icon">📈</div>
+        <div class="pc-name">Development</div>
+        <div class="pc-desc">Everyone rotates through IF. 3B used as a development slot.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: PITCHING ───────────────────────────────────────── -->
+  <div class="wizard-card" id="step-4" style="display:none">
+    <h2>Step 4 — Pitching</h2>
+    <p class="step-desc">Assign pitchers to innings. One pitcher per inning by default.</p>
+
+    <div class="field-group">
+      <div class="field-label">Pitcher per Inning</div>
+      <div class="inning-assign" id="pitching-assign"></div>
+    </div>
+
+    <div class="field-group">
+      <div class="check-row">
+        <input type="checkbox" id="pitcher-eh-rule">
+        <label class="check-label" for="pitcher-eh-rule"><strong>Pitcher sits EH the inning before pitching</strong> — gives them a rest before taking the mound.</label>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" id="pitcher-2inn">
+        <label class="check-label" for="pitcher-2inn"><strong>Allow a pitcher to throw 2 innings</strong> — useful when you have one strong arm or fewer pitchers.</label>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <div class="field-group">
+        <div class="field-label">Emergency Pitcher #1</div>
+        <select id="emerg-p1"><option value="">— None —</option></select>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Emergency Pitcher #2</div>
+        <select id="emerg-p2"><option value="">— None —</option></select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 5: CATCHING ───────────────────────────────────────── -->
+  <div class="wizard-card" id="step-5" style="display:none">
+    <h2>Step 5 — Catching</h2>
+    <p class="step-desc">Assign catchers to specific innings. You can use up to 3 different catchers.</p>
+
+    <div class="field-group">
+      <div class="field-label">Catcher per Inning</div>
+      <div class="inning-assign" id="catching-assign"></div>
+    </div>
+  </div>
+
+  <!-- ── STEP 6: ROTATION RULES ─────────────────────────────────── -->
+  <div class="wizard-card" id="step-6" style="display:none">
+    <h2>Step 6 — Position Rotation Rules</h2>
+    <p class="step-desc">Control where your Tier 1 and Tier 2 players go.</p>
+
+    <div class="field-group">
+      <div class="field-label">Tier 1 Infield Positions</div>
+      <span class="field-hint">Which IF positions should Tier 1 players rotate through?</span>
+      <div class="toggle-group" id="t1-if-toggle">
+        <button class="toggle-btn active" data-val="SS" onclick="toggleMulti('t1-if',this)">SS</button>
+        <button class="toggle-btn active" data-val="2B" onclick="toggleMulti('t1-if',this)">2B</button>
+        <button class="toggle-btn active" data-val="1B" onclick="toggleMulti('t1-if',this)">1B</button>
+        <button class="toggle-btn" data-val="3B" onclick="toggleMulti('t1-if',this)">3B</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Tier 1 Max Outfield Innings</div>
+      <div class="toggle-group" id="t1-of-max-toggle">
+        <button class="toggle-btn" onclick="setToggle('t1-of-max','0',this)">0 — Never</button>
+        <button class="toggle-btn active" onclick="setToggle('t1-of-max','1',this)">1 inning max</button>
+        <button class="toggle-btn" onclick="setToggle('t1-of-max','any',this)">As needed</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="check-row">
+        <input type="checkbox" id="3b-dev-slot" checked>
+        <label class="check-label" for="3b-dev-slot"><strong>3B as development slot</strong> — rotate a different Tier 2 player to 3B each inning.</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 7: EH / BENCH RULES ──────────────────────────────── -->
+  <div class="wizard-card" id="step-7" style="display:none">
+    <h2>Step 7 — EH and Bench Rules</h2>
+    <p class="step-desc">Control how sitting time is distributed.</p>
+
+    <div class="field-group">
+      <div class="field-label">Max Times a Player Can Sit (EH)</div>
+      <input type="number" id="max-sit" value="1" min="0" max="5" style="max-width:100px">
+    </div>
+
+    <div class="field-group">
+      <div class="check-row">
+        <input type="checkbox" id="t1-never-sit">
+        <label class="check-label" for="t1-never-sit"><strong>Tier 1 players never sit</strong> — they are in the field every inning.</label>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" id="even-sit" checked>
+        <label class="check-label" for="even-sit"><strong>Auto-distribute EH slots evenly</strong> across Tier 2 and Tier 3 players.</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 8: SPECIAL RULES ──────────────────────────────────── -->
+  <div class="wizard-card" id="step-8" style="display:none">
+    <h2>Step 8 — Special Rules <span style="font-size:0.8rem;font-weight:400;color:var(--text-light)">(optional)</span></h2>
+    <p class="step-desc">Player-specific locks and inning-specific overrides.</p>
+
+    <div class="field-group">
+      <div class="field-label">Player Locks</div>
+      <span class="field-hint">e.g. "Will plays IF only" or "Maya must play CF every inning"</span>
+      <div id="player-locks"></div>
+      <button class="add-player-btn" onclick="addLock()" style="margin-top:0.4rem">+ Add Player Lock</button>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Inning Overrides</div>
+      <span class="field-hint">Force a specific player to a specific position in a specific inning.</span>
+      <div id="inning-overrides"></div>
+      <button class="add-player-btn" onclick="addOverride()" style="margin-top:0.4rem">+ Add Inning Override</button>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Additional Notes for Claude <span style="font-size:0.75rem;font-weight:400;color:var(--text-light)">(optional)</span></div>
+      <textarea id="extra-notes" rows="3" placeholder="e.g. Start Tier 2 players at IF in inning 1 for development exposure..."></textarea>
+    </div>
+  </div>
+
+  <!-- ── WIZARD FOOTER ──────────────────────────────────────────── -->
+  <div class="wizard-footer" id="wizard-footer">
+    <button class="btn-prev" id="btn-prev" onclick="prevStep()" style="visibility:hidden">← Back</button>
+    <button class="btn-next" id="btn-next" onclick="nextStep()">Next →</button>
+  </div>
+
+  <!-- ── GENERATING OVERLAY ─────────────────────────────────────── -->
+  <div class="generating-overlay" id="generating">
+    <div class="spinner"></div>
+    <div style="font-family:var(--serif);font-size:1.1rem;color:var(--forest);margin-bottom:0.5rem">Building your lineup...</div>
+    <div style="font-size:0.85rem;color:var(--text-mid)">Claude is resolving all your constraints.<br>This usually takes 10-15 seconds.</div>
+  </div>
+
+  <!-- ── LINEUP OUTPUT ──────────────────────────────────────────── -->
+  <div class="lineup-output" id="lineup-output">
+    <div class="lineup-header">
+      <h3 id="lineup-title">Lineup Matrix</h3>
+      <div class="lineup-actions">
+        <button class="btn-print" onclick="window.print()">🖨 Print</button>
+        <button class="btn-pdf" onclick="downloadPDF()">⬇ PDF</button>
+        <button class="btn-print" onclick="resetWizard()">↺ New Lineup</button>
+      </div>
+    </div>
+    <div class="lineup-table-wrap">
+      <table class="lineup-table" id="lineup-table">
+        <thead id="lineup-thead"></thead>
+        <tbody id="lineup-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /wizard-wrap -->
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="builder.html">Practice Builder</a></li>
+        <li><a href="drills.html">Drill Library</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">All Articles</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2025 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+<script>
+// ── STATE ──────────────────────────────────────────────────────────
+var state = {
+  step: 1,
+  totalSteps: 8,
+  players: [],       // [{name, tier}]
+  teamName: '',
+  innings: 5,
+  fieldPos: 9,
+  ofFormat: '3of',   // '3of' | '4of'
+  priority: 'win',   // 'win' | 'balanced' | 'dev'
+  pitchers: [],      // [playerName per inning]
+  catcherEHRule: false,
+  pitcher2Inn: false,
+  emergP1: '',
+  emergP2: '',
+  catchers: [],      // [playerName per inning]
+  t1IfPositions: ['SS','2B','1B'],
+  t1OfMax: '1',
+  threeBDev: true,
+  maxSit: 1,
+  t1NeverSit: false,
+  evenSit: true,
+  playerLocks: [],   // [{player, rule, position}]
+  inningOverrides: [], // [{player, inning, position}]
+  extraNotes: '',
+  lineup: null,      // generated lineup
+};
+
+// Toggle state maps
+var toggleVals = { 'of-format': '3of', 't1-of-max': '1' };
+var multiVals  = { 't1-if': ['SS','2B','1B'] };
+
+// ── INIT ───────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  checkApiKey();
+  // Start with 10 empty player rows
+  for (var i = 0; i < 10; i++) addPlayer();
+});
+
+function checkApiKey() {
+  var key = localStorage.getItem('dugout_api_key');
+  if (!key) {
+    document.getElementById('api-banner').style.display = 'flex';
+  }
+}
+
+function saveApiKey() {
+  var key = document.getElementById('api-key-input').value.trim();
+  if (!key) return;
+  localStorage.setItem('dugout_api_key', key);
+  document.getElementById('api-banner').style.display = 'none';
+}
+
+// ── PLAYER MANAGEMENT ──────────────────────────────────────────────
+function addPlayer() {
+  var idx = state.players.length;
+  state.players.push({ name: '', tier: '2' });
+
+  var row = document.createElement('div');
+  row.className = 'player-row';
+  row.dataset.idx = idx;
+  row.innerHTML =
+    '<input type="text" placeholder="Player name" onchange="updatePlayer(' + idx + ',\'name\',this.value)">' +
+    '<select class="tier-select" onchange="updatePlayer(' + idx + ',\'tier\',this.value)">' +
+    '<option value="1">T1</option>' +
+    '<option value="2" selected>T2</option>' +
+    '<option value="3">T3</option>' +
+    '</select>' +
+    '<button class="remove-btn" onclick="removePlayer(' + idx + ')">&#x2715;</button>';
+
+  document.getElementById('player-list').appendChild(row);
+  updatePlayerCount();
+}
+
+function updatePlayer(idx, field, val) {
+  if (state.players[idx]) state.players[idx][field] = val;
+  updateEHDisplay();
+}
+
+function removePlayer(idx) {
+  var rows = document.querySelectorAll('.player-row');
+  rows[idx] && rows[idx].remove();
+  state.players.splice(idx, 1);
+  // Re-index remaining rows
+  document.querySelectorAll('.player-row').forEach(function(r, i) {
+    r.dataset.idx = i;
+    var inp = r.querySelector('input');
+    var sel = r.querySelector('select');
+    var btn = r.querySelector('button');
+    inp.setAttribute('onchange', 'updatePlayer(' + i + ',\'name\',this.value)');
+    sel.setAttribute('onchange', 'updatePlayer(' + i + ',\'tier\',this.value)');
+    btn.setAttribute('onclick', 'removePlayer(' + i + ')');
+    state.players[i] = { name: inp.value, tier: sel.value };
+  });
+  updatePlayerCount();
+}
+
+function updatePlayerCount() {
+  var named = state.players.filter(function(p){ return p.name.trim(); }).length;
+  document.getElementById('player-count').textContent = '(' + named + ' added)';
+  updateEHDisplay();
+}
+
+function updateEHDisplay() {
+  var named  = getNamedPlayers().length;
+  var fpos   = parseInt(document.getElementById('field-pos') && document.getElementById('field-pos').value) || 9;
+  var eh     = Math.max(0, named - fpos);
+  var el     = document.getElementById('eh-display');
+  if (el) el.textContent = named > 0 ? eh + ' EH per inning' : '—';
+}
+
+function getNamedPlayers() {
+  // Read current DOM values
+  var rows = document.querySelectorAll('.player-row');
+  var result = [];
+  rows.forEach(function(r) {
+    var name = r.querySelector('input').value.trim();
+    var tier = r.querySelector('select').value;
+    if (name) result.push({ name: name, tier: tier });
+  });
+  return result;
+}
+
+// ── TOGGLE HELPERS ─────────────────────────────────────────────────
+function setToggle(key, val, btn) {
+  toggleVals[key] = val;
+  var group = btn.closest('.toggle-group');
+  group.querySelectorAll('.toggle-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  if (key === 'of-format') { state.ofFormat = val; updateEHDisplay(); }
+  if (key === 't1-of-max') state.t1OfMax = val;
+}
+
+function toggleMulti(key, btn) {
+  var val = btn.dataset.val;
+  var arr = multiVals[key] || [];
+  var idx = arr.indexOf(val);
+  if (idx === -1) { arr.push(val); btn.classList.add('active'); }
+  else { arr.splice(idx,1); btn.classList.remove('active'); }
+  multiVals[key] = arr;
+}
+
+function selectPriority(val, card) {
+  state.priority = val;
+  document.querySelectorAll('.priority-card').forEach(function(c){ c.classList.remove('active'); });
+  card.classList.add('active');
+}
+
+// ── PITCHER / CATCHER SELECTS ──────────────────────────────────────
+function buildInningSelects(containerId, storeArr) {
+  var inn = parseInt(document.getElementById('innings').value) || 5;
+  var players = getNamedPlayers();
+  var container = document.getElementById(containerId);
+  container.innerHTML = '';
+  while (storeArr.length < inn) storeArr.push('');
+
+  for (var i = 0; i < inn; i++) {
+    var col = document.createElement('div');
+    col.className = 'inning-col';
+    var opts = '<option value="">TBD</option>' +
+      players.map(function(p){ return '<option value="' + p.name + '">' + p.name + '</option>'; }).join('');
+    col.innerHTML = '<div class="inning-col-head">Inn ' + (i+1) + '</div>' +
+      '<select onchange="storeInningVal(\'' + storeArr + '\',' + i + ',this.value)">' + opts + '</select>';
+    container.appendChild(col);
+  }
+}
+
+function storeInningVal(key, idx, val) {
+  if (key === state.pitchers) state.pitchers[idx] = val;
+  if (key === state.catchers) state.catchers[idx] = val;
+}
+
+function buildPitchingStep() {
+  var inn = parseInt(document.getElementById('innings').value) || 5;
+  var players = getNamedPlayers();
+  while (state.pitchers.length < inn) state.pitchers.push('');
+  var container = document.getElementById('pitching-assign');
+  container.innerHTML = '';
+  for (var i = 0; i < inn; i++) {
+    (function(idx) {
+      var col = document.createElement('div');
+      col.className = 'inning-col';
+      var sel = document.createElement('select');
+      sel.innerHTML = '<option value="">TBD</option>' +
+        players.map(function(p){ return '<option value="' + p.name + '">' + p.name + '</option>'; }).join('');
+      sel.value = state.pitchers[idx] || '';
+      sel.addEventListener('change', function(){ state.pitchers[idx] = this.value; });
+      col.innerHTML = '<div class="inning-col-head">Inn ' + (idx+1) + '</div>';
+      col.appendChild(sel);
+      container.appendChild(col);
+    })(i);
+  }
+  // Emergency pitcher selects
+  ['emerg-p1','emerg-p2'].forEach(function(id) {
+    var sel = document.getElementById(id);
+    sel.innerHTML = '<option value="">— None —</option>' +
+      players.map(function(p){ return '<option value="' + p.name + '">' + p.name + '</option>'; }).join('');
+  });
+}
+
+function buildCatchingStep() {
+  var inn = parseInt(document.getElementById('innings').value) || 5;
+  var players = getNamedPlayers();
+  while (state.catchers.length < inn) state.catchers.push('');
+  var container = document.getElementById('catching-assign');
+  container.innerHTML = '';
+  for (var i = 0; i < inn; i++) {
+    (function(idx) {
+      var col = document.createElement('div');
+      col.className = 'inning-col';
+      var sel = document.createElement('select');
+      sel.innerHTML = '<option value="">TBD</option>' +
+        players.map(function(p){ return '<option value="' + p.name + '">' + p.name + '</option>'; }).join('');
+      sel.value = state.catchers[idx] || '';
+      sel.addEventListener('change', function(){ state.catchers[idx] = this.value; });
+      col.innerHTML = '<div class="inning-col-head">Inn ' + (idx+1) + '</div>';
+      col.appendChild(sel);
+      container.appendChild(col);
+    })(i);
+  }
+}
+
+// ── PLAYER LOCKS & OVERRIDES ───────────────────────────────────────
+function addLock() {
+  var players = getNamedPlayers();
+  var div = document.createElement('div');
+  div.className = 'rule-row';
+  div.innerHTML =
+    '<select class="lock-player">' +
+      players.map(function(p){ return '<option>' + p.name + '</option>'; }).join('') +
+    '</select>' +
+    '<span class="rule-verb">plays only</span>' +
+    '<select class="lock-pos pos-select">' +
+      ['SS','2B','1B','3B','LF','CF','RF','LC','RC','P','C','IF only','OF only'].map(function(p){ return '<option>' + p + '</option>'; }).join('') +
+    '</select>' +
+    '<button class="remove-btn" onclick="this.parentNode.remove()">&#x2715;</button>';
+  document.getElementById('player-locks').appendChild(div);
+}
+
+function addOverride() {
+  var players = getNamedPlayers();
+  var inn = parseInt(document.getElementById('innings').value) || 5;
+  var div = document.createElement('div');
+  div.className = 'rule-row';
+  div.innerHTML =
+    '<span class="rule-verb">Inning</span>' +
+    '<select class="ovr-inn pos-select">' +
+      Array.from({length:inn},function(_,i){ return '<option value="' + (i+1) + '">' + (i+1) + '</option>'; }).join('') +
+    '</select>' +
+    '<select class="ovr-player">' +
+      players.map(function(p){ return '<option>' + p.name + '</option>'; }).join('') +
+    '</select>' +
+    '<span class="rule-verb">at</span>' +
+    '<select class="ovr-pos pos-select">' +
+      ['SS','2B','1B','3B','LF','CF','RF','LC','RC','P','C','EH'].map(function(p){ return '<option>' + p + '</option>'; }).join('') +
+    '</select>' +
+    '<button class="remove-btn" onclick="this.parentNode.remove()">&#x2715;</button>';
+  document.getElementById('inning-overrides').appendChild(div);
+}
+
+// ── STEP NAVIGATION ────────────────────────────────────────────────
+function goToStep(n) {
+  if (n < 1 || n > state.totalSteps) return;
+
+  // Build dynamic step content when entering
+  if (n === 4) buildPitchingStep();
+  if (n === 5) buildCatchingStep();
+
+  document.getElementById('step-' + state.step).style.display = 'none';
+  state.step = n;
+  document.getElementById('step-' + n).style.display = 'block';
+
+  // Update progress bar
+  document.querySelectorAll('.step-pip').forEach(function(pip, i) {
+    pip.classList.remove('active','done');
+    if (i + 1 === n) pip.classList.add('active');
+    else if (i + 1 < n) pip.classList.add('done');
+  });
+
+  // Show/hide footer buttons
+  document.getElementById('btn-prev').style.visibility = n > 1 ? 'visible' : 'hidden';
+  var nextBtn = document.getElementById('btn-next');
+  if (n === state.totalSteps) {
+    nextBtn.textContent = '✦ Generate Lineup';
+    nextBtn.className = 'btn-generate';
+    nextBtn.onclick = generateLineup;
+  } else {
+    nextBtn.textContent = 'Next →';
+    nextBtn.className = 'btn-next';
+    nextBtn.onclick = nextStep;
+  }
+
+  // EH display update
+  if (n === 2) {
+    document.getElementById('field-pos').addEventListener('input', updateEHDisplay);
+    updateEHDisplay();
+  }
+}
+
+function nextStep() { goToStep(state.step + 1); }
+function prevStep() { goToStep(state.step - 1); }
+
+// ── COLLECT STATE BEFORE GENERATE ─────────────────────────────────
+function collectState() {
+  state.teamName = document.getElementById('team-name').value.trim() || 'My Team';
+  state.innings  = parseInt(document.getElementById('innings').value) || 5;
+  state.fieldPos = parseInt(document.getElementById('field-pos').value) || 9;
+  state.players  = getNamedPlayers();
+  state.t1IfPositions = multiVals['t1-if'] || ['SS','2B','1B'];
+  state.t1OfMax  = toggleVals['t1-of-max'] || '1';
+  state.ofFormat = toggleVals['of-format'] || '3of';
+  state.catcherEHRule = document.getElementById('pitcher-eh-rule').checked;
+  state.pitcher2Inn   = document.getElementById('pitcher-2inn').checked;
+  state.emergP1  = document.getElementById('emerg-p1').value;
+  state.emergP2  = document.getElementById('emerg-p2').value;
+  state.threeBDev = document.getElementById('3b-dev-slot').checked;
+  state.maxSit   = parseInt(document.getElementById('max-sit').value) || 1;
+  state.t1NeverSit = document.getElementById('t1-never-sit').checked;
+  state.evenSit  = document.getElementById('even-sit').checked;
+  state.extraNotes = document.getElementById('extra-notes').value.trim();
+
+  // Player locks
+  state.playerLocks = [];
+  document.querySelectorAll('#player-locks .rule-row').forEach(function(row) {
+    state.playerLocks.push({
+      player: row.querySelector('.lock-player') ? row.querySelector('.lock-player').value : '',
+      position: row.querySelector('.lock-pos') ? row.querySelector('.lock-pos').value : ''
+    });
+  });
+
+  // Inning overrides
+  state.inningOverrides = [];
+  document.querySelectorAll('#inning-overrides .rule-row').forEach(function(row) {
+    state.inningOverrides.push({
+      inning: row.querySelector('.ovr-inn') ? row.querySelector('.ovr-inn').value : '',
+      player: row.querySelector('.ovr-player') ? row.querySelector('.ovr-player').value : '',
+      position: row.querySelector('.ovr-pos') ? row.querySelector('.ovr-pos').value : ''
+    });
+  });
+}
+
+// ── GENERATE ───────────────────────────────────────────────────────
+async function generateLineup() {
+  var apiKey = localStorage.getItem('dugout_api_key');
+  if (!apiKey) {
+    document.getElementById('api-banner').style.display = 'flex';
+    showError('Please enter your Anthropic API key above to generate a lineup.');
+    return;
+  }
+
+  collectState();
+
+  if (state.players.length < 2) {
+    showError('Please add at least 2 players before generating a lineup.');
+    return;
+  }
+
+  showError('');
+  document.getElementById('generating').classList.add('show');
+  document.getElementById('lineup-output').classList.remove('show');
+  document.getElementById('wizard-footer').style.display = 'none';
+
+  var ofPositions = state.ofFormat === '4of'
+    ? ['LF','LC','RC','RF']
+    : ['LF','CF','RF'];
+
+  var ifPositions = ['SS','2B','1B','3B'];
+
+  var systemPrompt = [
+    'You are a youth baseball lineup builder. Your job is to create a position-by-inning lineup matrix.',
+    'Return ONLY valid JSON — no prose, no explanation, no markdown code fences.',
+    'Return an object with key "lineup" containing an array of player objects.',
+    'Each player object: { "name": string, "positions": [pos_inn1, pos_inn2, ...] }',
+    'Valid positions: P, C, SS, 2B, 1B, 3B, LF, CF, RF, LC, RC, EH',
+    'Rules:',
+    '- Every inning must have exactly one P, one C, the correct number of IF and OF positions, and the correct number of EH slots.',
+    '- EH = players not fielding that inning. A player with EH is in the batting lineup but not on the field.',
+    '- Apply all constraints in the user message exactly.',
+    '- If a constraint creates an impossible situation, make the best decision and note it in a "flags" array.',
+    'Return format: { "lineup": [ { "name": "...", "positions": ["SS","P",...] } ], "flags": [] }',
+  ].join('\n');
+
+  var ehCount = Math.max(0, state.players.length - state.fieldPos);
+
+  var userMsg = JSON.stringify({
+    team: state.teamName,
+    innings: state.innings,
+    fieldPositions: state.fieldPos,
+    ehPerInning: ehCount,
+    outfieldPositions: ofPositions,
+    infieldPositions: ifPositions,
+    players: state.players,
+    priority: state.priority,
+    pitchers: state.pitchers,
+    pitcherEHRulePriorInning: state.catcherEHRule,
+    allow2InningPitcher: state.pitcher2Inn,
+    emergencyPitcher1: state.emergP1,
+    emergencyPitcher2: state.emergP2,
+    catchers: state.catchers,
+    tier1InfieldPositions: state.t1IfPositions,
+    tier1MaxOutfieldInnings: state.t1OfMax,
+    use3BAsDevSlot: state.threeBDev,
+    maxTimesPlayerSits: state.maxSit,
+    tier1NeverSits: state.t1NeverSit,
+    distributeEHEvenly: state.evenSit,
+    playerLocks: state.playerLocks,
+    inningOverrides: state.inningOverrides,
+    additionalNotes: state.extraNotes
+  }, null, 2);
+
+  try {
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMsg }]
+      })
+    });
+
+    if (!resp.ok) {
+      var err = await resp.json();
+      throw new Error(err.error ? err.error.message : 'API error ' + resp.status);
+    }
+
+    var data = await resp.json();
+    var raw = data.content[0].text.trim();
+    // Strip any accidental markdown fences
+    raw = raw.replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'');
+    var parsed = JSON.parse(raw);
+
+    state.lineup = parsed;
+    renderLineup(parsed);
+
+  } catch (e) {
+    showError('Error generating lineup: ' + e.message);
+    document.getElementById('wizard-footer').style.display = 'flex';
+  } finally {
+    document.getElementById('generating').classList.remove('show');
+  }
+}
+
+// ── RENDER LINEUP ──────────────────────────────────────────────────
+function renderLineup(data) {
+  var inn = state.innings;
+
+  // Header
+  var thead = document.getElementById('lineup-thead');
+  var headerRow = '<tr><th class="player-col">Player</th>';
+  for (var i = 1; i <= inn; i++) headerRow += '<th>Inning ' + i + '</th>';
+  headerRow += '</tr>';
+  thead.innerHTML = headerRow;
+
+  // Body
+  var tbody = document.getElementById('lineup-tbody');
+  tbody.innerHTML = '';
+  var players = data.lineup || [];
+
+  players.forEach(function(player, rowIdx) {
+    var tr = document.createElement('tr');
+    var batNum = rowIdx + 1;
+    var td = '<td class="player-name">' + batNum + '. ' + player.name + '</td>';
+    (player.positions || []).forEach(function(pos) {
+      td += '<td>' + positionBadge(pos) + '</td>';
+    });
+    tr.innerHTML = td;
+    tbody.appendChild(tr);
+  });
+
+  // Flags
+  if (data.flags && data.flags.length > 0) {
+    var flagRow = document.createElement('tr');
+    flagRow.innerHTML = '<td colspan="' + (inn + 1) + '" style="padding:0.6rem 0.75rem;font-size:0.78rem;color:var(--text-light);font-style:italic">⚠ ' + data.flags.join(' | ') + '</td>';
+    tbody.appendChild(flagRow);
+  }
+
+  // Title
+  document.getElementById('lineup-title').textContent = state.teamName + ' — ' + inn + '-Inning Lineup';
+
+  document.getElementById('lineup-output').classList.add('show');
+}
+
+function positionBadge(pos) {
+  if (!pos) return '<span class="pos-badge pos-EH">EH</span>';
+  var ifPos  = ['SS','2B','1B','3B'];
+  var ofPos  = ['LF','CF','RF','LC','RC'];
+  var cls = 'pos-' + pos;
+  if (pos === 'P')  return '<span class="pos-badge pos-P">P</span>';
+  if (pos === 'C')  return '<span class="pos-badge pos-C">C</span>';
+  if (ifPos.indexOf(pos) !== -1) return '<span class="pos-badge pos-SS">' + pos + '</span>';
+  if (ofPos.indexOf(pos) !== -1) return '<span class="pos-badge pos-LF">' + pos + '</span>';
+  if (pos === 'EH') return '<span class="pos-badge pos-EH">EH</span>';
+  return '<span class="pos-badge">' + pos + '</span>';
+}
+
+// ── PDF DOWNLOAD (client-side via print) ──────────────────────────
+function downloadPDF() {
+  window.print();
+}
+
+// ── RESET ─────────────────────────────────────────────────────────
+function resetWizard() {
+  document.getElementById('lineup-output').classList.remove('show');
+  document.getElementById('wizard-footer').style.display = 'flex';
+  goToStep(1);
+}
+
+// ── ERROR ─────────────────────────────────────────────────────────
+function showError(msg) {
+  var el = document.getElementById('error-box');
+  if (msg) { el.textContent = msg; el.classList.add('show'); }
+  else { el.classList.remove('show'); }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Train on Your Own — DugoutLab</title>
+<meta name="description" content="Baseball drills for one player, solo. No partner needed. Hitting, fielding, throwing, body control, and pitching drills organized by age. For the kid at the field alone or the parent training with their child.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+.solo-cat-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.solo-cat-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+.solo-cat-card.active { border-color: transparent; box-shadow: 0 0 0 2px var(--forest); }
+.solo-cat-icon { font-size: 1.75rem; margin-bottom: 0.4rem; }
+.solo-cat-label { font-family: var(--serif); font-size: 0.95rem; font-weight: 700; color: var(--forest); }
+.solo-cat-count { font-size: 0.72rem; color: var(--text-light); margin-top: 0.15rem; }
+
+.equip-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--cream);
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.7rem;
+  color: var(--text-mid);
+  font-weight: 600;
+}
+
+.solo-drill-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.solo-drill-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.solo-drill-stripe {
+  height: 4px;
+}
+.solo-drill-body { padding: 1rem 1.1rem 0.9rem; }
+.solo-drill-name {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--forest);
+  margin-bottom: 0.3rem;
+  line-height: 1.3;
+}
+.solo-drill-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.55rem;
+}
+.solo-drill-setup {
+  font-size: 0.82rem;
+  color: var(--text-mid);
+  line-height: 1.55;
+  margin-bottom: 0.5rem;
+}
+.solo-drill-equip {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+.solo-drill-equip svg { flex-shrink: 0; }
+.solo-drill-tap {
+  font-size: 0.65rem;
+  color: var(--gold);
+  font-weight: 600;
+  margin-top: 0.45rem;
+}
+
+.age-selector {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.age-sel-btn {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 1.1rem;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.age-sel-btn:hover { border-color: var(--forest2); color: var(--forest); }
+.age-sel-btn.active { background: var(--forest); color: white; border-color: var(--forest); }
+
+.session-card {
+  background: var(--forest);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.session-card:hover { opacity: 0.92; }
+.session-card h4 {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+.session-card p { font-size: 0.82rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 0.5rem; }
+.session-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.12);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.6);
+  margin-right: 0.25rem;
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+    <ul class="nav-links">
+    <li><a href="builder.html">Build a Practice</a></li>
+    <li><a href="drills.html">Drill Library</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="train.html">Train Solo</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="progression.html">Season Plan</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="builder.html">Build a Practice</a>
+  <a href="drills.html">Drill Library</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="train.html">Train Solo</a>
+  <a href="articles.html">Articles</a>
+  <a href="stages.html">The 4 Stages</a>
+  <a href="progression.html">Season Plan</a>
+  <a href="about.html">About</a>
+</div>
+
+<!-- HERO -->
+<div style="background:var(--forest);padding:3rem 1.5rem 2.5rem">
+  <div style="max-width:720px;margin:0 auto">
+    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:var(--gold);margin-bottom:0.75rem">Solo Training</div>
+    <h1 style="font-family:var(--serif);font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;color:white;line-height:1.2;margin-bottom:0.9rem">Train on Your Own</h1>
+    <p style="font-size:1rem;color:rgba(255,255,255,0.7);line-height:1.7;max-width:580px;margin-bottom:1.5rem">No partner. No coach. No problem. Every drill here works alone — at the field, against a wall, or in your backyard. Pick your age group and what you want to work on.</p>
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+      <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 1rem;font-size:0.8rem;color:rgba(255,255,255,0.75)">
+        ⚾ Works alone
+      </div>
+      <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 1rem;font-size:0.8rem;color:rgba(255,255,255,0.75)">
+        🧢 Any age
+      </div>
+      <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 1rem;font-size:0.8rem;color:rgba(255,255,255,0.75)">
+        🎯 Real improvement
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK SESSION SUGGESTIONS -->
+<section style="background:var(--cream);padding:1.75rem 1.5rem;border-bottom:1px solid var(--border)">
+  <div style="max-width:1000px;margin:0 auto">
+    <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-light);margin-bottom:0.9rem">Quick Sessions — Pick One and Go</div>
+    <div class="grid-4" id="quick-sessions">
+      <div class="session-card" onclick="applyQuickSession('got30wall')">
+        <h4>30 Min — Just a Wall</h4>
+        <p>Grounders, pop-ups, throwing targets. Everything you need is a tennis ball and a flat wall.</p>
+        <span class="session-tag">30 min</span><span class="session-tag">Wall only</span>
+      </div>
+      <div class="session-card" onclick="applyQuickSession('hitting45')">
+        <h4>45 Min — Hitting Focus</h4>
+        <p>Tee work, self-flip toss, mirror check. Full solo hitting session.</p>
+        <span class="session-tag">45 min</span><span class="session-tag">Tee needed</span>
+      </div>
+      <div class="session-card" onclick="applyQuickSession('athlete20')">
+        <h4>20 Min — Athletic Base</h4>
+        <p>Jump rope, lateral shuffles, planks, balance work. No equipment needed.</p>
+        <span class="session-tag">20 min</span><span class="session-tag">No equipment</span>
+      </div>
+      <div class="session-card" onclick="applyQuickSession('pitcher30')">
+        <h4>30 Min — Pitcher Work</h4>
+        <p>Balance holds, towel drill, net spot work. Full solo pitching session.</p>
+        <span class="session-tag">30 min</span><span class="session-tag">Net or wall</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<section class="section section-white" style="padding-top:2rem">
+  <div style="max-width:1100px;margin:0 auto;padding:0 1.5rem">
+
+    <!-- AGE FILTER -->
+    <div style="margin-bottom:1.75rem">
+      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-light);margin-bottom:0.6rem">My Age Group</div>
+      <div class="age-selector">
+        <button class="age-sel-btn active" onclick="soloSetAge('all',this)">All Ages</button>
+        <button class="age-sel-btn" onclick="soloSetAge('tball',this)">T-Ball (Ages 4-7)</button>
+        <button class="age-sel-btn" onclick="soloSetAge('young',this)">Ages 7-9</button>
+        <button class="age-sel-btn" onclick="soloSetAge('middle',this)">Ages 10-12</button>
+        <button class="age-sel-btn" onclick="soloSetAge('teen',this)">Ages 13+</button>
+      </div>
+    </div>
+
+    <!-- CATEGORY CARDS -->
+    <div style="margin-bottom:1.75rem">
+      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-light);margin-bottom:0.75rem">What Do You Want to Work On?</div>
+      <div class="grid-4" id="cat-cards" style="grid-template-columns:repeat(6,1fr)">
+        <div class="solo-cat-card active" onclick="soloSetCat('all',this)">
+          <div class="solo-cat-icon">⚾</div>
+          <div class="solo-cat-label">Everything</div>
+          <div class="solo-cat-count" id="cat-count-all"></div>
+        </div>
+        <div class="solo-cat-card" onclick="soloSetCat('hitting',this)">
+          <div class="solo-cat-icon">🏏</div>
+          <div class="solo-cat-label">Hitting</div>
+          <div class="solo-cat-count" id="cat-count-hitting"></div>
+        </div>
+        <div class="solo-cat-card" onclick="soloSetCat('fielding',this)">
+          <div class="solo-cat-icon">🧤</div>
+          <div class="solo-cat-label">Fielding</div>
+          <div class="solo-cat-count" id="cat-count-fielding"></div>
+        </div>
+        <div class="solo-cat-card" onclick="soloSetCat('throwing',this)">
+          <div class="solo-cat-icon">💪</div>
+          <div class="solo-cat-label">Throwing</div>
+          <div class="solo-cat-count" id="cat-count-throwing"></div>
+        </div>
+        <div class="solo-cat-card" onclick="soloSetCat('bodycontrol',this)">
+          <div class="solo-cat-icon">🏃</div>
+          <div class="solo-cat-label">Body Control</div>
+          <div class="solo-cat-count" id="cat-count-bodycontrol"></div>
+        </div>
+        <div class="solo-cat-card" onclick="soloSetCat('pitching',this)">
+          <div class="solo-cat-icon">🎯</div>
+          <div class="solo-cat-label">Pitching</div>
+          <div class="solo-cat-count" id="cat-count-pitching"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DRILL COUNT + GRID -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem">
+      <div style="font-size:0.82rem;color:var(--text-light)">
+        Showing <span id="solo-drill-count"></span>
+      </div>
+      <div style="font-size:0.78rem;color:var(--text-light)">Tap any drill for full details</div>
+    </div>
+
+    <div class="grid-3" id="solo-drill-grid"></div>
+
+  </div>
+</section>
+
+<!-- WHAT YOU NEED BOX -->
+<section class="section section-cream">
+  <div style="max-width:860px;margin:0 auto;padding:0 1.5rem">
+    <div style="display:flex;align-items:flex-start;gap:2rem;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px">
+        <div class="section-label mb-2">The Free Kit</div>
+        <div class="section-title" style="font-size:1.3rem;margin-bottom:0.75rem">What you actually need</div>
+        <p style="font-size:0.9rem;color:var(--text-mid);line-height:1.7">Most of the drills here require almost nothing. Here's the short list that unlocks the most solo training:</p>
+      </div>
+      <div style="flex:2;min-width:280px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem">
+            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);margin-bottom:0.35rem">Free</div>
+            <div style="font-size:0.88rem;color:var(--text-mid);line-height:1.6">A wall or fence<br>Any ball<br>Your phone on video</div>
+          </div>
+          <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem">
+            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);margin-bottom:0.35rem">Under $15</div>
+            <div style="font-size:0.88rem;color:var(--text-mid);line-height:1.6">Jump rope<br>6 tennis balls<br>2 cones</div>
+          </div>
+          <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem">
+            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);margin-bottom:0.35rem">Under $50</div>
+            <div style="font-size:0.88rem;color:var(--text-mid);line-height:1.6">Batting tee<br>Agility ladder<br>Net with target</div>
+          </div>
+          <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem">
+            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);margin-bottom:0.35rem">Nice to Have</div>
+            <div style="font-size:0.88rem;color:var(--text-mid);line-height:1.6">Pitching net<br>Tennis racket<br>Hand towel</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EMAIL CAPTURE -->
+<section class="section section-white">
+  <div class="container-sm">
+    <div class="email-capture">
+      <h3>Get a new solo drill every week</h3>
+      <p>Short email. One drill with a setup and coaching cue. For players training on their own.</p>
+      <div id="solo-email-form">
+        <div class="email-row">
+          <input type="email" placeholder="your@email.com" aria-label="Email">
+          <button class="btn btn-primary" onclick="submitEmail('solo-email-form','solo-email-confirm')">Subscribe</button>
+        </div>
+      </div>
+      <div class="email-confirm" id="solo-email-confirm">Done. First drill coming soon.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DRILL MODAL -->
+<div class="modal-overlay" id="drill-modal" onclick="if(event.target===this)closeDrillModal()">
+  <div class="modal-box">
+    <div class="modal-header" id="modal-header">
+      <div>
+        <div class="modal-header-cat" id="modal-cat"></div>
+        <div class="modal-header-name" id="modal-name"></div>
+      </div>
+      <button class="modal-close" onclick="closeDrillModal()">&#x2715;</button>
+    </div>
+    <div class="modal-meta">
+      <span class="modal-pill" id="modal-dur"></span>
+      <span class="modal-pill" id="modal-players"></span>
+      <span class="modal-pill" id="modal-equip"></span>
+      <span class="modal-pill" id="modal-sport" style="background:#f0f4ff;color:#1A5276;font-weight:700"></span>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-field-label">Setup</div>
+        <div class="modal-field-text" id="modal-setup"></div>
+      </div>
+      <div>
+        <div class="modal-field-label">How to Run It</div>
+        <div class="modal-field-text" id="modal-exec"></div>
+      </div>
+      <div class="modal-cue-box">
+        <div class="modal-field-label">Coaching Cue</div>
+        <div class="modal-field-text" id="modal-cue"></div>
+      </div>
+      <div class="modal-why-box">
+        <div class="modal-field-label">Why This Works</div>
+        <div class="modal-field-text" id="modal-why"></div>
+      </div>
+      <div style="background:#fff8e8;border:1px solid #f0c040;border-radius:8px;padding:0.75rem 0.9rem">
+        <div class="modal-field-label" style="color:#b07800">Watch For</div>
+        <div class="modal-field-text" id="modal-watch"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
+        <div style="background:#f0faf4;border:1px solid #b2dfcc;border-radius:8px;padding:0.7rem 0.85rem">
+          <div class="modal-field-label" style="color:#2d6a4a">Make It Harder</div>
+          <div class="modal-field-text" id="modal-prog" style="font-size:0.82rem"></div>
+        </div>
+        <div style="background:#f5f5f5;border:1px solid #ddd;border-radius:8px;padding:0.7rem 0.85rem">
+          <div class="modal-field-label" style="color:#666">Make It Easier</div>
+          <div class="modal-field-text" id="modal-reg" style="font-size:0.82rem"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="builder.html">Practice Builder</a></li>
+        <li><a href="drills.html">Drill Library</a></li>
+        <li><a href="train.html">Train Solo</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">All Articles</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2025 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script src="js/drills-data.js"></script>
+<script src="js/site.js"></script>
+<script>
+// ── Solo page logic ────────────────────────────────────────────────
+
+var soloAge = 'all';
+var soloCat = 'all';
+
+var AGE_RANGES_SOLO = { tball:[4,7], young:[7,9], middle:[10,12], teen:[13,18] };
+
+var CAT_ICONS_SOLO = {
+  hitting:'🏏', fielding:'🧤', throwing:'💪',
+  bodycontrol:'🏃', pitching:'🎯', mental:'🧠',
+};
+
+var CAT_COLORS_SOLO = {
+  hitting:'#c8781a', fielding:'#2d6a4a', throwing:'#1a3a2a',
+  bodycontrol:'#52b788', pitching:'#a04000', mental:'#5d6d7e',
+};
+
+var CAT_LABELS_SOLO = {
+  hitting:'Hitting', fielding:'Fielding', throwing:'Throwing',
+  bodycontrol:'Body Control', pitching:'Pitching', mental:'Mental',
+};
+
+function getSoloDrills() {
+  return DRILLS.filter(function(d) {
+    if (!d.solo) return false;
+    if (soloAge !== 'all') {
+      var r = AGE_RANGES_SOLO[soloAge];
+      if (r && (d.ageMax < r[0] || d.ageMin > r[1])) return false;
+    }
+    if (soloCat !== 'all' && d.soloCategory !== soloCat) return false;
+    return true;
+  });
+}
+
+function soloSetAge(val, btn) {
+  soloAge = val;
+  document.querySelectorAll('.age-sel-btn').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  renderSoloDrills();
+  updateCatCounts();
+}
+
+function soloSetCat(val, btn) {
+  soloCat = val;
+  document.querySelectorAll('.solo-cat-card').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  renderSoloDrills();
+}
+
+function renderSoloDrills() {
+  var grid = document.getElementById('solo-drill-grid');
+  var countEl = document.getElementById('solo-drill-count');
+  var drills = getSoloDrills();
+
+  if (countEl) countEl.textContent = drills.length + ' drill' + (drills.length !== 1 ? 's' : '');
+
+  if (drills.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#888">No drills found for those filters.</div>';
+    return;
+  }
+
+  grid.innerHTML = drills.map(function(d) {
+    var col = CAT_COLORS_SOLO[d.soloCategory] || '#888';
+    var catLabel = CAT_LABELS_SOLO[d.soloCategory] || d.soloCategory;
+    var setupShort = (d.setup || '').substring(0, 120) + ((d.setup||'').length > 120 ? '...' : '');
+    var equip = d.soloEquip || d.equipment || '';
+
+    return '<div class="solo-drill-card" onclick="showDrill(\'' + d.id + '\')">'
+      + '<div class="solo-drill-stripe" style="background:' + col + '"></div>'
+      + '<div class="solo-drill-body">'
+      + '<div class="solo-drill-meta">'
+      + '<span class="equip-tag" style="background:' + col + '15;border-color:' + col + '40;color:' + col + '">' + catLabel + '</span>'
+      + '<span class="equip-tag">' + d.duration + ' min</span>'
+      + '<span class="equip-tag">Ages ' + d.ageMin + '-' + d.ageMax + '</span>'
+      + '</div>'
+      + '<div class="solo-drill-name">' + d.name + '</div>'
+      + '<div class="solo-drill-setup">' + setupShort + '</div>'
+      + '<div class="solo-drill-equip">'
+      + '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>'
+      + equip
+      + '</div>'
+      + '<div class="solo-drill-tap">Tap for full drill &#8594;</div>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function updateCatCounts() {
+  var cats = ['all','hitting','fielding','throwing','bodycontrol','pitching'];
+  cats.forEach(function(cat) {
+    var el = document.getElementById('cat-count-' + cat);
+    if (!el) return;
+    var count = DRILLS.filter(function(d) {
+      if (!d.solo) return false;
+      if (soloAge !== 'all') {
+        var r = AGE_RANGES_SOLO[soloAge];
+        if (r && (d.ageMax < r[0] || d.ageMin > r[1])) return false;
+      }
+      if (cat !== 'all' && d.soloCategory !== cat) return false;
+      return true;
+    }).length;
+    el.textContent = count + ' drill' + (count !== 1 ? 's' : '');
+  });
+}
+
+// ── Quick sessions ─────────────────────────────────────────────────
+var QUICK_SESSIONS = {
+  got30wall: {
+    ids: ['sl-wall-ball-grounders','sl-wall-ball-popup','sl-barehand-wall','sl-wall-target-throw','sl-one-knee-wall'],
+    label: '30 Min Wall Session',
+  },
+  hitting45: {
+    ids: ['sl-mirror-stance','sl-tee-one-location','sl-tee-two-spot','sl-self-flip','sl-bounce-hit'],
+    label: '45 Min Hitting Session',
+  },
+  athlete20: {
+    ids: ['sl-jump-rope','sl-lateral-shuffle','sl-broad-jump','sl-balance-single-leg','sl-plank-series'],
+    label: '20 Min Athletic Base',
+  },
+  pitcher30: {
+    ids: ['sl-balance-point-hold','sl-towel-drill','sl-net-spot-work','sl-wall-target-throw'],
+    label: '30 Min Pitcher Session',
+  },
+};
+
+function applyQuickSession(key) {
+  var session = QUICK_SESSIONS[key];
+  if (!session) return;
+
+  // Reset filters
+  soloAge = 'all';
+  soloCat = 'all';
+  document.querySelectorAll('.age-sel-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelector('.age-sel-btn').classList.add('active');
+  document.querySelectorAll('.solo-cat-card').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelector('.solo-cat-card').classList.add('active');
+
+  // Filter to only session drills
+  var grid = document.getElementById('solo-drill-grid');
+  var countEl = document.getElementById('solo-drill-count');
+  var drills = DRILLS.filter(function(d) {
+    return session.ids.indexOf(d.id) !== -1;
+  });
+
+  // Fill any missing IDs with solo drills from relevant category
+  if (drills.length < session.ids.length) {
+    var all = DRILLS.filter(function(d){ return d.solo; });
+    drills = drills.concat(all.filter(function(d){
+      return drills.indexOf(d) === -1;
+    }).slice(0, session.ids.length - drills.length));
+  }
+
+  if (countEl) countEl.textContent = session.label + ' — ' + drills.length + ' drills';
+
+  if (drills.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#888">Drills coming soon.</div>';
+    return;
+  }
+
+  grid.innerHTML = drills.map(function(d) {
+    var col = CAT_COLORS_SOLO[d.soloCategory] || '#888';
+    var catLabel = CAT_LABELS_SOLO[d.soloCategory] || d.soloCategory;
+    var setupShort = (d.setup || '').substring(0, 120) + ((d.setup||'').length > 120 ? '...' : '');
+    var equip = d.soloEquip || d.equipment || '';
+
+    return '<div class="solo-drill-card" onclick="showDrill(\'' + d.id + '\')">'
+      + '<div class="solo-drill-stripe" style="background:' + col + '"></div>'
+      + '<div class="solo-drill-body">'
+      + '<div class="solo-drill-meta">'
+      + '<span class="equip-tag" style="background:' + col + '15;border-color:' + col + '40;color:' + col + '">' + catLabel + '</span>'
+      + '<span class="equip-tag">' + d.duration + ' min</span>'
+      + '</div>'
+      + '<div class="solo-drill-name">' + d.name + '</div>'
+      + '<div class="solo-drill-setup">' + setupShort + '</div>'
+      + '<div class="solo-drill-equip">'
+      + '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>'
+      + equip
+      + '</div>'
+      + '<div class="solo-drill-tap">Tap for full drill &#8594;</div>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+
+  // Scroll to grid
+  document.getElementById('solo-drill-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  updateCatCounts();
+  renderSoloDrills();
+});
+</script>
+</body>
+</html>
