@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DugoutLab — Better Youth Baseball Practices, Backed by Science</title>
-<meta name="description" content="Free practice plans, drill library, and coaching guides for Little League and rec ball coaches. Built on real sport science, written in plain English.">
+<title>DugoutLab — What actually works. Why it works. How to use it.</title>
+<meta name="description" content="Evidence-based youth baseball and softball coaching. Free practice plans, drills, and coaching guides for Little League and rec ball coaches. Make them want to come back tomorrow.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -38,30 +39,195 @@
   <a href="about.html">About</a>
 </div>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-eyebrow">For Little League &amp; Rec Ball Coaches</div>
-    <h1>Better youth baseball practices.<br>Backed by science.</h1>
-    <p>Free practice plans, drills, and coaching guides for volunteer coaches.<br>Built on real sport science, written in plain English.</p>
-    <div class="hero-btns">
-      <a href="builder.html" class="btn btn-primary btn-lg">Build a Practice Plan</a>
-      <a href="drills.html" class="btn btn-outline btn-lg">Browse Drills</a>
+<!-- ═══════════ HERO SLIDER ═══════════ -->
+<section class="hero-slider" id="hero-slider" aria-roledescription="carousel" aria-label="DugoutLab feature highlights">
+  <div class="hero-slider-inner">
+
+    <!-- Slide 1: Headline -->
+    <div class="hero-slide active" data-slide="0">
+      <div class="slide-headline">
+        <div class="eyebrow">Evidence-based · T-ball through high school</div>
+        <h2>What actually works. <span class="accent">Why it works.</span> How to use it.</h2>
+        <p class="deck">Make them want to come back tomorrow.</p>
+        <div class="cta-row">
+          <a href="builder.html" class="btn btn-primary btn-lg">Build a practice plan &#8594;</a>
+          <a href="drills.html" class="btn btn-outline btn-lg">Browse drills</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: Age Chart -->
+    <div class="hero-slide" data-slide="1">
+      <div class="slide-split">
+        <div class="copy">
+          <div class="eyebrow">The Framework &middot; 4 stages</div>
+          <h2>Coach the age, <span class="accent">not the calendar.</span></h2>
+          <p>Free play dominates early. Specialization comes late. Most coaches reverse it.</p>
+          <a href="stages.html" class="arrow-link">See the full framework <span class="arrow">&#8594;</span></a>
+        </div>
+        <div class="slide-visual">
+          <div class="mini-chart-header">
+            <span>Play / exploration</span>
+            <span>Specialization</span>
+          </div>
+          <div class="mini-chart-bars">
+            <div class="mini-chart-col">
+              <div class="mini-chart-bars-pair">
+                <div class="mini-chart-bar play" style="height:70%"></div>
+                <div class="mini-chart-bar spec" style="height:8%"></div>
+              </div>
+              <div class="mini-chart-label">
+                <div class="stage">T-Ball</div>
+                <div class="age">AGES 4-6</div>
+              </div>
+            </div>
+            <div class="mini-chart-col">
+              <div class="mini-chart-bars-pair">
+                <div class="mini-chart-bar play" style="height:47%"></div>
+                <div class="mini-chart-bar spec" style="height:9%"></div>
+              </div>
+              <div class="mini-chart-label">
+                <div class="stage">Sampling</div>
+                <div class="age">AGES 7-12</div>
+              </div>
+            </div>
+            <div class="mini-chart-col">
+              <div class="mini-chart-bars-pair">
+                <div class="mini-chart-bar play" style="height:22%"></div>
+                <div class="mini-chart-bar spec" style="height:18%"></div>
+              </div>
+              <div class="mini-chart-label">
+                <div class="stage">Specializing</div>
+                <div class="age">AGES 13-15</div>
+              </div>
+            </div>
+            <div class="mini-chart-col">
+              <div class="mini-chart-bars-pair">
+                <div class="mini-chart-bar play" style="height:10%"></div>
+                <div class="mini-chart-bar spec" style="height:23%"></div>
+              </div>
+              <div class="mini-chart-label">
+                <div class="stage">Investment</div>
+                <div class="age">AGES 16+</div>
+              </div>
+            </div>
+          </div>
+          <div class="mini-chart-legend">
+            <span><span class="swatch" style="background:#C8862E"></span>Play</span>
+            <span><span class="swatch" style="background:#1a3024;border:1px solid rgba(244,239,230,0.12)"></span>Specialization</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Lineup Builder -->
+    <div class="hero-slide" data-slide="2">
+      <div class="slide-split">
+        <div class="copy">
+          <div class="eyebrow">Lineup Builder &middot; 3 modes</div>
+          <h2>A lineup that matches <span class="accent">your philosophy.</span></h2>
+          <p>Developmental, Balanced, or Win Mode. Rotate positions fairly. Never park the same kid in right field.</p>
+          <a href="lineup.html" class="arrow-link">Try the Lineup Builder <span class="arrow">&#8594;</span></a>
+        </div>
+        <div class="slide-visual">
+          <div class="mini-lineup-modes">
+            <div class="mini-lineup-mode">Developmental</div>
+            <div class="mini-lineup-mode active">Balanced</div>
+            <div class="mini-lineup-mode">Win Mode</div>
+          </div>
+          <div class="mini-lineup-grid">
+            <div class="mini-lineup-row header">
+              <div></div>
+              <div>I1</div><div>I2</div><div>I3</div><div>I4</div><div>I5</div><div>I6</div>
+            </div>
+            <div class="mini-lineup-row">
+              <div class="player">KK</div>
+              <div class="pos premium">P</div>
+              <div class="pos">1B</div>
+              <div class="pos premium">SS</div>
+              <div class="pos premium">P</div>
+              <div class="pos">2B</div>
+              <div class="pos">C</div>
+            </div>
+            <div class="mini-lineup-row">
+              <div class="player">DM</div>
+              <div class="pos premium">SS</div>
+              <div class="pos premium">P</div>
+              <div class="pos">C</div>
+              <div class="pos">2B</div>
+              <div class="pos premium">P</div>
+              <div class="pos">1B</div>
+            </div>
+            <div class="mini-lineup-row">
+              <div class="player">WB</div>
+              <div class="pos">1B</div>
+              <div class="pos">C</div>
+              <div class="pos premium">P</div>
+              <div class="pos premium">SS</div>
+              <div class="pos">RF</div>
+              <div class="pos premium">P</div>
+            </div>
+          </div>
+          <div class="mini-lineup-footnote">+ 8 more &middot; auto-balanced across 6 innings</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4: The Stories -->
+    <div class="hero-slide" data-slide="3">
+      <div class="slide-stories">
+        <div class="eyebrow">The stories behind this site</div>
+        <h2>Not a marketing slogan. <span class="accent">A confession.</span></h2>
+        <div class="story-cards">
+          <a href="articles/the-bear-story.html" class="story-card">
+            <div class="kicker">A Confession &middot; 6 min read</div>
+            <div class="title">The Bear Story</div>
+            <div class="summary">How I was built for war by a coach who loved me, and why it capped my career.</div>
+            <div class="read">Read <span class="arrow">&#8594;</span></div>
+          </a>
+          <a href="articles/kid-in-the-dugout.html" class="story-card">
+            <div class="kicker">For Coaches Who Feel It &middot; 10 min read</div>
+            <div class="title">The Kid in the Dugout Isn't My Son</div>
+            <div class="summary">Why your chest gets tight before a game you don't care about winning &mdash; and what to do with it.</div>
+            <div class="read">Read <span class="arrow">&#8594;</span></div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Controls -->
+  <div class="hero-slider-controls">
+    <div class="hero-slider-dots" role="tablist">
+      <button class="hero-slider-dot active" data-target="0" aria-label="Go to slide 1"></button>
+      <button class="hero-slider-dot" data-target="1" aria-label="Go to slide 2"></button>
+      <button class="hero-slider-dot" data-target="2" aria-label="Go to slide 3"></button>
+      <button class="hero-slider-dot" data-target="3" aria-label="Go to slide 4"></button>
+    </div>
+    <div class="hero-slider-meta">
+      <span class="hero-slider-counter" id="slider-counter">01 / 04</span>
+      <div class="hero-slider-arrows">
+        <button class="hero-slider-arrow" id="slider-prev" aria-label="Previous slide">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="hero-slider-arrow" id="slider-next" aria-label="Next slide">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- PHILOSOPHY BANNER -->
-<div style="background:var(--gold);padding:1rem 1.5rem;text-align:center">
-  <div style="max-width:800px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0.75rem">
-    <div style="font-family:var(--serif);font-size:clamp(1rem,3vw,1.3rem);font-weight:700;color:white;line-height:1.3">
-      "Your job is to make them want to come back tomorrow."
-    </div>
-    <a href="articles/one-job.html" style="background:rgba(255,255,255,0.2);color:white;border:1.5px solid rgba(255,255,255,0.5);border-radius:7px;padding:0.4rem 1rem;font-size:0.8rem;font-weight:700;text-decoration:none;white-space:nowrap;flex-shrink:0">Read the article &#8594;</a>
+<!-- ═══════════ PHILOSOPHY BAR ═══════════ -->
+<div class="philosophy-bar">
+  <div class="philosophy-bar-inner">
+    <div class="quote">"Your job is to make them want to come back tomorrow."</div>
+    <a href="articles/one-job.html" class="quote-link">Read the philosophy &#8594;</a>
   </div>
 </div>
 
-<!-- WHAT DO YOU NEED -->
+<!-- ═══════════ AGE GROUP PICKER ═══════════ -->
 <section class="section section-cream">
   <div class="container">
     <div class="center mb-3">
@@ -71,69 +237,69 @@
     <div class="grid-4" style="margin-bottom:2rem">
       <a href="builder.html?age=tball" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none">
         <div style="font-size:1.75rem;margin-bottom:0.5rem">⚾</div>
-        <div style="font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--forest);margin-bottom:0.25rem">T-Ball</div>
-        <div style="font-size:0.78rem;color:var(--text-light)">Ages 4-7</div>
-        <div style="font-size:0.72rem;color:var(--gold);font-weight:600;margin-top:0.5rem">Get a practice plan</div>
+        <div style="font-family:var(--serif);font-size:1.05rem;font-weight:600;color:var(--cream-ink);margin-bottom:0.3rem">T-Ball</div>
+        <div style="font-size:0.78rem;color:var(--cream-ink-soft)">Ages 4-7</div>
+        <div style="font-size:0.74rem;color:var(--gold-dark);font-weight:600;margin-top:0.6rem">Get a practice plan</div>
       </a>
-      <a href="builder.html?age=young" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none;border:2px solid var(--gold)">
+      <a href="builder.html?age=young" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none;border-color:var(--gold)">
         <div style="font-size:1.75rem;margin-bottom:0.5rem">🏆</div>
-        <div style="font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--forest);margin-bottom:0.25rem">Little League</div>
-        <div style="font-size:0.78rem;color:var(--text-light)">Ages 7-9 · Most rec teams</div>
-        <div style="font-size:0.72rem;color:var(--gold);font-weight:600;margin-top:0.5rem">Get a practice plan</div>
+        <div style="font-family:var(--serif);font-size:1.05rem;font-weight:600;color:var(--cream-ink);margin-bottom:0.3rem">Little League</div>
+        <div style="font-size:0.78rem;color:var(--cream-ink-soft)">Ages 7-9 · Most rec teams</div>
+        <div style="font-size:0.74rem;color:var(--gold-dark);font-weight:600;margin-top:0.6rem">Get a practice plan</div>
       </a>
       <a href="builder.html?age=middle" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none">
         <div style="font-size:1.75rem;margin-bottom:0.5rem">📈</div>
-        <div style="font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--forest);margin-bottom:0.25rem">Majors / AAA</div>
-        <div style="font-size:0.78rem;color:var(--text-light)">Ages 10-12</div>
-        <div style="font-size:0.72rem;color:var(--gold);font-weight:600;margin-top:0.5rem">Get a practice plan</div>
+        <div style="font-family:var(--serif);font-size:1.05rem;font-weight:600;color:var(--cream-ink);margin-bottom:0.3rem">Majors / AAA</div>
+        <div style="font-size:0.78rem;color:var(--cream-ink-soft)">Ages 10-12</div>
+        <div style="font-size:0.74rem;color:var(--gold-dark);font-weight:600;margin-top:0.6rem">Get a practice plan</div>
       </a>
       <a href="builder.html?age=teen" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none">
         <div style="font-size:1.75rem;margin-bottom:0.5rem">🎯</div>
-        <div style="font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--forest);margin-bottom:0.25rem">Teen / HS</div>
-        <div style="font-size:0.78rem;color:var(--text-light)">Ages 13+</div>
-        <div style="font-size:0.72rem;color:var(--gold);font-weight:600;margin-top:0.5rem">Get a practice plan</div>
+        <div style="font-family:var(--serif);font-size:1.05rem;font-weight:600;color:var(--cream-ink);margin-bottom:0.3rem">Teen / HS</div>
+        <div style="font-size:0.78rem;color:var(--cream-ink-soft)">Ages 13+</div>
+        <div style="font-size:0.74rem;color:var(--gold-dark);font-weight:600;margin-top:0.6rem">Get a practice plan</div>
       </a>
     </div>
   </div>
 </section>
 
-<!-- THREE MAIN TOOLS -->
+<!-- ═══════════ THREE MAIN TOOLS ═══════════ -->
 <section class="section section-white">
   <div class="container">
     <div class="grid-3">
-      <div class="card" style="border-top:3px solid var(--forest2)">
-        <div style="font-size:1.5rem;margin-bottom:0.75rem">📋</div>
-        <div style="font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--forest);margin-bottom:0.5rem">Practice Builder</div>
-        <p style="font-size:0.85rem;color:var(--text-mid);line-height:1.6;margin-bottom:1rem">Answer 5 questions. Get a full practice plan built from the drill library. Print it. Run it. Done in under 60 seconds.</p>
-        <a href="builder.html" class="btn btn-forest btn-sm">Build a Plan</a>
-      </div>
       <div class="card" style="border-top:3px solid var(--gold)">
+        <div style="font-size:1.5rem;margin-bottom:0.75rem">📋</div>
+        <div style="font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--ink);margin-bottom:0.5rem;letter-spacing:-0.01em">Practice Builder</div>
+        <p style="font-size:0.9rem;color:var(--ink-soft);line-height:1.65;margin-bottom:1.1rem">Answer 5 questions. Get a full practice plan built from the drill library. Print it. Run it. Done in under 60 seconds.</p>
+        <a href="builder.html" class="btn btn-primary btn-sm">Build a Plan</a>
+      </div>
+      <div class="card" style="border-top:3px solid var(--gold-light)">
         <div style="font-size:1.5rem;margin-bottom:0.75rem">🔍</div>
-        <div style="font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--forest);margin-bottom:0.5rem">Drill Library</div>
-        <p style="font-size:0.85rem;color:var(--text-mid);line-height:1.6;margin-bottom:1rem">190 drills filtered by age, sport, category, and skill level. Full setup, coaching cue, and why it works for every single one.</p>
+        <div style="font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--ink);margin-bottom:0.5rem;letter-spacing:-0.01em">Drill Library</div>
+        <p style="font-size:0.9rem;color:var(--ink-soft);line-height:1.65;margin-bottom:1.1rem">190 drills filtered by age, sport, category, and skill level. Full setup, coaching cue, and why it works for every single one.</p>
         <a href="drills.html" class="btn btn-primary btn-sm">Browse Drills</a>
       </div>
-      <div class="card" style="border-top:3px solid #52b788">
+      <div class="card" style="border-top:3px solid #7ad6a8">
         <div style="font-size:1.5rem;margin-bottom:0.75rem">📖</div>
-        <div style="font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--forest);margin-bottom:0.5rem">Coaching Articles</div>
-        <p style="font-size:0.85rem;color:var(--text-mid);line-height:1.6;margin-bottom:1rem">Short reads on practice design, player development, and what the science actually says about teaching baseball to kids.</p>
-        <a href="articles.html" class="btn btn-sm" style="background:var(--cream);color:var(--forest);border:1px solid var(--border)">Read Articles</a>
+        <div style="font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--ink);margin-bottom:0.5rem;letter-spacing:-0.01em">Coaching Articles</div>
+        <p style="font-size:0.9rem;color:var(--ink-soft);line-height:1.65;margin-bottom:1.1rem">Short reads on practice design, player development, and what the science actually says about teaching baseball to kids.</p>
+        <a href="articles.html" class="btn btn-outline btn-sm">Read Articles</a>
       </div>
     </div>
 
     <!-- TRAIN SOLO FEATURE BANNER -->
-    <div style="background:linear-gradient(135deg,var(--forest) 0%,#2d6a4a 100%);border-radius:var(--radius);padding:1.75rem 2rem;margin-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.25rem">
+    <div style="background:linear-gradient(135deg,var(--forest-deep) 0%,var(--forest3) 100%);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:2rem 2.25rem;margin-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem">
       <div>
-        <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:var(--gold);margin-bottom:0.4rem">Solo Training</div>
-        <div style="font-family:var(--serif);font-size:1.2rem;font-weight:700;color:white;margin-bottom:0.4rem">Training on your own? There's a section for that.</div>
-        <p style="font-size:0.88rem;color:rgba(255,255,255,0.7);margin:0;max-width:520px">27 drills that work with one player — hitting off a tee, wall ball grounders, body control, pitching mechanics. No partner needed.</p>
+        <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:var(--gold);margin-bottom:0.5rem">Solo Training</div>
+        <div style="font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--ink);margin-bottom:0.4rem;letter-spacing:-0.015em">Training on your own? There's a section for that.</div>
+        <p style="font-size:0.92rem;color:var(--ink-soft);margin:0;max-width:540px;line-height:1.55">27 drills that work with one player &mdash; hitting off a tee, wall ball grounders, body control, pitching mechanics. No partner needed.</p>
       </div>
       <a href="train.html" class="btn btn-primary" style="white-space:nowrap">Train Solo &#8594;</a>
     </div>
   </div>
 </section>
 
-<!-- ARTICLES PREVIEW -->
+<!-- ═══════════ ARTICLES PREVIEW ═══════════ -->
 <section class="section section-cream">
   <div class="container">
     <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem">
@@ -141,7 +307,7 @@
         <div class="section-label">Evidence-Based Coaching</div>
         <div class="section-title">What the research actually says</div>
       </div>
-      <a href="articles.html" class="btn btn-sm" style="background:white;border:1px solid var(--border);color:var(--text-mid)">All Articles</a>
+      <a href="articles.html" class="btn btn-sm" style="background:#fbf8f1;border:1px solid #d8d0bf;color:var(--cream-ink)">All Articles</a>
     </div>
     <div class="grid-3">
       <a href="articles/one-cue.html" class="card card-link article-card" style="text-decoration:none">
@@ -166,7 +332,7 @@
   </div>
 </section>
 
-<!-- EMAIL CAPTURE -->
+<!-- ═══════════ EMAIL CAPTURE ═══════════ -->
 <section class="section section-white">
   <div class="container-sm">
     <div class="email-capture">
@@ -183,7 +349,7 @@
   </div>
 </section>
 
-<!-- WHY TRUST US -->
+<!-- ═══════════ WHY TRUST US ═══════════ -->
 <section class="section section-cream">
   <div class="container">
     <div class="center mb-3">
@@ -192,20 +358,20 @@
     </div>
     <div class="grid-4" style="text-align:center">
       <div>
-        <div style="font-size:2rem;font-weight:900;color:var(--forest);font-family:var(--serif)">190+</div>
-        <div style="font-size:0.82rem;color:var(--text-mid);margin-top:0.25rem">Ready-to-use drills</div>
+        <div style="font-size:2.4rem;font-weight:600;color:var(--cream-ink);font-family:var(--serif);letter-spacing:-0.02em">190+</div>
+        <div style="font-size:0.85rem;color:var(--cream-ink-soft);margin-top:0.3rem">Ready-to-use drills</div>
       </div>
       <div>
-        <div style="font-size:2rem;font-weight:900;color:var(--forest);font-family:var(--serif)">13</div>
-        <div style="font-size:0.82rem;color:var(--text-mid);margin-top:0.25rem">Research-based articles</div>
+        <div style="font-size:2.4rem;font-weight:600;color:var(--cream-ink);font-family:var(--serif);letter-spacing:-0.02em">15</div>
+        <div style="font-size:0.85rem;color:var(--cream-ink-soft);margin-top:0.3rem">Research-based articles</div>
       </div>
       <div>
-        <div style="font-size:2rem;font-weight:900;color:var(--forest);font-family:var(--serif)">Free</div>
-        <div style="font-size:0.82rem;color:var(--text-mid);margin-top:0.25rem">Always. No paywall.</div>
+        <div style="font-size:2.4rem;font-weight:600;color:var(--cream-ink);font-family:var(--serif);letter-spacing:-0.02em">Free</div>
+        <div style="font-size:0.85rem;color:var(--cream-ink-soft);margin-top:0.3rem">Always. No paywall.</div>
       </div>
       <div>
-        <div style="font-size:2rem;font-weight:900;color:var(--forest);font-family:var(--serif)">Plain</div>
-        <div style="font-size:0.82rem;color:var(--text-mid);margin-top:0.25rem">No jargon. Coach-first language.</div>
+        <div style="font-size:2.4rem;font-weight:600;color:var(--cream-ink);font-family:var(--serif);letter-spacing:-0.02em">Plain</div>
+        <div style="font-size:0.85rem;color:var(--cream-ink-soft);margin-top:0.3rem">No jargon. Coach-first language.</div>
       </div>
     </div>
   </div>
@@ -216,12 +382,15 @@
     <div class="footer-brand">
       <div class="logo">Dugout<span>Lab</span></div>
       <p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p>
+      <div class="footer-disclosure">Compiled with AI assistance · Reviewed by humans</div>
     </div>
     <div class="footer-links">
       <h4>Tools</h4>
       <ul>
         <li><a href="builder.html">Practice Builder</a></li>
         <li><a href="drills.html">Drill Library</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="train.html">Train Solo</a></li>
       </ul>
     </div>
     <div class="footer-links">
@@ -229,12 +398,13 @@
       <ul>
         <li><a href="articles.html">All Articles</a></li>
         <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
         <li><a href="about.html">About</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>&copy; 2025 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
     <span>dugoutlab.com</span>
   </div>
 </footer>
@@ -253,7 +423,7 @@
       <span class="modal-pill" id="modal-dur"></span>
       <span class="modal-pill" id="modal-players"></span>
       <span class="modal-pill" id="modal-equip"></span>
-      <span class="modal-pill" id="modal-sport" style="background:#f0f4ff;color:#1A5276;font-weight:700"></span>
+      <span class="modal-pill" id="modal-sport" style="background:rgba(125,179,212,0.15);color:#9dc5e0;font-weight:700"></span>
     </div>
     <div class="modal-body">
       <div>
@@ -272,23 +442,98 @@
         <div class="modal-field-label">Why This Works</div>
         <div class="modal-field-text" id="modal-why"></div>
       </div>
-      <div style="background:#fff8e8;border:1px solid #f0c040;border-radius:8px;padding:0.75rem 0.9rem">
-        <div class="modal-field-label" style="color:#b07800">Watch For</div>
+      <div style="background:rgba(200,134,46,0.08);border:1px solid rgba(200,134,46,0.25);border-radius:8px;padding:0.85rem 1rem">
+        <div class="modal-field-label" style="color:var(--gold)">Watch For</div>
         <div class="modal-field-text" id="modal-watch"></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
-        <div style="background:#f0faf4;border:1px solid #b2dfcc;border-radius:8px;padding:0.7rem 0.85rem">
-          <div class="modal-field-label" style="color:#2d6a4a">Make It Harder</div>
-          <div class="modal-field-text" id="modal-prog" style="font-size:0.82rem"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem">
+        <div style="background:rgba(82,183,136,0.08);border:1px solid rgba(82,183,136,0.22);border-radius:8px;padding:0.75rem 0.9rem">
+          <div class="modal-field-label" style="color:#7ad6a8">Make It Harder</div>
+          <div class="modal-field-text" id="modal-prog" style="font-size:0.85rem"></div>
         </div>
-        <div style="background:#f5f5f5;border:1px solid #ddd;border-radius:8px;padding:0.7rem 0.85rem">
-          <div class="modal-field-label" style="color:#666">Make It Easier</div>
-          <div class="modal-field-text" id="modal-reg" style="font-size:0.82rem"></div>
+        <div style="background:rgba(244,239,230,0.05);border:1px solid var(--rule);border-radius:8px;padding:0.75rem 0.9rem">
+          <div class="modal-field-label">Make It Easier</div>
+          <div class="modal-field-text" id="modal-reg" style="font-size:0.85rem"></div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- ═══════════ HERO SLIDER SCRIPT ═══════════ -->
+<script>
+(function() {
+  var slides = document.querySelectorAll('.hero-slide');
+  var dots = document.querySelectorAll('.hero-slider-dot');
+  var counter = document.getElementById('slider-counter');
+  var prev = document.getElementById('slider-prev');
+  var next = document.getElementById('slider-next');
+  var slider = document.getElementById('hero-slider');
+  var active = 0;
+  var paused = false;
+  var rotateMs = 6500;
+  var timer = null;
+
+  function go(i) {
+    active = ((i % slides.length) + slides.length) % slides.length;
+    slides.forEach(function(s, idx) {
+      s.classList.toggle('active', idx === active);
+    });
+    dots.forEach(function(d, idx) {
+      d.classList.toggle('active', idx === active);
+    });
+    if (counter) counter.textContent =
+      String(active + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+  }
+
+  function nextSlide() { go(active + 1); }
+  function prevSlide() { go(active - 1); }
+
+  function startRotate() {
+    if (timer) clearInterval(timer);
+    timer = setInterval(function() {
+      if (!paused) nextSlide();
+    }, rotateMs);
+  }
+
+  dots.forEach(function(d, idx) {
+    d.addEventListener('click', function() { go(idx); startRotate(); });
+  });
+  if (next) next.addEventListener('click', function() { nextSlide(); startRotate(); });
+  if (prev) prev.addEventListener('click', function() { prevSlide(); startRotate(); });
+
+  if (slider) {
+    slider.addEventListener('mouseenter', function() { paused = true; });
+    slider.addEventListener('mouseleave', function() { paused = false; });
+  }
+
+  // Touch swipe
+  var touchX = null;
+  if (slider) {
+    slider.addEventListener('touchstart', function(e) {
+      touchX = e.touches[0].clientX;
+    }, { passive: true });
+    slider.addEventListener('touchend', function(e) {
+      if (touchX == null) return;
+      var dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 50) {
+        if (dx < 0) nextSlide();
+        else prevSlide();
+        startRotate();
+      }
+      touchX = null;
+    });
+  }
+
+  // Keyboard
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight') { nextSlide(); startRotate(); }
+    if (e.key === 'ArrowLeft')  { prevSlide(); startRotate(); }
+  });
+
+  startRotate();
+})();
+</script>
 
 <script src="js/drills-data.js"></script>
 <script src="js/site.js"></script>
