@@ -15,11 +15,12 @@
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
     <ul class="nav-links">
-    <li><a href="builder.html">Build a Practice</a>
-  <a href="games.html">Games</a></li>
+    <li><a href="builder.html">Build a Practice</a></li>
     <li><a href="games.html">Games</a></li>
     <li><a href="drills.html">Drill Library</a></li>
-    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="lineup.html">Lineup Builder</a>
+  <a href="toolkit.html">Toolkit</a></li>
+    <li><a href="toolkit.html">Toolkit</a></li>
     <li><a href="train.html">Train Solo</a></li>
     <li><a href="articles.html">Articles</a></li>
     <li><a href="stages.html">The 4 Stages</a></li>
@@ -35,6 +36,7 @@
   <a href="games.html">Games</a>
   <a href="drills.html">Drill Library</a>
   <a href="lineup.html">Lineup Builder</a>
+  <a href="toolkit.html">Toolkit</a>
   <a href="train.html">Train Solo</a>
   <a href="articles.html">Articles</a>
   <a href="stages.html">The 4 Stages</a>
@@ -50,7 +52,46 @@
   </div>
 </div>
 
-<section class="section section-cream">
+<section class="section" style="background:var(--forest);padding-top:3rem;padding-bottom:2rem">
+  <div class="container-sm">
+
+    <div style="margin-bottom:1.75rem">
+      <div style="font-family:var(--mono);font-size:0.7rem;font-weight:500;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;margin-bottom:0.6rem">The Framework</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(1.7rem,4vw,2.4rem);font-weight:600;color:var(--ink);line-height:1.1;letter-spacing:-0.015em;margin-bottom:0.85rem">The Evolution of <em style="color:var(--gold);font-style:italic">Practice</em></h2>
+      <p style="font-size:1rem;color:var(--ink-soft);line-height:1.65;margin-bottom:1.2rem">How the balance of practice types shifts across development. Most coaches apply professional refinement tools to players who haven&#39;t solved transfer yet. This is what the research says the balance should actually look like.</p>
+      <a href="#why-this-matters" class="btn btn-outline btn-sm">Why this matters &rarr;</a>
+    </div>
+
+    <!-- THE CHART -->
+    <div id="evo-chart-wrap" style="background:var(--forest-deep);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1.5rem 1rem 1.25rem;position:relative">
+
+      <!-- Hover tooltip (initially hidden) -->
+      <div id="evo-tooltip" style="position:absolute;pointer-events:none;background:var(--forest2);border:1px solid var(--gold);border-radius:8px;padding:0.65rem 0.85rem;font-size:0.78rem;color:var(--ink);box-shadow:0 4px 16px rgba(0,0,0,0.5);opacity:0;transition:opacity 0.12s;z-index:10;min-width:160px"></div>
+
+      <svg id="evo-chart" viewBox="0 0 800 460" style="width:100%;height:auto;display:block" preserveAspectRatio="xMidYMid meet"></svg>
+
+      <!-- Legend -->
+      <div style="display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;margin-top:0.75rem;font-size:0.78rem;color:var(--ink-soft)">
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <span style="display:inline-block;width:14px;height:14px;background:#3a8a5e;border-radius:3px"></span>
+          Ecological / Play-Based
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <span style="display:inline-block;width:14px;height:14px;background:#5fa382;border-radius:3px"></span>
+          Variable / Game-Realistic
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <span style="display:inline-block;width:14px;height:14px;background:#c8862e;border-radius:3px"></span>
+          Isolated Drilling
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── WHY THIS MATTERS / FRAMEWORK INTRO ─── -->
+<section class="section section-cream" id="why-this-matters">
   <div class="container-sm">
 
     <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:2rem">
@@ -204,6 +245,271 @@
 </footer>
 
 <script src="js/drills-data.js"></script>
+<!-- ─── EVOLUTION OF PRACTICE CHART ─── -->
+<script>
+(function() {
+  var svg = document.getElementById('evo-chart');
+  if (!svg) return;
+  var tooltip = document.getElementById('evo-tooltip');
+  var wrap = document.getElementById('evo-chart-wrap');
+
+  // Data: each stage has 3 stacked values (ecological, variable, isolated).
+  // Values are research-aligned proportions of practice time.
+  var stages = [
+    { name: 'T-Ball',       age: 'Ages 4-6',   eco: 70, vary: 26, iso: 4 },
+    { name: 'Sampling Years',     age: 'Ages 7-12',  eco: 47, vary: 44, iso: 9 },
+    { name: 'Specializing Years', age: 'Ages 13-15', eco: 22, vary: 60, iso: 18 },
+    { name: 'Investment Years',   age: 'Ages 16+',   eco: 10, vary: 62, iso: 28 },
+  ];
+
+  // ── Layout ──
+  var W = 800, H = 460;
+  var padL = 60, padR = 50, padT = 30, padB = 90;
+  var plotW = W - padL - padR;
+  var plotH = H - padT - padB;
+
+  // ── Colors ──
+  var COLOR_ECO  = '#3a8a5e';  // darker forest green
+  var COLOR_VARY = '#5fa382';  // mid sage
+  var COLOR_ISO  = '#c8862e';  // gold
+  var STROKE_ECO = '#4a9d6e';
+  var STROKE_VARY= '#74b894';
+  var STROKE_ISO = '#d99840';
+
+  // Generate x positions (one per stage)
+  var xPositions = stages.map(function(_, i) {
+    return padL + (plotW * i / (stages.length - 1));
+  });
+
+  // For stacked area, compute cumulative y at each stage.
+  // stack order from BOTTOM up: Ecological, Variable, Isolated.
+  // SVG y=0 is top, so high values = low y. We map percentage -> y:
+  //   y = padT + plotH * (1 - pct/100)
+  function pctToY(pct) {
+    return padT + plotH * (1 - pct / 100);
+  }
+
+  // Build cumulative tops at each stage
+  var ecoTop  = stages.map(function(s) { return s.eco; });
+  var varyTop = stages.map(function(s) { return s.eco + s.vary; });
+  var isoTop  = stages.map(function(s) { return s.eco + s.vary + s.iso; });
+  // Bottom baseline
+  var baseline = stages.map(function() { return 0; });
+
+  // ── Smooth path generator (Catmull-Rom -> cubic Bezier) ──
+  function smoothPath(points) {
+    // points: [[x,y], ...]
+    if (points.length < 2) return '';
+    var d = 'M' + points[0][0] + ',' + points[0][1];
+    for (var i = 0; i < points.length - 1; i++) {
+      var p0 = points[i === 0 ? i : i - 1];
+      var p1 = points[i];
+      var p2 = points[i + 1];
+      var p3 = points[i + 2 < points.length ? i + 2 : i + 1];
+      var tension = 0.4;
+      var cp1x = p1[0] + (p2[0] - p0[0]) * tension / 3;
+      var cp1y = p1[1] + (p2[1] - p0[1]) * tension / 3;
+      var cp2x = p2[0] - (p3[0] - p1[0]) * tension / 3;
+      var cp2y = p2[1] - (p3[1] - p1[1]) * tension / 3;
+      d += ' C' + cp1x + ',' + cp1y + ' ' + cp2x + ',' + cp2y + ' ' + p2[0] + ',' + p2[1];
+    }
+    return d;
+  }
+
+  // Build a band path: along top points L to R, then bottom points R to L.
+  function bandPath(topVals, bottomVals) {
+    var topPoints = topVals.map(function(v, i) { return [xPositions[i], pctToY(v)]; });
+    var bottomPointsRev = bottomVals.map(function(v, i) { return [xPositions[i], pctToY(v)]; }).reverse();
+
+    var topD = smoothPath(topPoints);
+    // mirror smooth for the return path
+    var bottomD = smoothPath(bottomPointsRev).replace(/^M/, 'L');
+
+    return topD + ' ' + bottomD + ' Z';
+  }
+
+  // ── Render ──
+  var svgNS = 'http://www.w3.org/2000/svg';
+
+  function addEl(name, attrs, text) {
+    var el = document.createElementNS(svgNS, name);
+    Object.keys(attrs || {}).forEach(function(k) { el.setAttribute(k, attrs[k]); });
+    if (text != null) el.textContent = text;
+    svg.appendChild(el);
+    return el;
+  }
+
+  // Subtle background grid lines (every 25%)
+  [0, 25, 50, 75, 100].forEach(function(pct) {
+    var y = pctToY(pct);
+    addEl('line', {
+      x1: padL, y1: y, x2: W - padR, y2: y,
+      stroke: 'rgba(244,239,230,0.06)', 'stroke-width': 1,
+      'stroke-dasharray': pct === 0 || pct === 100 ? '' : '2,4'
+    });
+  });
+
+  // Draw bands BOTTOM up so isolation sits on top
+  // 1. Ecological band (baseline to eco)
+  addEl('path', { d: bandPath(ecoTop, baseline), fill: COLOR_ECO, 'fill-opacity': 0.92 });
+  // 2. Variable band (eco to eco+vary)
+  addEl('path', { d: bandPath(varyTop, ecoTop), fill: COLOR_VARY, 'fill-opacity': 0.92 });
+  // 3. Isolated band — drawn with a diagonal hatch fill to call attention
+  // Define pattern
+  var defs = document.createElementNS(svgNS, 'defs');
+  defs.innerHTML = ''
+    + '<pattern id="hatch" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">'
+    + '<rect width="8" height="8" fill="' + COLOR_ISO + '"/>'
+    + '<line x1="0" y1="0" x2="0" y2="8" stroke="' + STROKE_ISO + '" stroke-width="2.2"/>'
+    + '</pattern>';
+  svg.appendChild(defs);
+  addEl('path', { d: bandPath(isoTop, varyTop), fill: 'url(#hatch)', 'fill-opacity': 0.95 });
+
+  // Top border line on isolated band
+  var topPoints = isoTop.map(function(v, i) { return [xPositions[i], pctToY(v)]; });
+  addEl('path', { d: smoothPath(topPoints), stroke: STROKE_ISO, 'stroke-width': 1.5, fill: 'none' });
+
+  // ── Percentage labels on each band ──
+  function midY(top, bottom, i) {
+    return (pctToY(top[i]) + pctToY(bottom[i])) / 2;
+  }
+  stages.forEach(function(s, i) {
+    // Ecological label - center of the eco band
+    addEl('text', {
+      x: xPositions[i], y: midY(ecoTop, baseline, i) + 4,
+      'font-family': 'Inter, sans-serif', 'font-size': 16, 'font-weight': 600,
+      fill: 'rgba(255,255,255,0.95)', 'text-anchor': 'middle'
+    }, s.eco + '%');
+    // Variable label
+    addEl('text', {
+      x: xPositions[i], y: midY(varyTop, ecoTop, i) + 4,
+      'font-family': 'Inter, sans-serif', 'font-size': 16, 'font-weight': 600,
+      fill: 'rgba(255,255,255,0.95)', 'text-anchor': 'middle'
+    }, s.vary + '%');
+    // Isolated label (smaller because the band is narrow at left)
+    var isoH = pctToY(varyTop[i]) - pctToY(isoTop[i]);
+    addEl('text', {
+      x: xPositions[i], y: midY(isoTop, varyTop, i) + (isoH < 30 ? 0 : 4),
+      'font-family': 'Inter, sans-serif',
+      'font-size': isoH < 30 ? 12 : 15, 'font-weight': 600,
+      fill: 'rgba(255,255,255,0.95)', 'text-anchor': 'middle'
+    }, s.iso + '%');
+  });
+
+  // ── Stage labels along the X axis ──
+  stages.forEach(function(s, i) {
+    var labelLines = s.name.split(' Years');
+    if (s.name.indexOf('Years') !== -1) {
+      // Two-line label
+      addEl('text', {
+        x: xPositions[i], y: H - padB + 22,
+        'font-family': 'Playfair Display, serif',
+        'font-size': 16, 'font-weight': 600, fill: '#f4efe6',
+        'text-anchor': 'middle'
+      }, labelLines[0].trim());
+      addEl('text', {
+        x: xPositions[i], y: H - padB + 41,
+        'font-family': 'Playfair Display, serif',
+        'font-size': 16, 'font-weight': 600, fill: '#f4efe6',
+        'text-anchor': 'middle'
+      }, 'Years');
+    } else {
+      addEl('text', {
+        x: xPositions[i], y: H - padB + 32,
+        'font-family': 'Playfair Display, serif',
+        'font-size': 16, 'font-weight': 600, fill: '#f4efe6',
+        'text-anchor': 'middle'
+      }, s.name);
+    }
+    // Age sub-label
+    addEl('text', {
+      x: xPositions[i], y: H - padB + 60,
+      'font-family': 'JetBrains Mono, monospace',
+      'font-size': 11, fill: 'rgba(244,239,230,0.55)',
+      'text-anchor': 'middle', 'letter-spacing': '0.08em'
+    }, s.age.toUpperCase());
+  });
+
+  // ── "Elite refinement zone" annotation pointing into the isolated band ──
+  var noteX = xPositions[xPositions.length - 1] - 32;
+  var noteY = padT + 18;
+
+  // Connector line from text to top-right band
+  addEl('line', {
+    x1: noteX, y1: noteY + 22,
+    x2: xPositions[xPositions.length - 1] - 8, y2: pctToY((isoTop[isoTop.length - 1] + varyTop[varyTop.length - 1]) / 2),
+    stroke: STROKE_ISO, 'stroke-width': 1, 'stroke-dasharray': '3,3'
+  });
+
+  // Annotation pill background
+  addEl('rect', {
+    x: noteX - 130, y: noteY - 8, width: 160, height: 36,
+    rx: 6, ry: 6,
+    fill: 'rgba(200,134,46,0.18)', stroke: STROKE_ISO, 'stroke-width': 1
+  });
+  addEl('text', {
+    x: noteX - 50, y: noteY + 4,
+    'font-family': 'Inter, sans-serif', 'font-size': 11, 'font-weight': 600,
+    fill: '#e2a85a', 'text-anchor': 'middle'
+  }, 'Elite refinement zone');
+  addEl('text', {
+    x: noteX - 50, y: noteY + 19,
+    'font-family': 'Inter, sans-serif', 'font-size': 10,
+    fill: 'rgba(244,239,230,0.7)', 'text-anchor': 'middle'
+  }, 'Pro coaches work here');
+
+  // ── HOVER OVERLAYS for tooltip ──
+  stages.forEach(function(s, i) {
+    var hitW = plotW / stages.length;
+    var hitX = i === 0 ? padL : (xPositions[i] - hitW / 2);
+    var hitWidth = (i === 0 || i === stages.length - 1) ? hitW / 2 + (hitW / 2) : hitW;
+
+    var overlay = addEl('rect', {
+      x: hitX, y: padT, width: hitWidth, height: plotH,
+      fill: 'rgba(255,255,255,0.001)', // invisible but hoverable
+      style: 'cursor:pointer'
+    });
+
+    overlay.addEventListener('mouseenter', function(e) { showTooltip(s, e); });
+    overlay.addEventListener('mousemove',  function(e) { showTooltip(s, e); });
+    overlay.addEventListener('mouseleave', function() { tooltip.style.opacity = 0; });
+
+    // Also hover marker line (initially hidden)
+    var marker = addEl('line', {
+      x1: xPositions[i], y1: padT, x2: xPositions[i], y2: padT + plotH,
+      stroke: 'rgba(244,239,230,0.3)', 'stroke-width': 1, 'stroke-dasharray': '4,4',
+      opacity: 0, 'data-marker-for': String(i)
+    });
+    overlay.addEventListener('mouseenter', function() { marker.setAttribute('opacity', 1); });
+    overlay.addEventListener('mouseleave', function() { marker.setAttribute('opacity', 0); });
+  });
+
+  function showTooltip(s, event) {
+    tooltip.innerHTML = ''
+      + '<div style="font-family:Playfair Display,serif;font-size:0.95rem;font-weight:600;color:#f4efe6;margin-bottom:0.35rem;letter-spacing:-0.01em">' + s.name + '</div>'
+      + '<div style="font-family:JetBrains Mono,monospace;font-size:0.62rem;letter-spacing:0.1em;color:rgba(244,239,230,0.5);text-transform:uppercase;margin-bottom:0.6rem">' + s.age + '</div>'
+      + '<div style="display:flex;justify-content:space-between;font-size:0.76rem;color:rgba(244,239,230,0.85);padding:0.18rem 0"><span><span style="display:inline-block;width:9px;height:9px;background:' + COLOR_ECO + ';border-radius:2px;margin-right:0.4rem;vertical-align:-1px"></span>Ecological</span><span style="font-weight:600;color:#f4efe6">' + s.eco + '%</span></div>'
+      + '<div style="display:flex;justify-content:space-between;font-size:0.76rem;color:rgba(244,239,230,0.85);padding:0.18rem 0"><span><span style="display:inline-block;width:9px;height:9px;background:' + COLOR_VARY + ';border-radius:2px;margin-right:0.4rem;vertical-align:-1px"></span>Variable</span><span style="font-weight:600;color:#f4efe6">' + s.vary + '%</span></div>'
+      + '<div style="display:flex;justify-content:space-between;font-size:0.76rem;color:rgba(244,239,230,0.85);padding:0.18rem 0"><span><span style="display:inline-block;width:9px;height:9px;background:' + COLOR_ISO + ';border-radius:2px;margin-right:0.4rem;vertical-align:-1px"></span>Isolated</span><span style="font-weight:600;color:#f4efe6">' + s.iso + '%</span></div>';
+
+    // Position relative to wrap
+    var wrapRect = wrap.getBoundingClientRect();
+    var ttW = 180, ttH = 130;
+    var tx = event.clientX - wrapRect.left + 14;
+    var ty = event.clientY - wrapRect.top - ttH / 2;
+
+    // Keep tooltip inside wrap horizontally
+    if (tx + ttW > wrapRect.width - 8) tx = event.clientX - wrapRect.left - ttW - 14;
+    if (ty < 8) ty = 8;
+    if (ty + ttH > wrapRect.height - 8) ty = wrapRect.height - ttH - 8;
+
+    tooltip.style.left = tx + 'px';
+    tooltip.style.top = ty + 'px';
+    tooltip.style.opacity = 1;
+  }
+})();
+</script>
+
 <script src="js/site.js"></script>
 </body>
 </html>

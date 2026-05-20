@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Lineup Builder — DugoutLab</title>
-<meta name="description" content="Build a complete 5-inning position lineup matrix for your youth baseball or softball team. Handles tiers, pitching rotations, catching splits, EH slots, and development priorities.">
+<title>Lineup Builder — DugoutLab</title>
+<meta name="description" content="Build a complete 5-inning position lineup matrix for your youth baseball or softball team. Handles tiers, pitching rotations, catching splits, EH slots, and development priorities. Pure JavaScript — no API key, no data ever leaves your device.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
@@ -422,32 +422,6 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
 .pos-LF, .pos-CF, .pos-RF, .pos-LC, .pos-RC { color: #555; font-weight: 600; }
 .pos-EH { color: var(--text-light); font-style: italic; font-weight: 400; }
 
-/* ── API KEY PROMPT ────────────────────────────────────────────── */
-.api-banner {
-  background: rgba(200,120,26,0.08);
-  border: 1.5px solid var(--gold);
-  border-radius: 8px;
-  padding: 0.85rem 1rem;
-  margin-bottom: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-.api-banner p { font-size: 0.83rem; color: var(--text-mid); flex: 1; margin: 0; }
-.api-banner input { width: 240px; flex-shrink: 0; }
-.api-banner .btn-save {
-  background: var(--forest);
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: var(--sans);
-}
-
 /* ── ERROR STATE ───────────────────────────────────────────────── */
 .error-box {
   background: rgba(192,57,43,0.07);
@@ -476,8 +450,7 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
   <ul class="nav-links">
-    <li><a href="builder.html">Build a Practice</a>
-  <a href="games.html">Games</a></li>
+    <li><a href="builder.html">Build a Practice</a></li>
     <li><a href="games.html">Games</a></li>
     <li><a href="drills.html">Drill Library</a></li>
     <li><a href="lineup.html" class="active">Lineup Builder</a></li>
@@ -496,6 +469,7 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
   <a href="games.html">Games</a>
   <a href="drills.html">Drill Library</a>
   <a href="lineup.html">Lineup Builder</a>
+  <a href="toolkit.html">Toolkit</a>
   <a href="train.html">Train Solo</a>
   <a href="articles.html">Articles</a>
   <a href="stages.html">The 4 Stages</a>
@@ -505,20 +479,13 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
 
 <div class="page-hero">
   <div class="page-hero-inner">
-    <div class="eyebrow">AI Lineup Builder</div>
-    <h1>Build Your Lineup Matrix</h1>
-    <p>Answer 8 questions. Get a complete position-by-inning lineup — with pitching, catching, EH slots, and development priorities all handled.</p>
+    <div class="eyebrow">Lineup Builder &middot; Pure JavaScript, no AI, no data leaves your device</div>
+    <h1>Build Your <em style="color:var(--gold);font-style:italic">Lineup Matrix</em></h1>
+    <p>Answer 8 questions. Get a complete position-by-inning lineup &mdash; with pitching, catching, EH slots, and development priorities all handled. Runs entirely in your browser. No accounts. No API keys. No costs.</p>
   </div>
 </div>
 
 <div class="wizard-wrap">
-
-  <!-- API KEY BANNER -->
-  <div class="api-banner" id="api-banner" style="display:none">
-    <p><strong>One-time setup:</strong> Enter your Anthropic API key to enable AI lineup generation. Stored locally on your device only.</p>
-    <input type="password" id="api-key-input" placeholder="sk-ant-..." />
-    <button class="btn-save" onclick="saveApiKey()">Save Key</button>
-  </div>
 
   <!-- ERROR -->
   <div class="error-box" id="error-box"></div>
@@ -741,7 +708,7 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
   <div class="generating-overlay" id="generating">
     <div class="spinner"></div>
     <div style="font-family:var(--serif);font-size:1.1rem;color:var(--forest);margin-bottom:0.5rem">Building your lineup...</div>
-    <div style="font-size:0.85rem;color:var(--text-mid)">Claude is resolving all your constraints.<br>This usually takes 10-15 seconds.</div>
+    <div style="font-size:0.85rem;color:var(--text-mid)">Resolving all your constraints.<br>This takes a fraction of a second.</div>
   </div>
 
   <!-- ── LINEUP OUTPUT ──────────────────────────────────────────── -->
@@ -775,7 +742,9 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
       <ul>
         <li><a href="builder.html">Practice Builder</a></li>
         <li><a href="drills.html">Drill Library</a></li>
-        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="lineup.html">Lineup Builder</a>
+  <a href="toolkit.html">Toolkit</a></li>
+    <li><a href="toolkit.html">Toolkit</a></li>
       </ul>
     </div>
     <div class="footer-links">
@@ -829,24 +798,12 @@ var multiVals  = { 't1-if': ['SS','2B','1B'] };
 
 // ── INIT ───────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {
-  checkApiKey();
+  // Wipe any legacy API key from previous version of the site.
+  try { localStorage.removeItem('dugout_api_key'); } catch (e) {}
+
   // Start with 10 empty player rows
   for (var i = 0; i < 10; i++) addPlayer();
 });
-
-function checkApiKey() {
-  var key = localStorage.getItem('dugout_api_key');
-  if (!key) {
-    document.getElementById('api-banner').style.display = 'flex';
-  }
-}
-
-function saveApiKey() {
-  var key = document.getElementById('api-key-input').value.trim();
-  if (!key) return;
-  localStorage.setItem('dugout_api_key', key);
-  document.getElementById('api-banner').style.display = 'none';
-}
 
 // ── PLAYER MANAGEMENT ──────────────────────────────────────────────
 function addPlayer() {
@@ -1136,15 +1093,11 @@ function collectState() {
   });
 }
 
-// ── GENERATE ───────────────────────────────────────────────────────
-async function generateLineup() {
-  var apiKey = localStorage.getItem('dugout_api_key');
-  if (!apiKey) {
-    document.getElementById('api-banner').style.display = 'flex';
-    showError('Please enter your Anthropic API key above to generate a lineup.');
-    return;
-  }
-
+// ── GENERATE (pure JS, no API) ─────────────────────────────────────
+// Build a position-by-inning matrix using a scored, constraint-aware
+// algorithm. Same input/output shape as the legacy API version, so the
+// existing renderLineup() works unchanged.
+function generateLineup() {
   collectState();
 
   if (state.players.length < 2) {
@@ -1157,91 +1110,376 @@ async function generateLineup() {
   document.getElementById('lineup-output').classList.remove('show');
   document.getElementById('wizard-footer').style.display = 'none';
 
-  var ofPositions = state.ofFormat === '4of'
-    ? ['LF','LC','RC','RF']
-    : ['LF','CF','RF'];
+  // Run async-ish so the spinner renders. Tiny delay is plenty since
+  // the algorithm itself is sub-millisecond.
+  setTimeout(function() {
+    try {
+      var result = buildLineupMatrix(state);
+      state.lineup = result;
+      renderLineup(result);
+    } catch (e) {
+      showError('Could not build lineup: ' + e.message);
+      document.getElementById('wizard-footer').style.display = 'flex';
+    } finally {
+      document.getElementById('generating').classList.remove('show');
+    }
+  }, 60);
+}
 
+// ── CORE ALGORITHM ─────────────────────────────────────────────────
+function buildLineupMatrix(s) {
+  var innings = s.innings;
+  var players = s.players.filter(function(p) { return p.name && p.name.trim(); });
+  if (players.length < 2) throw new Error('Need at least 2 named players.');
+
+  var ofPositions = s.ofFormat === '4of' ? ['LF','LC','RC','RF'] : ['LF','CF','RF'];
   var ifPositions = ['SS','2B','1B','3B'];
+  var premiumIf   = ['SS','2B','1B'];
 
-  var systemPrompt = [
-    'You are a youth baseball lineup builder. Your job is to create a position-by-inning lineup matrix.',
-    'Return ONLY valid JSON — no prose, no explanation, no markdown code fences.',
-    'Return an object with key "lineup" containing an array of player objects.',
-    'Each player object: { "name": string, "positions": [pos_inn1, pos_inn2, ...] }',
-    'Valid positions: P, C, SS, 2B, 1B, 3B, LF, CF, RF, LC, RC, EH',
-    'Rules:',
-    '- Every inning must have exactly one P, one C, the correct number of IF and OF positions, and the correct number of EH slots.',
-    '- EH = players not fielding that inning. A player with EH is in the batting lineup but not on the field.',
-    '- Apply all constraints in the user message exactly.',
-    '- If a constraint creates an impossible situation, make the best decision and note it in a "flags" array.',
-    'Return format: { "lineup": [ { "name": "...", "positions": ["SS","P",...] } ], "flags": [] }',
-  ].join('\n');
+  // Feasibility pre-check: if you have N players, F field positions, and I innings,
+  // the total EH slots = (N - F) × I. If maxSit × N < that, it's mathematically
+  // impossible to honor maxSit. Flag it so the coach knows the algorithm did its
+  // best but the constraint cannot be fully satisfied.
+  var feasibilityFlags = [];
+  var fieldPosPreview = 1 + 1 + ifPositions.length + ofPositions.length; // P+C+IF+OF
+  var ehSlotsTotal = Math.max(0, (players.length - fieldPosPreview) * innings);
+  var maxSitNum = parseInt(s.maxSit, 10) || 1;
+  if (maxSitNum * players.length < ehSlotsTotal) {
+    feasibilityFlags.push(
+      'With ' + players.length + ' players over ' + innings + ' innings, '
+      + 'some players must sit more than ' + maxSitNum + ' inning(s). '
+      + 'Algorithm distributed sitting as evenly as possible.'
+    );
+  }
 
-  var ehCount = Math.max(0, state.players.length - state.fieldPos);
+  // How many positions on the field
+  var fieldPos = s.fieldPos || (1 + 1 + ifPositions.length + ofPositions.length);
+  // EH count per inning = however many extra players we have
+  var ehCount  = Math.max(0, players.length - fieldPos);
 
-  var userMsg = JSON.stringify({
-    team: state.teamName,
-    innings: state.innings,
-    fieldPositions: state.fieldPos,
-    ehPerInning: ehCount,
-    outfieldPositions: ofPositions,
-    infieldPositions: ifPositions,
-    players: state.players,
-    priority: state.priority,
-    pitchers: state.pitchers,
-    pitcherEHRulePriorInning: state.catcherEHRule,
-    allow2InningPitcher: state.pitcher2Inn,
-    emergencyPitcher1: state.emergP1,
-    emergencyPitcher2: state.emergP2,
-    catchers: state.catchers,
-    tier1InfieldPositions: state.t1IfPositions,
-    tier1MaxOutfieldInnings: state.t1OfMax,
-    use3BAsDevSlot: state.threeBDev,
-    maxTimesPlayerSits: state.maxSit,
-    tier1NeverSits: state.t1NeverSit,
-    distributeEHEvenly: state.evenSit,
-    playerLocks: state.playerLocks,
-    inningOverrides: state.inningOverrides,
-    additionalNotes: state.extraNotes
-  }, null, 2);
+  // ── Tracking maps for fairness ──
+  // posCount[playerName][pos] = innings spent at that position
+  var posCount = {};
+  // ehCount[playerName] = innings spent as EH (sitting)
+  var ehTotals = {};
+  // ifCount[playerName] = innings in any IF position
+  var ifTotals = {};
+  // ofCount[playerName] = innings in any OF position
+  var ofTotals = {};
+  // batterOrder = batting order (set first inning)
+  var batterOrder = players.map(function(p) { return p.name; });
 
-  try {
-    var resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userMsg }]
-      })
+  players.forEach(function(p) {
+    posCount[p.name] = {};
+    ehTotals[p.name] = 0;
+    ifTotals[p.name] = 0;
+    ofTotals[p.name] = 0;
+  });
+
+  // ── Build position lookup for player rules ──
+  function tierOf(name) {
+    var p = players.find(function(x) { return x.name === name; });
+    return p ? String(p.tier || '2') : '2';
+  }
+
+  // Helper: how many innings has this player played at position?
+  function reps(name, pos) {
+    return (posCount[name] && posCount[name][pos]) || 0;
+  }
+
+  // Did this player play the previous inning at given position?
+  function playedLastInning(name, pos, inn) {
+    if (inn === 0) return false;
+    return lineup[inn - 1].positions[name] === pos;
+  }
+
+  // ── lineup[i].positions[name] = position string for that inning ──
+  var lineup = [];
+  for (var i = 0; i < innings; i++) lineup.push({ positions: {} });
+
+  var flags = [];
+
+  // ─────────── STEP 1: Assign pitchers ───────────
+  for (var inn = 0; inn < innings; inn++) {
+    var pName = (s.pitchers && s.pitchers[inn]) || null;
+    if (pName) {
+      // Check 2-inning rule
+      if (!s.pitcher2Inn && inn > 0 && lineup[inn - 1].positions[pName] === 'P') {
+        // Same pitcher 2 innings in a row, but rule says not allowed
+        flags.push('Pitcher ' + pName + ' had back-to-back innings flagged. Override applied.');
+      }
+      lineup[inn].positions[pName] = 'P';
+      posCount[pName].P = (posCount[pName].P || 0) + 1;
+    } else {
+      flags.push('No pitcher set for inning ' + (inn + 1) + '. Position left blank.');
+    }
+  }
+
+  // ─────────── STEP 2: Assign catchers ───────────
+  for (var inn = 0; inn < innings; inn++) {
+    var cName = (s.catchers && s.catchers[inn]) || null;
+    if (cName) {
+      // If already assigned (e.g. someone catching while also listed as pitcher)
+      // skip — pitcher takes precedence.
+      if (lineup[inn].positions[cName]) {
+        flags.push(cName + ' set as both pitcher and catcher in inning ' + (inn + 1) + '. Kept as pitcher.');
+        continue;
+      }
+      // Catcher-EH-prior-inning rule
+      if (s.catcherEHRule && inn > 0 && lineup[inn - 1].positions[cName] === 'EH') {
+        // Already rested last inning — fine. (Rule is satisfied.)
+      }
+      lineup[inn].positions[cName] = 'C';
+      posCount[cName].C = (posCount[cName].C || 0) + 1;
+    } else {
+      flags.push('No catcher set for inning ' + (inn + 1) + '. Position left blank.');
+    }
+  }
+
+  // ─────────── STEP 3: Apply locks + inning overrides ───────────
+  (s.inningOverrides || []).forEach(function(ov) {
+    if (!ov.player || !ov.position) return;
+    var inn = (parseInt(ov.inning, 10) - 1);
+    if (inn < 0 || inn >= innings) return;
+    // Don't override pitcher/catcher
+    var existing = lineup[inn].positions[ov.player];
+    if (existing && (existing === 'P' || existing === 'C')) {
+      flags.push('Override for ' + ov.player + ' inning ' + (inn + 1) + ' conflicts with P/C assignment. Skipped.');
+      return;
+    }
+    // Don't double-assign a position
+    var alreadyAtPos = Object.keys(lineup[inn].positions).find(function(p) { return lineup[inn].positions[p] === ov.position; });
+    if (alreadyAtPos) {
+      flags.push('Inning ' + (inn + 1) + ': ' + ov.position + ' already taken by ' + alreadyAtPos + '. Override for ' + ov.player + ' skipped.');
+      return;
+    }
+    lineup[inn].positions[ov.player] = ov.position;
+    posCount[ov.player][ov.position] = (posCount[ov.player][ov.position] || 0) + 1;
+    if (ifPositions.indexOf(ov.position) !== -1) ifTotals[ov.player]++;
+    if (ofPositions.indexOf(ov.position) !== -1) ofTotals[ov.player]++;
+  });
+
+  // ─────────── STEP 4: Fill remaining positions per inning ───────────
+  for (var inn = 0; inn < innings; inn++) {
+    var taken = lineup[inn].positions; // map: player -> pos
+
+    // Build the list of positions still needing assignment
+    var needed = [];
+    ifPositions.forEach(function(p) {
+      var has = Object.keys(taken).find(function(name) { return taken[name] === p; });
+      if (!has) needed.push(p);
+    });
+    ofPositions.forEach(function(p) {
+      var has = Object.keys(taken).find(function(name) { return taken[name] === p; });
+      if (!has) needed.push(p);
     });
 
-    if (!resp.ok) {
-      var err = await resp.json();
-      throw new Error(err.error ? err.error.message : 'API error ' + resp.status);
+    // If 3B is the dev slot, fill it LAST so the best IF spots go to
+    // who they should first, and 3B becomes the rotating dev opportunity.
+    if (s.threeBDev) {
+      var threeBIdx = needed.indexOf('3B');
+      if (threeBIdx !== -1) {
+        needed.splice(threeBIdx, 1);
+        needed.push('3B');
+      }
     }
 
-    var data = await resp.json();
-    var raw = data.content[0].text.trim();
-    // Strip any accidental markdown fences
-    raw = raw.replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'');
-    var parsed = JSON.parse(raw);
+    // Available players this inning (not yet assigned)
+    function availablePlayers() {
+      return players.filter(function(p) { return !taken[p.name]; });
+    }
 
-    state.lineup = parsed;
-    renderLineup(parsed);
+    // ─ Score a player for a given position ─
+    function scoreFor(playerName, pos) {
+      // Lower score = better candidate.
+      var tier  = tierOf(playerName);
+      var prior = reps(playerName, pos);
+      var score = prior * 10; // Base: prefer who hasn't played here
 
-  } catch (e) {
-    showError('Error generating lineup: ' + e.message);
-    document.getElementById('wizard-footer').style.display = 'flex';
-  } finally {
-    document.getElementById('generating').classList.remove('show');
+      var isIF = ifPositions.indexOf(pos) !== -1;
+      var isOF = ofPositions.indexOf(pos) !== -1;
+      var isPremiumIf = premiumIf.indexOf(pos) !== -1;
+
+      // ── Mode-based scoring ──
+      if (s.priority === 'win') {
+        if (isPremiumIf) {
+          if (tier === '1') score -= 30;
+          if (tier === '3') score += 30;
+        }
+        if (pos === '3B') {
+          // dev slot — give Tier 2/3 the chance
+          if (tier === '1') score += 20;
+        }
+        if (isOF) {
+          if (tier === '1') {
+            // Cap Tier 1 OF innings
+            var t1OfCap = parseInt(s.t1OfMax || '1', 10);
+            if (ofTotals[playerName] >= t1OfCap) score += 100; // basically disqualify
+            else score += 15;
+          }
+          if (tier === '3') score -= 5;
+        }
+      }
+      else if (s.priority === 'balanced') {
+        if (isPremiumIf) {
+          if (tier === '1') score -= 15;
+          if (tier === '2') score -= 8;
+        }
+        if (isOF) {
+          if (tier === '1') {
+            var capB = parseInt(s.t1OfMax || '1', 10);
+            if (ofTotals[playerName] >= capB) score += 100;
+            else score += 8;
+          }
+        }
+      }
+      else if (s.priority === 'dev') {
+        // Everyone rotates IF. Penalize repeat IF.
+        if (isIF) {
+          score += ifTotals[playerName] * 8;
+        }
+        if (isOF) {
+          // Spread OF too
+          score += ofTotals[playerName] * 4;
+        }
+      }
+
+      // ── Apply Tier 1 IF positions allowed filter ──
+      if (tier === '1' && isIF && s.priority === 'win') {
+        if ((s.t1IfPositions || []).indexOf(pos) === -1) {
+          score += 50; // not their allowed position
+        }
+      }
+
+      // ── Player locks: positive boost if locked here ──
+      (s.playerLocks || []).forEach(function(lock) {
+        if (lock.player === playerName && lock.position === pos) {
+          if (lock.rule === 'always') score -= 1000; // strong lock
+          if (lock.rule === 'never')  score += 1000;
+        }
+      });
+
+      return score;
+    }
+
+    // ─ Assign each needed position ─
+    needed.forEach(function(pos) {
+      var avail = availablePlayers();
+      if (avail.length === 0) {
+        flags.push('Inning ' + (inn + 1) + ': not enough players to fill ' + pos);
+        return;
+      }
+      var ranked = avail.map(function(p) {
+        return { name: p.name, score: scoreFor(p.name, pos) };
+      });
+      ranked.sort(function(a, b) { return a.score - b.score; });
+
+      var chosen = ranked[0].name;
+      taken[chosen] = pos;
+      posCount[chosen][pos] = (posCount[chosen][pos] || 0) + 1;
+      if (ifPositions.indexOf(pos) !== -1) ifTotals[chosen]++;
+      if (ofPositions.indexOf(pos) !== -1) ofTotals[chosen]++;
+    });
+
+    // ─ Remaining players become EH for this inning ─
+    var leftovers = availablePlayers();
+    // ── Honor "Tier 1 never sits" by swapping in someone from EH-eligible ──
+    if (s.t1NeverSit) {
+      leftovers.forEach(function(p) {
+        if (tierOf(p.name) === '1') {
+          // Try to swap with a non-tier-1 currently at a non-P/C position
+          var swapWith = Object.keys(taken).find(function(name) {
+            var pos = taken[name];
+            return tierOf(name) !== '1'
+              && pos !== 'P' && pos !== 'C'
+              && pos !== 'SS' && pos !== '2B' && pos !== '1B'; // don't yank premium IF
+          });
+          if (swapWith) {
+            var pos = taken[swapWith];
+            taken[p.name] = pos;
+            delete taken[swapWith];
+            posCount[p.name][pos] = (posCount[p.name][pos] || 0) + 1;
+            posCount[swapWith][pos]--;
+            if (ofPositions.indexOf(pos) !== -1) {
+              ofTotals[p.name]++;
+              ofTotals[swapWith]--;
+            }
+            if (ifPositions.indexOf(pos) !== -1) {
+              ifTotals[p.name]++;
+              ifTotals[swapWith]--;
+            }
+          } else {
+            flags.push('Tier 1 player ' + p.name + ' sat in inning ' + (inn + 1) + ' (no eligible swap).');
+          }
+        }
+      });
+      leftovers = availablePlayers();
+    }
+
+    // ── Check max-sit rule on whoever's left ──
+    if (s.maxSit && leftovers.length > 0) {
+      var maxSitNum = parseInt(s.maxSit, 10) || 1;
+      // Re-pick sitters preferring lowest-current-ehTotal players if evenSit
+      if (s.evenSit) {
+        // Build a candidate pool: all unassigned (already in leftovers) + reassignable
+        // Reassignable = players currently in OF (not Tier 1 if t1NeverSit) whose ehTotal is low
+        leftovers.sort(function(a, b) {
+          return ehTotals[a.name] - ehTotals[b.name];
+        });
+        // Try to swap if anyone has already maxed out their sit allowance
+        leftovers.forEach(function(p) {
+          if (ehTotals[p.name] >= maxSitNum) {
+            // Try to swap with a currently-playing OF player who has the lowest ehTotal
+            var ofPlayers = Object.keys(taken).filter(function(name) {
+              var pos = taken[name];
+              return ofPositions.indexOf(pos) !== -1
+                && !(s.t1NeverSit && tierOf(name) === '1');
+            });
+            ofPlayers.sort(function(a, b) {
+              return ehTotals[a] - ehTotals[b];
+            });
+            if (ofPlayers.length > 0 && ehTotals[ofPlayers[0]] < ehTotals[p.name]) {
+              var swap = ofPlayers[0];
+              var pos = taken[swap];
+              taken[p.name] = pos;
+              delete taken[swap];
+              posCount[p.name][pos] = (posCount[p.name][pos] || 0) + 1;
+              posCount[swap][pos]--;
+              ofTotals[p.name]++;
+              ofTotals[swap]--;
+            }
+          }
+        });
+        leftovers = availablePlayers();
+      }
+    }
+
+    // Final assignment of EH
+    leftovers.forEach(function(p) {
+      taken[p.name] = 'EH';
+      ehTotals[p.name]++;
+    });
   }
+
+  // ── Apply 3B-dev-slot post-pass: ensure 3B rotates ──
+  // (Already handled by scoring during fill loop)
+
+  // ── Build final output array ──
+  var resultPlayers = batterOrder.map(function(name) {
+    var positions = [];
+    for (var i = 0; i < innings; i++) {
+      positions.push(lineup[i].positions[name] || 'EH');
+    }
+    return { name: name, positions: positions };
+  });
+
+  // Trim duplicate flags
+  flags = flags.filter(function(f, i, arr) { return arr.indexOf(f) === i; });
+
+  // Prepend feasibility flags so the coach sees the big picture first
+  flags = feasibilityFlags.concat(flags);
+
+  return { lineup: resultPlayers, flags: flags };
 }
 
 // ── RENDER LINEUP ──────────────────────────────────────────────────

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Coach Toolkit &mdash; DugoutLab</title>
+<meta name="description" content="Free downloadable resources for youth baseball coaches. End-of-season awards deck, fillable scouting report, and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+  .toolkit-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  @media (min-width: 720px) { .toolkit-grid { grid-template-columns: 1fr 1fr; } }
+
+  .tool-card {
+    background: var(--forest2);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.75rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .tool-card:hover { border-color: var(--gold); }
+
+  .tool-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .tool-title {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin-bottom: 0;
+  }
+  .tool-title em { font-style: italic; color: var(--gold); font-weight: 500; }
+  .tool-meta {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+  }
+  .tool-meta .dot { color: var(--gold); }
+  .tool-desc {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+  .tool-desc em { color: var(--gold-light); font-style: italic; }
+  .tool-features {
+    background: var(--forest-deep);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 0.95rem 1.1rem;
+    margin-top: 0.25rem;
+  }
+  .tool-features-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.55rem;
+  }
+  .tool-features ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .tool-features li {
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    line-height: 1.55;
+    padding: 0.18rem 0 0.18rem 1.05rem;
+    position: relative;
+  }
+  .tool-features li::before {
+    content: '+';
+    position: absolute;
+    left: 0;
+    top: 0.18rem;
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .tool-actions {
+    margin-top: auto;
+    padding-top: 0.5rem;
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .upcoming-strip {
+    background: var(--forest2);
+    border: 1px dashed var(--rule);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.75rem;
+    margin-top: 1.5rem;
+  }
+  .upcoming-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.85rem;
+    margin-top: 1rem;
+  }
+  .upcoming-item {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    padding: 0.35rem 0;
+  }
+  .upcoming-item .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    background: rgba(200,134,46,0.15);
+    color: var(--gold-light);
+    border: 1px solid rgba(200,134,46,0.35);
+    border-radius: 4px;
+    padding: 0.15rem 0.4rem;
+    letter-spacing: 0.08em;
+    margin-right: 0.4rem;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="builder.html">Build a Practice</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="drills.html">Drill Library</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="toolkit.html" class="active">Toolkit</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="builder.html">Build a Practice</a>
+  <a href="games.html">Games</a>
+  <a href="drills.html">Drill Library</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="toolkit.html">Toolkit</a>
+  <a href="articles.html">Articles</a>
+  <a href="stages.html">The 4 Stages</a>
+  <a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="index.html">&larr; Home</a></div>
+    <div class="eyebrow">Coach Toolkit &middot; Free Downloads</div>
+    <h1>Print it. Fill it. <em style="color:var(--gold);font-style:italic">Use it.</em></h1>
+    <p style="margin-top:0.7rem">Real, printable tools for the moments coaching gets practical. End-of-season awards. Pre-game scouting. More on the way. No accounts. No ads. No API key.</p>
+  </div>
+</div>
+
+<section class="section" style="background:var(--forest);padding-top:3rem">
+  <div class="container-sm">
+
+    <div class="toolkit-grid">
+
+      <!-- ───────── AWARDS DECK ───────── -->
+      <div class="tool-card">
+        <div>
+          <div class="tool-eyebrow">Tool 01 &middot; End-of-Season</div>
+          <h2 class="tool-title">The Awards <em>Deck</em></h2>
+        </div>
+
+        <div class="tool-meta">
+          <span>POWERPOINT (.PPTX)</span>
+          <span class="dot">&middot;</span>
+          <span>8.5 &times; 11 PORTRAIT</span>
+          <span class="dot">&middot;</span>
+          <span>13 SLIDES</span>
+        </div>
+
+        <p class="tool-desc">
+          A fully editable awards deck for your end-of-season banquet. <strong style="color:var(--ink)">11 award categories</strong> covering effort, heart, growth, baseball IQ, and signature moments. Each slide gives you the award title, a kicker line, suggested variations, and four ready-to-use blurb ideas. <em>Print on letter-size paper, frame them, hand them out.</em>
+        </p>
+
+        <div class="tool-features">
+          <div class="tool-features-label">What's Inside</div>
+          <ul>
+            <li>The Hustle Award &middot; The Bear Award</li>
+            <li>Heart of the Team &middot; The Encourager</li>
+            <li>Most Improved &middot; The Sponge</li>
+            <li>The Heads-Up Award &middot; The Quiet Pro</li>
+            <li>The Walk-Off &middot; Best Smile in the Dugout</li>
+            <li>Coach's Award</li>
+          </ul>
+        </div>
+
+        <div class="tool-actions">
+          <a href="downloads/dugoutlab-end-of-season-awards.pptx" download class="btn btn-primary">Download .pptx</a>
+          <a href="downloads/dugoutlab-end-of-season-awards.pptx" target="_blank" class="btn btn-outline">Preview</a>
+        </div>
+      </div>
+
+      <!-- ───────── SCOUTING REPORT ───────── -->
+      <div class="tool-card">
+        <div>
+          <div class="tool-eyebrow">Tool 02 &middot; Pre-Game</div>
+          <h2 class="tool-title">The Scouting <em>Report</em></h2>
+        </div>
+
+        <div class="tool-meta">
+          <span>FILLABLE PDF</span>
+          <span class="dot">&middot;</span>
+          <span>SINGLE PAGE</span>
+          <span class="dot">&middot;</span>
+          <span>69 FIELDS</span>
+        </div>
+
+        <p class="tool-desc">
+          A one-page scouting form your assistant coach can fill in during warmups. <strong style="color:var(--ink)">Type into it on your phone</strong> or print it for the clipboard. Game info, pitcher tendencies, all 9 hitters, defense and baserunning, plus a "what we attack / what we respect" section at the bottom. <em>Built for rec coaches, not pro scouts.</em>
+        </p>
+
+        <div class="tool-features">
+          <div class="tool-features-label">What's Inside</div>
+          <ul>
+            <li>Game info: team, opponent, date, location</li>
+            <li>Pitcher: hand, velo, arsenal, behind-in-count tendency</li>
+            <li>Opposing hitters 1-9: name, hand, type, pitch them in, avoid, notes</li>
+            <li>Their team: defense and baserunning notes</li>
+            <li>Game plan: what we attack, what we respect</li>
+          </ul>
+        </div>
+
+        <div class="tool-actions">
+          <a href="downloads/dugoutlab-scouting-report.pdf" download class="btn btn-primary">Download .pdf</a>
+          <a href="downloads/dugoutlab-scouting-report.pdf" target="_blank" class="btn btn-outline">Preview</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ─── UPCOMING ─── -->
+    <div class="upcoming-strip">
+      <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;font-weight:500">On the way</div>
+      <p style="color:var(--ink-soft);font-size:0.92rem;line-height:1.6;margin-top:0.55rem">More free tools coming soon. No release dates, no schedule pressure. They drop when they're ready.</p>
+      <div class="upcoming-grid">
+        <div class="upcoming-item"><span class="badge">SOON</span>Pitching Cheat Sheet</div>
+        <div class="upcoming-item"><span class="badge">SOON</span>Game Recap Template</div>
+        <div class="upcoming-item"><span class="badge">SOON</span>Player Tracking Sheet</div>
+        <div class="upcoming-item"><span class="badge">SOON</span>Parent Communication Email Templates</div>
+      </div>
+    </div>
+
+    <!-- ─── HOW TO USE ─── -->
+    <div style="background:var(--forest2);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1.75rem;margin-top:1.5rem">
+      <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;font-weight:500;margin-bottom:0.7rem">How To Use</div>
+      <ol style="color:var(--ink-soft);font-size:0.93rem;line-height:1.75;padding-left:1.4rem;margin:0">
+        <li><strong style="color:var(--ink)">Download.</strong> Click the button. File saves to your device.</li>
+        <li><strong style="color:var(--ink)">Open it.</strong> Use PowerPoint, Keynote, Google Slides, or any PDF reader.</li>
+        <li><strong style="color:var(--ink)">Customize it.</strong> Type your players' names. Add your team's voice. Make it yours.</li>
+        <li><strong style="color:var(--ink)">Print or share.</strong> Print to 8.5x11 paper. Or save as PDF and text it to your assistant coach.</li>
+      </ol>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p>
+      <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="builder.html">Practice Builder</a></li>
+        <li><a href="games.html">Games Library</a></li>
+        <li><a href="drills.html">Drill Library</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="toolkit.html">Toolkit Downloads</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">All Articles</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+</body>
+</html>
