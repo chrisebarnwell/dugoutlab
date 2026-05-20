@@ -39,13 +39,19 @@ function showDrill(id) {
   document.getElementById('modal-cue').textContent   = drill.cue || '';
   document.getElementById('modal-why').textContent   = drill.why || '';
 
-  // New enhanced fields
-  var watchEl = document.getElementById('modal-watch');
-  if (watchEl) watchEl.textContent = drill.watchFor || '';
-  var progEl = document.getElementById('modal-prog');
-  if (progEl) progEl.textContent = drill.progressions || '';
-  var regEl = document.getElementById('modal-reg');
-  if (regEl) regEl.textContent = drill.regression || '';
+  // New enhanced fields — hide the entire box if data is missing or empty
+  function setOrHide(elId, value) {
+    var el = document.getElementById(elId);
+    if (!el) return;
+    var text = (value || '').toString().trim();
+    el.textContent = text;
+    // Walk up to the nearest "box" container and hide it if empty
+    var box = el.closest('.modal-cue-box, .modal-why-box, [data-modal-box]') || el.parentElement;
+    if (box) box.style.display = text ? '' : 'none';
+  }
+  setOrHide('modal-watch', drill.watchFor);
+  setOrHide('modal-prog',  drill.progressions);
+  setOrHide('modal-reg',   drill.regression);
 
   // Sport badge
   var sportEl = document.getElementById('modal-sport');
