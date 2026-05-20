@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Real Practice We Ran &mdash; DugoutLab</title>
+<meta name="description" content="An actual 60-minute practice we ran with our 8 and 9-year-olds. Five games. Every kid moved. Every kid wanted to come back the next week.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+  .practice-flow { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+  .practice-block {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0;
+    background: var(--forest2);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .practice-block:hover { border-color: var(--gold); }
+  .practice-time {
+    background: var(--forest-deep);
+    padding: 1.25rem 0.75rem;
+    text-align: center;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .practice-time .time-range {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+  }
+  .practice-time .time-min {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.12em;
+    margin-top: 0.4rem;
+    text-transform: uppercase;
+  }
+  .practice-body {
+    padding: 1.1rem 1.25rem;
+  }
+  .practice-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .practice-name {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    margin-bottom: 0.5rem;
+  }
+  .practice-name a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  .practice-name a:hover { color: var(--gold); border-color: var(--gold); }
+  .practice-desc {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+  .practice-coach-note {
+    background: rgba(200,134,46,0.1);
+    border-left: 3px solid var(--gold);
+    padding: 0.65rem 0.85rem;
+    border-radius: 0 6px 6px 0;
+    margin-top: 0.65rem;
+    color: var(--gold-light);
+    font-size: 0.85rem;
+    line-height: 1.55;
+    font-style: italic;
+  }
+  .practice-coach-note strong { color: var(--gold); font-style: normal; font-weight: 600; }
+
+  @media (max-width: 600px) {
+    .practice-block { grid-template-columns: 72px 1fr; }
+    .practice-time { padding: 0.85rem 0.4rem; }
+    .practice-time .time-range { font-size: 0.7rem; }
+    .practice-body { padding: 0.9rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="builder.html">Build a Practice</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="drills.html">Drill Library</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="train.html">Train Solo</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="progression.html">Season Plan</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="builder.html">Build a Practice</a>
+  <a href="games.html">Games</a>
+  <a href="drills.html">Drill Library</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="train.html">Train Solo</a>
+  <a href="articles.html">Articles</a>
+  <a href="stages.html">The 4 Stages</a>
+  <a href="progression.html">Season Plan</a>
+  <a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="games.html">&larr; Games Library</a></div>
+    <div class="eyebrow">A 60-Minute Practice We Actually Ran</div>
+    <h1>Five Games. <em style="color:var(--gold);font-style:italic">One Tuesday Night.</em></h1>
+    <p style="margin-top:0.7rem">This is a real practice we ran with our 8 and 9-year-olds. Nothing exotic. Five games stitched together. Every kid moved the entire time. They asked to play it again the next week.</p>
+  </div>
+</div>
+
+<section class="section" style="background:var(--forest);padding-top:3rem">
+  <div class="container-sm">
+
+    <!-- THE TEAM SNAPSHOT -->
+    <div class="card" style="margin-bottom:2rem">
+      <div class="practice-eyebrow">Team Snapshot</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:0.5rem">
+        <div>
+          <div style="font-family:var(--serif);font-size:1.5rem;color:var(--gold);font-weight:600;letter-spacing:-0.02em">12</div>
+          <div style="font-size:0.78rem;color:var(--ink-faint);letter-spacing:0.05em">Players</div>
+        </div>
+        <div>
+          <div style="font-family:var(--serif);font-size:1.5rem;color:var(--gold);font-weight:600;letter-spacing:-0.02em">60 MIN</div>
+          <div style="font-size:0.78rem;color:var(--ink-faint);letter-spacing:0.05em">Practice length</div>
+        </div>
+        <div>
+          <div style="font-family:var(--serif);font-size:1.5rem;color:var(--gold);font-weight:600;letter-spacing:-0.02em">8&ndash;9</div>
+          <div style="font-size:0.78rem;color:var(--ink-faint);letter-spacing:0.05em">Age</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE FLOW -->
+    <div class="practice-flow">
+
+      <div class="practice-block">
+        <div class="practice-time">
+          <div class="time-range">0:00<br>0:10</div>
+          <div class="time-min">10 MIN</div>
+        </div>
+        <div class="practice-body">
+          <div class="practice-eyebrow">Opener &middot; Reset the kids</div>
+          <div class="practice-name"><a href="games.html#dodgeball">Dodgeball Warmup</a></div>
+          <div class="practice-desc">Soft balls, cones for a center line, two teams. Standard rules. Get them sweating before you start coaching.</div>
+          <div class="practice-coach-note"><strong>Coach note:</strong> Don't skip this thinking it's wasted time. The kids who show up tight and quiet are the kids who can't focus 20 minutes later. Dodgeball flushes that out.</div>
+        </div>
+      </div>
+
+      <div class="practice-block">
+        <div class="practice-time">
+          <div class="time-range">0:10<br>0:20</div>
+          <div class="time-min">10 MIN</div>
+        </div>
+        <div class="practice-body">
+          <div class="practice-eyebrow">Throwing &middot; Warm up arms with a purpose</div>
+          <div class="practice-name"><a href="games.html#backup-catch">Back-Up Catch</a></div>
+          <div class="practice-desc">Pair up. Start 15 ft apart. Every clean exchange, take a step back. Miss it, stay. Drop it, step in. Last partners standing win.</div>
+          <div class="practice-coach-note"><strong>Coach note:</strong> By the third round, they're throwing across the outfield. Their arms are warmer than any static catch drill could get them. <em>And they're competing.</em></div>
+        </div>
+      </div>
+
+      <div class="practice-block">
+        <div class="practice-time">
+          <div class="time-range">0:20<br>0:35</div>
+          <div class="time-min">15 MIN</div>
+        </div>
+        <div class="practice-body">
+          <div class="practice-eyebrow">Fielding + Throwing &middot; The skill that wins rec ball</div>
+          <div class="practice-name"><a href="games.html#two-two-relay">2-2 Relay Race</a></div>
+          <div class="practice-desc">Pairs. Sprint to the outfield. One player goes to the ball, one stops as cutoff. Throw, listen for the call, relay it home. Time them.</div>
+          <div class="practice-coach-note"><strong>Coach note:</strong> This is the most important 15 minutes of the practice. Cutoff and relay is the single biggest defensive skill at this age. Make it a race and they learn it in a week.</div>
+        </div>
+      </div>
+
+      <div class="practice-block">
+        <div class="practice-time">
+          <div class="time-range">0:35<br>0:50</div>
+          <div class="time-min">15 MIN</div>
+        </div>
+        <div class="practice-body">
+          <div class="practice-eyebrow">Fielding &middot; Soft hands, two hands, focus</div>
+          <div class="practice-name"><a href="games.html#tennis-ball-fly">Tennis Ball Fly Game</a></div>
+          <div class="practice-desc">No gloves. Coach hits tennis balls with a racket into the field. Catch one = 3 outs, inning over. Teams flip. Score by inning length.</div>
+          <div class="practice-coach-note"><strong>Coach note:</strong> The bare-hands constraint forces good catch mechanics in a way no glove drill can. And catch-equals-inning-over means every kid <em>actually goes after the ball.</em></div>
+        </div>
+      </div>
+
+      <div class="practice-block">
+        <div class="practice-time">
+          <div class="time-range">0:50<br>1:00</div>
+          <div class="time-min">10 MIN</div>
+        </div>
+        <div class="practice-body">
+          <div class="practice-eyebrow">Closer &middot; The thing they go home talking about</div>
+          <div class="practice-name"><a href="games.html#hat-tag">Hat Tag</a></div>
+          <div class="practice-desc">Tuck hats into belts. Free-for-all. Grab other hats, protect yours. Last one with a hat wins. Two rounds.</div>
+          <div class="practice-coach-note"><strong>Coach note:</strong> Closing on a laugh is everything. The kids leave the field smiling. <em>That's the moment they decide they want to come back next week.</em></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- WHAT YOU NOTICED -->
+    <div class="card" style="margin-top:2.5rem">
+      <div class="practice-eyebrow">What You'll Notice</div>
+      <div style="color:var(--ink-soft);line-height:1.7;font-size:0.95rem">
+        <p style="margin-bottom:0.85rem">There is no isolated tee work. No isolated long toss. No "everybody field 10 ground balls."</p>
+        <p style="margin-bottom:0.85rem">That's intentional. <strong>Every minute of this practice has at least one of these three things happening:</strong></p>
+        <ol style="margin:0.5rem 0 1rem 1.5rem">
+          <li style="margin-bottom:0.4rem"><strong>Competition</strong> &mdash; stakes that don't matter but feel like they do</li>
+          <li style="margin-bottom:0.4rem"><strong>Decision-making</strong> &mdash; reading, reacting, choosing</li>
+          <li style="margin-bottom:0.4rem"><strong>Multiple kids moving</strong> &mdash; never one kid working while ten stand around</li>
+        </ol>
+        <p style="margin-bottom:0">That's not a coaching theory. That's how kids actually learn baseball.</p>
+      </div>
+    </div>
+
+    <!-- LINKS -->
+    <div style="margin-top:2rem;display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center">
+      <a href="games.html" class="btn btn-primary">See all the games &rarr;</a>
+      <a href="builder.html" class="btn btn-outline">Build your own practice</a>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p>
+      <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="builder.html">Practice Builder</a></li>
+        <li><a href="games.html">Games Library</a></li>
+        <li><a href="drills.html">Drill Library</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">All Articles</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+</body>
+</html>

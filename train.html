@@ -143,7 +143,9 @@
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
     <ul class="nav-links">
-    <li><a href="builder.html">Build a Practice</a></li>
+    <li><a href="builder.html">Build a Practice</a>
+  <a href="games.html">Games</a></li>
+    <li><a href="games.html">Games</a></li>
     <li><a href="drills.html">Drill Library</a></li>
     <li><a href="lineup.html">Lineup Builder</a></li>
     <li><a href="train.html">Train Solo</a></li>
@@ -158,6 +160,7 @@
 </nav>
 <div class="mobile-menu" id="mobile-menu">
   <a href="builder.html">Build a Practice</a>
+  <a href="games.html">Games</a>
   <a href="drills.html">Drill Library</a>
   <a href="lineup.html">Lineup Builder</a>
   <a href="train.html">Train Solo</a>
@@ -175,13 +178,13 @@
     <p style="font-size:1rem;color:rgba(255,255,255,0.7);line-height:1.7;max-width:580px;margin-bottom:1.5rem">No partner. No coach. No problem. Every drill here works alone — at the field, against a wall, or in your backyard. Pick your age group and what you want to work on.</p>
     <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
       <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 1rem;font-size:0.8rem;color:rgba(255,255,255,0.75)">
-        ⚾ Works alone
+        Works alone
       </div>
       <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 1rem;font-size:0.8rem;color:rgba(255,255,255,0.75)">
-        🧢 Any age
+        Any age
       </div>
       <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 1rem;font-size:0.8rem;color:rgba(255,255,255,0.75)">
-        🎯 Real improvement
+        Real improvement
       </div>
     </div>
   </div>
@@ -237,32 +240,26 @@
       <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-light);margin-bottom:0.75rem">What Do You Want to Work On?</div>
       <div class="grid-4" id="cat-cards" style="grid-template-columns:repeat(6,1fr)">
         <div class="solo-cat-card active" onclick="soloSetCat('all',this)">
-          <div class="solo-cat-icon">⚾</div>
           <div class="solo-cat-label">Everything</div>
           <div class="solo-cat-count" id="cat-count-all"></div>
         </div>
         <div class="solo-cat-card" onclick="soloSetCat('hitting',this)">
-          <div class="solo-cat-icon">🏏</div>
           <div class="solo-cat-label">Hitting</div>
           <div class="solo-cat-count" id="cat-count-hitting"></div>
         </div>
         <div class="solo-cat-card" onclick="soloSetCat('fielding',this)">
-          <div class="solo-cat-icon">🧤</div>
           <div class="solo-cat-label">Fielding</div>
           <div class="solo-cat-count" id="cat-count-fielding"></div>
         </div>
         <div class="solo-cat-card" onclick="soloSetCat('throwing',this)">
-          <div class="solo-cat-icon">💪</div>
           <div class="solo-cat-label">Throwing</div>
           <div class="solo-cat-count" id="cat-count-throwing"></div>
         </div>
         <div class="solo-cat-card" onclick="soloSetCat('bodycontrol',this)">
-          <div class="solo-cat-icon">🏃</div>
           <div class="solo-cat-label">Body Control</div>
           <div class="solo-cat-count" id="cat-count-bodycontrol"></div>
         </div>
         <div class="solo-cat-card" onclick="soloSetCat('pitching',this)">
-          <div class="solo-cat-icon">🎯</div>
           <div class="solo-cat-label">Pitching</div>
           <div class="solo-cat-count" id="cat-count-pitching"></div>
         </div>
@@ -421,11 +418,6 @@ var soloAge = 'all';
 var soloCat = 'all';
 
 var AGE_RANGES_SOLO = { tball:[4,7], young:[7,9], middle:[10,12], teen:[13,18] };
-
-var CAT_ICONS_SOLO = {
-  hitting:'🏏', fielding:'🧤', throwing:'💪',
-  bodycontrol:'🏃', pitching:'🎯', mental:'🧠',
-};
 
 var CAT_COLORS_SOLO = {
   hitting:'#c8781a', fielding:'#2d6a4a', throwing:'#1a3a2a',

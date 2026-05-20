@@ -476,7 +476,9 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
   <ul class="nav-links">
-    <li><a href="builder.html">Build a Practice</a></li>
+    <li><a href="builder.html">Build a Practice</a>
+  <a href="games.html">Games</a></li>
+    <li><a href="games.html">Games</a></li>
     <li><a href="drills.html">Drill Library</a></li>
     <li><a href="lineup.html" class="active">Lineup Builder</a></li>
     <li><a href="train.html">Train Solo</a></li>
@@ -491,6 +493,7 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
 </nav>
 <div class="mobile-menu" id="mobile-menu">
   <a href="builder.html">Build a Practice</a>
+  <a href="games.html">Games</a>
   <a href="drills.html">Drill Library</a>
   <a href="lineup.html">Lineup Builder</a>
   <a href="train.html">Train Solo</a>
@@ -587,17 +590,17 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
 
     <div class="priority-cards" id="priority-cards">
       <div class="priority-card active" onclick="selectPriority('win',this)">
-        <div class="pc-icon">🏆</div>
+        <div class="pc-icon" style="font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase">MODE 01</div>
         <div class="pc-name">Win Mode</div>
         <div class="pc-desc">Tier 1 stays at premium IF positions. Tier 2/3 rotate through OF and EH.</div>
       </div>
       <div class="priority-card" onclick="selectPriority('balanced',this)">
-        <div class="pc-icon">⚖️</div>
+        <div class="pc-icon" style="font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase">MODE 02</div>
         <div class="pc-name">Balanced</div>
         <div class="pc-desc">Tier 1 gets IF priority but Tier 2 gets meaningful IF reps.</div>
       </div>
       <div class="priority-card" onclick="selectPriority('dev',this)">
-        <div class="pc-icon">📈</div>
+        <div class="pc-icon" style="font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase">MODE 03</div>
         <div class="pc-name">Development</div>
         <div class="pc-desc">Everyone rotates through IF. 3B used as a development slot.</div>
       </div>
@@ -746,9 +749,9 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
     <div class="lineup-header">
       <h3 id="lineup-title">Lineup Matrix</h3>
       <div class="lineup-actions">
-        <button class="btn-print" onclick="window.print()">🖨 Print</button>
-        <button class="btn-pdf" onclick="downloadPDF()">⬇ PDF</button>
-        <button class="btn-print" onclick="resetWizard()">↺ New Lineup</button>
+        <button class="btn-print" onclick="window.print()">Print</button>
+        <button class="btn-pdf" onclick="downloadPDF()">Download PDF</button>
+        <button class="btn-print" onclick="resetWizard()">New Lineup</button>
       </div>
     </div>
     <div class="lineup-table-wrap">
@@ -1075,7 +1078,7 @@ function goToStep(n) {
   document.getElementById('btn-prev').style.visibility = n > 1 ? 'visible' : 'hidden';
   var nextBtn = document.getElementById('btn-next');
   if (n === state.totalSteps) {
-    nextBtn.textContent = '✦ Generate Lineup';
+    nextBtn.textContent = 'Generate Lineup';
     nextBtn.className = 'btn-generate';
     nextBtn.onclick = generateLineup;
   } else {

@@ -3,153 +3,176 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12-Week Season Plan — DugoutLab</title>
-<meta name="description" content="A research-based 12-week practice progression for youth baseball and softball coaches. Weeks 1-4 introduce skills. Weeks 5-8 develop them. Weeks 9-12 apply them in game situations.">
+<title>The 12-Week Season &mdash; DugoutLab</title>
+<meta name="description" content="A philosophy for building a youth baseball season. Five phases, twelve weeks. Less prescription, more theory. Plus a printable PDF for your clipboard.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 <style>
-.phase-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-}
-.phase-num {
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--serif);
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: white;
-  flex-shrink: 0;
-}
-.phase-title { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; color: var(--forest); }
-.phase-sub { font-size: 0.82rem; color: var(--text-light); }
+  .season-timeline {
+    position: relative;
+    margin-top: 2rem;
+    padding-left: 2rem;
+    border-left: 2px solid var(--rule);
+  }
+  .phase-block {
+    position: relative;
+    padding-bottom: 2.5rem;
+  }
+  .phase-block:last-child { padding-bottom: 0; }
+  .phase-block::before {
+    content: '';
+    position: absolute;
+    left: -2.55rem;
+    top: 0.5rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 3px solid var(--forest);
+    box-shadow: 0 0 0 2px var(--gold);
+  }
+  .phase-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .phase-name {
+    font-family: var(--serif);
+    font-size: 1.65rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin-bottom: 0.5rem;
+  }
+  .phase-name em { color: var(--gold); font-style: italic; font-weight: 500; }
+  .phase-weeks {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+  }
+  .phase-thesis {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.08rem;
+    color: var(--ink);
+    line-height: 1.55;
+    margin-bottom: 1.1rem;
+    padding-left: 0.85rem;
+    border-left: 2px solid var(--gold);
+  }
+  .phase-body {
+    color: var(--ink-soft);
+    line-height: 1.7;
+    font-size: 0.98rem;
+    margin-bottom: 1rem;
+  }
+  .phase-body strong { color: var(--ink); font-weight: 600; }
+  .phase-body em { color: var(--gold-light); font-style: italic; }
 
-.week-row {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 0;
-  margin-bottom: 0.5rem;
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  overflow: hidden;
-}
-.week-num {
-  background: var(--forest);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 0.75rem 0.5rem;
-  text-align: center;
-}
-.week-body {
-  padding: 0.75rem 1rem;
-  background: white;
-}
-.week-focus {
-  font-family: var(--serif);
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--forest);
-  margin-bottom: 0.25rem;
-}
-.week-drills {
-  font-size: 0.78rem;
-  color: var(--text-mid);
-  line-height: 1.5;
-}
-.week-drills strong { color: var(--forest2); }
-.week-ratio {
-  display: flex;
-  gap: 4px;
-  margin-top: 0.5rem;
-  height: 8px;
-  border-radius: 4px;
-  overflow: hidden;
-}
-.ratio-bar { height: 100%; border-radius: 0; }
+  .phase-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  @media (max-width: 600px) { .phase-cards { grid-template-columns: 1fr; } }
+  .phase-mini {
+    background: var(--forest2);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+  }
+  .phase-mini-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .phase-mini-text {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
 
-.ratio-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  margin-bottom: 1.5rem;
-}
-.ratio-item {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.72rem;
-  color: var(--text-mid);
-}
-.ratio-dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
+  .pdf-strip {
+    background: var(--forest-deep);
+    border: 1px solid var(--gold);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  .pdf-strip h3 {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.015em;
+  }
+  .pdf-strip p {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 480px;
+  }
 
-.principle-card {
-  background: white;
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--forest2);
-  border-radius: 0 8px 8px 0;
-  padding: 0.9rem 1.1rem;
-  margin-bottom: 0.75rem;
-}
-.principle-card h4 {
-  font-family: var(--serif);
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--forest);
-  margin-bottom: 0.3rem;
-}
-.principle-card p {
-  font-size: 0.83rem;
-  color: var(--text-mid);
-  line-height: 1.55;
-  margin: 0;
-}
-
-.drill-chip {
-  display: inline-block;
-  background: var(--cream);
-  border: 1px solid var(--border2);
-  border-radius: 5px;
-  padding: 0.15rem 0.55rem;
-  font-size: 0.72rem;
-  color: var(--text-mid);
-  margin: 1px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.drill-chip:hover {
-  background: var(--forest);
-  color: white;
-  border-color: var(--forest);
-}
+  @media print {
+    .nav, .footer, .mobile-menu, .pdf-strip, .breadcrumb, .nav-mobile-btn,
+    .philosophy-bar { display: none !important; }
+    body { background: white; color: black; }
+    .page-hero { padding: 1rem 0 1.5rem; background: white !important; border: none; }
+    .page-hero h1, .page-hero p { color: black !important; }
+    .page-hero h1 em { color: #5b574c !important; }
+    .page-hero .eyebrow { color: #5b574c !important; }
+    .season-timeline { border-left-color: #ccc; }
+    .phase-block::before { background: #5b574c !important; box-shadow: 0 0 0 2px #5b574c; border-color: white; }
+    .phase-name, .phase-eyebrow { color: black !important; }
+    .phase-name em { color: #5b574c !important; }
+    .phase-weeks { color: #5b574c !important; }
+    .phase-thesis { color: black !important; border-left-color: #5b574c; }
+    .phase-body { color: #333 !important; }
+    .phase-body strong { color: black !important; }
+    .phase-body em { color: #5b574c !important; }
+    .phase-mini { background: #f5f5f5 !important; border-color: #ccc !important; }
+    .phase-mini-label { color: #5b574c !important; }
+    .phase-mini-text { color: #333 !important; }
+    .section { padding: 0; }
+    .container, .container-sm { max-width: 100%; }
+    .card { background: white !important; border-color: #ccc !important; }
+    a { color: #333 !important; text-decoration: none !important; }
+  }
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
-    <ul class="nav-links">
+  <ul class="nav-links">
     <li><a href="builder.html">Build a Practice</a></li>
+    <li><a href="games.html">Games</a></li>
     <li><a href="drills.html">Drill Library</a></li>
     <li><a href="lineup.html">Lineup Builder</a></li>
     <li><a href="train.html">Train Solo</a></li>
     <li><a href="articles.html">Articles</a></li>
     <li><a href="stages.html">The 4 Stages</a></li>
-    <li><a href="progression.html">Season Plan</a></li>
+    <li><a href="progression.html" class="active">Season Plan</a></li>
     <li><a href="about.html">About</a></li>
   </ul>
   <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
@@ -158,6 +181,7 @@
 </nav>
 <div class="mobile-menu" id="mobile-menu">
   <a href="builder.html">Build a Practice</a>
+  <a href="games.html">Games</a>
   <a href="drills.html">Drill Library</a>
   <a href="lineup.html">Lineup Builder</a>
   <a href="train.html">Train Solo</a>
@@ -169,406 +193,200 @@
 
 <div class="page-hero">
   <div class="page-hero-inner">
-    <div class="eyebrow">Season Structure</div>
-    <h1>12-Week Season Plan</h1>
-    <p>Skills introduced in weeks 1-4 must be developed in weeks 5-8 and applied in games in weeks 9-12. This sequence is not optional — it is how the brain builds durable athletic skill.</p>
+    <div class="breadcrumb"><a href="index.html">&larr; Home</a></div>
+    <div class="eyebrow">Season Philosophy</div>
+    <h1>The 12-Week <em style="color:var(--gold);font-style:italic">Season</em></h1>
+    <p style="margin-top:0.7rem">This is not a prescription. It's a way to think about pacing a season. Five phases, twelve weeks, one goal: a kid who wants to come back next year.</p>
   </div>
 </div>
 
-<section class="section section-cream">
-  <div class="container">
+<section class="section" style="background:var(--forest)">
+  <div class="container-sm">
 
-    <!-- Why progression matters -->
-    <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:2rem">
-      <div class="section-label mb-2">The Research Behind This Plan</div>
-      <div class="grid-3" style="gap:1rem">
-        <div class="principle-card">
-          <h4>Introduce before you develop</h4>
-          <p>Players who are introduced to a skill in a blocked, structured way first — then moved to variable practice — retain more than players who start with variable practice. The sequence matters.</p>
-        </div>
-        <div class="principle-card">
-          <h4>Transfer requires game context</h4>
-          <p>Skills practiced only in drills do not automatically transfer to games. The final phase of any skill must include game-like decision-making, pressure, and consequences to become durable.</p>
-        </div>
-        <div class="principle-card">
-          <h4>Revisit, don't re-introduce</h4>
-          <p>A skill from week 2 should reappear in weeks 6 and 10 — each time at a higher challenge level. This spaced revisiting is how long-term retention is built, according to motor learning research.</p>
-        </div>
-      </div>
+    <!-- INTRO -->
+    <div class="card" style="margin-bottom:2rem;border-left:3px solid var(--gold)">
+      <div class="phase-eyebrow">Before You Start</div>
+      <p style="color:var(--ink-soft);line-height:1.7;font-size:1rem;margin:0">
+        Every team is different. Every age group is different. The team you have this year is not the team you had last year. <strong style="color:var(--ink)">A good season plan is not a calendar of drills. It is a way of pacing the work so your kids show up to game 12 still loving it.</strong> The phases below are the arc. The drills you choose inside each phase are yours to pick.
+      </p>
     </div>
 
-    <!-- Ratio legend -->
-    <div class="ratio-legend">
-      <div class="section-label" style="width:100%;margin-bottom:0.5rem">Practice Time Ratio by Phase</div>
-      <div class="ratio-item"><div class="ratio-dot" style="background:#52b788"></div>Warm-Up</div>
-      <div class="ratio-item"><div class="ratio-dot" style="background:#2d6a4a"></div>Skill Introduction</div>
-      <div class="ratio-item"><div class="ratio-dot" style="background:#1a3a2a"></div>Skill Development</div>
-      <div class="ratio-item"><div class="ratio-dot" style="background:#c8781a"></div>Game Application</div>
-      <div class="ratio-item"><div class="ratio-dot" style="background:#888"></div>Closing</div>
+    <!-- TIMELINE -->
+    <div class="season-timeline">
+
+      <!-- PHASE 1 -->
+      <div class="phase-block">
+        <div class="phase-eyebrow">Phase 01</div>
+        <h2 class="phase-name">Establish the <em>Environment</em></h2>
+        <div class="phase-weeks">WEEKS 1 &ndash; 2</div>
+        <p class="phase-thesis">Before they trust the work, they have to trust the room.</p>
+        <p class="phase-body">
+          The first two weeks are not for skill work. They are for figuring out who you have, what they know, and whether they want to be here. You're building the social fabric of the team. <strong>Do that wrong and nothing you teach in weeks 3 through 12 will land.</strong>
+        </p>
+        <p class="phase-body">
+          Play more games than you drill. Let them be messy. Pay close attention to which kids gravitate toward each other and which kids look like they want to disappear. Your job is to make the kid who's already deciding he doesn't belong here decide that he does.
+        </p>
+        <div class="phase-cards">
+          <div class="phase-mini">
+            <div class="phase-mini-label">What To Run</div>
+            <div class="phase-mini-text">Warmup games. Cross-training (football catch, hat tag). Light fielding. Easy throwing partners.</div>
+          </div>
+          <div class="phase-mini">
+            <div class="phase-mini-label">What To Watch For</div>
+            <div class="phase-mini-text">Who's quiet. Who's hiding. Who's connected. Who's the alpha. Who needs the most help.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 2 -->
+      <div class="phase-block">
+        <div class="phase-eyebrow">Phase 02</div>
+        <h2 class="phase-name">Variability Over <em>Volume</em></h2>
+        <div class="phase-weeks">WEEKS 3 &ndash; 5</div>
+        <p class="phase-thesis">Random practice feels messy. It is. It also works.</p>
+        <p class="phase-body">
+          Now you start the skill work. But you do it the right way. <strong>Most coaches default to blocked practice</strong> &mdash; the same drill 20 times, same tee height, same swing. It looks productive. Kids feel like they're improving. The research is unambiguous: <em>blocked reps create short-term wins that don't transfer to games.</em>
+        </p>
+        <p class="phase-body">
+          Instead, vary the inputs. Hit off the tee, off a coach toss, off live BP, all in the same hour. Throw to first, throw to second, throw home. <strong>Force the brain to choose, not memorize.</strong> Kids feel like they're not getting better. The data says otherwise.
+        </p>
+        <div class="phase-cards">
+          <div class="phase-mini">
+            <div class="phase-mini-label">What To Run</div>
+            <div class="phase-mini-text">Mixed-skill stations. Decision drills. Read-and-react fielding. Live-pitch BP if your kids can take it.</div>
+          </div>
+          <div class="phase-mini">
+            <div class="phase-mini-label">What To Resist</div>
+            <div class="phase-mini-text">The urge to drill one skill until it "looks right." Looking right at practice and working in games are different things.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 3 -->
+      <div class="phase-block">
+        <div class="phase-eyebrow">Phase 03</div>
+        <h2 class="phase-name">Small-Sided <em>Competition</em></h2>
+        <div class="phase-weeks">WEEKS 6 &ndash; 8</div>
+        <p class="phase-thesis">Pressure is a skill. You can't teach it on a chalkboard.</p>
+        <p class="phase-body">
+          By midseason your kids can swing the bat, catch a ball, and throw to the right base. What they cannot yet do is <strong>execute under pressure.</strong> That's not a character trait. It's a learned response, and it has to be trained.
+        </p>
+        <p class="phase-body">
+          Introduce stakes. 3-on-3 scrimmages with scoring. Inside-the-park derby with a time limit. Relay races between teams. <em>Anything where the kids care who wins.</em> Pressure scales naturally when there's something on the line and the unit is small enough that every player matters.
+        </p>
+        <div class="phase-cards">
+          <div class="phase-mini">
+            <div class="phase-mini-label">What To Run</div>
+            <div class="phase-mini-text">2-vs-2 relay races. Mini scrimmages. Tennis ball fly game. Anything bracketed and timed.</div>
+          </div>
+          <div class="phase-mini">
+            <div class="phase-mini-label">The Trap</div>
+            <div class="phase-mini-text">Don't make winning the reward. Make the effort the reward. Outcome-based praise creates outcome-anxiety.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 4 -->
+      <div class="phase-block">
+        <div class="phase-eyebrow">Phase 04</div>
+        <h2 class="phase-name">Game Situations <em>Under Stress</em></h2>
+        <div class="phase-weeks">WEEKS 9 &ndash; 10</div>
+        <p class="phase-thesis">Replicate the moments that decide games. Repeatedly.</p>
+        <p class="phase-body">
+          Now connect the dots. Your kids have skills. They've felt pressure in small-sided games. <strong>Time to put them into the actual situations that decide rec ball games.</strong>
+        </p>
+        <p class="phase-body">
+          Runner on second, two outs, ground ball to short. Bases loaded, no outs, fly ball to right. <em>You build the script. Set the situation. Run it. Stop. Reset. Run it again.</em> Not to drill the play into memorization. To let them feel what that moment feels like before it shows up in a game where everyone is watching.
+        </p>
+        <div class="phase-cards">
+          <div class="phase-mini">
+            <div class="phase-mini-label">What To Run</div>
+            <div class="phase-mini-text">Scenario reps. Live baserunning. Full-defense situations. Pressure scrimmages.</div>
+          </div>
+          <div class="phase-mini">
+            <div class="phase-mini-label">Coach Note</div>
+            <div class="phase-mini-text">Stop calling out mistakes mid-play. Let them play it out. Coach in the gap between reps, not over the top of them.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 5 -->
+      <div class="phase-block">
+        <div class="phase-eyebrow">Phase 05</div>
+        <h2 class="phase-name">Pull Back. <em>Play.</em></h2>
+        <div class="phase-weeks">WEEKS 11 &ndash; 12</div>
+        <p class="phase-thesis">If they don't want to come back next year, none of this mattered.</p>
+        <p class="phase-body">
+          The last two weeks are not for new skills. They're for joy. Reinforce what you've built. <strong>Run the games they ask for.</strong> Run a wiffleball home run derby. Run an end-of-season Players vs. Parents game with the parents wearing handicaps.
+        </p>
+        <p class="phase-body">
+          This is the phase coaches mess up most. The temptation to "get sharp for playoffs" is real. Resist it. <em>The kid who hits .200 all year and goes 0-for-3 in the championship has to leave the field smiling, or you lose them.</em> The kid who has fun in the last two weeks of the season is the kid who signs up next year.
+        </p>
+        <div class="phase-cards">
+          <div class="phase-mini">
+            <div class="phase-mini-label">What To Run</div>
+            <div class="phase-mini-text">Their favorite games. Water balloon fights. Players vs. Old Farts. Anything you've earned with them.</div>
+          </div>
+          <div class="phase-mini">
+            <div class="phase-mini-label">What To Skip</div>
+            <div class="phase-mini-text">Heavy mechanics work. New systems. Anything that signals "the stakes just got higher."</div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- PHASE 1 -->
-    <div style="margin-bottom:2.5rem">
-      <div class="phase-header">
-        <div class="phase-num" style="background:#2d6a4a">1</div>
-        <div>
-          <div class="phase-title">Introduction Phase — Weeks 1 to 4</div>
-          <div class="phase-sub">Build trust, establish habits, introduce one skill at a time</div>
-        </div>
-      </div>
-
-      <div style="background:rgba(45,106,74,0.06);border:1px solid rgba(45,106,74,0.2);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1rem;font-size:0.88rem;color:var(--text-mid);line-height:1.65">
-        <strong style="color:var(--forest2)">What this phase is for:</strong> Players don't know each other yet. They don't know your expectations. They haven't built the trust that makes them willing to try hard things and fail in front of peers. Your job in weeks 1-4 is to create a safe, energetic environment and introduce one key skill per practice — not five. The mistake ritual gets established here. The "where's the play" habit starts here.
-      </div>
-
-      <div class="week-row">
-        <div class="week-num" style="background:#2d6a4a">Week 1</div>
-        <div class="week-body">
-          <div class="week-focus">Who we are + Warm-Up games + Throwing fundamentals</div>
-          <div class="week-drills">
-            Open with <strong>Blob Tag</strong> for 7 minutes — sets the tone immediately.
-            Teach the <strong>Mistake Ritual</strong> as a team — practice it deliberately.
-            Run <strong>Wall Target Throwing</strong> (acquisition).
-            Close with <strong>Three-Team Wiffle Ball</strong> — compressed field, coach pitch.
-            One cue only this week: <em>"Throw to a spot, not at a person."</em>
-          </div>
-          <div class="week-ratio">
-            <div class="ratio-bar" style="width:15%;background:#52b788"></div>
-            <div class="ratio-bar" style="width:25%;background:#2d6a4a"></div>
-            <div class="ratio-bar" style="width:15%;background:#1a3a2a"></div>
-            <div class="ratio-bar" style="width:40%;background:#c8781a"></div>
-            <div class="ratio-bar" style="width:5%;background:#888"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="week-row">
-        <div class="week-num" style="background:#2d6a4a">Week 2</div>
-        <div class="week-body">
-          <div class="week-focus">Fielding basics + Secondary lead introduction</div>
-          <div class="week-drills">
-            <strong>Color Tag</strong> warm-up (reaction time cue).
-            <strong>Scatter Grounders</strong> — random delivery, no lines, constant movement.
-            <strong>Secondary Lead Reads</strong> — first introduction of the concept.
-            Close with <strong>Five-Pitch Game</strong>.
-            One cue only: <em>"Get your body in front of it."</em>
-          </div>
-          <div class="week-ratio">
-            <div class="ratio-bar" style="width:13%;background:#52b788"></div>
-            <div class="ratio-bar" style="width:22%;background:#2d6a4a"></div>
-            <div class="ratio-bar" style="width:20%;background:#1a3a2a"></div>
-            <div class="ratio-bar" style="width:40%;background:#c8781a"></div>
-            <div class="ratio-bar" style="width:5%;background:#888"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="week-row">
-        <div class="week-num" style="background:#2d6a4a">Week 3</div>
-        <div class="week-body">
-          <div class="week-focus">Hitting contact + "Where's the play?" habit</div>
-          <div class="week-drills">
-            <strong>Rock Paper Scissors Sprint</strong> — reactive starts.
-            <strong>Two-Location Tee Work</strong> — introduce inside and outside locations.
-            Introduce <strong>"Where's the play?"</strong> question before every pitch in all drills.
-            Close with <strong>Three-Team Small-Sided Game</strong> — enforcing the pre-pitch question.
-            One cue only: <em>"Inside: pull it early. Outside: stay back."</em>
-          </div>
-          <div class="week-ratio">
-            <div class="ratio-bar" style="width:13%;background:#52b788"></div>
-            <div class="ratio-bar" style="width:20%;background:#2d6a4a"></div>
-            <div class="ratio-bar" style="width:22%;background:#1a3a2a"></div>
-            <div class="ratio-bar" style="width:40%;background:#c8781a"></div>
-            <div class="ratio-bar" style="width:5%;background:#888"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="week-row">
-        <div class="week-num" style="background:#2d6a4a">Week 4</div>
-        <div class="week-body">
-          <div class="week-focus">Baserunning basics + First base hustle</div>
-          <div class="week-drills">
-            <strong>Tail Tag</strong> warm-up.
-            <strong>Hustle to First Competition</strong> — run through the bag, look right.
-            <strong>Rounding Bases Race</strong> — introduce the arc with cone path.
-            Revisit <strong>Scatter Grounders</strong> with a decision added: "Call where you're throwing before you catch it."
-            Close with <strong>Baserunning Chaos Game</strong>.
-            Closing circle question: <em>"What did you learn about yourself this month?"</em>
-          </div>
-          <div class="week-ratio">
-            <div class="ratio-bar" style="width:13%;background:#52b788"></div>
-            <div class="ratio-bar" style="width:18%;background:#2d6a4a"></div>
-            <div class="ratio-bar" style="width:24%;background:#1a3a2a"></div>
-            <div class="ratio-bar" style="width:40%;background:#c8781a"></div>
-            <div class="ratio-bar" style="width:5%;background:#888"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PHASE 2 -->
-    <div style="margin-bottom:2.5rem">
-      <div class="phase-header">
-        <div class="phase-num" style="background:#c8781a">2</div>
-        <div>
-          <div class="phase-title">Development Phase — Weeks 5 to 8</div>
-          <div class="phase-sub">Add variability, increase challenge, build decision-making</div>
-        </div>
-      </div>
-
-      <div style="background:rgba(200,120,26,0.06);border:1px solid rgba(200,120,26,0.2);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1rem;font-size:0.88rem;color:var(--text-mid);line-height:1.65">
-        <strong style="color:var(--gold)">What this phase is for:</strong> Every drill from Phase 1 comes back — but harder, faster, more random, or with a decision attached. The 70% success rule applies here: if every player succeeds on every rep, make it harder. This is where real skill development happens. The team should feel a step change in difficulty from week 4 to week 5.
-      </div>
-
-      <div class="week-row">
-        <div class="week-num" style="background:#c8781a">Week 5</div>
-        <div class="week-body">
-          <div class="week-focus">Variable fielding + Rapid fire reps</div>
-          <div class="week-drills">
-            <strong>Mirror Partner Drill</strong> warm-up.
-            <strong>Rapid Fire Grounders</strong> — 10 consecutive, reset fast, 3 sets.
-            <strong>Short Hop Gauntlet</strong> — the hardest fielding skill, introduced now that they have the base.
-            <strong>Two-Out Running Reads</strong> — revisit baserunning with a rule attached.
-            Close with <strong>Situational Game</strong> — real scenarios, pre-set by coach.
-            One cue: <em>"Attack the hop — don't wait for it."</em>
-          </div>
-          <div class="week-ratio">
-            <div class="ratio-bar" style="width:13%;background:#52b788"></div>
-            <div class="ratio-bar" style="width:12%;background:#2d6a4a"></div>
-            <div class="ratio-bar" style="width:30%;background:#1a3a2a"></div>
-            <div class="ratio-bar" style="width:40%;background:#c8781a"></div>
-            <div class="ratio-bar" style="width:5%;background:#888"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="week-row">
-        <div class="week-num" style="background:#c8781a">Week 6</div>
-        <div class="week-body">
-          <div class="week-focus">Hitting under pressure + Count awareness</div>
-          <div class="week-drills">
-            <strong>Dynamic Stretch Circuit</strong> warm-up — athletes, not just players.
-            <strong>Count-Based Hitting</strong> — announce the count, let them adjust approach.
-            <strong>Soft Toss Reaction</strong> — include the fake toss to build decision-making.
-            Revisit <strong>Wall Target Throwing</strong> at longer distance (30 then 40 feet).
-            Close with <strong>Game At-Bat Simulation</strong> — announced scenarios.
-            One cue: <em>"What's your job in this count?"</em>
-          </div>
-          <div class="week-ratio">
-            <div class="ratio-bar" style="width:13%;background:#52b788"></div>
-            <div class="ratio-bar" style="width:10%;background:#2d6a4a"></div>
-            <div class="ratio-bar" style="width:32%;background:#1a3a2a"></div>
-            <div class="ratio-bar" style="width:40%;background:#c8781a"></div>
-            <div class="ratio-bar" style="width:5%;background:#888"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="week-row">
-        <div class="week-num" style="background:#c8781a">Week 7</div>
-        <div class="week-body">
-          <div class="week-focus">Cutoffs and communication + Outfield development</div>
-          <div class="week-drills">
-            <strong>Bandits</strong> warm-up — direction change and lateral speed.
-            <strong>Pop Fly Zone</strong> — communication drill, call it early and loud.
-            <strong>Triangle Cutoff Drill</strong> — introduce cutoff alignment and the cut call.
-            <strong>Crow Hop Relay</strong> — every throw must include the crow hop.
-            Close with <strong>Defense-Only Competitive Game</strong> — points for correct decisions.
-            One cue: <em>"Call it early — loud and twice."</em>
-          </div>
-          <div class="week-ratio">
-            <div class="ratio-bar" style="width:13%;background:#52b788"></div>
-            <div class="ratio-bar" style="width:10%;background:#2d6a4a"></div>
-            <div class="ratio-bar" style="width:32%;background:#1a3a2a"></div>
-            <div class="ratio-bar" style="width:40%;background:#c8781a"></div>
-            <div class="ratio-bar" style="width:5%;background:#888"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="week-row">
-        <div class="week-num" style="background:#c8781a">Week 8</div>
-        <div class="week-body">
-          <div class="week-focus">Dirt ball reads + Secondary lead mastery</div>
-          <div class="week-drills">
-            <strong>Rock Paper Scissors Sprint</strong> revisited — faster reads.
-            <strong>Dirt Ball Reads</strong> — the highest-value baserunning opportunity almost never practiced.
-            <strong>Jump Read Drill</strong> — pitcher front hip as the read cue.
-            <strong>Charge and Field</strong> — slow rollers, barehand if needed.
-            Close with <strong>Hit and Run Live</strong> — trust between hitter and runner.
-            Closing circle: <em>"What is one baserunning read you are now confident in?"</em>
-          </div>
-          <div class="week-ratio">
-            <div class="ratio-bar" style="width:13%;background:#52b788"></div>
-            <div class="ratio-bar" style="width:8%;background:#2d6a4a"></div>
-            <div class="ratio-bar" style="width:34%;background:#1a3a2a"></div>
-            <div class="ratio-bar" style="width:40%;background:#c8781a"></div>
-            <div class="ratio-bar" style="width:5%;background:#888"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PHASE 3 -->
-    <div style="margin-bottom:2.5rem">
-      <div class="phase-header">
-        <div class="phase-num" style="background:#1a3a2a">3</div>
-        <div>
-          <div class="phase-title">Game Application Phase — Weeks 9 to 12</div>
-          <div class="phase-sub">Real decisions, real pressure, real consequences</div>
-        </div>
-      </div>
-
-      <div style="background:rgba(26,58,42,0.06);border:1px solid rgba(26,58,42,0.2);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1rem;font-size:0.88rem;color:var(--text-mid);line-height:1.65">
-        <strong style="color:var(--forest)">What this phase is for:</strong> Game transfer. Everything from the previous 8 weeks should now appear in game-like situations with real pressure. Coach instruction drops significantly. The game teaches. Your job is to set up the situation, let them play it out, and ask one question after. Less talking. More playing.
-      </div>
-
-      <div class="week-row">
-        <div class="week-num" style="background:#1a3a2a">Week 9</div>
-        <div class="week-body">
-          <div class="week-focus">Situational scrimmage + First and third</div>
-          <div class="week-drills">
-            <strong>Dynamic Stretch Circuit</strong> + <strong>Visualization</strong> — 2 minutes, eyes closed, one at-bat.
-            <strong>First and Third Situations</strong> — the most confusing play, made live.
-            <strong>21 Outs Game</strong> — real rules, real score, coach makes one observation per inning.
-            No dedicated drill stations this week — the game is the drill.
-            One debrief question only: <em>"What did the defense do well in that inning?"</em>
-          </div>
-          <div class="week-ratio">
-            <div class="ratio-bar" style="width:10%;background:#52b788"></div>
-            <div class="ratio-bar" style="width:5%;background:#2d6a4a"></div>
-            <div class="ratio-bar" style="width:15%;background:#1a3a2a"></div>
-            <div class="ratio-bar" style="width:65%;background:#c8781a"></div>
-            <div class="ratio-bar" style="width:5%;background:#888"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="week-row">
-        <div class="week-num" style="background:#1a3a2a">Week 10</div>
-        <div class="week-body">
-          <div class="week-focus">Pressure hitting + Pickle situations</div>
-          <div class="week-drills">
-            <strong>Mirror Partner Drill</strong> warm-up — reaction time at its peak.
-            <strong>Three-Pitch At-Bats</strong> — hitter states their plan before each pitch.
-            <strong>Pickle (Rundown)</strong> — run 20 repetitions, keep score.
-            Close with <strong>Situational Game</strong> — use scenarios from real games this season.
-            Coach speaks only between innings. One observation per team.
-          </div>
-          <div class="week-ratio">
-            <div class="ratio-bar" style="width:10%;background:#52b788"></div>
-            <div class="ratio-bar" style="width:5%;background:#2d6a4a"></div>
-            <div class="ratio-bar" style="width:15%;background:#1a3a2a"></div>
-            <div class="ratio-bar" style="width:65%;background:#c8781a"></div>
-            <div class="ratio-bar" style="width:5%;background:#888"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="week-row">
-        <div class="week-num" style="background:#1a3a2a">Week 11</div>
-        <div class="week-body">
-          <div class="week-focus">Full game simulation + Mental game</div>
-          <div class="week-drills">
-            <strong>Pre-Pitch Routine Training</strong> — build the at-bat and pitching routines explicitly.
-            <strong>Live Scrimmage — Full Rules</strong> — 3 complete innings, real score.
-            Between innings: only one team-level observation from coach. Players debrief each other.
-            Close with <strong>Process Goal Setting</strong> — for the upcoming final game week.
-          </div>
-          <div class="week-ratio">
-            <div class="ratio-bar" style="width:8%;background:#52b788"></div>
-            <div class="ratio-bar" style="width:5%;background:#2d6a4a"></div>
-            <div class="ratio-bar" style="width:12%;background:#1a3a2a"></div>
-            <div class="ratio-bar" style="width:70%;background:#c8781a"></div>
-            <div class="ratio-bar" style="width:5%;background:#888"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="week-row">
-        <div class="week-num" style="background:#1a3a2a">Week 12</div>
-        <div class="week-body">
-          <div class="week-focus">Season finale — celebrate, play, reflect</div>
-          <div class="week-drills">
-            Players pick the warm-up game — their favorite from the season.
-            <strong>Wiffle Ball Tournament</strong> — round-robin, real score, no coach instruction.
-            Close with <strong>Water Balloon Fight</strong> — no exceptions.
-            Final closing circle question: <em>"What is one thing you can do now that you couldn't do in week 1?"</em>
-            Coach says one specific, behavioral positive thing to every player individually before they leave.
-          </div>
-          <div class="week-ratio">
-            <div class="ratio-bar" style="width:10%;background:#52b788"></div>
-            <div class="ratio-bar" style="width:3%;background:#2d6a4a"></div>
-            <div class="ratio-bar" style="width:7%;background:#1a3a2a"></div>
-            <div class="ratio-bar" style="width:75%;background:#c8781a"></div>
-            <div class="ratio-bar" style="width:5%;background:#888"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CTA -->
-    <div style="background:var(--forest);border-radius:var(--radius);padding:1.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+    <!-- PDF DOWNLOAD STRIP -->
+    <div class="pdf-strip">
       <div>
-        <div style="font-family:var(--serif);font-size:1.1rem;font-weight:700;color:white;margin-bottom:0.4rem">Build any week's practice now</div>
-        <p style="font-size:0.88rem;color:rgba(255,255,255,0.7);margin:0">The practice builder uses this framework automatically — it matches drills to your situation and season phase.</p>
+        <h3>Print it for your clipboard</h3>
+        <p>One-page printable version of the season plan. No drill assignments &mdash; just the framework. Stick it on your fridge or in your bag.</p>
       </div>
-      <a href="builder.html" class="btn btn-primary">Open Practice Builder</a>
+      <button onclick="window.print()" class="btn btn-primary" style="white-space:nowrap">Print / Save as PDF</button>
+    </div>
+
+    <!-- THE BIG IDEA -->
+    <div class="card" style="margin-top:2rem">
+      <div class="phase-eyebrow">The Big Idea</div>
+      <p style="color:var(--ink-soft);line-height:1.7;font-size:1rem;margin:0">
+        The arc is the point. Phases 1 and 5 are about <strong style="color:var(--ink)">the kid</strong>. Phases 2, 3, and 4 are about <strong style="color:var(--ink)">the skill</strong>. Coaches who skip the bookends and grind on skills all season end the year with kids who hate baseball. <em style="color:var(--gold-light);font-style:italic">Don't be that coach.</em>
+      </p>
     </div>
 
   </div>
 </section>
 
-<!-- Drill Modal -->
-<div class="modal-overlay" id="drill-modal" onclick="if(event.target===this)closeDrillModal()">
-  <div class="modal-box">
-    <div class="modal-header" id="modal-header">
-      <div>
-        <div class="modal-header-cat" id="modal-cat"></div>
-        <div class="modal-header-name" id="modal-name"></div>
-      </div>
-      <button class="modal-close" onclick="closeDrillModal()">&#x2715;</button>
-    </div>
-    <div class="modal-meta">
-      <span class="modal-pill" id="modal-dur"></span>
-      <span class="modal-pill" id="modal-players"></span>
-      <span class="modal-pill" id="modal-equip"></span>
-      <span class="modal-pill" id="modal-sport" style="background:#f0f4ff;color:#1A5276;font-weight:700"></span>
-    </div>
-    <div class="modal-body">
-      <div><div class="modal-field-label">Setup</div><div class="modal-field-text" id="modal-setup"></div></div>
-      <div><div class="modal-field-label">How to Run It</div><div class="modal-field-text" id="modal-exec"></div></div>
-      <div class="modal-cue-box"><div class="modal-field-label">Coaching Cue</div><div class="modal-field-text" id="modal-cue"></div></div>
-      <div class="modal-why-box"><div class="modal-field-label">Why This Works</div><div class="modal-field-text" id="modal-why"></div></div>
-      <div style="background:#fff8e8;border:1px solid #f0c040;border-radius:8px;padding:0.75rem 0.9rem">
-        <div class="modal-field-label" style="color:#b07800">Watch For</div>
-        <div class="modal-field-text" id="modal-watch"></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
-        <div style="background:#f0faf4;border:1px solid #b2dfcc;border-radius:8px;padding:0.7rem 0.85rem">
-          <div class="modal-field-label" style="color:#2d6a4a">Make It Harder</div>
-          <div class="modal-field-text" id="modal-prog" style="font-size:0.82rem"></div>
-        </div>
-        <div style="background:#f5f5f5;border:1px solid #ddd;border-radius:8px;padding:0.7rem 0.85rem">
-          <div class="modal-field-label" style="color:#666">Make It Easier</div>
-          <div class="modal-field-text" id="modal-reg" style="font-size:0.82rem"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-brand"><div class="logo">Dugout<span>Lab</span></div><p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p></div>
-    <div class="footer-links"><h4>Tools</h4><ul><li><a href="builder.html">Practice Builder</a></li><li><a href="drills.html">Drill Library</a></li><li><a href="train.html">Train Solo</a></li></ul></div>
-    <div class="footer-links"><h4>Learn</h4><ul><li><a href="articles.html">All Articles</a></li><li><a href="stages.html">The 4 Stages</a></li><li><a href="about.html">About</a></li></ul></div>
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p>
+      <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="builder.html">Practice Builder</a></li>
+        <li><a href="games.html">Games Library</a></li>
+        <li><a href="drills.html">Drill Library</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">All Articles</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
   </div>
-  <div class="footer-bottom"><span>&copy; 2026 DugoutLab.</span><span>dugoutlab.com</span></div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
 </footer>
 
-<script src="js/drills-data.js"></script>
 <script src="js/site.js"></script>
 </body>
 </html>

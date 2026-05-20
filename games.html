@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Games Library &mdash; DugoutLab</title>
+<meta name="description" content="Real games we ran with our 8 and 9-year-olds. Warmups, fielding games, relay races, end-of-season parties. The stuff that makes kids want to come back tomorrow.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+  .games-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+  @media (min-width: 720px) { .games-grid { grid-template-columns: 1fr 1fr; } }
+
+  .game-card {
+    background: var(--forest2);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .game-card.featured {
+    border-color: var(--gold);
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, var(--forest-deep) 0%, var(--forest2) 100%);
+  }
+  .game-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .game-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .game-title {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin-bottom: 0;
+  }
+  .game-title em {
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 500;
+  }
+  .game-meta-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .game-pill {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    background: var(--forest-deep);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 0.3rem 0.65rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .game-pill.warmup    { color: #7ad6a8; border-color: rgba(82,183,136,0.4); }
+  .game-pill.fielding  { color: var(--gold-light); border-color: rgba(200,134,46,0.45); }
+  .game-pill.throwing  { color: #9dc5e0; border-color: rgba(125,179,212,0.4); }
+  .game-pill.party     { color: #e7b04f; border-color: rgba(231,176,79,0.45); background: rgba(231,176,79,0.08); }
+  .game-section {
+    border-top: 1px solid var(--rule);
+    padding-top: 0.85rem;
+  }
+  .game-section-label {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .game-section-body {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+  .game-section-body strong { color: var(--ink); font-weight: 600; }
+  .game-section-body em { color: var(--gold-light); font-style: italic; }
+  .game-section ul { margin: 0; padding-left: 1.2rem; }
+  .game-section li { margin-bottom: 0.35rem; }
+  .game-why {
+    background: rgba(200,134,46,0.08);
+    border-left: 3px solid var(--gold);
+    padding: 0.85rem 1rem;
+    border-radius: 0 8px 8px 0;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+  .game-why strong { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+    <ul class="nav-links">
+    <li><a href="builder.html">Build a Practice</a></li>
+    <li><a href="games.html" class="active">Games</a></li>
+    <li><a href="drills.html">Drill Library</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="train.html">Train Solo</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="progression.html">Season Plan</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="builder.html">Build a Practice</a>
+  <a href="games.html">Games</a>
+  <a href="drills.html">Drill Library</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="train.html">Train Solo</a>
+  <a href="articles.html">Articles</a>
+  <a href="stages.html">The 4 Stages</a>
+  <a href="progression.html">Season Plan</a>
+  <a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="index.html">&larr; Home</a></div>
+    <div class="eyebrow">Real Practices &middot; Real Coaches</div>
+    <h1>The Games <em style="color:var(--gold);font-style:italic">Library</em></h1>
+    <p style="margin-top:0.7rem">These aren't textbook drills. These are games we actually ran with our 8 and 9-year-olds. Some of them you've seen before. Some of them you haven't. All of them work because the kids forget they're learning.</p>
+  </div>
+</div>
+
+<div class="philosophy-bar">
+  <div class="philosophy-bar-inner">
+    <div class="quote">"If the kids ask to play it again, you ran a good practice."</div>
+    <a href="articles/one-job.html" class="quote-link">Read the philosophy &rarr;</a>
+  </div>
+</div>
+
+<section class="section" style="background:var(--forest);padding-top:3rem">
+  <div class="container">
+
+    <div class="games-grid">
+
+      <!-- ─── 1. DODGEBALL WARMUP ─────────────────────────────────── -->
+      <div class="game-card">
+        <div class="game-header">
+          <div>
+            <div class="game-eyebrow">Game 01 &middot; The Opener</div>
+            <h2 class="game-title">Dodgeball <em>Warmup</em></h2>
+          </div>
+          <div class="game-meta-pills">
+            <span class="game-pill warmup">WARMUP</span>
+            <span class="game-pill">10&ndash;15 MIN</span>
+            <span class="game-pill">ANY AGE</span>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">What It Looks Like</div>
+          <div class="game-section-body">
+            <p>Two teams. Soft rubber dodgeballs (or rolled-up socks if you forgot the balls). Split the field down the middle with cones. Standard dodgeball rules. If you get hit, you sit. If you catch one, the thrower sits. Play until one team is out, then reset.</p>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">Setup &middot; What You Need</div>
+          <div class="game-section-body">
+            <ul>
+              <li>4&ndash;6 soft balls (no hardballs &mdash; this is warmup, not war)</li>
+              <li>Cones to mark a center line</li>
+              <li>10x30 area, roughly</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="game-why">
+          <strong>Why we start here:</strong> Kids show up tight. Parents dropped them off, they're worried about what they're going to do well or poorly. Dodgeball flushes all of it. By the time you call them in, they're laughing, breathing hard, and ready to actually listen. <em>You're not warming up arms yet. You're warming up the kid.</em>
+        </div>
+      </div>
+
+      <!-- ─── 2. BACK-UP CATCH ────────────────────────────────────── -->
+      <div class="game-card">
+        <div class="game-header">
+          <div>
+            <div class="game-eyebrow">Game 02 &middot; Throwing</div>
+            <h2 class="game-title">Back-Up <em>Catch</em></h2>
+          </div>
+          <div class="game-meta-pills">
+            <span class="game-pill throwing">THROWING</span>
+            <span class="game-pill">10 MIN</span>
+            <span class="game-pill">AGES 7+</span>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">What It Looks Like</div>
+          <div class="game-section-body">
+            <p>Pair up the team. Start with partners 15 feet apart, normal catch. Every clean exchange both partners take a step back. Miss it, partners stay where they are. Drop it, take a step in. The team that ends up farthest apart wins.</p>
+            <p>Repeat 2&ndash;3 times. By the third round they're chucking it across the outfield.</p>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">The Constraint That Makes It Work</div>
+          <div class="game-section-body">
+            <p>Partners can <strong>only step back if the catch was clean.</strong> No bobbles. No on-a-hop. No reaching out and dropping it. This forces both throwers to throw accurately <em>and</em> catchers to actually move their feet.</p>
+          </div>
+        </div>
+
+        <div class="game-why">
+          <strong>Why this beats a static throwing drill:</strong> A regular catch-warmup has no consequence. Kids zone out. The moment you put "if you catch this, you get to back up" on it, every throw matters and every catch matters. <em>That's a game. The skill teaches itself.</em>
+        </div>
+      </div>
+
+      <!-- ─── 3. 2-2 RELAY (FEATURED) ─────────────────────────────── -->
+      <div class="game-card featured">
+        <div class="game-header">
+          <div>
+            <div class="game-eyebrow">Game 03 &middot; The One We Run Every Practice</div>
+            <h2 class="game-title">2-2 Relay <em>Race</em></h2>
+          </div>
+          <div class="game-meta-pills">
+            <span class="game-pill fielding">FIELDING</span>
+            <span class="game-pill throwing">THROWING</span>
+            <span class="game-pill">15&ndash;20 MIN</span>
+            <span class="game-pill">AGES 7+</span>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">What It Looks Like</div>
+          <div class="game-section-body">
+            <p>Split the team into pairs. Pairs line up at home plate (or the foul line). Coach rolls or hits a ball to the outfield fence. On the call, the first pair sprints out together. <strong>One player goes all the way to the ball.</strong> <strong>The other player stops at the cutoff position</strong> and waits.</p>
+            <p>The outfielder picks up the ball and either fires it to the cutoff or, if they're close enough, runs it in themselves. The cutoff has to listen for the call ("CUT! CUT!" or "GO!") from a coach or a teammate, then either run the ball home or relay it to a base.</p>
+            <p>Time them. Run 2&ndash;3 rounds. Switch which kid is the outfielder, which is the cutoff.</p>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">Why This Is the Most Important Game in Rec Ball</div>
+          <div class="game-section-body">
+            <p>At the 8 and 9-year-old level, <strong>the ball gets out to the outfield and dies there.</strong> The outfielder picks it up, throws it 20 feet, and now there's no play. The runners take an extra base. The defense never has a chance.</p>
+            <p>Cutoff and relay is the single biggest skill that separates a team that can play defense from a team that can't. And almost nobody teaches it as a game. Everyone teaches it as a chalkboard diagram.</p>
+            <p><em>Make it a race. They learn it in a week.</em></p>
+          </div>
+        </div>
+
+        <div class="game-why">
+          <strong>The constraint that does the teaching:</strong> The cutoff player can't move until the outfielder picks up the ball. The outfielder can't throw home directly &mdash; they have to use the cutoff. This forces the geometry to teach itself.
+        </div>
+      </div>
+
+      <!-- ─── 4. TENNIS BALL FLY ──────────────────────────────────── -->
+      <div class="game-card">
+        <div class="game-header">
+          <div>
+            <div class="game-eyebrow">Game 04 &middot; Fielding</div>
+            <h2 class="game-title">Tennis Ball <em>Fly Game</em></h2>
+          </div>
+          <div class="game-meta-pills">
+            <span class="game-pill fielding">FIELDING</span>
+            <span class="game-pill">15 MIN</span>
+            <span class="game-pill">AGES 7+</span>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">What It Looks Like</div>
+          <div class="game-section-body">
+            <p>Two teams. <strong>No gloves.</strong> Coach hits tennis balls into the air (a tennis racket works great for this). The fielding team has to catch the fly balls bare-handed.</p>
+            <p>If they catch one, it's <strong>3 outs &mdash; instant inning over.</strong> Teams flip sides. The other team gets up.</p>
+            <p>Scoring is by runs &mdash; but here's the twist: you score based on how many outs your team forced before the inning flipped. Force 3 quick = score big. Get caught flat = give up runs.</p>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">Why No Gloves</div>
+          <div class="game-section-body">
+            <p>A tennis ball is soft enough to catch barehanded. <strong>And barehanded fielding fixes hand position better than 50 reps with a glove.</strong> Kids who try to catch a tennis ball with stiff hands or one hand learn instantly that it doesn't work. Soft hands, two hands, eyes locked. The ball does the teaching.</p>
+          </div>
+        </div>
+
+        <div class="game-why">
+          <strong>The hidden lesson:</strong> "Catch = inning over" forces every kid to <em>actually try.</em> If you've ever watched right-fielders space out under a pop-up, this game cures it in one practice. They sprint to every ball because catching it ends the inning for their team.
+        </div>
+      </div>
+
+      <!-- ─── 5. HAT TAG ──────────────────────────────────────────── -->
+      <div class="game-card">
+        <div class="game-header">
+          <div>
+            <div class="game-eyebrow">Game 05 &middot; Pre-Game Ritual</div>
+            <h2 class="game-title">Hat <em>Tag</em></h2>
+          </div>
+          <div class="game-meta-pills">
+            <span class="game-pill warmup">WARMUP</span>
+            <span class="game-pill">8&ndash;10 MIN</span>
+            <span class="game-pill">ANY AGE</span>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">What It Looks Like</div>
+          <div class="game-section-body">
+            <p>Every kid tucks their hat into the back of their belt or waistband &mdash; like a flag. Free-for-all in a defined area. Kids try to grab other players' hats while protecting their own. Lose your hat, you're out and you sit. Last kid with a hat wins.</p>
+            <p>5 minutes a round. Run 2&ndash;3 rounds.</p>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">Why It's Better Than Stretching</div>
+          <div class="game-section-body">
+            <p>Hat tag trains:</p>
+            <ul>
+              <li><strong>Athleticism</strong> &mdash; cutting, change of direction, body control</li>
+              <li><strong>Spatial awareness</strong> &mdash; head on a swivel, reading the field</li>
+              <li><strong>Competitiveness</strong> &mdash; with stakes that don't matter</li>
+            </ul>
+            <p>It is also a guaranteed laugh. Kids who showed up tired show up ready by the end of round two.</p>
+          </div>
+        </div>
+
+        <div class="game-why">
+          <strong>Why it's the perfect pre-game ritual:</strong> Kids run onto the field already loose, already moving, already <em>connected to each other.</em> No "circle up and stretch." They're already a team by first pitch.
+        </div>
+      </div>
+
+      <!-- ─── 6. SMALL-SIDED FOOTBALL CATCH ───────────────────────── -->
+      <div class="game-card">
+        <div class="game-header">
+          <div>
+            <div class="game-eyebrow">Game 06 &middot; Cross-Training</div>
+            <h2 class="game-title">Small-Sided <em>Football Catch</em></h2>
+          </div>
+          <div class="game-meta-pills">
+            <span class="game-pill throwing">THROWING</span>
+            <span class="game-pill">10&ndash;15 MIN</span>
+            <span class="game-pill">AGES 7+</span>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">What It Looks Like</div>
+          <div class="game-section-body">
+            <p>Bring a Nerf football to practice. Split into teams of 3 or 4. Small field. Touchdown counts as a score. <strong>You can't run with the ball</strong> &mdash; you have to throw to a teammate to advance. Defense plays one-hand touch.</p>
+            <p>Play in short bursts. 5-minute games. Switch teams. Keep moving.</p>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">Why a Football in Baseball Practice</div>
+          <div class="game-section-body">
+            <p>A football teaches kids to <strong>throw with their whole body.</strong> The grip is bigger, the arm path is longer, and the leg drive is unmistakable. Kids who can't generate any arm speed with a baseball will throw a tight spiral 30 yards because the football demands it.</p>
+            <p>It also breaks up the monotony of practice. Coaches who refuse to "waste time" on cross-training don't realize that kids' brains are sharper when they're playing something fresh.</p>
+          </div>
+        </div>
+
+        <div class="game-why">
+          <strong>Watch their faces:</strong> The kid who's been getting nothing out of throwing drills lights up when you put a football in his hand. That same kid throws better the next time you go back to baseballs. <em>That's not magic. That's how skill acquisition works.</em>
+        </div>
+      </div>
+
+      <!-- ─── 7. WATER BALLOON FIGHTS ─────────────────────────────── -->
+      <div class="game-card">
+        <div class="game-header">
+          <div>
+            <div class="game-eyebrow">Game 07 &middot; Hot Day Special</div>
+            <h2 class="game-title">Water Balloon <em>Fights</em></h2>
+          </div>
+          <div class="game-meta-pills">
+            <span class="game-pill warmup">FUN</span>
+            <span class="game-pill">15&ndash;20 MIN</span>
+            <span class="game-pill">SUMMER ONLY</span>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">What It Looks Like</div>
+          <div class="game-section-body">
+            <p>Fill 50+ water balloons before practice (this is the heavy lift &mdash; literally). Bring them in coolers. Split the team. Cones for a center line. Throw them at each other. That's the game.</p>
+            <p>For a slight skill twist: balloons can only be thrown <strong>overhand, from a proper throwing motion.</strong> Sidearm-tosses or shovel-throws don't count.</p>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">Honest Notes</div>
+          <div class="game-section-body">
+            <ul>
+              <li>Filling balloons takes 30&ndash;45 minutes. Bring help.</li>
+              <li>Bring a trash bag &mdash; the field will be covered in latex pieces. <strong>Clean every one up.</strong> Animals eat them.</li>
+              <li>Tell parents in advance &mdash; kids get soaked.</li>
+              <li>Save this for the end of a hot practice. Reward, not opener.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="game-why">
+          <strong>Why it earns its place:</strong> The kids talk about water balloon practice for the rest of the season. Three years later they still mention it. You can be a great coach and never do this. But if you want them to remember you, do it once. <em>The signal you send: "We have fun here. The work matters, and so does the joy."</em>
+        </div>
+      </div>
+
+      <!-- ─── 8. PLAYERS VS. OLD FARTS (END OF SEASON FEATURED) ───── -->
+      <div class="game-card featured">
+        <div class="game-header">
+          <div>
+            <div class="game-eyebrow">Game 08 &middot; End-of-Season Party</div>
+            <h2 class="game-title">Players vs. <em>Old Farts</em></h2>
+          </div>
+          <div class="game-meta-pills">
+            <span class="game-pill party">SEASON FINALE</span>
+            <span class="game-pill">60&ndash;90 MIN</span>
+            <span class="game-pill">ALL AGES</span>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">What It Looks Like</div>
+          <div class="game-section-body">
+            <p>Last day of the season. Kids vs. parents. Players bat normally. <strong>Parents have to bat with handicaps.</strong> Wiffle bats, softballs, no warm-up swings. They have to carry weights when they run the bases. They might have to do an obstacle course on the way to first.</p>
+            <p>The more ridiculous the handicaps, the better. Get creative. Make parents hop on one foot to second base. Make them spin around a bat before they run.</p>
+            <p>Kids play it straight. Try hard. Try to win. The parents do their best, but the deck is stacked.</p>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">Why This Is the Best Day of the Season</div>
+          <div class="game-section-body">
+            <p>The kids absolutely lose their minds. Three months of being coached by these adults, and now they get to <strong>compete against them and win.</strong> Parents are sweaty and laughing. Grandparents are heckling from the bleachers. Younger siblings are getting in on it.</p>
+            <p>You will never get a better photo of a season than the moment your team mobs a parent at home plate.</p>
+          </div>
+        </div>
+
+        <div class="game-section">
+          <div class="game-section-label">Logistics That Matter</div>
+          <div class="game-section-body">
+            <ul>
+              <li>Tell parents in writing 3 weeks ahead. Some need convincing.</li>
+              <li>Recruit 9+ parents. If you only have 5, draft the older siblings.</li>
+              <li>Bring extra wiffle bats, softballs, soft baseballs &mdash; whatever you've got. Variety is the joke.</li>
+              <li>Pizza after. Trophy ceremony if you do one. Awards.</li>
+              <li>Take a team photo. Take it before everyone leaves.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="game-why">
+          <strong>The bigger picture:</strong> Every kid finishes the season with a memory of <em>winning.</em> Not winning a game that mattered. Winning a game where they got to mob their dad at home plate while their mom recorded it on her phone. That's what they tell their friends about. That's what they remember when they decide whether to sign up next year. <strong>Your one job is to make them want to come back tomorrow. This is how you cash that check.</strong>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE PRACTICE LINK -->
+<section class="section section-cream" style="padding-top:3rem;padding-bottom:3rem">
+  <div class="container-sm" style="text-align:center">
+    <div class="section-label">Tying It All Together</div>
+    <div class="section-title">Want to see how these fit into a real 60-minute practice?</div>
+    <p class="section-subtitle" style="margin:0.7rem auto 1.5rem;max-width:560px">We wrote up an actual practice from a Tuesday night with our 8 and 9-year-olds. Five games in 60 minutes. Every kid moved the entire time.</p>
+    <a href="practice-example.html" class="btn btn-primary btn-lg">See the practice &rarr;</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p>
+      <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="builder.html">Practice Builder</a></li>
+        <li><a href="games.html">Games Library</a></li>
+        <li><a href="drills.html">Drill Library</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">All Articles</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+</body>
+</html>
