@@ -882,6 +882,44 @@ button { font: inherit; cursor: pointer; }
 }
 .footer-bottom span { font-size: 0.8rem; color: var(--ink-faint); }
 
+/* ── SPONSOR STRIP ──────────────────────────────────────────────── */
+.footer-sponsor {
+  max-width: 1040px;
+  margin: 2rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  text-align: center;
+}
+.footer-sponsor .sponsor-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.5rem;
+}
+.footer-sponsor .sponsor-line {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.footer-sponsor .sponsor-line a {
+  color: var(--gold);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(200,134,46,0.4);
+  transition: border-color 0.15s;
+}
+.footer-sponsor .sponsor-line a:hover { border-bottom-color: var(--gold); }
+.footer-sponsor .sponsor-tag {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin-top: 0.35rem;
+  font-style: italic;
+}
+
 /* ── PHILOSOPHY BANNER ────────────────────────────────────────────── */
 .philosophy-bar {
   background: var(--forest2);
