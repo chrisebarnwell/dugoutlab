@@ -18,13 +18,11 @@
     <li><a href="builder.html">Build a Practice</a></li>
     <li><a href="games.html">Games</a></li>
     <li><a href="drills.html">Drill Library</a></li>
-    <li><a href="lineup.html">Lineup Builder</a>
-  <a href="toolkit.html">Toolkit</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
     <li><a href="toolkit.html">Toolkit</a></li>
-    <li><a href="train.html">Train Solo</a></li>
+    <li><a href="train.html">Train</a></li>
     <li><a href="articles.html">Articles</a></li>
     <li><a href="stages.html">The 4 Stages</a></li>
-    <li><a href="progression.html">Season Plan</a></li>
     <li><a href="about.html">About</a></li>
   </ul>
   <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
@@ -37,10 +35,9 @@
   <a href="drills.html">Drill Library</a>
   <a href="lineup.html">Lineup Builder</a>
   <a href="toolkit.html">Toolkit</a>
-  <a href="train.html">Train Solo</a>
+  <a href="train.html">Train</a>
   <a href="articles.html">Articles</a>
   <a href="stages.html">The 4 Stages</a>
-  <a href="progression.html">Season Plan</a>
   <a href="about.html">About</a>
 </div>
 
@@ -325,15 +322,18 @@
       </div>
     </div>
 
-    <!-- TRAIN SOLO FEATURE BANNER -->
-    <div style="background:linear-gradient(135deg,var(--forest-deep) 0%,var(--forest3) 100%);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:2rem 2.25rem;margin-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem">
-      <div>
-        <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:var(--gold);margin-bottom:0.5rem">Solo Training</div>
-        <div style="font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--ink);margin-bottom:0.4rem;letter-spacing:-0.015em">Training on your own? There's a section for that.</div>
-        <p style="font-size:0.92rem;color:var(--ink-soft);margin:0;max-width:540px;line-height:1.55">27 drills that work with one player &mdash; hitting off a tee, wall ball grounders, body control, pitching mechanics. No partner needed.</p>
+    <!-- TRAIN FEATURE BANNER -->
+    <div style="background:linear-gradient(135deg,var(--forest-deep) 0%,var(--forest3) 100%);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:2rem 2.25rem;margin-top:1.5rem">
+      <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:var(--gold);margin-bottom:0.5rem">Train Between Practices</div>
+      <div style="font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--ink);margin-bottom:0.4rem;letter-spacing:-0.015em">Two ways for players to get better <em style="font-style:italic;color:var(--gold)">on their own.</em></div>
+      <p style="font-size:0.92rem;color:var(--ink-soft);margin:0 0 1.25rem;max-width:560px;line-height:1.55">On the field: 27 solo physical drills, no partner needed. In your head: three brain-training games for pitch recognition, situational reads, and reaction speed. All free, built for phones.</p>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+        <a href="train.html" class="btn btn-primary" style="white-space:nowrap">Solo Drills &rarr;</a>
+        <a href="train.html#brain" class="btn btn-outline" style="white-space:nowrap">Play the Games &rarr;</a>
       </div>
-      <a href="train.html" class="btn btn-primary" style="white-space:nowrap">Train Solo &rarr;</a>
     </div>
+
+    <!-- (Training Suite merged into Train banner above) -->
 
     <!-- GAMES LIBRARY FEATURE BANNER -->
     <div style="background:linear-gradient(135deg,var(--forest-deep) 0%,var(--forest2) 100%);border:1px solid var(--gold);border-radius:var(--radius-lg);padding:2rem 2.25rem;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem">
@@ -353,23 +353,6 @@
         <p style="font-size:0.92rem;color:var(--ink-soft);margin:0;max-width:540px;line-height:1.55">Editable end-of-season awards deck (.pptx, 8.5x11) and a fillable scouting report PDF. Built for rec coaches. No accounts. No paywall.</p>
       </div>
       <a href="toolkit.html" class="btn btn-primary" style="white-space:nowrap">Open the Toolkit &rarr;</a>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════ EMAIL CAPTURE ═══════════ -->
-<section class="section section-white" style="padding-top:2.5rem;border-top:1px solid var(--rule)">
-  <div class="container-sm">
-    <div class="email-capture">
-      <h3>Get a new practice plan idea every week</h3>
-      <p>Free. No fluff. One drill or coaching tip per email, built for Little League coaches.</p>
-      <div id="home-email-form">
-        <div class="email-row">
-          <input type="email" placeholder="your@email.com" aria-label="Email address">
-          <button class="btn btn-primary" onclick="submitEmail('home-email-form','home-email-confirm')">Subscribe</button>
-        </div>
-      </div>
-      <div class="email-confirm" id="home-email-confirm">You're in. First email coming soon.</div>
     </div>
   </div>
 </section>
@@ -414,10 +397,9 @@
       <ul>
         <li><a href="builder.html">Practice Builder</a></li>
         <li><a href="drills.html">Drill Library</a></li>
-        <li><a href="lineup.html">Lineup Builder</a>
-  <a href="toolkit.html">Toolkit</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
     <li><a href="toolkit.html">Toolkit</a></li>
-        <li><a href="train.html">Train Solo</a></li>
+        <li><a href="train.html">Train</a></li>
       </ul>
     </div>
     <div class="footer-links">
@@ -428,6 +410,13 @@
         <li><a href="progression.html">Season Plan</a></li>
         <li><a href="about.html">About</a></li>
       </ul>
+    </div>
+  </div>
+  <div class="footer-sponsor">
+    <div class="sponsor-label">Our Sponsor</div>
+    <div class="sponsor-line">
+      DugoutLab is made free thanks to <a href="https://gamedayhelpers.com" target="_blank" rel="noopener">GamedayHelpers.com</a>
+      <span class="sponsor-tag">Let coaches coach. Let parents enjoy the game.</span>
     </div>
   </div>
   <div class="footer-bottom">

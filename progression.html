@@ -134,29 +134,133 @@
   }
 
   @media print {
+    /* Hide all interactive/decorative chrome */
     .nav, .footer, .mobile-menu, .pdf-strip, .breadcrumb, .nav-mobile-btn,
     .philosophy-bar { display: none !important; }
-    body { background: white; color: black; }
-    .page-hero { padding: 1rem 0 1.5rem; background: white !important; border: none; }
-    .page-hero h1, .page-hero p { color: black !important; }
-    .page-hero h1 em { color: #5b574c !important; }
-    .page-hero .eyebrow { color: #5b574c !important; }
-    .season-timeline { border-left-color: #ccc; }
-    .phase-block::before { background: #5b574c !important; box-shadow: 0 0 0 2px #5b574c; border-color: white; }
-    .phase-name, .phase-eyebrow { color: black !important; }
-    .phase-name em { color: #5b574c !important; }
-    .phase-weeks { color: #5b574c !important; }
-    .phase-thesis { color: black !important; border-left-color: #5b574c; }
-    .phase-body { color: #333 !important; }
-    .phase-body strong { color: black !important; }
-    .phase-body em { color: #5b574c !important; }
-    .phase-mini { background: #f5f5f5 !important; border-color: #ccc !important; }
-    .phase-mini-label { color: #5b574c !important; }
-    .phase-mini-text { color: #333 !important; }
-    .section { padding: 0; }
-    .container, .container-sm { max-width: 100%; }
-    .card { background: white !important; border-color: #ccc !important; }
-    a { color: #333 !important; text-decoration: none !important; }
+
+    /* Force everything to pure black & white */
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color: black !important;
+      background: white !important;
+      border-color: #999 !important;
+      box-shadow: none !important;
+    }
+    body { background: white !important; color: black !important; }
+
+    .page-hero {
+      padding: 0.3in 0 0.25in !important;
+      background: white !important;
+      border: none !important;
+      border-bottom: 1.5pt solid #000 !important;
+      margin-bottom: 0.25in;
+    }
+    .page-hero h1 { color: black !important; font-size: 24pt !important; }
+    .page-hero h1 em { color: black !important; font-style: italic !important; }
+    .page-hero p { color: black !important; font-size: 11pt !important; }
+    .page-hero .eyebrow {
+      color: black !important;
+      font-size: 9pt !important;
+      letter-spacing: 0.15em;
+    }
+
+    .season-timeline {
+      border-left: 2px solid black !important;
+      padding-left: 24pt !important;
+    }
+    .phase-block {
+      page-break-inside: avoid;
+      break-inside: avoid;
+      padding-bottom: 14pt !important;
+    }
+    .phase-block::before {
+      background: black !important;
+      border: 2px solid white !important;
+      box-shadow: 0 0 0 1.5pt black !important;
+      width: 10pt !important;
+      height: 10pt !important;
+      left: -30pt !important;
+      top: 6pt !important;
+    }
+    .phase-eyebrow {
+      color: black !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.16em !important;
+      font-size: 8pt !important;
+    }
+    .phase-name {
+      color: black !important;
+      font-size: 16pt !important;
+      margin-bottom: 3pt !important;
+    }
+    .phase-name em {
+      color: black !important;
+      font-style: italic !important;
+      font-weight: 400 !important;
+    }
+    .phase-weeks {
+      color: black !important;
+      font-weight: 600 !important;
+      font-size: 9pt !important;
+      letter-spacing: 0.1em !important;
+      margin-bottom: 8pt !important;
+    }
+    .phase-thesis {
+      color: black !important;
+      border-left: 3pt solid black !important;
+      padding-left: 10pt !important;
+      font-style: italic !important;
+      font-size: 11pt !important;
+      margin-bottom: 8pt !important;
+    }
+    .phase-body {
+      color: black !important;
+      font-size: 10pt !important;
+      line-height: 1.5 !important;
+      margin-bottom: 6pt !important;
+    }
+    .phase-body strong { color: black !important; font-weight: 700 !important; }
+    .phase-body em { color: black !important; font-style: italic !important; }
+
+    .phase-mini {
+      background: white !important;
+      border: 1px solid #666 !important;
+      padding: 8pt 10pt !important;
+    }
+    .phase-mini-label {
+      color: black !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.14em !important;
+      font-size: 7.5pt !important;
+    }
+    .phase-mini-text {
+      color: black !important;
+      font-size: 9.5pt !important;
+    }
+    .phase-cards {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .card {
+      background: white !important;
+      border: 1px solid #666 !important;
+      border-left: 3pt solid black !important;
+      padding: 10pt 12pt !important;
+      margin-bottom: 12pt !important;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .card p { color: black !important; }
+    .card p strong, .card p em { color: black !important; }
+
+    .section { padding: 0 !important; }
+    .container, .container-sm { max-width: 100% !important; }
+
+    a { color: black !important; text-decoration: none !important; }
+
+    @page { margin: 0.5in 0.5in 0.45in 0.5in; }
   }
 </style>
 </head>
@@ -168,13 +272,11 @@
     <li><a href="builder.html">Build a Practice</a></li>
     <li><a href="games.html">Games</a></li>
     <li><a href="drills.html">Drill Library</a></li>
-    <li><a href="lineup.html">Lineup Builder</a>
-  <a href="toolkit.html">Toolkit</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
     <li><a href="toolkit.html">Toolkit</a></li>
-    <li><a href="train.html">Train Solo</a></li>
+    <li><a href="train.html">Train</a></li>
     <li><a href="articles.html">Articles</a></li>
     <li><a href="stages.html">The 4 Stages</a></li>
-    <li><a href="progression.html" class="active">Season Plan</a></li>
     <li><a href="about.html">About</a></li>
   </ul>
   <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
@@ -187,10 +289,9 @@
   <a href="drills.html">Drill Library</a>
   <a href="lineup.html">Lineup Builder</a>
   <a href="toolkit.html">Toolkit</a>
-  <a href="train.html">Train Solo</a>
+  <a href="train.html">Train</a>
   <a href="articles.html">Articles</a>
   <a href="stages.html">The 4 Stages</a>
-  <a href="progression.html">Season Plan</a>
   <a href="about.html">About</a>
 </div>
 
@@ -372,8 +473,7 @@
         <li><a href="builder.html">Practice Builder</a></li>
         <li><a href="games.html">Games Library</a></li>
         <li><a href="drills.html">Drill Library</a></li>
-        <li><a href="lineup.html">Lineup Builder</a>
-  <a href="toolkit.html">Toolkit</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
     <li><a href="toolkit.html">Toolkit</a></li>
       </ul>
     </div>
@@ -384,6 +484,13 @@
         <li><a href="stages.html">The 4 Stages</a></li>
         <li><a href="about.html">About</a></li>
       </ul>
+    </div>
+  </div>
+  <div class="footer-sponsor">
+    <div class="sponsor-label">Our Sponsor</div>
+    <div class="sponsor-line">
+      DugoutLab is made free thanks to <a href="https://gamedayhelpers.com" target="_blank" rel="noopener">GamedayHelpers.com</a>
+      <span class="sponsor-tag">Let coaches coach. Let parents enjoy the game.</span>
     </div>
   </div>
   <div class="footer-bottom">
