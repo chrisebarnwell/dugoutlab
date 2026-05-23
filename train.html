@@ -2,1920 +2,1224 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Train on Your Own — DugoutLab</title>
-<meta name="description" content="Baseball drills for one player, solo. No partner needed. Hitting, fielding, throwing, body control, and pitching drills organized by age. For the kid at the field alone or the parent training with their child.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Training Suite — DugoutLab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 <style>
-/* ── TRAIN TAB BAR ── */
-.train-tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+/* ── RESET & BASE ─────────────────────────────────────────────── */
+*{-webkit-tap-highlight-color:transparent;box-sizing:border-box;}
+#suite-root{
+  min-height:100vh;
+  background:#04080d;
+  font-family:'Inter',system-ui,sans-serif;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:20px 16px 40px;
 }
-.train-tab {
-  flex: 1;
-  background: transparent;
-  border: none;
-  border-bottom: 3px solid transparent;
-  padding: 0.9rem 1rem 1.1rem;
-  cursor: pointer;
-  font-family: var(--sans);
-  text-align: center;
-  transition: all 0.18s;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  margin-bottom: -1px;
-}
-.train-tab-label {
-  font-family: var(--serif);
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: rgba(255,255,255,0.55);
-  letter-spacing: -0.01em;
-  transition: color 0.18s;
-}
-.train-tab-sub {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
-  transition: color 0.18s;
-}
-.train-tab:hover .train-tab-label { color: rgba(255,255,255,0.8); }
-.train-tab.active { border-bottom-color: var(--gold); }
-.train-tab.active .train-tab-label { color: #fff; }
-.train-tab.active .train-tab-sub { color: var(--gold); }
-
-#tab-brain { display: none; }
-#tab-brain.active { display: block; }
-#tab-field.hidden { display: none; }
-
-.solo-cat-card {
-  background: white;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.1rem 1.25rem;
-  cursor: pointer;
-  transition: all 0.15s;
-  text-align: center;
-}
-.solo-cat-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
-.solo-cat-card.active { border-color: transparent; box-shadow: 0 0 0 2px var(--forest); }
-.solo-cat-icon { font-size: 1.75rem; margin-bottom: 0.4rem; }
-.solo-cat-label { font-family: var(--serif); font-size: 0.95rem; font-weight: 700; color: var(--forest); }
-.solo-cat-count { font-size: 0.72rem; color: var(--text-light); margin-top: 0.15rem; }
-
-.equip-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  background: var(--cream);
-  border: 1px solid var(--border2);
-  border-radius: 5px;
-  padding: 0.18rem 0.55rem;
-  font-size: 0.7rem;
-  color: var(--text-mid);
-  font-weight: 600;
+.s-card{
+  background:linear-gradient(160deg,#0a1520,#060d16);
+  border:1.5px solid rgba(255,255,255,.07);
+  border-radius:20px;
+  padding:26px 22px;
+  max-width:480px;
+  width:100%;
+  box-shadow:0 24px 64px rgba(0,0,0,.6);
 }
 
-.solo-drill-card {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  cursor: pointer;
-  transition: box-shadow 0.15s, transform 0.15s;
+/* ── TYPOGRAPHY ───────────────────────────────────────────────── */
+.gold-title{
+  font-size:36px;font-weight:900;text-align:center;line-height:1.1;
+  background:linear-gradient(135deg,#FFD700,#FF8C00,#FFD700);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-.solo-drill-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
-.solo-drill-stripe {
-  height: 4px;
-}
-.solo-drill-body { padding: 1rem 1.1rem 0.9rem; }
-.solo-drill-name {
-  font-family: var(--serif);
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--forest);
-  margin-bottom: 0.3rem;
-  line-height: 1.3;
-}
-.solo-drill-meta {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.55rem;
-}
-.solo-drill-setup {
-  font-size: 0.82rem;
-  color: var(--text-mid);
-  line-height: 1.55;
-  margin-bottom: 0.5rem;
-}
-.solo-drill-equip {
-  font-size: 0.72rem;
-  color: var(--text-light);
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  flex-wrap: wrap;
-}
-.solo-drill-equip svg { flex-shrink: 0; }
-.solo-drill-tap {
-  font-size: 0.65rem;
-  color: var(--gold);
-  font-weight: 600;
-  margin-top: 0.45rem;
+.eyebrow{
+  text-align:center;color:#334455;font-size:11px;
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;
 }
 
-.age-selector {
-  display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
+/* ── BUTTONS ──────────────────────────────────────────────────── */
+.s-btn{
+  display:block;width:100%;padding:13px 20px;border-radius:12px;
+  font-size:15px;font-weight:700;cursor:pointer;border:2px solid;
+  margin-bottom:10px;transition:all .15s;font-family:inherit;
 }
-.age-sel-btn {
-  background: white;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  padding: 0.5rem 1.1rem;
-  font-family: var(--sans);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-mid);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.age-sel-btn:hover { border-color: var(--forest2); color: var(--forest); }
-.age-sel-btn.active { background: var(--forest); color: white; border-color: var(--forest); }
-
-.session-card {
-  background: var(--forest);
-  border-radius: var(--radius);
-  padding: 1.25rem 1.5rem;
-  color: white;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.session-card:hover { opacity: 0.92; }
-.session-card h4 {
-  font-family: var(--serif);
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 0.35rem;
-}
-.session-card p { font-size: 0.82rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 0.5rem; }
-.session-tag {
-  display: inline-block;
-  background: rgba(255,255,255,0.12);
-  border-radius: 4px;
-  padding: 0.15rem 0.5rem;
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(255,255,255,0.6);
-  margin-right: 0.25rem;
+.s-btn-gold{background:#FFD70015;border-color:#FFD700;color:#FFD700;}
+.s-btn-red {background:#FF555515;border-color:#FF5555;color:#FF5555;}
+.s-btn-blue{background:#8899FF15;border-color:#8899FF;color:#8899FF;}
+.s-btn-ora {background:#FF8C0015;border-color:#FF8C00;color:#FF8C00;}
+.s-btn-cyan{background:#44BBFF15;border-color:#44BBFF;color:#44BBFF;}
+.s-btn-gray{background:#66778815;border-color:#667788;color:#667788;}
+.back-btn{
+  background:none;border:none;color:#445566;cursor:pointer;
+  font-size:13px;margin-bottom:16px;font-family:inherit;padding:0;
 }
 
-/* ════ SIMULATOR STYLES (brain tab) ════ */
+/* ── STAT GRID ────────────────────────────────────────────────── */
+.stat-grid{display:grid;gap:8px;margin-bottom:16px;}
+.stat-grid-3{grid-template-columns:1fr 1fr 1fr;}
+.stat-grid-2{grid-template-columns:1fr 1fr;}
+.stat-box{background:#0a1420;border-radius:10px;padding:12px 8px;text-align:center;}
+.stat-val{font-size:22px;font-weight:700;line-height:1.2;}
+.stat-lbl{font-size:9px;color:#334455;letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
 
-  /* ══════════════ SIMULATOR-SPECIFIC STYLES ══════════════ */
-  .sim-wrap {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 1.5rem 1rem 4rem;
-    min-height: 70vh;
-  }
+/* ── NAME INPUT ───────────────────────────────────────────────── */
+.name-box{background:#0a1520;border-radius:14px;padding:16px;margin-bottom:20px;}
+.name-row{display:flex;gap:8px;}
+.name-input{
+  flex:1;padding:10px 14px;border-radius:10px;font-size:15px;
+  background:#060d16;border:1.5px solid #1a2a3a;color:#fff;
+  outline:none;font-family:inherit;transition:border-color .15s;
+}
+.name-input:focus{border-color:#FFD700;}
+.name-go{
+  padding:10px 18px;border-radius:10px;background:#FFD70022;
+  border:2px solid #FFD700;color:#FFD700;font-weight:700;
+  cursor:pointer;font-size:14px;font-family:inherit;
+}
+.player-chip{
+  display:flex;justify-content:space-between;align-items:center;
+  background:#0a1520;border-radius:12px;padding:10px 16px;margin-bottom:20px;
+}
 
-  .sim-screen { display: none; }
-  .sim-screen.active { display: block; animation: simFade 0.3s ease; }
-  @keyframes simFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+/* ── GAME CARDS ───────────────────────────────────────────────── */
+.game-card{
+  border-radius:16px;padding:18px 20px;cursor:pointer;
+  margin-bottom:12px;transition:transform .15s,border-color .15s;
+}
+.game-card:hover{transform:scale(1.015);}
+.game-card.locked{opacity:.4;cursor:not-allowed;}
+.game-card:hover.locked{transform:none;}
 
-  /* ── HUB ── */
-  .hub-head { text-align: center; margin-bottom: 2rem; }
-  .hub-eyebrow {
-    font-family: var(--mono); font-size: 0.7rem; font-weight: 500;
-    letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase;
-    margin-bottom: 0.75rem;
-  }
-  .hub-title {
-    font-family: var(--serif); font-size: clamp(2rem, 7vw, 2.8rem);
-    font-weight: 600; color: var(--ink); line-height: 1.05;
-    letter-spacing: -0.02em; margin-bottom: 0.6rem;
-  }
-  .hub-title em { font-style: italic; color: var(--gold); }
-  .hub-sub { color: var(--ink-soft); font-size: 0.98rem; line-height: 1.6; max-width: 440px; margin: 0 auto; }
+/* ── COUNT DOTS ───────────────────────────────────────────────── */
+.count-dots{text-align:center;}
+.count-dots-label{font-size:10px;color:#667788;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.count-dots-row{display:flex;gap:5px;justify-content:center;}
+.dot-pip{width:13px;height:13px;border-radius:50%;transition:all .2s;}
 
-  /* ── NAME ENTRY ── */
-  .name-card {
-    background: var(--forest2); border: 1px solid var(--rule);
-    border-radius: var(--radius-lg); padding: 1.5rem; margin: 1.75rem 0;
-    text-align: center;
-  }
-  .name-card.has-name { padding: 1rem 1.5rem; }
-  .name-label {
-    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
-    color: var(--gold); text-transform: uppercase; margin-bottom: 0.75rem;
-  }
-  .name-input-row { display: flex; gap: 0.6rem; max-width: 360px; margin: 0 auto; }
-  .name-input {
-    flex: 1; background: var(--forest-deep); border: 1.5px solid var(--rule);
-    border-radius: 9px; padding: 0.7rem 1rem; color: var(--ink);
-    font-family: var(--sans); font-size: 1rem; text-align: center;
-  }
-  .name-input:focus { outline: none; border-color: var(--gold); }
-  .name-input::placeholder { color: var(--ink-faint); }
-  .name-set-btn {
-    background: var(--gold); color: var(--forest); border: none;
-    border-radius: 9px; padding: 0.7rem 1.25rem; font-weight: 700;
-    font-family: var(--sans); font-size: 0.92rem; cursor: pointer;
-    white-space: nowrap; transition: background 0.15s;
-  }
-  .name-set-btn:hover { background: var(--gold-light); }
-  .name-greeting { color: var(--ink); font-size: 1rem; }
-  .name-greeting strong { color: var(--gold); font-weight: 700; }
-  .name-change { background: none; border: none; color: var(--ink-faint); font-size: 0.8rem; cursor: pointer; text-decoration: underline; margin-left: 0.5rem; font-family: var(--sans); }
+/* ── PITCH ZONE ───────────────────────────────────────────────── */
+.pitch-zone-wrap{position:relative;width:100%;padding-bottom:100%;border-radius:14px;overflow:hidden;background:#05100a;border:1.5px solid #1a2e1a;}
+.zone-inner{position:absolute;top:0;left:0;width:100%;height:100%;}
+.sz-box{
+  position:absolute;
+  left:22%;top:22%;width:56%;height:56%;
+  background:radial-gradient(ellipse 46% 46% at 50% 50%,rgba(220,38,38,.6) 0%,rgba(234,88,12,.48) 26%,rgba(234,179,8,.38) 50%,rgba(34,197,94,.3) 74%,rgba(34,197,94,.06) 100%);
+  border-radius:4px;border:2px dashed rgba(255,255,255,.1);
+}
+.pitch-dot{
+  position:absolute;transform:translate(-50%,-50%);
+  border-radius:50%;border:3px solid #cce8ff;
+  box-shadow:0 0 14px rgba(255,255,255,.33);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#000;
+}
+@keyframes pitchFly{from{transform:translate(-50%,-50%) scale(.12);opacity:0}80%{opacity:1}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dotPop{from{transform:translate(-50%,-50%) scale(0)}to{transform:translate(-50%,-50%) scale(1)}}
+@keyframes ptsFade{0%{opacity:1;transform:translate(-50%,-100%)}100%{opacity:0;transform:translate(-50%,-180%)}}
+@keyframes missFd{0%{opacity:.7}100%{opacity:0;transform:translate(-50%,-50%) scale(1.5)}}
+@keyframes cdPop{0%{opacity:0;transform:scale(.4)}60%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}
 
-  /* ── GAME CARDS ── */
-  .game-cards { display: grid; gap: 1rem; }
-  .game-card {
-    background: var(--forest2); border: 1px solid var(--rule);
-    border-radius: var(--radius-lg); padding: 1.5rem; cursor: pointer;
-    transition: border-color 0.18s, transform 0.18s, opacity 0.18s;
-    position: relative; overflow: hidden;
-  }
-  .game-card::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
-    background: var(--accent, var(--gold)); opacity: 0.8;
-  }
-  .game-card:not(.locked):hover { border-color: var(--accent, var(--gold)); transform: translateY(-2px); }
-  .game-card.locked { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.5); }
-  .game-card-num {
-    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
-    color: var(--accent, var(--gold)); text-transform: uppercase; margin-bottom: 0.5rem;
-  }
-  .game-card-title {
-    font-family: var(--serif); font-size: 1.5rem; font-weight: 600;
-    color: var(--ink); margin-bottom: 0.45rem; letter-spacing: -0.015em;
-  }
-  .game-card-desc { color: var(--ink-soft); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.85rem; }
-  .game-card-meta {
-    font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.1em;
-    color: var(--ink-faint); text-transform: uppercase;
-    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
-  }
-  .game-card-best {
-    margin-left: auto; color: var(--accent, var(--gold)); font-weight: 700;
-  }
-  .lock-hint {
-    text-align: center; color: var(--ink-faint); font-size: 0.85rem;
-    margin-top: 1.25rem; font-style: italic;
-  }
+/* ── SWING BUTTONS ────────────────────────────────────────────── */
+.action-row{display:flex;gap:12px;margin-top:14px;}
+.action-btn{
+  flex:1;padding:24px 10px;border-radius:14px;font-size:22px;
+  font-weight:900;border:3px solid;cursor:pointer;
+  transition:all .15s;letter-spacing:1px;font-family:inherit;
+}
 
-  /* ── GAME SHELL ── */
-  .game-top {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 1.25rem; gap: 1rem;
-  }
-  .back-btn {
-    background: transparent; border: 1px solid var(--rule); color: var(--ink-soft);
-    border-radius: 8px; padding: 0.5rem 0.9rem; font-size: 0.82rem; font-weight: 600;
-    cursor: pointer; font-family: var(--sans); transition: all 0.15s;
-  }
-  .back-btn:hover { border-color: var(--gold); color: var(--gold); }
-  .game-scorebug {
-    display: flex; gap: 1.25rem; font-family: var(--mono);
-  }
-  .scorebug-item { text-align: center; }
-  .scorebug-label { font-size: 0.6rem; letter-spacing: 0.12em; color: var(--ink-faint); text-transform: uppercase; }
-  .scorebug-val { font-size: 1.3rem; font-weight: 700; color: var(--ink); line-height: 1.1; }
-  .scorebug-val.gold { color: var(--gold); }
+/* ── TIMER BAR ────────────────────────────────────────────────── */
+.timer-bar{height:8px;background:#080f18;border-radius:4px;overflow:hidden;margin-bottom:14px;}
+.timer-fill{height:100%;border-radius:4px;transition:width 1s linear;}
+.progress-bar{height:3px;background:#080f18;border-radius:2px;overflow:hidden;margin-top:12px;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#FFD700,#FF8C00);border-radius:2px;transition:width .4s;}
 
-  /* ── BATTER UP ── */
-  .field-stage {
-    position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 420px;
-    margin: 0 auto 1.25rem; background: radial-gradient(circle at 50% 60%, var(--forest3), var(--forest-deep));
-    border: 1px solid var(--rule); border-radius: var(--radius-lg); overflow: hidden;
-  }
-  .strike-zone {
-    position: absolute; left: 22%; top: 22%; width: 56%; height: 56%;
-    border: 2px dashed rgba(244,239,230,0.25); border-radius: 4px;
-  }
-  .strike-zone::after {
-    content: 'STRIKE ZONE'; position: absolute; top: -1.4rem; left: 50%;
-    transform: translateX(-50%); font-family: var(--mono); font-size: 0.55rem;
-    letter-spacing: 0.15em; color: var(--ink-faint); white-space: nowrap;
-  }
-  .zone-grid {
-    position: absolute; left: 22%; top: 22%; width: 56%; height: 56%;
-    display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(3,1fr);
-  }
-  .zone-cell { border: 0.5px solid rgba(244,239,230,0.05); }
-  .pitch-ball {
-    position: absolute; width: 7%; height: 7%; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #fff, #e8e8e8 55%, #c0392b 56%, #fff 60%, #ddd);
-    box-shadow: 0 0 14px rgba(255,255,255,0.4); transform: translate(-50%,-50%) scale(0.2);
-    opacity: 0; z-index: 5; pointer-events: none;
-  }
-  .pitch-ball.incoming { animation: pitchIn var(--pitch-ms, 500ms) cubic-bezier(0.4,0,0.7,1) forwards; }
-  @keyframes pitchIn {
-    0% { transform: translate(-50%,-50%) scale(0.15); opacity: 0; }
-    12% { opacity: 1; }
-    100% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
-  }
-  .pitch-result-flash {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    flex-direction: column; background: rgba(10,22,16,0.82); z-index: 10; opacity: 0;
-    pointer-events: none; transition: opacity 0.2s; padding: 1rem; text-align: center;
-  }
-  .pitch-result-flash.show { opacity: 1; }
-  .result-headline { font-family: var(--serif); font-size: 1.9rem; font-weight: 700; margin-bottom: 0.3rem; line-height: 1.1; }
-  .result-detail { font-size: 0.92rem; color: var(--ink-soft); max-width: 280px; }
+/* ── MANAGER ──────────────────────────────────────────────────── */
+.scenario-meta{
+  display:flex;justify-content:space-between;
+  font-size:12px;color:#88aacc;
+  background:rgba(255,255,255,.04);border-radius:10px;
+  padding:10px 14px;margin-bottom:14px;
+}
+.m-option{
+  background:#8899FF0f;border:2px solid #8899FF25;
+  border-radius:10px;padding:12px 14px;
+  color:#99aacc;cursor:pointer;text-align:left;
+  font-size:13px;line-height:1.5;
+  transition:all .15s;margin-bottom:8px;
+  font-family:inherit;width:100%;
+}
+.m-option:hover:not(:disabled){background:#8899FF22;border-color:#8899FF;color:#fff;}
+.m-option.correct{background:#55DD8815;border-color:#55DD88;color:#55DD88;cursor:default;}
+.m-option.wrong{background:transparent;border-color:#1e2a3a;color:#445566;cursor:default;}
+.feedback-box{border-radius:12px;padding:14px 16px;margin-top:14px;text-align:center;animation:fadeUp .2s ease;}
 
-  .swing-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; max-width: 420px; margin: 0 auto; }
-  .swing-btn {
-    border: none; border-radius: var(--radius); padding: 1.15rem; font-family: var(--sans);
-    font-size: 1.15rem; font-weight: 800; cursor: pointer; letter-spacing: 0.02em;
-    text-transform: uppercase; transition: transform 0.1s, opacity 0.15s;
-  }
-  .swing-btn:active { transform: scale(0.96); }
-  .swing-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-  .swing-btn.swing { background: var(--gold); color: var(--forest); }
-  .swing-btn.take { background: var(--forest3); color: var(--ink); border: 1px solid var(--rule); }
+/* ── LEADERBOARD ──────────────────────────────────────────────── */
+.lb-tabs{display:flex;gap:6px;margin-bottom:20px;}
+.lb-tab{
+  flex:1;padding:10px 8px;border-radius:10px;font-size:12px;
+  font-weight:700;cursor:pointer;border:2px solid;
+  transition:all .15s;font-family:inherit;
+}
+.lb-row{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:8px;border-radius:10px;padding:11px 14px;
+  border:1.5px solid;
+}
 
-  /* ── MANAGER MODE ── */
-  .situation-card {
-    background: var(--forest2); border: 1px solid var(--rule);
-    border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1rem;
-  }
-  .situation-state {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;
-    margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--rule);
-  }
-  .state-item { text-align: center; }
-  .state-label { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 0.2rem; }
-  .state-val { font-family: var(--mono); font-size: 1rem; font-weight: 700; color: var(--ink); }
-  .diamond {
-    width: 90px; height: 90px; margin: 0 auto 1rem; position: relative; transform: rotate(45deg);
-  }
-  .base {
-    position: absolute; width: 26px; height: 26px; background: var(--forest-deep);
-    border: 1.5px solid var(--rule); border-radius: 3px;
-  }
-  .base.occupied { background: var(--gold); border-color: var(--gold); }
-  .base.first  { right: 0; top: 50%; transform: translateY(-50%); }
-  .base.second { top: 0; left: 50%; transform: translateX(-50%); }
-  .base.third  { left: 0; top: 50%; transform: translateY(-50%); }
-  .base.home   { bottom: 0; left: 50%; transform: translateX(-50%); background: var(--forest3); }
+/* ── REACTION ─────────────────────────────────────────────────── */
+#r-area{
+  flex:1;width:100%;max-width:520px;
+  position:relative;background:#04080d;
+  min-height:400px;touch-action:none;
+}
+.r-header{
+  width:100%;max-width:520px;padding:10px 18px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:#04080d;border-bottom:1px solid #0a1420;
+  flex-shrink:0;
+}
+.r-stat{text-align:center;}
+.r-stat-label{font-size:9px;color:#2a3a4a;letter-spacing:2px;text-transform:uppercase;}
+.r-stat-val{font-size:20px;font-weight:700;}
+.r-dot{
+  position:absolute;border-radius:50%;
+  transform:translate(-50%,-50%);
+  cursor:pointer;touch-action:none;
+  animation:dotPop .08s cubic-bezier(.17,.67,.42,1) forwards;
+  z-index:5;
+}
+.r-popup{
+  position:absolute;pointer-events:none;z-index:10;
+  animation:ptsFade .55s ease forwards;
+  transform:translate(-50%,-100%);
+  font-weight:900;text-shadow:0 2px 8px #000;
+}
+.r-miss{
+  position:absolute;border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(255,68,68,.17);border:2px solid rgba(255,68,68,.4);
+  animation:missFd .35s ease forwards;pointer-events:none;width:36px;height:36px;
+}
+.innings-progress{display:flex;gap:3px;justify-content:center;margin-bottom:18px;}
+.inn-pip{width:9px;height:9px;border-radius:50%;}
 
-  .situation-prompt { font-family: var(--serif); font-size: 1.2rem; color: var(--ink); line-height: 1.4; margin-bottom: 0.4rem; text-align: center; }
-  .clock-bar { height: 6px; background: var(--forest-deep); border-radius: 3px; overflow: hidden; margin-bottom: 1.25rem; }
-  .clock-fill { height: 100%; background: var(--gold); width: 100%; transition: width 0.1s linear; }
-  .clock-fill.warning { background: #e08071; }
+/* ── DIAMOND SVG ──────────────────────────────────────────────── */
+.diamond-wrap{width:100%;max-width:150px;}
 
-  .choice-list { display: grid; gap: 0.65rem; }
-  .choice-btn {
-    background: var(--forest3); border: 1px solid var(--rule); color: var(--ink);
-    border-radius: var(--radius); padding: 0.95rem 1.1rem; font-family: var(--sans);
-    font-size: 0.95rem; font-weight: 500; cursor: pointer; text-align: left;
-    transition: all 0.15s; line-height: 1.4;
-  }
-  .choice-btn:hover { border-color: var(--gold); }
-  .choice-btn:disabled { cursor: default; }
-  .choice-btn.correct { background: rgba(95,163,130,0.25); border-color: #5fa382; }
-  .choice-btn.wrong { background: rgba(224,128,113,0.2); border-color: #e08071; }
-  .choice-explain {
-    margin-top: 1rem; padding: 1rem; background: var(--forest-deep);
-    border-left: 3px solid var(--gold); border-radius: 8px; font-size: 0.9rem;
-    color: var(--ink-soft); line-height: 1.6; display: none;
-  }
-  .choice-explain.show { display: block; animation: simFade 0.3s ease; }
-  .choice-explain strong { color: var(--ink); }
+/* ── COUNTDOWN ────────────────────────────────────────────────── */
+#countdown-screen{
+  flex:1;display:flex;justify-content:center;align-items:center;
+  flex-direction:column;text-align:center;
+}
+.cd-num{font-size:108px;font-weight:900;line-height:1;animation:cdPop .35s ease forwards;}
 
-  /* ── REACTION TRAINER ── */
-  .reaction-stage {
-    position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 420px;
-    margin: 0 auto 1.25rem; background: radial-gradient(circle at 50% 50%, var(--forest3), var(--forest-deep));
-    border: 1px solid var(--rule); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer;
-    touch-action: manipulation;
-  }
-  .react-dot {
-    position: absolute; border-radius: 50%; background: var(--gold);
-    box-shadow: 0 0 18px rgba(200,134,46,0.6); transform: translate(-50%,-50%);
-    display: flex; align-items: center; justify-content: center; cursor: pointer;
-  }
-  .react-dot.shrinking { transition: width linear, height linear; }
-  .react-center-msg {
-    position: absolute; inset: 0; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; text-align: center; padding: 1rem; pointer-events: none;
-  }
-  .react-center-msg .big { font-family: var(--serif); font-size: 1.6rem; color: var(--ink); margin-bottom: 0.4rem; }
-  .react-center-msg .small { color: var(--ink-soft); font-size: 0.9rem; }
-
-  /* ── START / END PANELS ── */
-  .panel {
-    background: var(--forest2); border: 1px solid var(--rule);
-    border-radius: var(--radius-lg); padding: 2rem 1.5rem; text-align: center;
-  }
-  .panel-title { font-family: var(--serif); font-size: 1.7rem; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; letter-spacing: -0.015em; }
-  .panel-title em { font-style: italic; color: var(--gold); }
-  .panel-text { color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6; max-width: 380px; margin: 0 auto 1.5rem; }
-  .panel-stats { display: flex; justify-content: center; gap: 2rem; margin: 1.5rem 0; }
-  .panel-stat-val { font-family: var(--mono); font-size: 2rem; font-weight: 700; color: var(--gold); line-height: 1; }
-  .panel-stat-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; color: var(--ink-faint); text-transform: uppercase; margin-top: 0.35rem; }
-  .panel-best { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 1.5rem; }
-  .panel-best .new-best { color: var(--gold); font-weight: 700; }
-  .panel-btns { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
-  .btn-play {
-    background: var(--gold); color: var(--forest); border: none; border-radius: 9px;
-    padding: 0.85rem 2rem; font-family: var(--sans); font-size: 1rem; font-weight: 700;
-    cursor: pointer; transition: background 0.15s;
-  }
-  .btn-play:hover { background: var(--gold-light); }
-  .btn-secondary {
-    background: transparent; color: var(--ink-soft); border: 1px solid var(--rule);
-    border-radius: 9px; padding: 0.85rem 1.5rem; font-family: var(--sans); font-size: 1rem;
-    font-weight: 600; cursor: pointer; transition: all 0.15s;
-  }
-  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
-
-  /* learning summary box */
-  .learn-box {
-    background: var(--forest-deep); border: 1px solid var(--rule); border-left: 3px solid var(--gold);
-    border-radius: 8px; padding: 1rem 1.15rem; margin: 1.25rem 0; text-align: left;
-  }
-  .learn-box-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.5rem; }
-  .learn-box p { color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6; margin: 0; }
-
-  /* countdown overlay */
-  .countdown {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    background: rgba(10,22,16,0.9); z-index: 20; font-family: var(--serif);
-    font-size: 4rem; font-weight: 700; color: var(--gold);
-  }
-
-  @media (max-width: 480px) {
-    .game-scorebug { gap: 0.85rem; }
-    .scorebug-val { font-size: 1.1rem; }
-    .panel-stats { gap: 1.25rem; }
-  }
-
+/* ── HIDDEN ───────────────────────────────────────────────────── */
+.hidden{display:none!important;}
 </style>
 </head>
 <body>
 
+<!-- DISCLAIMER STRIP -->
+<div class="disclaimer-strip">
+  <span class="icon">&#9888;</span>Educational resource only — articles compiled and synthesized with AI assistance from publicly available research.<a href="about.html">Disclaimer</a>
+</div>
+
+<!-- SITE NAV -->
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
-    <ul class="nav-links">
-    <li><a href="builder.html">Build a Practice</a></li>
-    <li><a href="games.html">Games</a></li>
-    <li><a href="drills.html">Drill Library</a></li>
-    <li><a href="lineup.html">Lineup Builder</a></li>
-    <li><a href="toolkit.html">Toolkit</a></li>
-    <li><a href="train.html" class="active">Train</a></li>
+  <ul class="nav-links">
+    <li><a href="stages.html">The Framework</a></li>
     <li><a href="articles.html">Articles</a></li>
-    <li><a href="stages.html">The 4 Stages</a></li>
-    <li><a href="about.html">About</a></li>
+    <li><a href="drills.html">Drills</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="builder.html" class="nav-cta">Build a practice &rarr;</a></li>
   </ul>
   <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
 <div class="mobile-menu" id="mobile-menu">
-  <a href="builder.html">Build a Practice</a>
-  <a href="games.html">Games</a>
-  <a href="drills.html">Drill Library</a>
-  <a href="lineup.html">Lineup Builder</a>
-  <a href="toolkit.html">Toolkit</a>
-  <a href="train.html">Train</a>
+  <a href="stages.html">The Framework</a>
   <a href="articles.html">Articles</a>
-  <a href="stages.html">The 4 Stages</a>
+  <a href="drills.html">Drill Library</a>
+  <a href="builder.html">Practice Builder</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="progression.html">Season Plan</a>
+  <a href="train.html">Training Suite</a>
   <a href="about.html">About</a>
 </div>
 
-<!-- HERO -->
-<div style="background:var(--forest);padding:3rem 1.5rem 0">
-  <div style="max-width:720px;margin:0 auto">
-    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:var(--gold);margin-bottom:0.75rem">Train</div>
-    <h1 style="font-family:var(--serif);font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;color:white;line-height:1.2;margin-bottom:0.9rem">Train on your own.</h1>
-    <p style="font-size:1rem;color:rgba(255,255,255,0.7);line-height:1.7;max-width:580px;margin-bottom:1.5rem">Two ways to get better between practices. Solo physical drills for the field or the backyard, and brain-training games that sharpen pitch recognition, decisions, and reaction speed.</p>
+<!-- SUITE ROOT -->
+<div id="suite-root">
+
+  <!-- ── HUB ───────────────────────────────────────────────────── -->
+  <div id="screen-hub" class="s-card">
+    <div class="eyebrow">⚾ Welcome to</div>
+    <div class="gold-title" style="margin-bottom:4px">DugoutLab</div>
+    <div class="eyebrow" style="margin-bottom:20px">Baseball Training Suite</div>
+
+    <!-- Name entry -->
+    <div id="name-entry" class="name-box">
+      <div style="font-size:12px;color:#667788;margin-bottom:10px">Enter your name to unlock all three games:</div>
+      <div class="name-row">
+        <input class="name-input" id="name-input" placeholder="Your name..." maxlength="16" type="text">
+        <button class="name-go" onclick="setPlayerName()">Go →</button>
+      </div>
+    </div>
+    <div id="player-chip" class="player-chip hidden">
+      <span style="font-size:15px;color:#FFD700;font-weight:700">👤 <span id="chip-name"></span></span>
+      <button onclick="clearPlayerName()" style="background:none;border:none;color:#445566;cursor:pointer;font-size:12px">change</button>
+    </div>
+
+    <!-- Game cards -->
+    <div id="card-batter" class="game-card locked" style="background:linear-gradient(135deg,#2a0808,#150404);border:1.5px solid #FF555522" onclick="startBatterSetup()">
+      <div style="font-size:28px;margin-bottom:6px">🔥</div>
+      <div style="font-size:17px;font-weight:700;color:#FF5555;margin-bottom:5px">BATTER UP</div>
+      <div style="font-size:13px;color:#778899;line-height:1.7">Read the pitch. Swing or take. Heat-map zone — your reaction time and location determine the result.</div>
+      <div style="margin-top:8px;font-size:10px;color:#334455;letter-spacing:2px">15 AT-BATS · HEAT MAP · REACTION TIME</div>
+    </div>
+
+    <div id="card-manager" class="game-card locked" style="background:linear-gradient(135deg,#080d2a,#040815);border:1.5px solid #8899FF22" onclick="startManager()">
+      <div style="font-size:28px;margin-bottom:6px">🧠</div>
+      <div style="font-size:17px;font-weight:700;color:#8899FF;margin-bottom:5px">MANAGER MODE</div>
+      <div style="font-size:13px;color:#778899;line-height:1.7">Real game situations. 15-second clock. You call the plays. Builds baseball IQ under pressure.</div>
+      <div style="margin-top:8px;font-size:10px;color:#334455;letter-spacing:2px">6 SCENARIOS · TIMER · COACHING TIPS</div>
+    </div>
+
+    <div id="card-reaction" class="game-card locked" style="background:linear-gradient(135deg,#1a0d00,#0d0600);border:1.5px solid #FF8C0022" onclick="startReactionFresh()">
+      <div style="font-size:28px;margin-bottom:6px">⚡</div>
+      <div style="font-size:17px;font-weight:700;color:#FF8C00;margin-bottom:5px">REACTION TRAINER</div>
+      <div style="font-size:13px;color:#778899;line-height:1.7">Tap the dot the instant it appears. 9 innings — dots shrink and vanish faster each inning until impossible.</div>
+      <div style="margin-top:8px;font-size:10px;color:#334455;letter-spacing:2px">9 INNINGS · TAP-DRIVEN SPEED · ACCURACY SCORING</div>
+    </div>
+
+    <button class="s-btn s-btn-cyan" onclick="showLeaderboards()">🏆 Leaderboards</button>
+    <div id="unlock-hint" style="text-align:center;font-size:12px;color:#334455;margin-top:4px">Enter your name above to play</div>
   </div>
-  <!-- TAB BAR -->
-  <div style="max-width:720px;margin:0 auto">
-    <div class="train-tabs">
-      <button class="train-tab active" id="tab-btn-field" onclick="switchTrainTab('field')">
-        <span class="train-tab-label">On the Field</span>
-        <span class="train-tab-sub">Solo physical drills</span>
+
+  <!-- ── LEADERBOARDS ───────────────────────────────────────────── -->
+  <div id="screen-leaderboards" class="s-card hidden">
+    <button class="back-btn" onclick="showScreen('hub')">← Back</button>
+    <div style="text-align:center;font-size:34px;margin-bottom:4px">🏆</div>
+    <div class="gold-title" style="font-size:24px;margin-bottom:18px">Leaderboards</div>
+    <div class="lb-tabs">
+      <button class="lb-tab" id="lb-tab-0" onclick="switchLbTab(0)" style="border-color:#FF5555;background:#FF555533;color:#FF5555">🔥 Batter</button>
+      <button class="lb-tab" id="lb-tab-1" onclick="switchLbTab(1)" style="border-color:#8899FF44;color:#445566">🧠 Manager</button>
+      <button class="lb-tab" id="lb-tab-2" onclick="switchLbTab(2)" style="border-color:#FF8C0044;color:#445566">⚡ Reaction</button>
+    </div>
+    <div id="lb-content"></div>
+    <button class="s-btn s-btn-gold" onclick="showScreen('hub')">🏟 Back to Hub</button>
+  </div>
+
+  <!-- ── BATTER SETUP ───────────────────────────────────────────── -->
+  <div id="screen-batter-setup" class="s-card hidden">
+    <button class="back-btn" onclick="showScreen('hub')">← Back</button>
+    <div class="gold-title" style="font-size:24px;margin-bottom:4px">BATTER UP</div>
+    <div class="eyebrow" style="margin-bottom:20px">Choose your batting side</div>
+    <div style="display:flex;gap:12px;margin-bottom:24px">
+      <button id="hand-R" onclick="selectHand('R')" style="flex:1;padding:18px 12px;border-radius:14px;cursor:pointer;border:2px solid #334455;background:#0a1628;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:inherit;color:#667788;font-weight:700;font-size:14px">
+        <svg viewBox="0 0 80 100" style="width:44px;opacity:.75"><g><circle cx="40" cy="12" r="8" fill="#FFD700"/><line x1="40" y1="20" x2="40" y2="60" stroke="#FFD700" stroke-width="5" stroke-linecap="round"/><line x1="40" y1="35" x2="18" y2="28" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/><line x1="40" y1="35" x2="62" y2="22" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/><line x1="40" y1="60" x2="28" y2="90" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/><line x1="40" y1="60" x2="52" y2="90" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/><line x1="62" y1="22" x2="70" y2="30" stroke="#FFD700" stroke-width="6" stroke-linecap="round"/><line x1="70" y1="30" x2="76" y2="24" stroke="#888" stroke-width="4" stroke-linecap="round"/></g></svg>
+        Right-Handed
       </button>
-      <button class="train-tab" id="tab-btn-brain" onclick="switchTrainTab('brain')">
-        <span class="train-tab-label">In Your Head</span>
-        <span class="train-tab-sub">Brain-training games</span>
+      <button id="hand-L" onclick="selectHand('L')" style="flex:1;padding:18px 12px;border-radius:14px;cursor:pointer;border:2px solid #334455;background:#0a1628;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:inherit;color:#667788;font-weight:700;font-size:14px">
+        <svg viewBox="0 0 80 100" style="width:44px;opacity:.75"><g transform="translate(80,0) scale(-1,1)"><circle cx="40" cy="12" r="8" fill="#FFD700"/><line x1="40" y1="20" x2="40" y2="60" stroke="#FFD700" stroke-width="5" stroke-linecap="round"/><line x1="40" y1="35" x2="18" y2="28" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/><line x1="40" y1="35" x2="62" y2="22" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/><line x1="40" y1="60" x2="28" y2="90" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/><line x1="40" y1="60" x2="52" y2="90" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/><line x1="62" y1="22" x2="70" y2="30" stroke="#FFD700" stroke-width="6" stroke-linecap="round"/><line x1="70" y1="30" x2="76" y2="24" stroke="#888" stroke-width="4" stroke-linecap="round"/></g></svg>
+        Left-Handed
       </button>
     </div>
+    <button id="step-up-btn" class="s-btn s-btn-red" style="opacity:.35;cursor:not-allowed" onclick="startBatterGame()">⚾ Step Up to the Plate</button>
   </div>
-</div>
 
-<!-- ════════════ TAB 1: ON THE FIELD (solo drills) ════════════ -->
-<div id="tab-field">
-
-<!-- QUICK SESSION SUGGESTIONS -->
-<section style="background:var(--cream);padding:1.75rem 1.5rem;border-bottom:1px solid var(--border)">
-  <div style="max-width:1000px;margin:0 auto">
-    <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-light);margin-bottom:0.9rem">Quick Sessions — Pick One and Go</div>
-    <div class="grid-4" id="quick-sessions">
-      <div class="session-card" onclick="applyQuickSession('got30wall')">
-        <h4>30 Min — Just a Wall</h4>
-        <p>Grounders, pop-ups, throwing targets. Everything you need is a tennis ball and a flat wall.</p>
-        <span class="session-tag">30 min</span><span class="session-tag">Wall only</span>
-      </div>
-      <div class="session-card" onclick="applyQuickSession('hitting45')">
-        <h4>45 Min — Hitting Focus</h4>
-        <p>Tee work, self-flip toss, mirror check. Full solo hitting session.</p>
-        <span class="session-tag">45 min</span><span class="session-tag">Tee needed</span>
-      </div>
-      <div class="session-card" onclick="applyQuickSession('athlete20')">
-        <h4>20 Min — Athletic Base</h4>
-        <p>Jump rope, lateral shuffles, planks, balance work. No equipment needed.</p>
-        <span class="session-tag">20 min</span><span class="session-tag">No equipment</span>
-      </div>
-      <div class="session-card" onclick="applyQuickSession('pitcher30')">
-        <h4>30 Min — Pitcher Work</h4>
-        <p>Balance holds, towel drill, net spot work. Full solo pitching session.</p>
-        <span class="session-tag">30 min</span><span class="session-tag">Net or wall</span>
-      </div>
+  <!-- ── BATTER GAME ─────────────────────────────────────────────── -->
+  <div id="screen-batter-game" class="s-card hidden" style="padding-bottom:0">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <button class="back-btn" style="margin:0" onclick="exitBatterGame()">← Hub</button>
+      <span style="font-size:13px;color:#FFD700;font-weight:700" id="b-player-label"></span>
     </div>
-  </div>
-</section>
-
-<!-- MAIN CONTENT -->
-<section class="section section-white" style="padding-top:2rem">
-  <div style="max-width:1100px;margin:0 auto;padding:0 1.5rem">
-
-    <!-- AGE FILTER -->
-    <div style="margin-bottom:1.75rem">
-      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-light);margin-bottom:0.6rem">My Age Group</div>
-      <div class="age-selector">
-        <button class="age-sel-btn active" onclick="soloSetAge('all',this)">All Ages</button>
-        <button class="age-sel-btn" onclick="soloSetAge('tball',this)">T-Ball (Ages 4-7)</button>
-        <button class="age-sel-btn" onclick="soloSetAge('young',this)">Ages 7-9</button>
-        <button class="age-sel-btn" onclick="soloSetAge('middle',this)">Ages 10-12</button>
-        <button class="age-sel-btn" onclick="soloSetAge('teen',this)">Ages 13+</button>
-      </div>
+    <div style="display:flex;gap:18px;justify-content:center;margin-bottom:14px">
+      <div class="count-dots"><div class="count-dots-label">Balls</div><div class="count-dots-row" id="b-balls-dots"></div></div>
+      <div class="count-dots"><div class="count-dots-label">Strikes</div><div class="count-dots-row" id="b-strikes-dots"></div></div>
+      <div class="count-dots"><div class="count-dots-label">Outs</div><div class="count-dots-row" id="b-outs-dots"></div></div>
     </div>
-
-    <!-- CATEGORY CARDS -->
-    <div style="margin-bottom:1.75rem">
-      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-light);margin-bottom:0.75rem">What Do You Want to Work On?</div>
-      <div class="grid-4" id="cat-cards" style="grid-template-columns:repeat(6,1fr)">
-        <div class="solo-cat-card active" onclick="soloSetCat('all',this)">
-          <div class="solo-cat-label">Everything</div>
-          <div class="solo-cat-count" id="cat-count-all"></div>
-        </div>
-        <div class="solo-cat-card" onclick="soloSetCat('hitting',this)">
-          <div class="solo-cat-label">Hitting</div>
-          <div class="solo-cat-count" id="cat-count-hitting"></div>
-        </div>
-        <div class="solo-cat-card" onclick="soloSetCat('fielding',this)">
-          <div class="solo-cat-label">Fielding</div>
-          <div class="solo-cat-count" id="cat-count-fielding"></div>
-        </div>
-        <div class="solo-cat-card" onclick="soloSetCat('throwing',this)">
-          <div class="solo-cat-label">Throwing</div>
-          <div class="solo-cat-count" id="cat-count-throwing"></div>
-        </div>
-        <div class="solo-cat-card" onclick="soloSetCat('bodycontrol',this)">
-          <div class="solo-cat-label">Body Control</div>
-          <div class="solo-cat-count" id="cat-count-bodycontrol"></div>
-        </div>
-        <div class="solo-cat-card" onclick="soloSetCat('pitching',this)">
-          <div class="solo-cat-label">Pitching</div>
-          <div class="solo-cat-count" id="cat-count-pitching"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- DRILL COUNT + GRID -->
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem">
-      <div style="font-size:0.82rem;color:var(--text-light)">
-        Showing <span id="solo-drill-count"></span>
-      </div>
-      <div style="font-size:0.78rem;color:var(--text-light)">Tap any drill for full details</div>
-    </div>
-
-    <div class="grid-3" id="solo-drill-grid"></div>
-
-  </div>
-</section>
-
-<!-- WHAT YOU NEED BOX -->
-<section class="section section-cream">
-  <div style="max-width:860px;margin:0 auto;padding:0 1.5rem">
-    <div style="display:flex;align-items:flex-start;gap:2rem;flex-wrap:wrap">
-      <div style="flex:1;min-width:240px">
-        <div class="section-label mb-2">The Free Kit</div>
-        <div class="section-title" style="font-size:1.3rem;margin-bottom:0.75rem">What you actually need</div>
-        <p style="font-size:0.9rem;color:var(--text-mid);line-height:1.7">Most of the drills here require almost nothing. Here's the short list that unlocks the most solo training:</p>
-      </div>
-      <div style="flex:2;min-width:280px">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
-          <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem">
-            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);margin-bottom:0.35rem">Free</div>
-            <div style="font-size:0.88rem;color:var(--text-mid);line-height:1.6">A wall or fence<br>Any ball<br>Your phone on video</div>
-          </div>
-          <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem">
-            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);margin-bottom:0.35rem">Under $15</div>
-            <div style="font-size:0.88rem;color:var(--text-mid);line-height:1.6">Jump rope<br>6 tennis balls<br>2 cones</div>
-          </div>
-          <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem">
-            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);margin-bottom:0.35rem">Under $50</div>
-            <div style="font-size:0.88rem;color:var(--text-mid);line-height:1.6">Batting tee<br>Agility ladder<br>Net with target</div>
-          </div>
-          <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem">
-            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);margin-bottom:0.35rem">Nice to Have</div>
-            <div style="font-size:0.88rem;color:var(--text-mid);line-height:1.6">Pitching net<br>Tennis racket<br>Hand towel</div>
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px">
+      <div style="flex:1">
+        <div style="font-size:10px;color:#445566;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;text-align:center" id="b-pitch-label">Strike Zone</div>
+        <div class="pitch-zone-wrap">
+          <div class="zone-inner">
+            <div class="sz-box" id="b-sz-box"></div>
+            <div style="position:absolute;left:22%;top:37.3%;width:56%;height:1px;background:rgba(255,255,255,.05)"></div>
+            <div style="position:absolute;left:22%;top:52.7%;width:56%;height:1px;background:rgba(255,255,255,.05)"></div>
+            <div style="position:absolute;left:40.7%;top:22%;width:1px;height:56%;background:rgba(255,255,255,.05)"></div>
+            <div style="position:absolute;left:59.3%;top:22%;width:1px;height:56%;background:rgba(255,255,255,.05)"></div>
+            <div id="b-pitch-dot" class="pitch-dot hidden" style="width:22px;height:22px"></div>
+            <div id="b-zone-label" style="position:absolute;bottom:5px;left:0;right:0;text-align:center;font-size:10px;font-weight:700;display:none"></div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-</div><!-- /#tab-field -->
-
-<!-- ════════════ TAB 2: IN YOUR HEAD (brain games) ════════════ -->
-<div id="tab-brain">
-<div class="sim-wrap">
-
-  <!-- ══════════ HUB SCREEN ══════════ -->
-  <div class="sim-screen active" id="screen-hub">
-    <div class="hub-head">
-      <div class="hub-eyebrow">The Training Suite</div>
-      <h1 class="hub-title">Train your <em>baseball brain.</em></h1>
-      <p class="hub-sub">Three games. Pitch recognition, situational reads, and reaction speed. Built for phones. Free, forever. No account needed.</p>
-    </div>
-
-    <!-- name entry -->
-    <div class="name-card" id="name-card">
-      <div class="name-label">Who's playing?</div>
-      <div class="name-input-row">
-        <input type="text" class="name-input" id="name-input" placeholder="Enter your name" maxlength="16" autocomplete="off">
-        <button class="name-set-btn" onclick="setPlayerName()">Let's go</button>
-      </div>
-    </div>
-
-    <div class="game-cards" id="game-cards">
-      <div class="game-card locked" id="card-batter" style="--accent:#e08071" onclick="openGame('batter')">
-        <div class="game-card-num">Game 01</div>
-        <div class="game-card-title">Batter Up</div>
-        <div class="game-card-desc">A pitch is on the way. Read the location. Swing at strikes, take the balls. Your timing and your eye both matter.</div>
-        <div class="game-card-meta">
-          <span>15 Pitches</span><span>Heat Map</span><span>Reaction Time</span>
-          <span class="game-card-best" id="best-batter"></span>
+        <div style="display:flex;justify-content:center;gap:10px;margin-top:6px">
+          <span style="font-size:10px;color:#445566">🔴 Power</span>
+          <span style="font-size:10px;color:#445566">🟡 Contact</span>
+          <span style="font-size:10px;color:#445566">🟢 Edge</span>
         </div>
       </div>
-
-      <div class="game-card locked" id="card-manager" style="--accent:#5fa382" onclick="openGame('manager')">
-        <div class="game-card-num">Game 02</div>
-        <div class="game-card-title">Manager Mode</div>
-        <div class="game-card-desc">You're running the team. Runner on second, one out, late innings. What's the call? You've got 15 seconds to decide.</div>
-        <div class="game-card-meta">
-          <span>10 Situations</span><span>15-Sec Clock</span><span>Baseball IQ</span>
-          <span class="game-card-best" id="best-manager"></span>
-        </div>
-      </div>
-
-      <div class="game-card locked" id="card-reaction" style="--accent:#C8862E" onclick="openGame('reaction')">
-        <div class="game-card-num">Game 03</div>
-        <div class="game-card-title">Reaction Trainer</div>
-        <div class="game-card-desc">Targets pop up and shrink fast. Tap them before they vanish. Nine rounds, getting quicker each time.</div>
-        <div class="game-card-meta">
-          <span>9 Rounds</span><span>Tap Speed</span><span>Accuracy</span>
-          <span class="game-card-best" id="best-reaction"></span>
+      <div style="width:110px;flex-shrink:0">
+        <div style="font-size:10px;color:#445566;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;text-align:center">Runners</div>
+        <svg viewBox="0 0 120 120" style="width:100%;max-width:150px" id="b-diamond">
+          <polygon points="60,10 110,60 60,110 10,60" fill="#1a3a1a" stroke="rgba(255,255,255,.13)" stroke-width="1.5"/>
+          <polygon points="60,108 55,113 60,118 65,113" fill="white"/>
+          <rect id="r-1b" x="106" y="56" width="8" height="8" rx="1" fill="#334433" stroke="#fff" stroke-width="1"/>
+          <rect id="r-2b" x="56" y="6" width="8" height="8" rx="1" fill="#334433" stroke="#fff" stroke-width="1"/>
+          <rect id="r-3b" x="6" y="56" width="8" height="8" rx="1" fill="#334433" stroke="#fff" stroke-width="1"/>
+          <circle cx="60" cy="60" r="5" fill="#6b5c3e" stroke="#fff" stroke-width="1"/>
+        </svg>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;justify-content:space-between;padding:3px 8px;background:rgba(255,255,255,.04);border-radius:6px"><span style="font-size:10px;color:#556677">Hits</span><span id="b-hits-stat" style="font-size:14px;font-weight:700;color:#FFD700">0</span></div>
+          <div style="display:flex;justify-content:space-between;padding:3px 8px;background:rgba(255,255,255,.04);border-radius:6px"><span style="font-size:10px;color:#556677">Pts</span><span id="b-pts-stat" style="font-size:14px;font-weight:700;color:#88BBFF">0</span></div>
+          <div style="display:flex;justify-content:space-between;padding:3px 8px;background:rgba(255,255,255,.04);border-radius:6px"><span style="font-size:10px;color:#556677">Runs</span><span id="b-runs-stat" style="font-size:14px;font-weight:700;color:#55DD88">0</span></div>
         </div>
       </div>
     </div>
-
-    <div class="lock-hint" id="lock-hint">Enter your name above to unlock the games.</div>
-
-
+    <div id="b-feedback" class="hidden feedback-box"></div>
+    <div class="action-row">
+      <button id="b-swing-btn" class="action-btn" style="border-color:#2a3a4a;background:#080f18;color:#2a3a4a;cursor:default" onclick="handleSwing(true)">🔥 SWING</button>
+      <button id="b-take-btn" class="action-btn" style="border-color:#2a3a4a;background:#080f18;color:#2a3a4a;cursor:default" onclick="handleSwing(false)">👁 TAKE</button>
+    </div>
+    <div class="progress-bar" style="margin-top:12px"><div id="b-progress" class="progress-fill" style="width:0%"></div></div>
+    <div style="text-align:center;font-size:10px;color:#2a3a4a;margin:4px 0 16px" id="b-ab-label">0 of 15 at-bats</div>
   </div>
 
-  <!-- ══════════ BATTER UP ══════════ -->
-  <div class="sim-screen" id="screen-batter">
-    <div class="game-top">
-      <button class="back-btn" onclick="goHub()">&larr; Hub</button>
-      <div class="game-scorebug">
-        <div class="scorebug-item"><div class="scorebug-label">Pitch</div><div class="scorebug-val" id="bat-pitch-num">0/15</div></div>
-        <div class="scorebug-item"><div class="scorebug-label">Hits</div><div class="scorebug-val" id="bat-hits">0</div></div>
-        <div class="scorebug-item"><div class="scorebug-label">Score</div><div class="scorebug-val gold" id="bat-score">0</div></div>
+  <!-- ── BATTER RESULTS ──────────────────────────────────────────── -->
+  <div id="screen-batter-results" class="s-card hidden">
+    <div style="text-align:center;font-size:44px;margin-bottom:8px">⚾</div>
+    <div class="gold-title" style="font-size:26px;margin-bottom:4px">AT-BAT REPORT</div>
+    <div class="eyebrow" id="b-results-sub" style="margin-bottom:16px"></div>
+    <div class="stat-grid stat-grid-3" id="b-results-grid"></div>
+    <div style="text-align:center;font-size:20px;margin-bottom:12px" id="b-results-grade"></div>
+    <button class="s-btn s-btn-red" onclick="startBatterSetup()">🔄 Bat Again</button>
+    <button class="s-btn s-btn-gold" onclick="showScreen('hub')">🏟 Back to DugoutLab</button>
+  </div>
+
+  <!-- ── MANAGER GAME ────────────────────────────────────────────── -->
+  <div id="screen-manager-game" class="s-card hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <button class="back-btn" style="margin:0" onclick="exitManager()">← Hub</button>
+      <div style="font-size:13px;color:#8899FF" id="m-scenario-counter"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#667788;margin-bottom:5px">
+      <span style="letter-spacing:2px;text-transform:uppercase">Decide in</span>
+      <span id="m-timer-display" style="font-weight:700;font-size:20px;color:#44DD88">15s</span>
+    </div>
+    <div class="timer-bar"><div id="m-timer-fill" class="timer-fill" style="width:100%;background:linear-gradient(90deg,#44DD88,#44DD8888)"></div></div>
+    <div class="scenario-meta" id="m-meta"></div>
+    <div style="display:flex;gap:12px;margin-bottom:14px;align-items:center">
+      <div style="width:80px;flex-shrink:0">
+        <svg viewBox="0 0 120 120" style="width:100%" id="m-diamond">
+          <polygon points="60,10 110,60 60,110 10,60" fill="#1a3a1a" stroke="rgba(255,255,255,.13)" stroke-width="1.5"/>
+          <polygon points="60,108 55,113 60,118 65,113" fill="white"/>
+          <rect id="m-r-1b" x="106" y="56" width="8" height="8" rx="1" fill="#334433" stroke="#fff" stroke-width="1"/>
+          <rect id="m-r-2b" x="56" y="6" width="8" height="8" rx="1" fill="#334433" stroke="#fff" stroke-width="1"/>
+          <rect id="m-r-3b" x="6" y="56" width="8" height="8" rx="1" fill="#334433" stroke="#fff" stroke-width="1"/>
+          <circle cx="60" cy="60" r="5" fill="#6b5c3e" stroke="#fff" stroke-width="1"/>
+        </svg>
+      </div>
+      <div style="flex:1;font-size:14px;color:#bbc;line-height:1.7">
+        <strong style="color:#FFD700;display:block;margin-bottom:5px;font-size:10px;letter-spacing:2px;text-transform:uppercase">The Situation</strong>
+        <span id="m-situation"></span>
       </div>
     </div>
+    <div id="m-options"></div>
+    <div id="m-feedback" class="hidden feedback-box"></div>
+  </div>
 
-    <!-- start panel -->
-    <div class="panel" id="bat-start">
-      <div class="panel-title">Batter <em>Up</em></div>
-      <p class="panel-text">A pitch comes in. If it's in the dashed strike zone, swing. If it's outside, take it. Swing too early or too late and you'll miss. Read it. React.</p>
-      <div class="learn-box">
-        <div class="learn-box-label">What this trains</div>
-        <p>Pitch recognition is the single biggest separator between hitters. Good hitters aren't swinging faster, they're <strong>deciding faster</strong> whether a pitch is worth swinging at.</p>
-      </div>
-      <div class="panel-btns"><button class="btn-play" onclick="batStart()">Step in the box</button></div>
+  <!-- ── MANAGER RESULTS ────────────────────────────────────────── -->
+  <div id="screen-manager-results" class="s-card hidden">
+    <div style="text-align:center;font-size:44px;margin-bottom:8px">🧠</div>
+    <div class="gold-title" style="font-size:26px;margin-bottom:4px">MANAGER REPORT</div>
+    <div class="eyebrow" id="m-results-sub" style="margin-bottom:16px"></div>
+    <div style="text-align:center;margin-bottom:16px">
+      <div id="m-score-display" style="font-size:60px;font-weight:900;line-height:1;background:linear-gradient(135deg,#8899FF,#44BBFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent"></div>
+      <div style="font-size:12px;color:#88aacc;margin-top:4px">correct decisions</div>
     </div>
-
-    <!-- game stage -->
-    <div id="bat-game" style="display:none">
-      <div class="field-stage" id="bat-stage">
-        <div class="strike-zone"></div>
-        <div class="zone-grid">
-          <div class="zone-cell"></div><div class="zone-cell"></div><div class="zone-cell"></div>
-          <div class="zone-cell"></div><div class="zone-cell"></div><div class="zone-cell"></div>
-          <div class="zone-cell"></div><div class="zone-cell"></div><div class="zone-cell"></div>
-        </div>
-        <div class="pitch-ball" id="bat-ball"></div>
-        <div class="pitch-result-flash" id="bat-flash">
-          <div class="result-headline" id="bat-flash-head"></div>
-          <div class="result-detail" id="bat-flash-detail"></div>
-        </div>
-        <div class="countdown" id="bat-countdown" style="display:none"></div>
-      </div>
-      <div class="swing-controls">
-        <button class="swing-btn take" id="bat-take" onclick="batSwing(false)" disabled>Take</button>
-        <button class="swing-btn swing" id="bat-swing" onclick="batSwing(true)" disabled>Swing</button>
-      </div>
+    <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:16px;margin-bottom:20px;text-align:center">
+      <div style="font-size:20px;margin-bottom:6px" id="m-results-grade"></div>
+      <div style="font-size:13px;color:#88aacc;line-height:1.7" id="m-results-msg"></div>
     </div>
+    <button class="s-btn s-btn-blue" onclick="startManager()">🔄 Try Again</button>
+    <button class="s-btn s-btn-gold" onclick="showScreen('hub')">🏟 Back to DugoutLab</button>
+  </div>
 
-    <!-- end panel -->
-    <div class="panel" id="bat-end" style="display:none">
-      <div class="panel-title">At-bat <em>complete</em></div>
-      <div class="panel-stats">
-        <div><div class="panel-stat-val" id="bat-end-hits">0</div><div class="panel-stat-label">Hits</div></div>
-        <div><div class="panel-stat-val" id="bat-end-score">0</div><div class="panel-stat-label">Score</div></div>
-        <div><div class="panel-stat-val" id="bat-end-rt">0</div><div class="panel-stat-label">Avg ms</div></div>
-      </div>
-      <div class="panel-best" id="bat-best-line"></div>
-      <div class="learn-box" id="bat-learn"><div class="learn-box-label">Coach's read</div><p id="bat-learn-text"></p></div>
-      <div class="panel-btns">
-        <button class="btn-play" onclick="batStart()">Play again</button>
-        <button class="btn-secondary" onclick="goHub()">Back to hub</button>
-      </div>
+  <!-- ── REACTION COUNTDOWN ─────────────────────────────────────── -->
+  <div id="screen-r-countdown" class="hidden" style="flex:1;width:100%;display:flex;flex-direction:column;align-items:center">
+    <div id="countdown-screen">
+      <div id="cd-inning-label" style="font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px"></div>
+      <div id="cd-tag" style="font-size:12px;color:#334455;margin-bottom:24px"></div>
+      <div id="cd-dot-preview" style="display:flex;justify-content:center;margin-bottom:28px"></div>
+      <div id="cd-number" class="cd-num"></div>
     </div>
   </div>
 
-  <!-- ══════════ MANAGER MODE ══════════ -->
-  <div class="sim-screen" id="screen-manager">
-    <div class="game-top">
-      <button class="back-btn" onclick="goHub()">&larr; Hub</button>
-      <div class="game-scorebug">
-        <div class="scorebug-item"><div class="scorebug-label">Call</div><div class="scorebug-val" id="mgr-num">0/10</div></div>
-        <div class="scorebug-item"><div class="scorebug-label">Right</div><div class="scorebug-val" id="mgr-correct">0</div></div>
-        <div class="scorebug-item"><div class="scorebug-label">Score</div><div class="scorebug-val gold" id="mgr-score">0</div></div>
-      </div>
+  <!-- ── REACTION GAME ──────────────────────────────────────────── -->
+  <div id="screen-r-game" class="hidden" style="flex:1;width:100%;display:flex;flex-direction:column;align-items:center">
+    <div class="r-header">
+      <div class="r-stat"><div class="r-stat-label">Inning</div><div class="r-stat-val" id="r-inning-label" style="color:#44BBFF">1st</div></div>
+      <div class="r-stat"><div class="r-stat-label">Time</div><div class="r-stat-val" id="r-time-val" style="color:#44DD88">20s</div></div>
+      <div class="r-stat"><div class="r-stat-label">Score</div><div class="r-stat-val" style="color:#FFD700" id="r-score-val">0</div></div>
+      <div class="r-stat"><div class="r-stat-label">Perfect</div><div class="r-stat-val" style="color:#AA66FF" id="r-perfect-val">0</div></div>
     </div>
-
-    <div class="panel" id="mgr-start">
-      <div class="panel-title">Manager <em>Mode</em></div>
-      <p class="panel-text">You're making the calls. Each situation gives you the score, inning, outs, and baserunners. Pick the smartest play before the clock runs out.</p>
-      <div class="learn-box">
-        <div class="learn-box-label">What this trains</div>
-        <p>Baseball is a thinking game. The best players know what they'll do with the ball <strong>before it's hit to them</strong>. This builds that habit.</p>
-      </div>
-      <div class="panel-btns"><button class="btn-play" onclick="mgrStart()">Take the lineup card</button></div>
+    <div style="width:100%;max-width:520px;height:3px;background:#080f18;flex-shrink:0">
+      <div id="r-time-bar" style="height:100%;background:#44DD88;transition:width 1s linear;width:100%"></div>
     </div>
-
-    <div id="mgr-game" style="display:none">
-      <div class="situation-card">
-        <div class="situation-state">
-          <div class="state-item"><div class="state-label">Inning</div><div class="state-val" id="mgr-inning">T1</div></div>
-          <div class="state-item"><div class="state-label">Outs</div><div class="state-val" id="mgr-outs">0</div></div>
-          <div class="state-item"><div class="state-label">Score</div><div class="state-val" id="mgr-gamescore">0-0</div></div>
-        </div>
-        <div class="diamond">
-          <div class="base second" id="mgr-base2"></div>
-          <div class="base third" id="mgr-base3"></div>
-          <div class="base first" id="mgr-base1"></div>
-          <div class="base home"></div>
-        </div>
-        <div class="situation-prompt" id="mgr-prompt"></div>
-      </div>
-      <div class="clock-bar"><div class="clock-fill" id="mgr-clock"></div></div>
-      <div class="choice-list" id="mgr-choices"></div>
-      <div class="choice-explain" id="mgr-explain"></div>
-      <div class="panel-btns" id="mgr-next-wrap" style="display:none;margin-top:1.25rem">
-        <button class="btn-play" onclick="mgrNext()" id="mgr-next-btn">Next call</button>
-      </div>
-    </div>
-
-    <div class="panel" id="mgr-end" style="display:none">
-      <div class="panel-title">Game <em>over</em></div>
-      <div class="panel-stats">
-        <div><div class="panel-stat-val" id="mgr-end-correct">0</div><div class="panel-stat-label">Right Calls</div></div>
-        <div><div class="panel-stat-val" id="mgr-end-score">0</div><div class="panel-stat-label">Score</div></div>
-      </div>
-      <div class="panel-best" id="mgr-best-line"></div>
-      <div class="learn-box" id="mgr-learn"><div class="learn-box-label">Coach's read</div><p id="mgr-learn-text"></p></div>
-      <div class="panel-btns">
-        <button class="btn-play" onclick="mgrStart()">Play again</button>
-        <button class="btn-secondary" onclick="goHub()">Back to hub</button>
-      </div>
-    </div>
+    <div id="r-area"></div>
   </div>
 
-  <!-- ══════════ REACTION TRAINER ══════════ -->
-  <div class="sim-screen" id="screen-reaction">
-    <div class="game-top">
-      <button class="back-btn" onclick="goHub()">&larr; Hub</button>
-      <div class="game-scorebug">
-        <div class="scorebug-item"><div class="scorebug-label">Round</div><div class="scorebug-val" id="rt-round">0/9</div></div>
-        <div class="scorebug-item"><div class="scorebug-label">Hits</div><div class="scorebug-val" id="rt-hits">0</div></div>
-        <div class="scorebug-item"><div class="scorebug-label">Score</div><div class="scorebug-val gold" id="rt-score">0</div></div>
-      </div>
-    </div>
-
-    <div class="panel" id="rt-start">
-      <div class="panel-title">Reaction <em>Trainer</em></div>
-      <p class="panel-text">Targets appear and shrink. Tap each one before it disappears. Nine rounds, faster every time. Miss too many and the round ends.</p>
-      <div class="learn-box">
-        <div class="learn-box-label">What this trains</div>
-        <p>Reaction speed is trainable. Quick hands start with quick eyes. This sharpens the link between <strong>seeing and acting</strong>.</p>
-      </div>
-      <div class="panel-btns"><button class="btn-play" onclick="rtStart()">Get ready</button></div>
-    </div>
-
-    <div id="rt-game" style="display:none">
-      <div class="reaction-stage" id="rt-stage">
-        <div class="react-center-msg" id="rt-center">
-          <div class="big" id="rt-center-big">Round 1</div>
-          <div class="small" id="rt-center-small">Tap the targets fast</div>
-        </div>
-        <div class="countdown" id="rt-countdown" style="display:none"></div>
-      </div>
-      <div style="text-align:center;font-family:var(--mono);font-size:0.78rem;color:var(--ink-faint)" id="rt-status">Get ready...</div>
-    </div>
-
-    <div class="panel" id="rt-end" style="display:none">
-      <div class="panel-title">Time's <em>up</em></div>
-      <div class="panel-stats">
-        <div><div class="panel-stat-val" id="rt-end-hits">0</div><div class="panel-stat-label">Targets Hit</div></div>
-        <div><div class="panel-stat-val" id="rt-end-score">0</div><div class="panel-stat-label">Score</div></div>
-        <div><div class="panel-stat-val" id="rt-end-rt">0</div><div class="panel-stat-label">Avg ms</div></div>
-      </div>
-      <div class="panel-best" id="rt-best-line"></div>
-      <div class="learn-box" id="rt-learn"><div class="learn-box-label">Coach's read</div><p id="rt-learn-text"></p></div>
-      <div class="panel-btns">
-        <button class="btn-play" onclick="rtStart()">Play again</button>
-        <button class="btn-secondary" onclick="goHub()">Back to hub</button>
-      </div>
-    </div>
-  </div>
-
-</div>
-</div><!-- /#tab-brain -->
-
-
-<!-- DRILL MODAL -->
-<div class="modal-overlay" id="drill-modal" onclick="if(event.target===this)closeDrillModal()">
-  <div class="modal-box">
-    <div class="modal-header" id="modal-header">
+  <!-- ── REACTION INNING RESULTS ────────────────────────────────── -->
+  <div id="screen-r-inning" class="s-card hidden">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+      <div id="ri-dot-icon" style="border-radius:50%;flex-shrink:0"></div>
       <div>
-        <div class="modal-header-cat" id="modal-cat"></div>
-        <div class="modal-header-name" id="modal-name"></div>
-      </div>
-      <button class="modal-close" onclick="closeDrillModal()">&#x2715;</button>
-    </div>
-    <div class="modal-meta">
-      <span class="modal-pill" id="modal-dur"></span>
-      <span class="modal-pill" id="modal-players"></span>
-      <span class="modal-pill" id="modal-equip"></span>
-      <span class="modal-pill" id="modal-sport" style="background:#f0f4ff;color:#1A5276;font-weight:700"></span>
-    </div>
-    <div class="modal-body">
-      <div>
-        <div class="modal-field-label">Setup</div>
-        <div class="modal-field-text" id="modal-setup"></div>
-      </div>
-      <div>
-        <div class="modal-field-label">How to Run It</div>
-        <div class="modal-field-text" id="modal-exec"></div>
-      </div>
-      <div class="modal-cue-box">
-        <div class="modal-field-label">Coaching Cue</div>
-        <div class="modal-field-text" id="modal-cue"></div>
-      </div>
-      <div class="modal-why-box">
-        <div class="modal-field-label">Why This Works</div>
-        <div class="modal-field-text" id="modal-why"></div>
-      </div>
-      <div style="background:#fff8e8;border:1px solid #f0c040;border-radius:8px;padding:0.75rem 0.9rem">
-        <div class="modal-field-label" style="color:#b07800">Watch For</div>
-        <div class="modal-field-text" id="modal-watch"></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
-        <div style="background:#f0faf4;border:1px solid #b2dfcc;border-radius:8px;padding:0.7rem 0.85rem">
-          <div class="modal-field-label" style="color:#2d6a4a">Make It Harder</div>
-          <div class="modal-field-text" id="modal-prog" style="font-size:0.82rem"></div>
-        </div>
-        <div style="background:#f5f5f5;border:1px solid #ddd;border-radius:8px;padding:0.7rem 0.85rem">
-          <div class="modal-field-label" style="color:#666">Make It Easier</div>
-          <div class="modal-field-text" id="modal-reg" style="font-size:0.82rem"></div>
-        </div>
+        <div style="font-size:11px;color:#445566;letter-spacing:2px;text-transform:uppercase" id="ri-inning-title"></div>
+        <div style="font-size:18px;font-weight:700" id="ri-tag"></div>
       </div>
     </div>
+    <div class="stat-grid stat-grid-3" id="ri-stats"></div>
+    <div class="innings-progress" id="ri-progress"></div>
+    <div id="ri-next-preview" style="background:rgba(255,255,255,.04);border-radius:12px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:10px;color:#334455;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px" id="ri-next-label"></div>
+      <div style="display:flex;align-items:center;gap:14px;justify-content:center">
+        <div style="text-align:center"><div style="font-size:9px;color:#445566;margin-bottom:4px">Now</div><div id="ri-now-dot" style="border-radius:50%;margin:0 auto"></div></div>
+        <div style="color:#2a3a4a;font-size:16px">→</div>
+        <div style="text-align:center"><div id="ri-next-label2" style="font-size:9px;margin-bottom:4px"></div><div id="ri-next-dot" style="border-radius:50%;margin:0 auto"></div></div>
+        <div style="font-size:11px;color:#445566"><div id="ri-next-lifetime"></div><div id="ri-next-tag" style="font-weight:700;margin-top:2px"></div></div>
+      </div>
+    </div>
+    <button id="ri-continue-btn" class="s-btn" onclick="continueReaction()"></button>
+    <button class="s-btn s-btn-gray" onclick="showReactionFinal()">🏁 End Session</button>
   </div>
-</div>
 
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <div class="logo">Dugout<span>Lab</span></div>
-      <p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p>
+  <!-- ── REACTION FINAL ─────────────────────────────────────────── -->
+  <div id="screen-r-final" class="s-card hidden">
+    <div style="text-align:center;font-size:44px;margin-bottom:8px">⚡</div>
+    <div class="gold-title" style="font-size:26px;margin-bottom:4px">GAME OVER</div>
+    <div class="eyebrow" id="rf-sub" style="margin-bottom:16px"></div>
+    <div id="rf-best-box" style="text-align:center;padding:14px;border-radius:14px;margin-bottom:14px"></div>
+    <div style="text-align:center;margin-bottom:14px">
+      <div style="font-size:10px;color:#334455;letter-spacing:2px;text-transform:uppercase">Total Score</div>
+      <div id="rf-total" style="font-size:52px;font-weight:900;color:#FFD700;line-height:1.1"></div>
     </div>
-    <div class="footer-links">
-      <h4>Tools</h4>
-      <ul>
-        <li><a href="builder.html">Practice Builder</a></li>
-        <li><a href="drills.html">Drill Library</a></li>
-        <li><a href="train.html" class="active">Train</a></li>
-      </ul>
-    </div>
-    <div class="footer-links">
-      <h4>Learn</h4>
-      <ul>
-        <li><a href="articles.html">All Articles</a></li>
-        <li><a href="stages.html">The 4 Stages</a></li>
-        <li><a href="about.html">About</a></li>
-      </ul>
-    </div>
+    <div class="stat-grid stat-grid-3" id="rf-stats"></div>
+    <button class="s-btn s-btn-ora" onclick="startReactionFresh()">⚡ Play Again</button>
+    <button class="s-btn s-btn-gold" onclick="showScreen('hub')">🏟 Back to DugoutLab</button>
   </div>
-  <div class="footer-sponsor">
-    <div class="sponsor-label">Our Sponsor</div>
-    <div class="sponsor-line">
-      DugoutLab is made free thanks to <a href="https://gamedayhelpers.com" target="_blank" rel="noopener">GamedayHelpers.com</a>
-      <span class="sponsor-tag">Let coaches coach. Let parents enjoy the game.</span>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
-    <span>dugoutlab.com</span>
-  </div>
-</footer>
 
-<script src="js/drills-data.js"></script>
-
-<script>
-/* ── TRAIN TAB SWITCHER ── */
-function switchTrainTab(tab) {
-  var field = document.getElementById('tab-field');
-  var brain = document.getElementById('tab-brain');
-  var btnF = document.getElementById('tab-btn-field');
-  var btnB = document.getElementById('tab-btn-brain');
-  if (tab === 'brain') {
-    field.classList.add('hidden');
-    brain.classList.add('active');
-    btnB.classList.add('active');
-    btnF.classList.remove('active');
-    if (typeof refreshHub === 'function') refreshHub();
-  } else {
-    field.classList.remove('hidden');
-    brain.classList.remove('active');
-    btnF.classList.add('active');
-    btnB.classList.remove('active');
-  }
-  window.scrollTo(0,0);
-}
-// Deep link: train.html#brain opens the brain tab
-if (window.location.hash === '#brain') {
-  window.addEventListener('DOMContentLoaded', function(){ switchTrainTab('brain'); });
-}
-</script>
-<script>
-
-/* ════════════════════════════════════════════════════════════════
-   DUGOUTLAB TRAINING SUITE — vanilla JS, no dependencies
-   ════════════════════════════════════════════════════════════════ */
-
-// ── Player state (persists across games via localStorage) ──
-var playerName = '';
-try { playerName = localStorage.getItem('dugout_player_name') || ''; } catch(e) {}
-
-// ── Personal bests ──
-function getBest(game) {
-  try { return parseInt(localStorage.getItem('dugout_best_' + game) || '0', 10); } catch(e) { return 0; }
-}
-function setBest(game, score) {
-  try { localStorage.setItem('dugout_best_' + game, String(score)); } catch(e) {}
-}
-
-// ── Screen management ──
-function showScreen(id) {
-  document.querySelectorAll('.sim-screen').forEach(function(s){ s.classList.remove('active'); });
-  document.getElementById('screen-' + id).classList.add('active');
-  window.scrollTo(0, 0);
-}
-function goHub() {
-  stopAllTimers();
-  showScreen('hub');
-  refreshHub();
-}
-
-// ── Init hub on load ──
-function refreshHub() {
-  var nameCard = document.getElementById('name-card');
-  var lockHint = document.getElementById('lock-hint');
-  if (playerName) {
-    nameCard.classList.add('has-name');
-    nameCard.innerHTML = '<div class="name-greeting">Playing as <strong>' + escapeHtml(playerName) + '</strong>'
-      + '<button class="name-change" onclick="changeName()">change</button></div>';
-    document.querySelectorAll('.game-card').forEach(function(c){ c.classList.remove('locked'); });
-    lockHint.style.display = 'none';
-  } else {
-    document.querySelectorAll('.game-card').forEach(function(c){ c.classList.add('locked'); });
-    lockHint.style.display = 'block';
-  }
-  // show bests
-  ['batter','manager','reaction'].forEach(function(g){
-    var b = getBest(g);
-    var el = document.getElementById('best-' + g);
-    if (el) el.textContent = b > 0 ? ('Best: ' + b) : '';
-  });
-}
-
-function setPlayerName() {
-  var val = document.getElementById('name-input').value.trim();
-  if (!val) return;
-  playerName = val;
-  try { localStorage.setItem('dugout_player_name', val); } catch(e) {}
-  refreshHub();
-}
-function changeName() {
-  playerName = '';
-  try { localStorage.removeItem('dugout_player_name'); } catch(e) {}
-  var nameCard = document.getElementById('name-card');
-  nameCard.classList.remove('has-name');
-  nameCard.innerHTML = '<div class="name-label">Who\'s playing?</div>'
-    + '<div class="name-input-row">'
-    + '<input type="text" class="name-input" id="name-input" placeholder="Enter your name" maxlength="16" autocomplete="off">'
-    + '<button class="name-set-btn" onclick="setPlayerName()">Let\'s go</button>'
-    + '</div>';
-  refreshHub();
-}
-function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, function(c){
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-  });
-}
-
-function openGame(game) {
-  if (!playerName) {
-    document.getElementById('name-input').focus();
-    return;
-  }
-  if (game === 'batter')   { showScreen('batter');   batReset(); }
-  if (game === 'manager')  { showScreen('manager');  mgrReset(); }
-  if (game === 'reaction') { showScreen('reaction'); rtReset(); }
-}
-
-// ── Timer registry so we can clean up on exit ──
-var activeTimers = [];
-function track(t) { activeTimers.push(t); return t; }
-function stopAllTimers() {
-  activeTimers.forEach(function(t){ clearTimeout(t); clearInterval(t); });
-  activeTimers = [];
-  if (rtRoundTimer) { clearInterval(rtRoundTimer); rtRoundTimer = null; }
-  if (mgrClockTimer) { clearInterval(mgrClockTimer); mgrClockTimer = null; }
-}
-
-/* ════════════════════ GAME 1: BATTER UP ════════════════════ */
-var batState = {};
-function batReset() {
-  batState = { pitch: 0, hits: 0, score: 0, rts: [], misses: 0, calledKs: 0, chases: 0 };
-  document.getElementById('bat-start').style.display = 'block';
-  document.getElementById('bat-game').style.display = 'none';
-  document.getElementById('bat-end').style.display = 'none';
-  updateBatBug();
-}
-function updateBatBug() {
-  document.getElementById('bat-pitch-num').textContent = batState.pitch + '/15';
-  document.getElementById('bat-hits').textContent = batState.hits;
-  document.getElementById('bat-score').textContent = batState.score;
-}
-
-var BAT_PITCHES = [
-  { name: 'Fastball', ms: 750 },
-  { name: 'Curveball', ms: 1050 },
-  { name: 'Changeup', ms: 950 }
-];
-var batCurrentPitch = null;
-var batPitchLanded = false;
-var batSwingLockUntil = 0;
-
-function batStart() {
-  batState = { pitch: 0, hits: 0, score: 0, rts: [], misses: 0, calledKs: 0, chases: 0 };
-  document.getElementById('bat-start').style.display = 'none';
-  document.getElementById('bat-end').style.display = 'none';
-  document.getElementById('bat-game').style.display = 'block';
-  updateBatBug();
-  batCountdownThenPitch();
-}
-
-function batCountdownThenPitch() {
-  var cd = document.getElementById('bat-countdown');
-  cd.style.display = 'flex';
-  var n = 3;
-  cd.textContent = n;
-  var iv = track(setInterval(function(){
-    n--;
-    if (n <= 0) {
-      clearInterval(iv);
-      cd.style.display = 'none';
-      batNextPitch();
-    } else {
-      cd.textContent = n;
-    }
-  }, 700));
-}
-
-function batNextPitch() {
-  if (batState.pitch >= 15) { batEnd(); return; }
-  batState.pitch++;
-  updateBatBug();
-
-  // generate pitch location (% within stage). Strike zone is 22%-78%.
-  var inZone = Math.random() > 0.42;
-  var x, y;
-  if (inZone) {
-    x = 26 + Math.random() * 48;
-    y = 26 + Math.random() * 48;
-  } else {
-    // pick an edge outside the zone
-    var side = Math.floor(Math.random() * 4);
-    if (side === 0) { x = 6 + Math.random() * 12; y = 10 + Math.random() * 80; }
-    else if (side === 1) { x = 82 + Math.random() * 12; y = 10 + Math.random() * 80; }
-    else if (side === 2) { x = 10 + Math.random() * 80; y = 6 + Math.random() * 12; }
-    else { x = 10 + Math.random() * 80; y = 82 + Math.random() * 12; }
-  }
-  var pType = BAT_PITCHES[Math.floor(Math.random() * BAT_PITCHES.length)];
-  batCurrentPitch = { x: x, y: y, inZone: inZone, type: pType };
-  batPitchLanded = false;
-
-  // position + animate ball
-  var ball = document.getElementById('bat-ball');
-  ball.classList.remove('incoming');
-  ball.style.left = x + '%';
-  ball.style.top = y + '%';
-  ball.style.setProperty('--pitch-ms', pType.ms + 'ms');
-  // force reflow then animate
-  void ball.offsetWidth;
-  ball.classList.add('incoming');
-
-  // disable swing buttons until ball is ~halfway (forces reading the pitch)
-  var sw = document.getElementById('bat-swing');
-  var tk = document.getElementById('bat-take');
-  sw.disabled = true; tk.disabled = true;
-
-  var enableDelay = pType.ms * 0.35;
-  track(setTimeout(function(){
-    sw.disabled = false; tk.disabled = false;
-    batState._pitchEnableTime = Date.now();
-  }, enableDelay));
-
-  // ball "lands" at end of animation
-  track(setTimeout(function(){
-    batPitchLanded = true;
-    batState._pitchLandTime = Date.now();
-    // if no swing within 600ms of landing, auto-take
-    track(setTimeout(function(){
-      if (!batPitchLanded) return; // already resolved
-      // auto decision = take
-      if (document.getElementById('bat-game').style.display !== 'none') {
-        batResolve(false, true);
-      }
-    }, 650));
-  }, pType.ms));
-}
-
-function batSwing(didSwing) {
-  if (!batCurrentPitch) return;
-  if (Date.now() < batSwingLockUntil) return; // debounce
-  batSwingLockUntil = Date.now() + 350;
-  // measure reaction time from enable
-  var rt = batState._pitchEnableTime ? (Date.now() - batState._pitchEnableTime) : 400;
-  batResolve(didSwing, false, rt);
-}
-
-function batResolve(didSwing, isAuto, rt) {
-  // lock the buttons
-  document.getElementById('bat-swing').disabled = true;
-  document.getElementById('bat-take').disabled = true;
-
-  var p = batCurrentPitch;
-  batCurrentPitch = null;
-  batPitchLanded = false;
-
-  var head, detail, color;
-
-  if (!didSwing) {
-    // took the pitch
-    if (p.inZone) {
-      head = 'Strike'; color = '#e08071';
-      detail = 'That was in the zone. You have to protect with two strikes.';
-      batState.calledKs++;
-    } else {
-      head = 'Ball'; color = '#5fa382';
-      detail = 'Good eye. That pitch was off the plate.';
-      batState.score += 1;
-    }
-  } else {
-    // swung
-    if (!p.inZone) {
-      head = 'Swing & Miss'; color = '#e08071';
-      detail = 'Chased one out of the zone. Make them throw you a strike.';
-      batState.chases++;
-    } else {
-      // quality based on reaction time
-      var r = rt || 400;
-      var quality;
-      if (r < 220) quality = 'great';
-      else if (r < 380) quality = 'good';
-      else if (r < 520) quality = 'ok';
-      else quality = 'late';
-
-      if (quality === 'great') {
-        head = 'Home Run'; color = '#FFD700';
-        detail = 'Perfect timing. You crushed it. (' + r + 'ms)';
-        batState.score += 5; batState.hits++;
-      } else if (quality === 'good') {
-        head = 'Line Drive'; color = '#e2a85a';
-        detail = 'Hard contact, base hit. (' + r + 'ms)';
-        batState.score += 3; batState.hits++;
-      } else if (quality === 'ok') {
-        head = 'Base Hit'; color = '#5fa382';
-        detail = 'Found a hole. Solid. (' + r + 'ms)';
-        batState.score += 2; batState.hits++;
-      } else {
-        head = 'Ground Out'; color = '#e08071';
-        detail = 'A touch late, rolled over it. (' + r + 'ms)';
-        batState.misses++;
-      }
-      if (rt) batState.rts.push(rt);
-    }
-  }
-
-  updateBatBug();
-  showBatFlash(head, detail, color);
-}
-
-function showBatFlash(head, detail, color) {
-  var flash = document.getElementById('bat-flash');
-  document.getElementById('bat-flash-head').textContent = head;
-  document.getElementById('bat-flash-head').style.color = color;
-  document.getElementById('bat-flash-detail').textContent = detail;
-  flash.classList.add('show');
-  track(setTimeout(function(){
-    flash.classList.remove('show');
-    track(setTimeout(batNextPitch, 250));
-  }, 1400));
-}
-
-function batEnd() {
-  document.getElementById('bat-game').style.display = 'none';
-  document.getElementById('bat-end').style.display = 'block';
-  document.getElementById('bat-end-hits').textContent = batState.hits;
-  document.getElementById('bat-end-score').textContent = batState.score;
-  var avgRt = batState.rts.length ? Math.round(batState.rts.reduce(function(a,b){return a+b;},0) / batState.rts.length) : 0;
-  document.getElementById('bat-end-rt').textContent = avgRt || '--';
-
-  // personal best
-  var prev = getBest('batter');
-  var bestLine = document.getElementById('bat-best-line');
-  if (batState.score > prev) {
-    setBest('batter', batState.score);
-    bestLine.innerHTML = '<span class="new-best">New personal best!</span> Previous: ' + prev;
-  } else {
-    bestLine.textContent = 'Personal best: ' + prev;
-  }
-
-  // coaching read
-  var txt;
-  if (batState.chases >= 4) {
-    txt = 'You chased ' + batState.chases + ' pitches out of the zone. The best hitters are patient. Make the pitcher come to you.';
-  } else if (batState.calledKs >= 4) {
-    txt = 'You took ' + batState.calledKs + ' strikes. Trust your eyes and be ready to pull the trigger on a good pitch.';
-  } else if (batState.hits >= 8) {
-    txt = 'Outstanding eye and timing. You read pitches early and only swung at strikes. That is exactly how it works.';
-  } else {
-    txt = 'Solid at-bat. Keep working on swinging only at strikes and squaring up the ones in the zone.';
-  }
-  document.getElementById('bat-learn-text').textContent = txt;
-}
-
-/* ════════════════════ GAME 2: MANAGER MODE ════════════════════ */
-var MGR_SCENARIOS = [
-  {
-    inning: 'B6', outs: 1, runners: [false, true, false], score: [3, 3],
-    prompt: 'Runner on second, one out, tie game, bottom of the last. Ground ball hit slowly to your shortstop. Where\'s the play?',
-    choices: [
-      { text: 'Throw to first for the out', correct: false },
-      { text: 'Look the runner back, then throw to first', correct: true },
-      { text: 'Throw home to stop the runner', correct: false }
-    ],
-    explain: '<strong>Look him back first.</strong> The runner on second is the winning run. If you throw to first without checking, he scores from second on the play. Freeze him, then get your out.'
-  },
-  {
-    inning: 'T4', outs: 2, runners: [true, false, false], score: [2, 1],
-    prompt: 'Runner on first, two outs, you\'re up by one. Base hit to right field. The runner rounds second hard. What do you do?',
-    choices: [
-      { text: 'Throw behind him to second', correct: true },
-      { text: 'Throw all the way to third', correct: false },
-      { text: 'Hold the ball, concede the base', correct: false }
-    ],
-    explain: '<strong>Throw behind the runner.</strong> With two outs and a one-run lead, you don\'t want to risk an airmail to third. Hit the cutoff, and if he\'s too far off second, you get a cheap out.'
-  },
-  {
-    inning: 'B7', outs: 0, runners: [true, false, false], score: [4, 5],
-    prompt: 'Down by one, leadoff runner on first, nobody out, last inning. Your weakest hitter is up. What\'s the call?',
-    choices: [
-      { text: 'Sacrifice bunt to move him up', correct: true },
-      { text: 'Swing away', correct: false },
-      { text: 'Hit and run', correct: false }
-    ],
-    explain: '<strong>Bunt him over.</strong> Down one in the last inning, getting the tying run into scoring position with your weakest hitter at the plate is worth the out. Now a single ties it.'
-  },
-  {
-    inning: 'T2', outs: 1, runners: [false, true, true], score: [0, 0],
-    prompt: 'Runners on second and third, one out, scoreless early. Medium fly ball to center. After the catch, what should your defense do?',
-    choices: [
-      { text: 'Cut the throw, keep the double play alive', correct: false },
-      { text: 'Throw home to stop the runner tagging from third', correct: true },
-      { text: 'Throw to third to stop the runner advancing', correct: false }
-    ],
-    explain: '<strong>Throw home.</strong> The runner on third tags and tries to score. Your center fielder\'s only job is to get the ball home and keep that run off the board.'
-  },
-  {
-    inning: 'B5', outs: 2, runners: [false, false, true], score: [1, 2],
-    prompt: 'Runner on third, two outs, down by one. Wild pitch gets a few feet from the catcher. Runner breaks for home. As the catcher, what do you do?',
-    choices: [
-      { text: 'Flip to the pitcher covering home', correct: true },
-      { text: 'Run him back to third yourself', correct: false },
-      { text: 'Hold the ball and concede the run', correct: false }
-    ],
-    explain: '<strong>Pitcher covers, you flip it.</strong> On any ball in the dirt with a runner on third, the pitcher sprints to cover home. The catcher retrieves and makes the short flip for the tag.'
-  },
-  {
-    inning: 'T8', outs: 0, runners: [false, false, false], score: [6, 2],
-    prompt: 'You\'re up by four, late innings, nobody on. Batter hits a routine grounder to second. What\'s the priority?',
-    choices: [
-      { text: 'Take the sure out at first', correct: true },
-      { text: 'Try to start a double play with nobody on', correct: false },
-      { text: 'Check the runner', correct: false }
-    ],
-    explain: '<strong>Take the easy out.</strong> Nobody is on base, so there is no double play to turn. Up by four, you just want clean, simple outs. Don\'t invent risk.'
-  },
-  {
-    inning: 'B6', outs: 1, runners: [true, true, false], score: [3, 3],
-    prompt: 'Runners on first and second, one out, tie game. Sharp ground ball right at your third baseman, standing on the bag. What\'s the smartest play?',
-    choices: [
-      { text: 'Step on third, then throw to first for two', correct: true },
-      { text: 'Throw to second to start the double play', correct: false },
-      { text: 'Throw home', correct: false }
-    ],
-    explain: '<strong>Step on third, throw to first.</strong> You\'re already standing on the bag for the force, that\'s the easiest out. Then fire to first for the double play. Simple and clean.'
-  },
-  {
-    inning: 'T3', outs: 2, runners: [false, true, false], score: [1, 0],
-    prompt: 'Runner on second, two outs, you lead by one. Base hit to left. The runner is going to try to score. Your left fielder fields it cleanly. Where does it go?',
-    choices: [
-      { text: 'Hit the cutoff man, let him decide on home', correct: true },
-      { text: 'Air it home on the fly', correct: false },
-      { text: 'Throw to third behind the batter', correct: false }
-    ],
-    explain: '<strong>Hit the cutoff.</strong> A one-hop throw through the cutoff is more accurate than a long air throw, and the cutoff man can redirect if the runner holds or the batter tries for second.'
-  },
-  {
-    inning: 'B7', outs: 2, runners: [true, false, true], score: [2, 3],
-    prompt: 'Down by one, two outs, runners on the corners, last at-bat. The runner on first takes off to steal second. As the defense, do you make a play?',
-    choices: [
-      { text: 'Let him have second, keep the run at third honest', correct: true },
-      { text: 'Throw through to second for the out', correct: false },
-      { text: 'Run at the lead runner', correct: false }
-    ],
-    explain: '<strong>Let him take second.</strong> If you throw to second, the runner on third can break for home on the throw and tie the game. With two outs, the extra base doesn\'t hurt you. Don\'t give away the tying run.'
-  },
-  {
-    inning: 'T9', outs: 1, runners: [false, true, false], score: [5, 4],
-    prompt: 'You lead by one, last inning, runner on second, one out. Ground ball to short. The runner holds at second. Where\'s the play?',
-    choices: [
-      { text: 'Easy out at first, take the second out', correct: true },
-      { text: 'Chase the runner toward third', correct: false },
-      { text: 'Throw to third to trap him', correct: false }
-    ],
-    explain: '<strong>Take the out at first.</strong> The runner held, so there is no play on him. Bank the out. Now there are two down and you are one out from the win. Don\'t get fancy with the lead.'
-  }
-];
-
-var mgrState = {};
-var mgrClockTimer = null;
-function mgrReset() {
-  mgrState = { idx: 0, correct: 0, score: 0, scenarios: shuffle(MGR_SCENARIOS.slice()) };
-  document.getElementById('mgr-start').style.display = 'block';
-  document.getElementById('mgr-game').style.display = 'none';
-  document.getElementById('mgr-end').style.display = 'none';
-  updateMgrBug();
-}
-function updateMgrBug() {
-  document.getElementById('mgr-num').textContent = mgrState.idx + '/10';
-  document.getElementById('mgr-correct').textContent = mgrState.correct;
-  document.getElementById('mgr-score').textContent = mgrState.score;
-}
-function mgrStart() {
-  mgrState = { idx: 0, correct: 0, score: 0, scenarios: shuffle(MGR_SCENARIOS.slice()) };
-  document.getElementById('mgr-start').style.display = 'none';
-  document.getElementById('mgr-end').style.display = 'none';
-  document.getElementById('mgr-game').style.display = 'block';
-  updateMgrBug();
-  mgrShowScenario();
-}
-
-function mgrShowScenario() {
-  if (mgrState.idx >= 10) { mgrEnd(); return; }
-  var sc = mgrState.scenarios[mgrState.idx];
-  mgrState.current = sc;
-  mgrState.answered = false;
-
-  // render state
-  document.getElementById('mgr-inning').textContent = sc.inning;
-  document.getElementById('mgr-outs').textContent = sc.outs;
-  document.getElementById('mgr-gamescore').textContent = sc.score[0] + '-' + sc.score[1];
-  document.getElementById('mgr-base1').classList.toggle('occupied', sc.runners[0]);
-  document.getElementById('mgr-base2').classList.toggle('occupied', sc.runners[1]);
-  document.getElementById('mgr-base3').classList.toggle('occupied', sc.runners[2]);
-  document.getElementById('mgr-prompt').textContent = sc.prompt;
-
-  // render choices (shuffled)
-  var choicesEl = document.getElementById('mgr-choices');
-  choicesEl.innerHTML = '';
-  var shuffledChoices = shuffle(sc.choices.map(function(c, i){ return { c: c, i: i }; }));
-  shuffledChoices.forEach(function(item){
-    var btn = document.createElement('button');
-    btn.className = 'choice-btn';
-    btn.textContent = item.c.text;
-    btn.onclick = function(){ mgrAnswer(item.c, btn); };
-    choicesEl.appendChild(btn);
-  });
-
-  document.getElementById('mgr-explain').classList.remove('show');
-  document.getElementById('mgr-next-wrap').style.display = 'none';
-
-  // start clock
-  mgrStartClock();
-}
-
-function mgrStartClock() {
-  var clock = document.getElementById('mgr-clock');
-  clock.classList.remove('warning');
-  var total = 15000;
-  var start = Date.now();
-  clock.style.width = '100%';
-  if (mgrClockTimer) clearInterval(mgrClockTimer);
-  mgrClockTimer = setInterval(function(){
-    var elapsed = Date.now() - start;
-    var pct = Math.max(0, 100 - (elapsed / total * 100));
-    clock.style.width = pct + '%';
-    if (pct < 30) clock.classList.add('warning');
-    if (elapsed >= total) {
-      clearInterval(mgrClockTimer); mgrClockTimer = null;
-      if (!mgrState.answered) mgrAnswer(null, null); // time out = wrong
-    }
-  }, 80);
-}
-
-function mgrAnswer(choice, btnEl) {
-  if (mgrState.answered) return;
-  mgrState.answered = true;
-  if (mgrClockTimer) { clearInterval(mgrClockTimer); mgrClockTimer = null; }
-
-  var sc = mgrState.current;
-  var buttons = document.querySelectorAll('#mgr-choices .choice-btn');
-  buttons.forEach(function(b){
-    b.disabled = true;
-    if (b.textContent === getCorrectText(sc)) b.classList.add('correct');
-  });
-
-  var isCorrect = choice && choice.correct;
-  if (isCorrect) {
-    mgrState.correct++;
-    mgrState.score += 10;
-    if (btnEl) btnEl.classList.add('correct');
-  } else {
-    if (btnEl) btnEl.classList.add('wrong');
-    mgrState.score = Math.max(0, mgrState.score - 0);
-  }
-  mgrState.idx++;
-  updateMgrBug();
-
-  var explain = document.getElementById('mgr-explain');
-  explain.innerHTML = (isCorrect ? '<strong style="color:#5fa382">Right call. </strong>' : '<strong style="color:#e08071">Not quite. </strong>') + sc.explain;
-  explain.classList.add('show');
-
-  var nextBtn = document.getElementById('mgr-next-btn');
-  nextBtn.textContent = mgrState.idx >= 10 ? 'See results' : 'Next call';
-  document.getElementById('mgr-next-wrap').style.display = 'flex';
-}
-function getCorrectText(sc) {
-  var c = sc.choices.find(function(x){ return x.correct; });
-  return c ? c.text : '';
-}
-function mgrNext() { mgrShowScenario(); }
-
-function mgrEnd() {
-  document.getElementById('mgr-game').style.display = 'none';
-  document.getElementById('mgr-end').style.display = 'block';
-  document.getElementById('mgr-end-correct').textContent = mgrState.correct;
-  document.getElementById('mgr-end-score').textContent = mgrState.score;
-
-  var prev = getBest('manager');
-  var bestLine = document.getElementById('mgr-best-line');
-  if (mgrState.score > prev) {
-    setBest('manager', mgrState.score);
-    bestLine.innerHTML = '<span class="new-best">New personal best!</span> Previous: ' + prev;
-  } else {
-    bestLine.textContent = 'Personal best: ' + prev;
-  }
-
-  var txt;
-  if (mgrState.correct >= 9) txt = 'You think like a coach. You read the score, the inning, and the outs before every pitch. That is the game within the game.';
-  else if (mgrState.correct >= 6) txt = 'Good instincts. The key is to always know the situation before the ball is hit, so the decision is already made.';
-  else txt = 'Baseball IQ comes with reps. The big idea: the right play depends on the score, the inning, and the outs, not just where the ball goes.';
-  document.getElementById('mgr-learn-text').textContent = txt;
-}
-
-/* ════════════════════ GAME 3: REACTION TRAINER ════════════════════ */
-var rtState = {};
-var rtRoundTimer = null;
-var rtActiveDot = null;
-
-function rtReset() {
-  rtState = { round: 0, hits: 0, misses: 0, score: 0, rts: [] };
-  document.getElementById('rt-start').style.display = 'block';
-  document.getElementById('rt-game').style.display = 'none';
-  document.getElementById('rt-end').style.display = 'none';
-  updateRtBug();
-}
-function updateRtBug() {
-  document.getElementById('rt-round').textContent = rtState.round + '/9';
-  document.getElementById('rt-hits').textContent = rtState.hits;
-  document.getElementById('rt-score').textContent = rtState.score;
-}
-function rtStart() {
-  rtState = { round: 0, hits: 0, misses: 0, score: 0, rts: [] };
-  document.getElementById('rt-start').style.display = 'none';
-  document.getElementById('rt-end').style.display = 'none';
-  document.getElementById('rt-game').style.display = 'block';
-  updateRtBug();
-  rtCountdownThenRound();
-}
-
-function rtCountdownThenRound() {
-  var cd = document.getElementById('rt-countdown');
-  cd.style.display = 'flex';
-  var n = 3;
-  cd.textContent = n;
-  var iv = track(setInterval(function(){
-    n--;
-    if (n <= 0) {
-      clearInterval(iv);
-      cd.style.display = 'none';
-      rtNextRound();
-    } else { cd.textContent = n; }
-  }, 700));
-}
-
-function rtNextRound() {
-  if (rtState.round >= 9) { rtEnd(); return; }
-  rtState.round++;
-  updateRtBug();
-
-  var center = document.getElementById('rt-center');
-  center.style.display = 'flex';
-  document.getElementById('rt-center-big').textContent = 'Round ' + rtState.round;
-  // targets per round increases; lifetime decreases
-  var targetsThisRound = 4 + rtState.round; // 5..13
-  var lifetime = Math.max(750, 1700 - rtState.round * 110); // ms shrinking
-  document.getElementById('rt-center-small').textContent = targetsThisRound + ' targets · faster';
-  document.getElementById('rt-status').textContent = 'Round ' + rtState.round + ' of 9';
-
-  rtState._roundTargets = targetsThisRound;
-  rtState._roundDone = 0;
-  rtState._lifetime = lifetime;
-
-  track(setTimeout(function(){
-    center.style.display = 'none';
-    rtSpawnDot();
-  }, 900));
-}
-
-function rtSpawnDot() {
-  if (rtState._roundDone >= rtState._roundTargets) {
-    // round complete
-    track(setTimeout(rtNextRound, 500));
-    return;
-  }
-  rtState._roundDone++;
-
-  var stage = document.getElementById('rt-stage');
-  var size = Math.max(34, 70 - rtState.round * 3); // shrinking base size
-  var pad = size / 2 + 6;
-  var stageW = stage.clientWidth;
-  var stageH = stage.clientHeight;
-  var x = pad + Math.random() * (stageW - pad * 2);
-  var y = pad + Math.random() * (stageH - pad * 2);
-
-  var dot = document.createElement('div');
-  dot.className = 'react-dot shrinking';
-  dot.style.width = size + 'px';
-  dot.style.height = size + 'px';
-  dot.style.left = x + 'px';
-  dot.style.top = y + 'px';
-  dot.style.transitionDuration = rtState._lifetime + 'ms, ' + rtState._lifetime + 'ms';
-
-  var spawnTime = Date.now();
-  var resolved = false;
-
-  function hit(e) {
-    if (resolved) return;
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    resolved = true;
-    var rt = Date.now() - spawnTime;
-    rtState.hits++;
-    rtState.rts.push(rt);
-    // faster taps score more
-    var pts = rt < 350 ? 3 : (rt < 650 ? 2 : 1);
-    rtState.score += pts;
-    updateRtBug();
-    clearTimeout(missTimer);
-    if (dot.parentNode) dot.parentNode.removeChild(dot);
-    rtSpawnDot();
-  }
-
-  dot.addEventListener('mousedown', hit);
-  dot.addEventListener('touchstart', hit, { passive: false });
-
-  stage.appendChild(dot);
-
-  // trigger shrink
-  void dot.offsetWidth;
-  dot.style.width = '8px';
-  dot.style.height = '8px';
-
-  var missTimer = track(setTimeout(function(){
-    if (resolved) return;
-    resolved = true;
-    rtState.misses++;
-    if (dot.parentNode) dot.parentNode.removeChild(dot);
-    updateRtBug();
-    rtSpawnDot();
-  }, rtState._lifetime));
-}
-
-function rtEnd() {
-  document.getElementById('rt-game').style.display = 'none';
-  document.getElementById('rt-end').style.display = 'block';
-  document.getElementById('rt-end-hits').textContent = rtState.hits;
-  document.getElementById('rt-end-score').textContent = rtState.score;
-  var avgRt = rtState.rts.length ? Math.round(rtState.rts.reduce(function(a,b){return a+b;},0) / rtState.rts.length) : 0;
-  document.getElementById('rt-end-rt').textContent = avgRt || '--';
-
-  var prev = getBest('reaction');
-  var bestLine = document.getElementById('rt-best-line');
-  if (rtState.score > prev) {
-    setBest('reaction', rtState.score);
-    bestLine.innerHTML = '<span class="new-best">New personal best!</span> Previous: ' + prev;
-  } else {
-    bestLine.textContent = 'Personal best: ' + prev;
-  }
-
-  var txt;
-  if (avgRt > 0 && avgRt < 400) txt = 'Lightning hands. Your eyes and your taps are wired tight together. That is the reaction speed that turns into quick hands at the plate.';
-  else if (rtState.hits >= 50) txt = 'Great focus. You stayed locked in across all nine rounds. Consistency under fatigue is exactly what matters.';
-  else txt = 'Reaction speed grows with practice. Keep your eyes moving and react the instant a target appears. You will get faster.';
-  document.getElementById('rt-learn-text').textContent = txt;
-}
-
-/* ════════════════════ UTILITIES ════════════════════ */
-function shuffle(arr) {
-  for (var i = arr.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
-  }
-  return arr;
-}
-
-// Allow Enter key to set name
-document.addEventListener('keydown', function(e){
-  if (e.key === 'Enter') {
-    var input = document.getElementById('name-input');
-    if (input && document.activeElement === input) setPlayerName();
-  }
-});
-
-// Init
-refreshHub();
-
-</script>
+</div><!-- /suite-root -->
 
 <script src="js/site.js"></script>
 <script>
-// ── Solo page logic ────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════════════
+var playerName = '';
+var bHand = null;
+var bBalls=0, bStrikes=0, bOuts=0, bRunners=[false,false,false];
+var bAtBats=0, bHits=0, bPts=0, bRuns=0;
+var bPitch=null, bPitchReady=false, bLocked=false, bPitchTime=0;
+var bNextTimer=null;
+var mIdx=0, mTimer=15, mAnswered=false, mCorrect=0, mTimerInterval=null;
+var rInningIdx=0, rActive=false, rTotalScore=0, rIScore=0;
+var rHits=0, rPerfects=0, rMisses=0, rHistory=[];
+var rDot=null, rExpireTimer=null, rGameInterval=null, rTimeLeft=20;
+var rCdInterval=null, rCdCount=3;
+var lbTab=0;
 
-var soloAge = 'all';
-var soloCat = 'all';
+// ═══════════════════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════════════════
+var SZ={xMin:22,xMax:78,yMin:22,yMax:78};
+var PITCH_TYPES=[{name:'Fastball',emoji:'🔥',ms:380},{name:'Curveball',emoji:'🌀',ms:620},{name:'Changeup',emoji:'🍃',ms:520}];
 
-var AGE_RANGES_SOLO = { tball:[4,7], young:[7,9], middle:[10,12], teen:[13,18] };
+var SCENARIOS=[
+{situation:'Runners on 1st and 2nd, 0 outs, down by 1 in the 6th. Your best hitter is up!',inning:6,outs:0,runners:[true,true,false],score:'You: 2 | Them: 3',options:[{text:'🦺 Bunt to move runners',correct:false,feedback:'With your BEST hitter up, bunting wastes an out.'},{text:'💥 Swing away!',correct:true,feedback:'YES! Your best hitter has the highest chance to drive in runs.'},{text:'🏃 Hit and run',correct:false,feedback:'Risks a double play. Save it for weaker hitters.'},{text:'🤷 Walk him intentionally',correct:false,feedback:"You can't walk your OWN batter!"}],concept:'Situational Hitting',tip:'Trust your best players in big spots.'},
+{situation:'Full count (3-2), 2 outs, runner on 1st. Pitch coming — what does the RUNNER do?',inning:4,outs:2,runners:[true,false,false],score:'You: 1 | Them: 1',options:[{text:'🛑 Stay at 1st',correct:false,feedback:'2 outs + full count = the runner ALWAYS goes on the pitch!'},{text:'🚀 Run on the pitch!',correct:true,feedback:'PERFECT! 2 outs + full count = automatic go.'},{text:'⏳ Wait for a hit',correct:false,feedback:'Too slow! Go on the pitch every time.'},{text:'📖 Check the rules',correct:false,feedback:'No time! 2 outs + full count = GO.'}],concept:'Baserunning Rules',tip:'Knowing rules cold means you never freeze.'},
+{situation:'Your pitcher has 100 pitches and looks tired. Cleanup hitter steps up with runners on.',inning:7,outs:1,runners:[true,true,false],score:'You: 4 | Them: 3',options:[{text:'🙏 Leave him in',correct:false,feedback:'A tired pitcher gives up big hits. Act BEFORE disaster.'},{text:'🔄 Bring in a reliever',correct:true,feedback:'Smart! A fresh arm is your best shot at this big out.'},{text:'🎯 Only curveballs',correct:false,feedback:"You can't call pitches from the dugout."},{text:'🤝 Walk the hitter intentionally',correct:false,feedback:'With runners on, loading the bases makes things WORSE.'}],concept:'Pitcher Management',tip:'Great managers know when to make the change.'},
+{situation:"It's a 3-0 count. You're at the plate. What do you do?",inning:5,outs:0,runners:[false,false,false],score:'You: 2 | Them: 2',options:[{text:'💣 Swing at anything!',correct:false,feedback:"3-0 is YOUR advantage. Don't waste it."},{text:'👁️ Take — try for a walk',correct:true,feedback:"Pitcher can't find the zone. Take it and get on base!"},{text:'🦺 Bunt',correct:false,feedback:'NEVER bunt on 3-0.'},{text:'⏸️ Call timeout',correct:false,feedback:"Stalling doesn't help. 3-0 tells you: wait."}],concept:'Count Advantage',tip:'Learn who has the advantage on every count.'},
+{situation:'Runner on 3rd, 1 out, tie game. Batter hits a DEEP fly ball to center. Runner?',inning:8,outs:1,runners:[false,false,true],score:'You: 3 | Them: 3',options:[{text:'🏠 Tag up and score!',correct:true,feedback:'YES! Wait for the catch, then RUN!'},{text:'🛑 Stay at 3rd',correct:false,feedback:'Too conservative! Tag up and score.'},{text:'🏃 Run before the catch',correct:false,feedback:'RULE VIOLATION! Wait for the catch first.'},{text:'🔙 Go back to 2nd',correct:false,feedback:'Go BACKWARDS?! You are one play from winning!'}],concept:'Tagging Up',tip:'Deep fly balls with <2 outs are golden tag-up chances.'},
+{situation:"Last inning, winning by 1. Bases loaded, 2 outs, full count. You're the pitcher.",inning:9,outs:2,runners:[true,true,true],score:'You: 5 | Them: 4',options:[{text:'🎯 Throw right down the middle',correct:false,feedback:'Never gift a perfect pitch under pressure!'},{text:'🧘 Stay calm and hit your spots',correct:true,feedback:'PERFECT! Pressure is when focus matters most.'},{text:'⚡ Throw as hard as possible',correct:false,feedback:'Speed without control = walk = run scores.'},{text:'😱 Panic',correct:false,feedback:'Panic is the enemy. Breathe and compete.'}],concept:'Pressure Performance',tip:"Elite players don't try harder — they FOCUS harder."}
+];
 
-var CAT_COLORS_SOLO = {
-  hitting:'#c8781a', fielding:'#2d6a4a', throwing:'#1a3a2a',
-  bodycontrol:'#52b788', pitching:'#a04000', mental:'#5d6d7e',
-};
+var INNINGS=[
+{n:1,r:58,ms:3200,color:'#44BBFF',label:'1st',tag:'Find your rhythm'},
+{n:2,r:50,ms:2700,color:'#44DD88',label:'2nd',tag:'Getting loose'},
+{n:3,r:42,ms:2200,color:'#FFD700',label:'3rd',tag:'Pick it up'},
+{n:4,r:34,ms:1750,color:'#FF8C00',label:'4th',tag:'Focus'},
+{n:5,r:27,ms:1350,color:'#FF6644',label:'5th',tag:'Heating up'},
+{n:6,r:20,ms:1020,color:'#FF4466',label:'6th',tag:'Getting tough'},
+{n:7,r:14,ms:760, color:'#AA44FF',label:'7th',tag:'Brutal'},
+{n:8,r:10,ms:540, color:'#FF66AA',label:'8th',tag:'Nearly impossible'},
+{n:9,r:7, ms:340, color:'#FF0044',label:'9th',tag:'IMPOSSIBLE'}
+];
 
-var CAT_LABELS_SOLO = {
-  hitting:'Hitting', fielding:'Fielding', throwing:'Throwing',
-  bodycontrol:'Body Control', pitching:'Pitching', mental:'Mental',
-};
+var INNING_DURATION=20;
+var dotIdCounter=0;
 
-function getSoloDrills() {
-  return DRILLS.filter(function(d) {
-    if (!d.solo) return false;
-    if (soloAge !== 'all') {
-      var r = AGE_RANGES_SOLO[soloAge];
-      if (r && (d.ageMax < r[0] || d.ageMin > r[1])) return false;
-    }
-    if (soloCat !== 'all' && d.soloCategory !== soloCat) return false;
-    return true;
+// ═══════════════════════════════════════════════════════════════════════════
+// STORAGE (localStorage fallback from window.storage)
+// ═══════════════════════════════════════════════════════════════════════════
+function lsGet(key){try{return JSON.parse(localStorage.getItem(key)||'null');}catch{return null;}}
+function lsSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch{}}
+
+function getBoard(key){return lsGet(key)||[];}
+function saveBoard(key,entry,sortFn){
+  var prev=getBoard(key);
+  var updated=[entry].concat(prev).sort(sortFn).slice(0,10);
+  lsSet(key,updated);
+  return updated;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════════════
+var allScreens=['hub','leaderboards','batter-setup','batter-game','batter-results',
+  'manager-game','manager-results','r-countdown','r-game','r-inning','r-final'];
+
+function showScreen(name){
+  allScreens.forEach(function(s){
+    var el=document.getElementById('screen-'+s);
+    if(el) el.classList.toggle('hidden', s!==name);
   });
-}
-
-function soloSetAge(val, btn) {
-  soloAge = val;
-  document.querySelectorAll('.age-sel-btn').forEach(function(b){ b.classList.remove('active'); });
-  if (btn) btn.classList.add('active');
-  renderSoloDrills();
-  updateCatCounts();
-}
-
-function soloSetCat(val, btn) {
-  soloCat = val;
-  document.querySelectorAll('.solo-cat-card').forEach(function(b){ b.classList.remove('active'); });
-  if (btn) btn.classList.add('active');
-  renderSoloDrills();
-}
-
-function renderSoloDrills() {
-  var grid = document.getElementById('solo-drill-grid');
-  var countEl = document.getElementById('solo-drill-count');
-  var drills = getSoloDrills();
-
-  if (countEl) countEl.textContent = drills.length + ' drill' + (drills.length !== 1 ? 's' : '');
-
-  if (drills.length === 0) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#888">No drills found for those filters.</div>';
-    return;
+  var root=document.getElementById('suite-root');
+  if(name==='r-game'||name==='r-countdown'){
+    root.style.padding='0';
+    root.style.alignItems='stretch';
+  } else {
+    root.style.padding='20px 16px 40px';
+    root.style.alignItems='center';
   }
-
-  grid.innerHTML = drills.map(function(d) {
-    var col = CAT_COLORS_SOLO[d.soloCategory] || '#888';
-    var catLabel = CAT_LABELS_SOLO[d.soloCategory] || d.soloCategory;
-    var setupShort = (d.setup || '').substring(0, 120) + ((d.setup||'').length > 120 ? '...' : '');
-    var equip = d.soloEquip || d.equipment || '';
-
-    return '<div class="solo-drill-card" onclick="showDrill(\'' + d.id + '\')">'
-      + '<div class="solo-drill-stripe" style="background:' + col + '"></div>'
-      + '<div class="solo-drill-body">'
-      + '<div class="solo-drill-meta">'
-      + '<span class="equip-tag" style="background:' + col + '15;border-color:' + col + '40;color:' + col + '">' + catLabel + '</span>'
-      + '<span class="equip-tag">' + d.duration + ' min</span>'
-      + '<span class="equip-tag">Ages ' + d.ageMin + '-' + d.ageMax + '</span>'
-      + '</div>'
-      + '<div class="solo-drill-name">' + d.name + '</div>'
-      + '<div class="solo-drill-setup">' + setupShort + '</div>'
-      + '<div class="solo-drill-equip">'
-      + '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>'
-      + equip
-      + '</div>'
-      + '<div class="solo-drill-tap">Tap for full drill &#8594;</div>'
-      + '</div>'
-      + '</div>';
-  }).join('');
 }
 
-function updateCatCounts() {
-  var cats = ['all','hitting','fielding','throwing','bodycontrol','pitching'];
-  cats.forEach(function(cat) {
-    var el = document.getElementById('cat-count-' + cat);
-    if (!el) return;
-    var count = DRILLS.filter(function(d) {
-      if (!d.solo) return false;
-      if (soloAge !== 'all') {
-        var r = AGE_RANGES_SOLO[soloAge];
-        if (r && (d.ageMax < r[0] || d.ageMin > r[1])) return false;
-      }
-      if (cat !== 'all' && d.soloCategory !== cat) return false;
-      return true;
-    }).length;
-    el.textContent = count + ' drill' + (count !== 1 ? 's' : '');
-  });
+// ═══════════════════════════════════════════════════════════════════════════
+// PLAYER NAME
+// ═══════════════════════════════════════════════════════════════════════════
+function setPlayerName(){
+  var inp=document.getElementById('name-input').value.trim();
+  if(!inp) return;
+  playerName=inp;
+  document.getElementById('name-entry').classList.add('hidden');
+  var chip=document.getElementById('player-chip');
+  chip.classList.remove('hidden');
+  document.getElementById('chip-name').textContent=playerName;
+  unlockCards();
+  document.getElementById('unlock-hint').classList.add('hidden');
 }
-
-// ── Quick sessions ─────────────────────────────────────────────────
-var QUICK_SESSIONS = {
-  got30wall: {
-    ids: ['sl-wall-ball-grounders','sl-wall-ball-popup','sl-barehand-wall','sl-wall-target-throw','sl-one-knee-wall'],
-    label: '30 Min Wall Session',
-  },
-  hitting45: {
-    ids: ['sl-mirror-stance','sl-tee-one-location','sl-tee-two-spot','sl-self-flip','sl-bounce-hit'],
-    label: '45 Min Hitting Session',
-  },
-  athlete20: {
-    ids: ['sl-jump-rope','sl-lateral-shuffle','sl-broad-jump','sl-balance-single-leg','sl-plank-series'],
-    label: '20 Min Athletic Base',
-  },
-  pitcher30: {
-    ids: ['sl-balance-point-hold','sl-towel-drill','sl-net-spot-work','sl-wall-target-throw'],
-    label: '30 Min Pitcher Session',
-  },
-};
-
-function applyQuickSession(key) {
-  var session = QUICK_SESSIONS[key];
-  if (!session) return;
-
-  // Reset filters
-  soloAge = 'all';
-  soloCat = 'all';
-  document.querySelectorAll('.age-sel-btn').forEach(function(b){ b.classList.remove('active'); });
-  document.querySelector('.age-sel-btn').classList.add('active');
-  document.querySelectorAll('.solo-cat-card').forEach(function(b){ b.classList.remove('active'); });
-  document.querySelector('.solo-cat-card').classList.add('active');
-
-  // Filter to only session drills
-  var grid = document.getElementById('solo-drill-grid');
-  var countEl = document.getElementById('solo-drill-count');
-  var drills = DRILLS.filter(function(d) {
-    return session.ids.indexOf(d.id) !== -1;
-  });
-
-  // Fill any missing IDs with solo drills from relevant category
-  if (drills.length < session.ids.length) {
-    var all = DRILLS.filter(function(d){ return d.solo; });
-    drills = drills.concat(all.filter(function(d){
-      return drills.indexOf(d) === -1;
-    }).slice(0, session.ids.length - drills.length));
-  }
-
-  if (countEl) countEl.textContent = session.label + ' — ' + drills.length + ' drills';
-
-  if (drills.length === 0) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#888">Drills coming soon.</div>';
-    return;
-  }
-
-  grid.innerHTML = drills.map(function(d) {
-    var col = CAT_COLORS_SOLO[d.soloCategory] || '#888';
-    var catLabel = CAT_LABELS_SOLO[d.soloCategory] || d.soloCategory;
-    var setupShort = (d.setup || '').substring(0, 120) + ((d.setup||'').length > 120 ? '...' : '');
-    var equip = d.soloEquip || d.equipment || '';
-
-    return '<div class="solo-drill-card" onclick="showDrill(\'' + d.id + '\')">'
-      + '<div class="solo-drill-stripe" style="background:' + col + '"></div>'
-      + '<div class="solo-drill-body">'
-      + '<div class="solo-drill-meta">'
-      + '<span class="equip-tag" style="background:' + col + '15;border-color:' + col + '40;color:' + col + '">' + catLabel + '</span>'
-      + '<span class="equip-tag">' + d.duration + ' min</span>'
-      + '</div>'
-      + '<div class="solo-drill-name">' + d.name + '</div>'
-      + '<div class="solo-drill-setup">' + setupShort + '</div>'
-      + '<div class="solo-drill-equip">'
-      + '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>'
-      + equip
-      + '</div>'
-      + '<div class="solo-drill-tap">Tap for full drill &#8594;</div>'
-      + '</div>'
-      + '</div>';
-  }).join('');
-
-  // Scroll to grid
-  document.getElementById('solo-drill-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  updateCatCounts();
-  renderSoloDrills();
+document.getElementById('name-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter') setPlayerName();
 });
+function clearPlayerName(){
+  playerName='';
+  document.getElementById('name-entry').classList.remove('hidden');
+  document.getElementById('player-chip').classList.add('hidden');
+  document.getElementById('unlock-hint').classList.remove('hidden');
+  lockCards();
+}
+function unlockCards(){
+  ['card-batter','card-manager','card-reaction'].forEach(function(id){
+    document.getElementById(id).classList.remove('locked');
+  });
+}
+function lockCards(){
+  ['card-batter','card-manager','card-reaction'].forEach(function(id){
+    document.getElementById(id).classList.add('locked');
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LEADERBOARDS
+// ═══════════════════════════════════════════════════════════════════════════
+function showLeaderboards(){
+  renderLeaderboard(lbTab);
+  showScreen('leaderboards');
+}
+function switchLbTab(t){
+  lbTab=t;
+  var colors=['#FF5555','#8899FF','#FF8C00'];
+  [0,1,2].forEach(function(i){
+    var btn=document.getElementById('lb-tab-'+i);
+    if(i===t){
+      btn.style.background=colors[i]+'33';
+      btn.style.borderColor=colors[i];
+      btn.style.color=colors[i];
+    } else {
+      btn.style.background='transparent';
+      btn.style.borderColor=colors[i]+'44';
+      btn.style.color='#445566';
+    }
+  });
+  renderLeaderboard(t);
+}
+function renderLeaderboard(t){
+  var keys=['dl-batter-v1','dl-manager-v1','dl-reaction-v1'];
+  var colors=['#FF5555','#8899FF','#FF8C00'];
+  var data=getBoard(keys[t]);
+  var medals=['🥇','🥈','🥉'];
+  var c=document.getElementById('lb-content');
+  if(!data.length){
+    c.innerHTML='<div style="text-align:center;color:#2a3a4a;padding:30px 0">No scores yet — play a round!</div>';
+    return;
+  }
+  c.innerHTML=data.map(function(e,i){
+    var medal=i<3?medals[i]:(i+1)+'.';
+    var detail='';
+    if(t===0) detail='<div style="font-size:18px;font-weight:700;color:#FFD700">'+e.pts+'pts</div><div style="font-size:11px;color:#445566">'+e.hits+'H · '+e.avg+'</div>';
+    if(t===1) detail='<div style="font-size:18px;font-weight:700;color:#8899FF">'+e.correct+'/'+e.total+'</div><div style="font-size:11px;color:#445566">'+e.pct+'%</div>';
+    if(t===2){var ic=INNINGS[Math.min((e.bestInning||1)-1,8)];detail='<div style="font-size:18px;font-weight:700;color:'+ic.color+'">Inn '+(e.bestInning||1)+'</div><div style="font-size:11px;color:#445566">'+e.score+'pts · '+e.acc+'%</div>';}
+    return '<div class="lb-row" style="border-color:'+(i===0?colors[t]+'33':'#0f1f30')+';background:'+(i===0?colors[t]+'10':'#0a1420')+'">'
+      +'<div style="font-size:'+(i<3?18:13)+'px;width:26px;text-align:center">'+medal+'</div>'
+      +'<div style="flex:1"><div style="font-weight:700;color:'+(i===0?colors[t]:'#ccd')+';font-size:14px">'+e.name+'</div>'
+      +'<div style="font-size:10px;color:#334455;margin-top:2px">'+e.date+'</div></div>'
+      +'<div style="text-align:right">'+detail+'</div></div>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BATTER UP
+// ═══════════════════════════════════════════════════════════════════════════
+function startBatterSetup(){
+  if(!playerName) return;
+  bHand=null;
+  document.getElementById('hand-R').style.borderColor='#334455';
+  document.getElementById('hand-R').style.color='#667788';
+  document.getElementById('hand-L').style.borderColor='#334455';
+  document.getElementById('hand-L').style.color='#667788';
+  document.getElementById('step-up-btn').style.opacity='.35';
+  document.getElementById('step-up-btn').style.cursor='not-allowed';
+  showScreen('batter-setup');
+}
+function selectHand(h){
+  bHand=h;
+  ['R','L'].forEach(function(x){
+    var btn=document.getElementById('hand-'+x);
+    if(x===h){btn.style.borderColor='#FFD700';btn.style.color='#FFD700';}
+    else{btn.style.borderColor='#334455';btn.style.color='#667788';}
+  });
+  document.getElementById('step-up-btn').style.opacity='1';
+  document.getElementById('step-up-btn').style.cursor='pointer';
+}
+function startBatterGame(){
+  if(!bHand) return;
+  bBalls=0;bStrikes=0;bOuts=0;bRunners=[false,false,false];
+  bAtBats=0;bHits=0;bPts=0;bRuns=0;
+  bPitch=null;bPitchReady=false;bLocked=false;
+  document.getElementById('b-player-label').textContent=playerName+' ('+bHand+')';
+  updateBatterHUD();
+  showScreen('batter-game');
+  throwPitch();
+}
+function exitBatterGame(){clearTimeout(bNextTimer);showScreen('hub');}
+
+function zoneDist(x,y){return Math.sqrt(Math.pow((x-50)/28,2)+Math.pow((y-50)/28,2));}
+function inZone(x,y){return x>=SZ.xMin&&x<=SZ.xMax&&y>=SZ.yMin&&y<=SZ.yMax;}
+function makePitch(){
+  var goIn=Math.random()>0.38;
+  var x,y;
+  if(goIn){x=SZ.xMin+Math.random()*(SZ.xMax-SZ.xMin);y=SZ.yMin+Math.random()*(SZ.yMax-SZ.yMin);}
+  else{var s=Math.floor(Math.random()*4);
+    if(s===0){x=2+Math.random()*16;y=5+Math.random()*90;}
+    else if(s===1){x=80+Math.random()*18;y=5+Math.random()*90;}
+    else if(s===2){x=5+Math.random()*90;y=2+Math.random()*16;}
+    else{x=5+Math.random()*90;y=82+Math.random()*16;}
+  }
+  return{x:x,y:y,type:PITCH_TYPES[Math.floor(Math.random()*PITCH_TYPES.length)]};
+}
+function throwPitch(){
+  clearTimeout(bNextTimer);
+  var p=makePitch();bPitch=p;
+  var dot=document.getElementById('b-pitch-dot');
+  var pLabel=document.getElementById('b-pitch-label');
+  var szBox=document.getElementById('b-sz-box');
+  var zLabel=document.getElementById('b-zone-label');
+  var feedback=document.getElementById('b-feedback');
+  feedback.classList.add('hidden');
+  zLabel.style.display='none';
+  szBox.style.border='2px dashed rgba(255,255,255,.1)';
+  pLabel.textContent=p.type.emoji+' '+p.type.name;
+  dot.style.left=p.x+'%';dot.style.top=p.y+'%';
+  dot.style.background='#fff';dot.style.border='3px solid #cce8ff';
+  dot.style.boxShadow='0 0 14px rgba(255,255,255,.33)';
+  dot.style.width='22px';dot.style.height='22px';
+  dot.textContent='';
+  dot.classList.remove('hidden');
+  dot.style.animation='none';
+  void dot.offsetWidth;
+  dot.style.animation='pitchFly '+p.type.ms+'ms cubic-bezier(.17,.67,.42,1) forwards';
+  bPitchReady=false;bLocked=true;
+  setActionBtnsActive(false);
+  setTimeout(function(){
+    bPitchReady=true;bLocked=false;
+    bPitchTime=Date.now();
+    setActionBtnsActive(true);
+  },p.type.ms+80);
+}
+function setActionBtnsActive(on){
+  var sw=document.getElementById('b-swing-btn');
+  var tk=document.getElementById('b-take-btn');
+  if(on){
+    sw.style.borderColor='#FF5555';sw.style.background='#FF55550f';sw.style.color='#FF5555';sw.style.cursor='pointer';
+    tk.style.borderColor='#55DD88';tk.style.background='#55DD880f';tk.style.color='#55DD88';tk.style.cursor='pointer';
+  } else {
+    sw.style.borderColor='#2a3a4a';sw.style.background='#080f18';sw.style.color='#2a3a4a';sw.style.cursor='default';
+    tk.style.borderColor='#2a3a4a';tk.style.background='#080f18';tk.style.color='#2a3a4a';tk.style.cursor='default';
+  }
+}
+function handleSwing(didSwing){
+  if(bLocked||!bPitchReady||!bPitch) return;
+  var rt=Math.min(Date.now()-bPitchTime,1500);
+  bLocked=true;bPitchReady=false;
+  setActionBtnsActive(false);
+  var pInZone=inZone(bPitch.x,bPitch.y);
+  var dist=zoneDist(bPitch.x,bPitch.y);
+  var outcome=calcBatterOutcome(dist,rt,didSwing,pInZone);
+  revealPitch(pInZone,dist);
+  // Update count/runners
+  var dab=false,dh=false,dr=0;
+  if(outcome.type==='BALL'){bBalls++;if(bBalls>=4){dr=(bRunners[0]&&bRunners[1]&&bRunners[2])?1:0;bRunners=[true,bRunners[0],bRunners[1]];bBalls=0;bStrikes=0;dab=true;}}
+  else if(outcome.type==='CALLED_K'||outcome.type==='SWING_K'){bStrikes++;if(bStrikes>=3){bStrikes=0;bBalls=0;bOuts++;dab=true;}}
+  else if(outcome.isHit){dr=outcome.isHR?(1+bRunners.filter(Boolean).length):(bRunners[2]?1:0);bRunners=[true,bRunners[0],bRunners[1]];bBalls=0;bStrikes=0;dab=true;dh=true;}
+  else if(outcome.type==='GROUNDOUT'||outcome.type==='FLYOUT'){bBalls=0;bStrikes=0;bOuts++;dab=true;}
+  if(bOuts>=3){bOuts=0;bRunners=[false,false,false];}
+  if(dab) bAtBats++;
+  if(dh) bHits++;
+  if(dr>0) bRuns+=dr;
+  if(outcome.pts>0) bPts+=outcome.pts;
+  updateBatterHUD();
+  showBatterFeedback(outcome);
+  if(bAtBats>=15){
+    saveBatterScore();
+    setTimeout(function(){showBatterResults();},1900);
+    return;
+  }
+  bNextTimer=setTimeout(throwPitch,1900);
+}
+function calcBatterOutcome(dist,rt,didSwing,pInZone){
+  if(!didSwing) return pInZone
+    ?{type:'CALLED_K',msg:"Called strike! That was in the zone!",emoji:'😳',color:'#FF8800',pts:0}
+    :{type:'BALL',msg:'Ball! Great eye!',emoji:'👁️',color:'#55DD88',pts:1};
+  if(!pInZone) return{type:'SWING_K',msg:"Strike! Don't chase outside pitches!",emoji:'😬',color:'#FF4444',pts:0};
+  var q=Math.max(0,1-dist)*0.55+Math.max(0,1-rt/750)*0.45;
+  var rtStr=rt+'ms';
+  if(q>0.72) return{type:'HOME_RUN',msg:'HOME RUN! Perfect swing! ('+rtStr+')',emoji:'🚀',color:'#FFD700',pts:5,isHit:true,isHR:true};
+  if(q>0.54) return{type:'LINE_DRIVE',msg:'Line drive! Great contact! ('+rtStr+')',emoji:'💥',color:'#FFCC00',pts:3,isHit:true};
+  if(q>0.37) return{type:'SINGLE',msg:'Base hit — solid contact. ('+rtStr+')',emoji:'✅',color:'#88DDAA',pts:2,isHit:true};
+  if(q>0.20) return{type:'GROUNDOUT',msg:'Weak contact — out. Swing earlier! ('+rtStr+')',emoji:'😅',color:'#FF8800',pts:0};
+  return{type:'FLYOUT',msg:'Swung too late. React faster! ('+rtStr+')',emoji:'😔',color:'#FF6666',pts:0};
+}
+function revealPitch(pInZone,dist){
+  var dot=document.getElementById('b-pitch-dot');
+  var szBox=document.getElementById('b-sz-box');
+  var zLabel=document.getElementById('b-zone-label');
+  var pLabel=document.getElementById('b-pitch-label');
+  dot.style.animation='none';
+  if(pInZone){
+    var bg=dist<0.4?'#FF3333':dist<0.8?'#FFD700':'#55DD88';
+    dot.style.background=bg;dot.style.border='3px solid #fff';
+    dot.style.boxShadow='0 0 20px '+bg+'77';
+    dot.textContent='✓';
+    szBox.style.border='2px solid rgba(255,215,0,.47)';
+    var zlText=dist<0.4?'🔴 POWER ZONE':dist<0.8?'🟡 CONTACT ZONE':'🟢 EDGE';
+    zLabel.textContent=zlText;zLabel.style.color='#FFD700';
+  } else {
+    dot.style.background='#444466';dot.style.border='3px solid rgba(85,85,119,.8)';
+    dot.style.boxShadow='0 0 20px rgba(255,68,68,.27)';
+    dot.textContent='✗';
+    szBox.style.border='2px solid rgba(255,68,68,.27)';
+    zLabel.textContent='⚫ BALL — OUTSIDE';zLabel.style.color='#FF6666';
+  }
+  zLabel.style.display='block';
+  pLabel.textContent='Strike Zone';
+}
+function showBatterFeedback(outcome){
+  var fb=document.getElementById('b-feedback');
+  fb.style.background=outcome.color+'15';
+  fb.style.border='1.5px solid '+outcome.color;
+  fb.innerHTML='<div style="font-size:20px">'+outcome.emoji+'</div>'
+    +'<div style="font-weight:700;color:'+outcome.color+';font-size:13px">'+outcome.type.replace('_',' ')+'</div>'
+    +'<div style="font-size:12px;color:#ccd;margin-top:3px">'+outcome.msg+'</div>'
+    +(outcome.pts>0?'<div style="font-size:13px;color:#FFD700;font-weight:700;margin-top:4px">+'+outcome.pts+' pts</div>':'');
+  fb.classList.remove('hidden');
+  fb.style.animation='none';void fb.offsetWidth;fb.style.animation='fadeUp .2s ease';
+}
+function updateBatterHUD(){
+  function dots(id,val,max,on,off){
+    var row=document.getElementById(id);
+    row.innerHTML='';
+    for(var i=0;i<max;i++){
+      var d=document.createElement('div');
+      d.className='dot-pip';
+      d.style.background=i<val?on:off;
+      d.style.border='2px solid '+(i<val?on:'#334455');
+      row.appendChild(d);
+    }
+  }
+  dots('b-balls-dots',bBalls,4,'#55DD88','#1e2e3e');
+  dots('b-strikes-dots',bStrikes,3,'#FF6B6B','#1e2e3e');
+  dots('b-outs-dots',bOuts,3,'#FF8C00','#1e2e3e');
+  ['r-1b','r-2b','r-3b'].forEach(function(id,i){
+    document.getElementById(id).setAttribute('fill',bRunners[i]?'#FFD700':'#334433');
+  });
+  document.getElementById('b-hits-stat').textContent=bHits;
+  document.getElementById('b-pts-stat').textContent=bPts;
+  document.getElementById('b-runs-stat').textContent=bRuns;
+  document.getElementById('b-progress').style.width=(bAtBats/15*100)+'%';
+  document.getElementById('b-ab-label').textContent=bAtBats+' of 15 at-bats';
+}
+function showBatterResults(){
+  var avg=bAtBats>0?(bHits/bAtBats).toFixed(3).replace(/^0/,''):'.000';
+  var grade=bPts>=35?'🚀 MVP':bPts>=24?'⭐ All-Star':bPts>=14?'👍 Solid':'📈 Keep Training';
+  document.getElementById('b-results-sub').textContent=playerName+' · '+bHand+'-Handed';
+  document.getElementById('b-results-grade').textContent=grade;
+  var stats=[['Points',bPts,'#FFD700'],['Avg',avg,'#88DDAA'],['Hits',bHits,'#FFCC00'],['Runs',bRuns,'#55DD88'],['AB',bAtBats,'#88AACC']];
+  document.getElementById('b-results-grid').innerHTML=stats.map(function(s){
+    return '<div class="stat-box"><div class="stat-val" style="color:'+s[2]+'">'+s[1]+'</div><div class="stat-lbl">'+s[0]+'</div></div>';
+  }).join('');
+  showScreen('batter-results');
+}
+function saveBatterScore(){
+  var avg=bAtBats>0?(bHits/bAtBats).toFixed(3).replace(/^0/,''):'.000';
+  saveBoard('dl-batter-v1',
+    {name:playerName,hand:bHand,pts:bPts,hits:bHits,ab:bAtBats,runs:bRuns,avg:avg,date:new Date().toLocaleDateString()},
+    function(a,b){return b.pts-a.pts;}
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MANAGER MODE
+// ═══════════════════════════════════════════════════════════════════════════
+function startManager(){
+  if(!playerName) return;
+  mIdx=0;mTimer=15;mAnswered=false;mCorrect=0;
+  renderScenario();
+  showScreen('manager-game');
+  startManagerTimer();
+}
+function exitManager(){clearInterval(mTimerInterval);showScreen('hub');}
+function renderScenario(){
+  var s=SCENARIOS[mIdx];
+  document.getElementById('m-scenario-counter').textContent='Scenario '+(mIdx+1)+' / '+SCENARIOS.length;
+  document.getElementById('m-meta').innerHTML='<span>📍 Inning '+s.inning+'</span><span>'+s.score+'</span><span>⚡ '+s.outs+' Out'+(s.outs!==1?'s':'')+'</span>';
+  document.getElementById('m-situation').textContent=s.situation;
+  ['m-r-1b','m-r-2b','m-r-3b'].forEach(function(id,i){
+    document.getElementById(id).setAttribute('fill',s.runners[i]?'#FFD700':'#334433');
+  });
+  var optsEl=document.getElementById('m-options');
+  optsEl.innerHTML='';
+  s.options.forEach(function(opt,i){
+    var btn=document.createElement('button');
+    btn.className='m-option';
+    btn.textContent=opt.text;
+    btn.onclick=function(){handleMAnswer(i);};
+    optsEl.appendChild(btn);
+  });
+  document.getElementById('m-feedback').classList.add('hidden');
+  mTimer=15;updateManagerTimer();
+}
+function startManagerTimer(){
+  clearInterval(mTimerInterval);
+  mTimerInterval=setInterval(function(){
+    if(mAnswered) return;
+    mTimer--;
+    updateManagerTimer();
+    if(mTimer<=0){
+      clearInterval(mTimerInterval);
+      mAnswered=true;
+      showMFeedback(false,"Time's up! Hesitation costs runs.",null,'#FF4444',SCENARIOS[mIdx].concept);
+    }
+  },1000);
+}
+function updateManagerTimer(){
+  var pct=(mTimer/15)*100;
+  var color=mTimer>7?'#44DD88':mTimer>3?'#FFD700':'#FF4466';
+  document.getElementById('m-timer-display').textContent=mTimer+'s';
+  document.getElementById('m-timer-display').style.color=color;
+  document.getElementById('m-timer-fill').style.width=pct+'%';
+  document.getElementById('m-timer-fill').style.background='linear-gradient(90deg,'+color+','+color+'88)';
+}
+function handleMAnswer(i){
+  if(mAnswered) return;
+  clearInterval(mTimerInterval);
+  mAnswered=true;
+  var s=SCENARIOS[mIdx];
+  var opt=s.options[i];
+  if(opt.correct) mCorrect++;
+  var btns=document.getElementById('m-options').querySelectorAll('button');
+  btns.forEach(function(btn,bi){
+    btn.disabled=true;
+    if(bi===i && opt.correct) btn.classList.add('correct');
+    else if(bi===i) btn.classList.add('wrong');
+  });
+  showMFeedback(opt.correct,opt.feedback,s.tip,opt.correct?'#55DD88':'#FF6B6B',s.concept);
+}
+function showMFeedback(correct,msg,tip,color,concept){
+  var fb=document.getElementById('m-feedback');
+  fb.style.background=color+'15';
+  fb.style.border='1.5px solid '+color;
+  fb.innerHTML='<div style="font-weight:700;color:'+color+';font-size:14px;margin-bottom:6px">'+(correct?'✅ Great Call!':'❌ Not Quite —')+'</div>'
+    +'<div style="font-size:13px;color:#ccd;line-height:1.6">'+msg+'</div>'
+    +(tip?'<div style="font-size:12px;color:#FFD700;border-top:1px solid #FFD70022;padding-top:8px;margin-top:8px;font-style:italic">💡 '+tip+'</div>':'')
+    +'<div style="font-size:10px;color:#445566;margin-top:8px;letter-spacing:2px;text-transform:uppercase">'+concept+'</div>'
+    +'<button class="s-btn s-btn-blue" style="margin-top:12px;margin-bottom:0" onclick="nextScenario()">'+(mIdx+1>=SCENARIOS.length?'📊 See Results':'Next →')+'</button>';
+  fb.classList.remove('hidden');
+  fb.style.animation='none';void fb.offsetWidth;fb.style.animation='fadeUp .2s ease';
+}
+function nextScenario(){
+  var next=mIdx+1;
+  if(next>=SCENARIOS.length){
+    saveManagerScore();
+    showManagerResults();
+    return;
+  }
+  mIdx=next;mAnswered=false;
+  renderScenario();
+  startManagerTimer();
+}
+function saveManagerScore(){
+  saveBoard('dl-manager-v1',
+    {name:playerName,correct:mCorrect,total:SCENARIOS.length,pct:Math.round(mCorrect/SCENARIOS.length*100),date:new Date().toLocaleDateString()},
+    function(a,b){return b.correct-a.correct||b.pct-a.pct;}
+  );
+}
+function showManagerResults(){
+  var pct=Math.round(mCorrect/SCENARIOS.length*100);
+  var grade=pct>=85?'🏆 Future Manager!':pct>=67?'⭐ Smart Skipper':pct>=50?'📈 Learning Fast':'📚 Study the Playbook';
+  document.getElementById('m-results-sub').textContent=playerName;
+  document.getElementById('m-score-display').textContent=mCorrect+'/'+SCENARIOS.length;
+  document.getElementById('m-results-grade').textContent=grade;
+  document.getElementById('m-results-msg').textContent=pct>=67?'Good instincts! Review what you missed and think about the WHY.':'Each wrong answer is a lesson. Real managers study film for exactly this.';
+  showScreen('manager-results');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// REACTION TRAINER
+// ═══════════════════════════════════════════════════════════════════════════
+function startReactionFresh(){
+  if(!playerName) return;
+  dotIdCounter=0;rTotalScore=0;rHistory=[];
+  startReactionCountdown(0);
+}
+function startReactionCountdown(idx){
+  rInningIdx=idx;rIScore=0;rHits=0;rPerfects=0;rMisses=0;
+  rActive=false;rDot=null;
+  clearTimeout(rExpireTimer);clearInterval(rGameInterval);
+  var inn=INNINGS[idx];
+  document.getElementById('cd-inning-label').textContent=inn.label+' INNING';
+  document.getElementById('cd-inning-label').style.color=inn.color;
+  document.getElementById('cd-tag').textContent=inn.tag+' · '+(inn.r*2)+'px dots · '+inn.ms+'ms';
+  var prev=document.getElementById('cd-dot-preview');
+  prev.innerHTML='<div style="width:'+(inn.r*2)+'px;height:'+(inn.r*2)+'px;border-radius:50%;background:'+inn.color+'"></div>';
+  rCdCount=3;
+  document.getElementById('cd-number').textContent=rCdCount;
+  document.getElementById('cd-number').style.color=inn.color;
+  document.getElementById('cd-number').style.fontSize='108px';
+  showScreen('r-countdown');
+  clearInterval(rCdInterval);
+  rCdInterval=setInterval(function(){
+    rCdCount--;
+    var cdEl=document.getElementById('cd-number');
+    if(rCdCount<=0){
+      clearInterval(rCdInterval);
+      cdEl.textContent='GO!';cdEl.style.color='#44DD88';cdEl.style.fontSize='72px';
+      cdEl.style.animation='none';void cdEl.offsetWidth;cdEl.style.animation='cdPop .35s ease forwards';
+      setTimeout(startReactionGame,600);
+    } else {
+      cdEl.textContent=rCdCount;
+      cdEl.style.animation='none';void cdEl.offsetWidth;cdEl.style.animation='cdPop .35s ease forwards';
+    }
+  },1000);
+}
+function startReactionGame(){
+  var inn=INNINGS[rInningIdx];
+  rTimeLeft=INNING_DURATION;rActive=true;
+  document.getElementById('r-inning-label').textContent=inn.label;
+  document.getElementById('r-inning-label').style.color=inn.color;
+  document.getElementById('r-time-val').textContent=rTimeLeft+'s';
+  document.getElementById('r-score-val').textContent=rIScore;
+  document.getElementById('r-perfect-val').textContent=rPerfects;
+  document.getElementById('r-area').innerHTML='';
+  showScreen('r-game');
+  clearInterval(rGameInterval);
+  rGameInterval=setInterval(function(){
+    rTimeLeft--;
+    var pct=rTimeLeft/INNING_DURATION*100;
+    var tc=rTimeLeft>12?'#44DD88':rTimeLeft>5?'#FFD700':'#FF4466';
+    document.getElementById('r-time-val').textContent=rTimeLeft+'s';
+    document.getElementById('r-time-val').style.color=tc;
+    document.getElementById('r-time-bar').style.width=pct+'%';
+    document.getElementById('r-time-bar').style.background=tc;
+    if(rTimeLeft<=0){endReactionInning();}
+  },1000);
+  setTimeout(spawnDot,200);
+}
+function spawnDot(){
+  if(!rActive) return;
+  var area=document.getElementById('r-area');
+  var rect=area.getBoundingClientRect();
+  var w=rect.width,h=rect.height;
+  var inn=INNINGS[rInningIdx];
+  var r=inn.r;
+  var x=r+4+Math.random()*Math.max(1,w-r*2-8);
+  var y=r+4+Math.random()*Math.max(1,h-r*2-8);
+  var id=++dotIdCounter;
+  var born=Date.now();
+  rDot={id:id,x:x,y:y,r:r,color:inn.color,born:born};
+  var dotEl=document.createElement('div');
+  dotEl.className='r-dot';
+  dotEl.id='rdot-'+id;
+  dotEl.style.left=x+'px';dotEl.style.top=y+'px';
+  dotEl.style.width=(r*2)+'px';dotEl.style.height=(r*2)+'px';
+  dotEl.style.background=inn.color;
+  dotEl.addEventListener('pointerdown',hitDot);
+  area.appendChild(dotEl);
+  clearTimeout(rExpireTimer);
+  rExpireTimer=setTimeout(function(){
+    if(!rActive||!rDot||rDot.id!==id) return;
+    var el=document.getElementById('rdot-'+id);
+    if(el) el.remove();
+    rDot=null;
+    rMisses++;
+    showMissFlash(x,y,area);
+    document.getElementById('r-score-val').textContent=rIScore;
+    setTimeout(spawnDot,180);
+  },inn.ms);
+}
+function hitDot(e){
+  if(!rActive||!rDot) return;
+  e.preventDefault();
+  var area=document.getElementById('r-area');
+  var aRect=area.getBoundingClientRect();
+  var src=e.touches?e.touches[0]:e;
+  var dist=Math.sqrt(Math.pow((src.clientX-aRect.left)-rDot.x,2)+Math.pow((src.clientY-aRect.top)-rDot.y,2));
+  var ratio=Math.min(1,dist/rDot.r);
+  var pts=ratio<0.28?3:ratio<0.62?2:1;
+  clearTimeout(rExpireTimer);
+  var el=document.getElementById('rdot-'+rDot.id);
+  if(el) el.remove();
+  rDot=null;
+  rTotalScore+=pts;rIScore+=pts;rHits++;
+  if(pts===3) rPerfects++;
+  document.getElementById('r-score-val').textContent=rIScore;
+  document.getElementById('r-perfect-val').textContent=rPerfects;
+  showPtsPopup(src.clientX-aRect.left,src.clientY-aRect.top,pts,area);
+  setTimeout(spawnDot,50);
+}
+function showPtsPopup(x,y,pts,area){
+  var p=document.createElement('div');
+  p.className='r-popup';
+  p.style.left=x+'px';p.style.top=y+'px';
+  p.style.fontSize=pts===3?'18px':'14px';
+  p.style.color=pts===3?'#FFD700':pts===2?'#44DD88':'#88BBFF';
+  p.textContent=pts===3?'+3 PERFECT':pts===2?'+2':'+1';
+  area.appendChild(p);
+  setTimeout(function(){p.remove();},550);
+}
+function showMissFlash(x,y,area){
+  var m=document.createElement('div');
+  m.className='r-miss';
+  m.style.left=x+'px';m.style.top=y+'px';
+  area.appendChild(m);
+  setTimeout(function(){m.remove();},350);
+}
+function endReactionInning(){
+  rActive=false;
+  clearTimeout(rExpireTimer);clearInterval(rGameInterval);
+  var area=document.getElementById('r-area');
+  if(area) area.innerHTML='';
+  rDot=null;
+  var stat={inning:rInningIdx+1,score:rIScore,hits:rHits,perfects:rPerfects,misses:rMisses};
+  rHistory.push(stat);
+  renderInningResults(stat);
+  showScreen('r-inning');
+}
+function renderInningResults(stat){
+  var inn=INNINGS[stat.inning-1];
+  var nextInn=INNINGS[stat.inning];
+  var acc=stat.hits+stat.misses>0?Math.round(stat.hits/(stat.hits+stat.misses)*100):0;
+  document.getElementById('ri-inning-title').textContent=inn.label+' Inning Complete';
+  document.getElementById('ri-tag').textContent=inn.tag;
+  document.getElementById('ri-tag').style.color=inn.color;
+  var icon=document.getElementById('ri-dot-icon');
+  icon.style.width=(inn.r*2)+'px';icon.style.height=(inn.r*2)+'px';icon.style.background=inn.color;
+  var stats=[['Score',stat.score,'#FFD700'],['Hits',stat.hits,'#44DD88'],['Perfect',stat.perfects,'#AA66FF'],['Misses',stat.misses,'#FF6644'],['Accuracy',acc+'%','#44BBFF'],['Total',rTotalScore,'#FFD700']];
+  document.getElementById('ri-stats').innerHTML=stats.map(function(s){
+    return '<div class="stat-box"><div class="stat-val" style="color:'+s[2]+'">'+s[1]+'</div><div class="stat-lbl">'+s[0]+'</div></div>';
+  }).join('');
+  // Progress pips
+  document.getElementById('ri-progress').innerHTML=INNINGS.map(function(i2,idx){
+    return '<div class="inn-pip" style="background:'+(idx<stat.inning?i2.color:'#1a2530')+';opacity:'+(idx<stat.inning?.9:.3)+'"></div>';
+  }).join('');
+  // Next inning preview
+  var contBtn=document.getElementById('ri-continue-btn');
+  if(nextInn){
+    document.getElementById('ri-next-preview').style.display='block';
+    document.getElementById('ri-next-label').textContent='Up Next: '+nextInn.label+' Inning';
+    var nowDot=document.getElementById('ri-now-dot');
+    nowDot.style.width=(inn.r*2)+'px';nowDot.style.height=(inn.r*2)+'px';nowDot.style.background=inn.color;nowDot.style.opacity='.5';
+    document.getElementById('ri-next-label2').textContent=nextInn.label;document.getElementById('ri-next-label2').style.color=nextInn.color;
+    var nDot=document.getElementById('ri-next-dot');
+    nDot.style.width=(nextInn.r*2)+'px';nDot.style.height=(nextInn.r*2)+'px';nDot.style.background=nextInn.color;
+    document.getElementById('ri-next-lifetime').textContent=nextInn.ms+'ms lifetime';
+    document.getElementById('ri-next-tag').textContent=nextInn.tag;document.getElementById('ri-next-tag').style.color=nextInn.color;
+    contBtn.textContent='⚡ '+nextInn.label+' Inning →';
+    contBtn.className='s-btn';
+    contBtn.style.background=nextInn.color+'15';contBtn.style.borderColor=nextInn.color;contBtn.style.color=nextInn.color;
+  } else {
+    document.getElementById('ri-next-preview').style.display='none';
+    contBtn.textContent='📊 Final Results';
+    contBtn.className='s-btn s-btn-gold';
+    saveReactionScore();
+  }
+}
+function continueReaction(){
+  var next=rHistory[rHistory.length-1].inning;
+  if(next>=INNINGS.length){showReactionFinal();return;}
+  startReactionCountdown(next);
+}
+function showReactionFinal(){
+  rActive=false;clearInterval(rGameInterval);clearTimeout(rExpireTimer);
+  if(rHistory.length>0 && rHistory[rHistory.length-1].inning<INNINGS.length) saveReactionScore();
+  var totalH=rHistory.reduce(function(a,r){return a+r.hits;},0);
+  var totalM=rHistory.reduce(function(a,r){return a+r.misses;},0);
+  var totalP=rHistory.reduce(function(a,r){return a+r.perfects;},0);
+  var bestInn=rHistory.length>0?Math.max.apply(null,rHistory.map(function(r){return r.inning;})):1;
+  var bestInnData=INNINGS[Math.min(bestInn-1,8)];
+  var acc=totalH+totalM>0?Math.round(totalH/(totalH+totalM)*100):0;
+  document.getElementById('rf-sub').textContent=playerName;
+  document.getElementById('rf-best-box').innerHTML=
+    '<div style="font-size:11px;color:#445566;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">Best Inning</div>'
+    +'<div style="display:flex;align-items:center;justify-content:center;gap:10px">'
+    +'<div style="width:'+(bestInnData.r*2)+'px;height:'+(bestInnData.r*2)+'px;border-radius:50%;background:'+bestInnData.color+'"></div>'
+    +'<div><div style="font-size:32px;font-weight:900;color:'+bestInnData.color+';line-height:1">'+bestInnData.label+'</div>'
+    +'<div style="font-size:12px;color:#667788">'+bestInnData.tag+'</div></div></div>';
+  document.getElementById('rf-best-box').style.background=bestInnData.color+'12';
+  document.getElementById('rf-best-box').style.border='2px solid '+bestInnData.color+'44';
+  document.getElementById('rf-best-box').style.borderRadius='14px';
+  document.getElementById('rf-total').textContent=rTotalScore;
+  var rfStats=[['Hits',totalH,'#44DD88'],['Perfects',totalP,'#AA66FF'],['Accuracy',acc+'%','#44BBFF']];
+  document.getElementById('rf-stats').innerHTML='<div class="stat-grid stat-grid-3">'+rfStats.map(function(s){
+    return '<div class="stat-box"><div class="stat-val" style="color:'+s[2]+'">'+s[1]+'</div><div class="stat-lbl">'+s[0]+'</div></div>';
+  }).join('')+'</div>';
+  showScreen('r-final');
+}
+function saveReactionScore(){
+  var totalH=rHistory.reduce(function(a,r){return a+r.hits;},0);
+  var totalM=rHistory.reduce(function(a,r){return a+r.misses;},0);
+  var totalP=rHistory.reduce(function(a,r){return a+r.perfects;},0);
+  var bestInn=rHistory.length>0?Math.max.apply(null,rHistory.map(function(r){return r.inning;})):1;
+  var acc=totalH+totalM>0?Math.round(totalH/(totalH+totalM)*100):0;
+  saveBoard('dl-reaction-v1',
+    {name:playerName,bestInning:bestInn,score:rTotalScore,hits:totalH,perfects:totalP,misses:totalM,acc:acc,date:new Date().toLocaleDateString()},
+    function(a,b){return b.bestInning-a.bestInning||b.score-a.score;}
+  );
+}
 </script>
 </body>
 </html>
