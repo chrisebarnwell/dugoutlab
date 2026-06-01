@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Situation — DugoutLab</title>
+<meta name="description" content="A real coaching situation with a full plan: scenario, your role, solutions, drills, and exactly what to say.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+  /* Page-specific accents, built on the editorial tokens */
+  .sit-wrap { max-width: 760px; margin: 0 auto; }
+  .sit-tldr {
+    background: var(--cream-card);
+    border: 1px solid var(--cream-rule);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 22px 24px;
+    margin-bottom: 34px;
+  }
+  .sit-tldr h2 {
+    font-family: var(--sans);
+    font-size: 12px; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+  }
+  .sit-tldr ul { margin: 0; padding-left: 18px; }
+  .sit-tldr li {
+    font-family: var(--sans); font-size: 15.5px; line-height: 1.55;
+    color: var(--cream-ink); margin-bottom: 8px;
+  }
+  .sit-section { margin-bottom: 34px; }
+  .sit-section > h2 {
+    font-family: var(--sans);
+    font-size: 12px; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 14px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--cream-rule);
+  }
+  .sit-section p {
+    font-family: var(--sans); font-size: 16.5px; line-height: 1.7;
+    color: var(--cream-ink); margin-bottom: 14px;
+  }
+  .sit-scenario {
+    font-family: var(--display); font-size: 19px; font-style: italic;
+    line-height: 1.6; color: var(--cream-ink);
+    border-left: 3px solid var(--cream-rule); padding-left: 18px;
+  }
+  .sit-block {
+    background: var(--cream-card); border: 1px solid var(--cream-rule);
+    border-radius: 12px; padding: 16px 18px; margin-bottom: 12px;
+  }
+  .sit-block h3 {
+    font-family: var(--display); font-size: 18px; font-weight: 600;
+    color: var(--cream-ink); margin-bottom: 6px; letter-spacing: var(--tracking);
+  }
+  .sit-block p {
+    font-family: var(--sans); font-size: 15px; line-height: 1.6;
+    color: var(--cream-ink-soft); margin: 0;
+  }
+  .say-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 640px) { .say-grid { grid-template-columns: 1fr; } }
+  .say-col { border-radius: 12px; padding: 16px 18px; }
+  .say-col.good { background: #e8efe8; border: 1px solid #cddccd; }
+  .say-col.bad { background: #f6e9e4; border: 1px solid #e6d2c8; }
+  .say-col h3 {
+    font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 12px;
+  }
+  .say-col.good h3 { color: #1f4332; }
+  .say-col.bad h3 { color: #8a3a1a; }
+  .say-col ul { margin: 0; padding-left: 16px; }
+  .say-col li {
+    font-family: var(--sans); font-size: 14px; line-height: 1.5;
+    margin-bottom: 9px;
+  }
+  .say-col.good li { color: #244a36; }
+  .say-col.bad li { color: #7a3318; }
+  .how-much {
+    background: #fbf2dc; border-left: 3px solid var(--accent);
+    border-radius: 10px; padding: 16px 18px; margin-top: 14px;
+  }
+  .how-much h3 {
+    font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: #8a5a14; margin-bottom: 8px;
+  }
+  .how-much p {
+    font-family: var(--sans); font-size: 15px; line-height: 1.6; color: #5b4014; margin: 0;
+  }
+  .sit-bottom {
+    background: var(--bg); color: var(--ink);
+    border-radius: var(--radius-lg); padding: 26px 28px; margin-bottom: 30px;
+  }
+  .sit-bottom h2 {
+    font-family: var(--sans); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+  }
+  .sit-bottom p {
+    font-family: var(--display); font-size: 20px; font-style: italic;
+    line-height: 1.55; color: var(--ink); margin: 0;
+  }
+  .sit-related a {
+    display: inline-block; font-family: var(--sans); font-size: 14px; font-weight: 600;
+    color: var(--accent); margin-right: 18px; margin-bottom: 8px;
+    border-bottom: 1px solid var(--accent); padding-bottom: 2px;
+  }
+  .sit-related a:hover { text-decoration: none; opacity: 0.85; }
+  .sit-meta-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .sit-meta-pills .pill {
+    font-family: var(--sans); font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    background: rgba(244,239,230,0.08); color: var(--ink-soft);
+    border: 1px solid var(--rule); border-radius: 999px; padding: 5px 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="disclaimer-strip">
+  <span class="icon">&#9888;</span>Educational resource only — articles compiled and synthesized with AI assistance from publicly available research.<a href="about.html">Disclaimer</a>
+</div>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="stages.html">The Framework</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="situations.html" class="active">Real Situations</a></li>
+    <li><a href="drills.html">Drills</a></li>
+    <li><a href="builder.html" class="nav-cta">Build a practice &rarr;</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="stages.html">The Framework</a>
+  <a href="articles.html">Articles</a>
+  <a href="situations.html">Real Situations</a>
+  <a href="drills.html">Drill Library</a>
+  <a href="builder.html">Practice Builder</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="progression.html">Season Plan</a>
+  <a href="train.html">Training Suite</a>
+  <a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="index.html">DugoutLab</a> &nbsp;&middot;&nbsp; <a href="situations.html">Real Situations</a> &nbsp;&middot;&nbsp; <span id="bc-title">Loading</span></div>
+    <div class="eyebrow" id="sit-cat">Real Situation</div>
+    <h1 id="sit-title">Loading…</h1>
+    <div class="sit-meta-pills" id="sit-pills"></div>
+  </div>
+</div>
+
+<section class="section section-cream" style="padding-top:40px">
+  <div class="sit-wrap" id="sit-body">
+    <!-- rendered by JS -->
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>A free educational resource for volunteer youth baseball and softball coaches. Research-grounded coaching information, translated into practice.</p>
+      <div class="footer-disclosure">Compiled with AI assistance · Reviewed by humans</div>
+    </div>
+    <div class="footer-links">
+      <h4>Coach</h4>
+      <ul>
+        <li><a href="builder.html">Practice Builder</a></li>
+        <li><a href="situations.html">Real Situations</a></li>
+        <li><a href="drills.html">Drills</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Read</h4>
+      <ul>
+        <li><a href="stages.html">The Framework</a></li>
+        <li><a href="articles.html">Articles</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Players</h4>
+      <ul>
+        <li><a href="train.html">Training Suite</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free, forever.</span>
+    <span>DugoutLab is made free thanks to GamedayHelpers.com.</span>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+<script src="js/scenarios.js"></script>
+<script>
+(function () {
+  function esc(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function getParam(name) {
+    var m = new RegExp('[?&]' + name + '=([^&]+)').exec(window.location.search);
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+
+  var id = getParam('s');
+  var s = (Array.isArray(SCENARIOS) ? SCENARIOS : []).find(function (x) { return x.id === id; });
+  var body = document.getElementById('sit-body');
+
+  if (!s) {
+    document.getElementById('sit-title').textContent = 'Situation not found';
+    document.getElementById('bc-title').textContent = 'Not found';
+    body.innerHTML = '<p style="font-family:var(--sans);color:var(--cream-ink-soft)">We couldn\'t find that situation. <a href="situations.html">Back to all situations</a>.</p>';
+    return;
+  }
+
+  // Header
+  document.title = s.title + ' — DugoutLab';
+  document.getElementById('sit-title').textContent = s.title;
+  document.getElementById('bc-title').textContent = s.title;
+  document.getElementById('sit-cat').innerHTML = esc(s.category) + (s.ageRange ? ' &middot; ' + esc(s.ageRange) : '');
+
+  var pills = document.getElementById('sit-pills');
+  (s.tags || []).forEach(function (t) {
+    var el = document.createElement('span');
+    el.className = 'pill';
+    el.textContent = t;
+    pills.appendChild(el);
+  });
+
+  var html = '';
+
+  // TL;DR
+  if (s.tldr && s.tldr.length) {
+    html += '<div class="sit-tldr"><h2>TL;DR — the quick version</h2><ul>';
+    s.tldr.forEach(function (t) { html += '<li>' + esc(t) + '</li>'; });
+    html += '</ul></div>';
+  }
+
+  // Scenario
+  if (s.scenario) {
+    html += '<div class="sit-section"><h2>The situation</h2>' +
+            '<p class="sit-scenario">' + esc(s.scenario) + '</p></div>';
+  }
+
+  // Coach role
+  if (s.coachRole) {
+    html += '<div class="sit-section"><h2>Your role in this moment</h2>' +
+            '<p>' + esc(s.coachRole) + '</p></div>';
+  }
+
+  // Solutions
+  if (s.solutions && s.solutions.length) {
+    html += '<div class="sit-section"><h2>What you can do</h2>';
+    s.solutions.forEach(function (o) {
+      html += '<div class="sit-block"><h3>' + esc(o.label) + '</h3><p>' + esc(o.body) + '</p></div>';
+    });
+    html += '</div>';
+  }
+
+  // Drills
+  if (s.drills && s.drills.length) {
+    html += '<div class="sit-section"><h2>Drills that fit</h2>';
+    s.drills.forEach(function (d) {
+      html += '<div class="sit-block"><h3>' + esc(d.name) + '</h3><p>' + esc(d.detail) + '</p></div>';
+    });
+    html += '</div>';
+  }
+
+  // Talking points
+  if (s.talkingPoints) {
+    html += '<div class="sit-section"><h2>What to say, what not to say</h2><div class="say-grid">';
+    html += '<div class="say-col good"><h3>Say this</h3><ul>';
+    (s.talkingPoints.say || []).forEach(function (t) { html += '<li>' + esc(t) + '</li>'; });
+    html += '</ul></div>';
+    html += '<div class="say-col bad"><h3>Don\'t say this</h3><ul>';
+    (s.talkingPoints.dontSay || []).forEach(function (t) { html += '<li>' + esc(t) + '</li>'; });
+    html += '</ul></div></div>';
+    if (s.talkingPoints.howMuch) {
+      html += '<div class="how-much"><h3>How much to say</h3><p>' + esc(s.talkingPoints.howMuch) + '</p></div>';
+    }
+    html += '</div>';
+  }
+
+  // Bottom line
+  if (s.bottomLine) {
+    html += '<div class="sit-bottom"><h2>The bottom line</h2><p>' + esc(s.bottomLine) + '</p></div>';
+  }
+
+  // Related
+  if (s.related && s.related.length) {
+    html += '<div class="sit-section sit-related"><h2>Related</h2>';
+    s.related.forEach(function (r) {
+      html += '<a href="' + esc(r.href) + '">' + esc(r.label) + '</a>';
+    });
+    html += '</div>';
+  }
+
+  html += '<div style="margin-top:10px"><a href="situations.html" class="btn btn-outline" style="border:1px solid var(--cream-rule);color:var(--cream-ink)">&larr; All situations</a></div>';
+
+  body.innerHTML = html;
+})();
+</script>
+</body>
+</html>

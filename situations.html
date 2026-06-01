@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Situations — DugoutLab</title>
+<meta name="description" content="Relatable, real coaching situations with a plan: the scenario, your role, solutions, drills, and exactly what to say. Free for youth baseball and softball coaches.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<div class="disclaimer-strip">
+  <span class="icon">&#9888;</span>Educational resource only — articles compiled and synthesized with AI assistance from publicly available research.<a href="about.html">Disclaimer</a>
+</div>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="stages.html">The Framework</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="situations.html" class="active">Real Situations</a></li>
+    <li><a href="drills.html">Drills</a></li>
+    <li><a href="builder.html" class="nav-cta">Build a practice &rarr;</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="stages.html">The Framework</a>
+  <a href="articles.html">Articles</a>
+  <a href="situations.html">Real Situations</a>
+  <a href="drills.html">Drill Library</a>
+  <a href="builder.html">Practice Builder</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="progression.html">Season Plan</a>
+  <a href="train.html">Training Suite</a>
+  <a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="index.html">DugoutLab</a> &nbsp;&middot;&nbsp; Real Situations</div>
+    <div class="eyebrow">Real Situations</div>
+    <h1>The stuff that actually happens.</h1>
+    <p>Not theory. The real moments you hit as a youth coach, with a plan for each one: the scenario, your role in it, options for what to do, drills that fit, and exactly what to say, what not to say, and how much. Skim the TL;DR or read the whole thing.</p>
+  </div>
+</div>
+
+<section class="section section-cream" style="padding-top:40px">
+  <div class="container">
+    <div id="scenario-list" class="grid-2"></div>
+    <div id="scenario-empty" style="display:none;text-align:center;padding:40px;color:var(--cream-ink-soft);font-family:var(--sans)">
+      More situations coming soon.
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>A free educational resource for volunteer youth baseball and softball coaches. Research-grounded coaching information, translated into practice.</p>
+      <div class="footer-disclosure">Compiled with AI assistance · Reviewed by humans</div>
+    </div>
+    <div class="footer-links">
+      <h4>Coach</h4>
+      <ul>
+        <li><a href="builder.html">Practice Builder</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="situations.html">Real Situations</a></li>
+        <li><a href="drills.html">Drills</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Read</h4>
+      <ul>
+        <li><a href="stages.html">The Framework</a></li>
+        <li><a href="articles.html">Articles</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Players</h4>
+      <ul>
+        <li><a href="train.html">Training Suite</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free, forever.</span>
+    <span>DugoutLab is made free thanks to GamedayHelpers.com.</span>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+<script src="js/scenarios.js"></script>
+<script>
+(function () {
+  var list = document.getElementById('scenario-list');
+  if (!Array.isArray(SCENARIOS) || SCENARIOS.length === 0) {
+    document.getElementById('scenario-empty').style.display = 'block';
+    return;
+  }
+  var html = '';
+  SCENARIOS.forEach(function (s) {
+    html +=
+      '<a class="card card-link" href="situation.html?s=' + encodeURIComponent(s.id) + '" style="display:flex;flex-direction:column;gap:12px">' +
+        '<div class="card-eyebrow">' + esc(s.category) + (s.ageRange ? ' &middot; ' + esc(s.ageRange) : '') + '</div>' +
+        '<h3 class="card-title">' + esc(s.title) + '</h3>' +
+        '<p class="card-summary" style="margin-bottom:0">' + esc(s.hook) + '</p>' +
+        '<div style="font-family:var(--sans);font-size:13px;font-weight:600;color:var(--accent);display:flex;gap:8px;align-items:center;margin-top:4px">Open the playbook <span>&rarr;</span></div>' +
+      '</a>';
+  });
+  list.innerHTML = html;
+
+  function esc(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+})();
+</script>
+</body>
+</html>
