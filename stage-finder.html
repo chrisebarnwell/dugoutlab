@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stage Finder | DugoutLab</title>
+<style>
+  :root{
+    --forest:#1C2B1E; --forest2:#24351F; --gold:#C8892A; --gold-dk:#9B6B20;
+    --paper:#F7F5EF; --card:#FFFFFF; --ltgreen:#6E8F74; --line:#DCE4DA;
+    --ink:#1F2A20; --sub:#4A6650; --shade:#EFF3ED; --warn:#9B6B20;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .topbar{height:5px;background:linear-gradient(90deg,var(--gold),var(--gold-dk));}
+  header{background:var(--forest);color:#fff;padding:22px 24px;}
+  .head-inner{max-width:960px;margin:0 auto;}
+  .logo{font-family:Georgia,serif;font-weight:bold;font-size:1.5rem;}
+  .logo span{color:var(--gold);}
+  .logo small{display:block;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:#9DB8A2;margin-top:2px;}
+
+  .wrap{max-width:960px;margin:0 auto;padding:36px 24px;}
+  .kicker{color:var(--gold-dk);font-weight:bold;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;}
+  h1{font-family:Georgia,serif;font-size:2.4rem;color:var(--forest);margin:12px 0 10px;}
+  .intro{color:var(--sub);font-size:1.08rem;max-width:62ch;margin-bottom:8px;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;margin-top:26px;}
+  .q{margin-bottom:22px;}
+  .q:last-child{margin-bottom:0;}
+  .q label{display:block;font-weight:bold;color:var(--forest);font-size:1rem;margin-bottom:10px;}
+  .opts{display:flex;gap:10px;flex-wrap:wrap;}
+  .opt{border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:11px 16px;
+    font:inherit;font-size:.92rem;cursor:pointer;transition:.15s;}
+  .opt:hover{border-color:var(--ltgreen);}
+  .opt.sel{background:var(--forest);color:#fff;border-color:var(--forest);}
+  .opt.sel.gold{background:var(--gold);border-color:var(--gold);color:#fff;}
+
+  .result{margin-top:26px;display:none;}
+  .result.show{display:block;animation:fade .3s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+  .stage-banner{border-radius:14px 14px 0 0;padding:24px 26px;color:#fff;}
+  .stage-banner .sb-name{font-family:Georgia,serif;font-size:1.7rem;}
+  .stage-banner .sb-sub{font-size:.85rem;letter-spacing:1px;text-transform:uppercase;opacity:.9;margin-top:4px;}
+  .result-body{background:var(--card);border:1px solid var(--line);border-top:none;border-radius:0 0 14px 14px;padding:26px;}
+  .result-body .goal{font-size:1.02rem;color:var(--ink);margin-bottom:18px;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  @media(max-width:680px){.two{grid-template-columns:1fr;}}
+  .blocklabel{color:var(--gold-dk);font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:bold;margin-bottom:8px;}
+  ul{list-style:none;}
+  li{padding:5px 0 5px 18px;position:relative;font-size:.94rem;}
+  li::before{content:"";position:absolute;left:0;top:12px;width:6px;height:6px;border-radius:50%;background:var(--gold);}
+  .avoid li::before{background:var(--gold-dk);border-radius:0;transform:rotate(45deg);}
+
+  .spurt{background:#FBF1E2;border:1px solid var(--gold);border-radius:11px;padding:18px 20px;margin-top:20px;}
+  .spurt .cl-label{color:var(--gold-dk);font-weight:bold;font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+  .spurt p{font-size:.92rem;}
+
+  .disclaimer{border:1px dashed var(--ltgreen);border-radius:11px;padding:16px 18px;margin-top:22px;background:var(--shade);}
+  .disclaimer p{font-size:.84rem;color:var(--sub);}
+  .disclaimer b{color:var(--forest);}
+
+  footer{background:var(--forest2);color:#9DB8A2;text-align:center;padding:24px;margin-top:36px;font-size:.8rem;}
+  footer .sponsor{margin-top:8px;font-size:.74rem;color:#7d987f;}
+  footer a{color:var(--gold);text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<header>
+  <div class="head-inner">
+    <div class="logo">Dugout<span>Lab</span><small>Develop the Athlete, Not Just the Player</small></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="kicker">Stage Finder</div>
+  <h1 class="serif">What kind of training fits your athlete?</h1>
+  <p class="intro">Answer two quick questions. This shows you what good, safe training looks like at your athlete's stage, and what to avoid. It is a guide for understanding, not a workout prescription.</p>
+
+  <div class="card">
+    <div class="q">
+      <label>1. How old is the athlete?</label>
+      <div class="opts" id="ageOpts"></div>
+    </div>
+    <div class="q">
+      <label>2. Are they in a growth spurt? <span style="font-weight:normal;color:var(--sub);font-size:.85rem;">(recent fast height jump, new shoe sizes, sometimes clumsy or sore knees/heels)</span></label>
+      <div class="opts" id="spurtOpts">
+        <button class="opt" data-v="no">Not yet</button>
+        <button class="opt" data-v="yes">In it now</button>
+        <button class="opt" data-v="unsure">Not sure</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <div class="disclaimer">
+    <p><b>Educational only. Not medical advice.</b> This tool explains what is generally appropriate at each stage of development. It does not create a personalized program and does not replace a qualified coach, athletic trainer, or doctor who can see your athlete. If your athlete is in pain or in a growth spurt, check with a professional before training.</p>
+  </div>
+</div>
+
+<footer>
+  <div>DugoutLab &nbsp;|&nbsp; Develop the Athlete, Not Just the Player &nbsp;|&nbsp; dugoutlab.com</div>
+  <div class="sponsor">DugoutLab is made free thanks to <a href="https://gamedayhelpers.com">GamedayHelpers.com</a></div>
+</footer>
+
+<script>
+const STAGES={
+  fun:{name:"FUNdamentals",color:"#7A9480",dark:false,sub:"The play and movement years",
+    goal:"At this age you are building a brain that controls a body. Almost all the gain comes from movement variety and play, not from training load. The win is a kid who loves to move and can handle their own bodyweight.",
+    build:["Bodyweight movement as play: animal walks, hops, skips","Throwing, catching, kicking many ball sizes","Easy squats, knee push-ups, plank held like a game","Short sprints, tag, relays, obstacle courses","Light, fun med-ball or beanbag tosses"],
+    avoid:["Any weights or max-effort lifting","Strict sets-and-reps grinding","Playing one sport year-round","Long instructions (keep it short and fun)"]},
+  learn:{name:"Learn to Train",color:"#5C7A62",dark:false,sub:"The skill-building window",
+    goal:"This is the best window for learning how to move. The nervous system soaks up technique. Master bodyweight strength and clean movement now and everything later is built on it.",
+    build:["Master bodyweight: squats, push-ups, rows, planks","Jumps and landings that are soft and silent","Sprint mechanics, footwork and agility games","Light rotational med-ball work as a skill","Controlled carries (sandbag, suitcase) as the one loaded move"],
+    avoid:["Heavy lifting for strength","Specializing in one sport this early","Copying high-school or pro programs","Trading good form for more reps"]},
+  train:{name:"Train to Train",color:"#C8892A",dark:false,sub:"Through the growth spurt",
+    goal:"Strength and power start to take off, but this is also the highest-injury-risk window because of the growth spurt. Add light load slowly, always with form leading, and protect the joints.",
+    build:["Keep mastering bodyweight, add light load when ready","Keep jumping volume lower during a growth spurt","Mobility and clean technique as a priority","Rotational med-ball power, light to moderate","For girls: regular ACL-prevention warm-ups"],
+    avoid:["1-rep maxes and ego lifting","Pushing through knee or heel pain","Adult bodybuilding or powerlifting splits","Training hard through a growth spurt"]},
+  compete:{name:"Train to Compete",color:"#3E5A43",dark:true,sub:"Building the real engine",
+    goal:"After the growth spurt the body is ready for real, progressive strength and power. This is when specialization can reasonably begin, ideally while still playing a second sport.",
+    build:["Progressive barbell strength with sound technique","Higher-intensity plyometrics and loaded jumps","A real off-season, pre-season, in-season plan","Full rotational power program","Simple testing: jumps, sprints, med-ball throws"],
+    avoid:["Maxing without a technique base","Year-round play with no off-season","Skipping recovery, sleep and nutrition","Generic one-size-fits-all programs"]},
+  pro:{name:"College / Pro / Adult",color:"#1C2B1E",dark:true,sub:"Peak and sustain",
+    goal:"The job now is to maximize power and durability across a long season. Training is individualized, periodized and managed around the competitive calendar.",
+    build:["Off-season heavy strength and power","In-season maintenance: high intensity, low volume","Year-round plyometric and rotational power","Recovery, sleep and mobility as priorities","Position-specific conditioning"],
+    avoid:["Heavy high-volume work in-season","Ignoring cumulative fatigue","Dropping ACL and energy monitoring (women)","Random, non-periodized training"]}
+};
+
+// age -> base stage (note: girls mature ~1-2y earlier; tool keeps it simple and says so)
+function ageToStage(age){
+  if(age<=9) return "fun";
+  if(age<=12) return "learn";
+  if(age<=15) return "train";
+  if(age<=18) return "compete";
+  return "pro";
+}
+
+const ages=[["6 - 9",8],["10 - 12",11],["13 - 15",14],["16 - 18",17],["18+",20]];
+const ageOpts=document.getElementById('ageOpts');
+let selAge=null, selSpurt=null;
+ages.forEach(([label,val])=>{
+  const b=document.createElement('button');
+  b.className='opt';b.textContent=label;b.dataset.v=val;
+  b.onclick=()=>{selAge=val;[...ageOpts.children].forEach(c=>c.classList.remove('sel'));b.classList.add('sel');render();};
+  ageOpts.appendChild(b);
+});
+document.querySelectorAll('#spurtOpts .opt').forEach(b=>{
+  b.onclick=()=>{selSpurt=b.dataset.v;document.querySelectorAll('#spurtOpts .opt').forEach(c=>c.classList.remove('sel','gold'));b.classList.add('sel');if(selSpurt==='yes')b.classList.add('gold');render();};
+});
+
+function render(){
+  if(selAge===null||selSpurt===null) return;
+  let key=ageToStage(selAge);
+  // if in a growth spurt and not already in the growth-spurt stage, surface that stage's cautions
+  const spurtMode = (selSpurt==='yes');
+  if(spurtMode && (key==='fun'||key==='learn')) key='train';
+  const s=STAGES[key];
+  const res=document.getElementById('result');
+
+  let spurtBox='';
+  if(selSpurt==='yes'){
+    spurtBox=`<div class="spurt"><div class="cl-label">Because they are in a growth spurt</div>
+      <p>This is the most injury-prone window. Bones are outgrowing tendons, so lower the jumping and high-impact volume, lean into mobility and clean technique, and never push through knee or heel pain. Strength work stays light and form-first. If pain shows up, see a professional before continuing.</p></div>`;
+  } else if(selSpurt==='unsure'){
+    spurtBox=`<div class="spurt"><div class="cl-label">Not sure about the growth spurt?</div>
+      <p>Watch for a recent fast height jump, sudden shoe-size changes, new clumsiness, or aching knees/heels. If you see those, treat it like a growth spurt: lower the impact, prioritize mobility, and check with a professional. When in doubt, train lighter.</p></div>`;
+  }
+
+  res.innerHTML=`
+    <div class="stage-banner" style="background:${s.color}">
+      <div class="sb-name">${s.name}</div>
+      <div class="sb-sub">${s.sub}</div>
+    </div>
+    <div class="result-body">
+      <p class="goal">${s.goal}</p>
+      <div class="two">
+        <div><div class="blocklabel">What good training looks like</div><ul>${s.build.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div><div class="blocklabel">What to avoid right now</div><ul class="avoid">${s.avoid.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      </div>
+      ${spurtBox}
+      <p style="font-size:.82rem;color:var(--sub);margin-top:18px;">Note: girls generally reach these stages about one to two years earlier than boys, so a younger girl may already fit the next stage up. Always train the athlete in front of you, not the birthday.</p>
+    </div>`;
+  res.classList.add('show');
+  res.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+</script>
+</body>
+</html>
