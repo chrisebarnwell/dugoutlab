@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Program Generator | DugoutLab (Coach Tool)</title>
+<style>
+  :root{
+    --forest:#1C2B1E;--forest2:#24351F;--gold:#C8892A;--gold-dk:#9B6B20;
+    --paper:#F7F5EF;--card:#FFFFFF;--ltgreen:#6E8F74;--line:#DCE4DA;
+    --ink:#1F2A20;--sub:#4A6650;--shade:#EFF3ED;--warn:#B4471F;--warnbg:#FBEAE2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .serif{font-family:Georgia,serif;}
+  .topbar{height:5px;background:linear-gradient(90deg,var(--gold),var(--gold-dk));}
+  header{background:var(--forest);color:#fff;padding:18px 24px;}
+  .head-inner{max-width:1040px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .logo{font-family:Georgia,serif;font-weight:bold;font-size:1.4rem;}
+  .logo span{color:var(--gold);}
+  .badge{background:var(--gold);color:var(--forest);font-size:.66rem;font-weight:bold;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:14px;}
+  .wrap{max-width:1040px;margin:0 auto;padding:30px 24px;}
+  h1{font-family:Georgia,serif;font-size:2rem;color:var(--forest);margin-bottom:6px;}
+  .intro{color:var(--sub);max-width:64ch;margin-bottom:8px;}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-top:22px;}
+  .q{margin-bottom:18px;}
+  .q label{display:block;font-weight:bold;color:var(--forest);font-size:.92rem;margin-bottom:8px;}
+  .q .hint{font-weight:normal;color:var(--sub);font-size:.8rem;}
+  .opts{display:flex;gap:8px;flex-wrap:wrap;}
+  .opt{border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:9px 14px;font:inherit;font-size:.88rem;cursor:pointer;transition:.15s;}
+  .opt:hover{border-color:var(--ltgreen);}
+  .opt.sel{background:var(--forest);color:#fff;border-color:var(--forest);}
+  .opt.sel.gold{background:var(--gold);border-color:var(--gold);}
+  .opt.locked{opacity:.4;cursor:not-allowed;background:#f0f0ec;border-style:dashed;position:relative;}
+  .opt.locked:hover{border-color:var(--line);}
+  .lockmsg{font-size:.78rem;color:var(--gold-dk);margin-top:7px;font-style:italic;display:none;}
+  .lockmsg.show{display:block;}
+  input[type=text]{font:inherit;padding:9px 12px;border:1.5px solid var(--line);border-radius:9px;width:240px;max-width:100%;}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  @media(max-width:720px){.row{grid-template-columns:1fr;}}
+
+  .gen-btn{margin-top:10px;background:var(--gold);color:#fff;border:none;border-radius:10px;padding:14px 26px;font:inherit;font-weight:bold;font-size:1rem;cursor:pointer;letter-spacing:.5px;}
+  .gen-btn:hover{background:var(--gold-dk);}
+  .gen-btn:disabled{background:#ccc;opacity:.5;cursor:not-allowed;}
+
+  .out{margin-top:26px;display:none;}
+  .out.show{display:block;}
+  .warnbox{background:var(--warnbg);border:1.5px solid var(--warn);border-radius:11px;padding:16px 18px;margin-bottom:18px;}
+  .warnbox .wl{color:var(--warn);font-weight:bold;font-size:.74rem;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:5px;}
+  .warnbox p{font-size:.9rem;color:#5a2a16;}
+
+  .blockhead{background:var(--forest);color:#fff;border-radius:12px 12px 0 0;padding:18px 22px;}
+  .blockhead h2{font-family:Georgia,serif;font-size:1.4rem;}
+  .blockhead .meta{font-size:.82rem;color:#9DB8A2;margin-top:4px;}
+  .blockbody{background:var(--card);border:1px solid var(--line);border-top:none;border-radius:0 0 12px 12px;padding:22px;}
+
+  .day{margin-bottom:20px;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .day-h{padding:10px 16px;font-weight:bold;color:#fff;font-size:.95rem;display:flex;justify-content:space-between;}
+  table{width:100%;border-collapse:collapse;}
+  th{background:var(--shade);color:var(--forest);font-size:.66rem;letter-spacing:.5px;text-transform:uppercase;padding:7px 10px;text-align:left;}
+  td{padding:8px 10px;font-size:.86rem;border-top:1px solid var(--line);}
+  td.dose{font-weight:bold;color:var(--gold-dk);white-space:nowrap;}
+  tr:nth-child(even) td{background:#FAFBFA;}
+
+  .wk{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 6px;}
+  .wkchip{background:var(--shade);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-size:.78rem;color:var(--sub);}
+  .wkchip b{color:var(--forest);}
+
+  .note{font-size:.84rem;color:var(--sub);margin-top:8px;}
+  .disclaimer{border:1px dashed var(--ltgreen);border-radius:11px;padding:14px 16px;margin-top:18px;background:var(--shade);}
+  .disclaimer p{font-size:.8rem;color:var(--sub);}
+  .disclaimer b{color:var(--forest);}
+  .printbtn{background:var(--forest);color:#fff;border:none;border-radius:9px;padding:10px 18px;font:inherit;font-size:.85rem;cursor:pointer;margin-top:14px;}
+
+  footer{background:var(--forest2);color:#9DB8A2;text-align:center;padding:20px;margin-top:30px;font-size:.78rem;}
+  footer .sponsor{margin-top:6px;font-size:.72rem;color:#7d987f;}
+
+  @media print{
+    header,.panel,.printbtn,footer .sponsor,.gen-btn{display:none!important;}
+    .topbar{display:none;}
+    body{background:#fff;}
+  }
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<header>
+  <div class="head-inner">
+    <div class="logo">Dugout<span>Lab</span></div>
+    <div class="badge">Coach Tool &middot; Private</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1 class="serif">Program Generator</h1>
+  <p class="intro">Build a progressive 4-week block scaled to the athlete. This is a coaching tool for someone who can see the athlete and watch their form. It produces a starting point, not a fixed prescription. Adjust to the athlete in front of you.</p>
+
+  <div class="panel">
+    <div class="row">
+      <div class="q">
+        <label>Athlete / group name <span class="hint">(optional)</span></label>
+        <input type="text" id="name" placeholder="e.g. Brooklyn, or Trash Pandas 12U">
+      </div>
+      <div class="q">
+        <label>Age</label>
+        <div class="opts" id="age"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="q">
+        <label>Sport / sex <span class="hint">(affects maturation timing and ACL work)</span></label>
+        <div class="opts" id="sport">
+          <button class="opt" data-v="baseball">Baseball (boy)</button>
+          <button class="opt" data-v="softball">Softball (girl)</button>
+        </div>
+      </div>
+      <div class="q">
+        <label>Training experience</label>
+        <div class="opts" id="exp">
+          <button class="opt" data-v="new">New (&lt;3 mo)</button>
+          <button class="opt" data-v="some">Some (3-12 mo)</button>
+          <button class="opt" data-v="exp">Experienced (1 yr+)</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="q">
+        <label>Growth spurt? <span class="hint">(fast height jump, new shoe sizes, sore knees/heels)</span></label>
+        <div class="opts" id="spurt">
+          <button class="opt" data-v="no">Not yet</button>
+          <button class="opt" data-v="yes">In it now</button>
+          <button class="opt" data-v="unsure">Not sure</button>
+        </div>
+      </div>
+      <div class="q">
+        <label>Days per week</label>
+        <div class="opts" id="days">
+          <button class="opt" data-v="2">2</button>
+          <button class="opt" data-v="3">3</button>
+          <button class="opt" data-v="4">4</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="q">
+        <label>What gear do you actually have? <span class="hint">(check all that apply; the tool only uses these and substitutes for the rest)</span></label>
+        <div class="opts" id="gear">
+          <button class="opt" data-v="rope">Jump rope</button>
+          <button class="opt" data-v="box">Box / sturdy step</button>
+          <button class="opt" data-v="ladder">Agility ladder</button>
+          <button class="opt" data-v="medball">Medicine ball</button>
+          <button class="opt" data-v="sandbag">Sandbag</button>
+          <button class="opt" data-v="bands">Resistance bands</button>
+          <button class="opt" data-v="db">Dumbbells</button>
+          <button class="opt" data-v="bar">Pull-up bar</button>
+          <button class="opt" data-v="barbell">Barbell + rack</button>
+          <button class="opt" data-v="cones">Cones (or markers)</button>
+        </div>
+        <div class="lockmsg" id="equipLock"></div>
+      </div>
+      <div class="q">
+        <label>Format</label>
+        <div class="opts" id="fmt">
+          <button class="opt" data-v="ind">Individual</button>
+          <button class="opt" data-v="group">Group / stations</button>
+        </div>
+      </div>
+    </div>
+    <button class="gen-btn" id="go">Generate 4-Week Block</button>
+  </div>
+
+  <div class="out" id="out"></div>
+</div>
+
+<footer>
+  <div>DugoutLab Coach Tool &nbsp;|&nbsp; Develop the Athlete, Not Just the Player</div>
+  <div class="sponsor">Private coaching tool. Educational, not medical advice.</div>
+</footer>
+
+<script>
+/* ---------- STATE ---------- */
+const S={name:"",age:null,sport:null,exp:null,spurt:null,days:null,gear:new Set(),fmt:null};
+
+/* age buttons */
+const ages=[["8",8],["9",9],["10",10],["11",11],["12",12],["13",13],["14",14],["15",15],["16",16],["17",17],["18+",19]];
+const ageBox=document.getElementById('age');
+ages.forEach(([l,v])=>{const b=document.createElement('button');b.className='opt';b.textContent=l;b.onclick=()=>{pick('age',v,b,ageBox);updateGearLocks();};ageBox.appendChild(b);});
+function pick(key,val,btn,box,gold){S[key]=val;[...box.children].forEach(c=>c.classList.remove('sel','gold'));btn.classList.add('sel');if(gold)btn.classList.add('gold');}
+[['sport','sport'],['exp','exp'],['spurt','spurt'],['days','days'],['fmt','fmt']].forEach(([id,key])=>{
+  const box=document.getElementById(id);
+  [...box.children].forEach(b=>b.onclick=()=>{ pick(key,b.dataset.v,b,box,(key==='spurt'&&b.dataset.v==='yes')); if(key==='sport') updateGearLocks(); });
+});
+document.getElementById('name').oninput=e=>S.name=e.target.value;
+
+/* gear is a multi-select toggle set */
+const gearBox=document.getElementById('gear');
+[...gearBox.children].forEach(b=>{
+  b.onclick=()=>{
+    if(b.classList.contains('locked')) return;
+    const v=b.dataset.v;
+    if(S.gear.has(v)){S.gear.delete(v);b.classList.remove('sel');}
+    else{S.gear.add(v);b.classList.add('sel');}
+  };
+});
+
+/* age/stage locks the LOADING gear (dumbbells, barbell) for young athletes, even if owned */
+function updateGearLocks(){
+  if(S.age===null) return;
+  const stage=stageOf(S.age, S.sport||'baseball');
+  const box=document.getElementById('gear');
+  const msg=document.getElementById('equipLock');
+  let lockedVals=[], why='';
+  if(stage==='fun'||stage==='learn'){ lockedVals=['db','barbell']; why='Bodyweight only at this age. Dumbbells and barbell are locked even if you own them. Master bodyweight first. (Carries, jump rope, box, ladder, med-ball still fine.)'; }
+  else if(stage==='train'){ lockedVals=['barbell']; why='Light dumbbells are OK here, but barbell stays locked through the growth spurt until a strong technique base is built.'; }
+  else { lockedVals=[]; why=''; }
+  [...box.children].forEach(b=>{
+    if(lockedVals.includes(b.dataset.v)){
+      b.classList.add('locked');
+      if(S.gear.has(b.dataset.v)){S.gear.delete(b.dataset.v);b.classList.remove('sel');}
+    } else b.classList.remove('locked');
+  });
+  msg.textContent=why; msg.classList.toggle('show', why!=='');
+}
+
+/* ---------- STAGE LOGIC ---------- */
+function stageOf(age,sport){
+  // girls mature ~1.5y earlier -> shift bands down
+  const a = sport==='softball' ? age+1.5 : age;
+  if(a<=9) return 'fun';
+  if(a<=12) return 'learn';
+  if(a<=15.5) return 'train';
+  if(a<=18) return 'compete';
+  return 'pro';
+}
+const STAGE_META={
+  fun:{name:'FUNdamentals',color:'#7A9480'},
+  learn:{name:'Learn to Train',color:'#5C7A62'},
+  train:{name:'Train to Train',color:'#C8892A'},
+  compete:{name:'Train to Compete',color:'#3E5A43'},
+  pro:{name:'College / Pro / Adult',color:'#1C2B1E'}
+};
+
+/* dose by stage (strength). NSCA: 1-3x6-15 strength, 1-3x3-6 power. */
+function strengthDose(stage,exp){
+  if(stage==='fun') return '1-2 x 12-15';
+  if(stage==='learn') return (exp==='new'?'2 x 10-12':'2 x 8-12');
+  if(stage==='train') return (exp==='exp'?'3 x 8-10':'2-3 x 8-12');
+  if(stage==='compete') return (exp==='exp'?'3-4 x 6-8':'3 x 8-10');
+  return '3-4 x 5-8';
+}
+function powerDose(stage){
+  if(stage==='fun') return '1-2 x 5';
+  if(stage==='learn') return '2 x 5-6';
+  if(stage==='train') return '2-3 x 5';
+  return '3 x 3-5';
+}
+const carry='2-3 trips';
+
+/* gear-aware helpers: g = S.gear set, stageLoad = is loading allowed at this stage */
+function has(g,item){return g.has(item);}
+
+/* strength pattern picker: prefers loaded option if owned AND allowed, else bodyweight */
+function exPattern(p,g,loadOK){
+  const pick=(loaded,bw)=>(loadOK&&loaded.gear&&g.has(loaded.gear))?loaded.name:bw;
+  switch(p){
+    case 'squat': return pick({name:'Goblet squat (dumbbell)',gear:'db'},'Bodyweight squat (sit-back)');
+    case 'hinge': return pick({name:'DB Romanian deadlift (light)',gear:'db'}, g.has('bands')?'Band good-morning':'Single-leg airplane / hip hinge');
+    case 'push':  return pick({name:'Half-kneeling DB press',gear:'db'},'Push-up (incline if needed)');
+    case 'pull':  return g.has('bar')?'Inverted row (under the bar)':(loadOK&&g.has('db'))?'1-arm dumbbell row':(g.has('bands')?'Band row':'Inverted row (under a sturdy table)');
+    case 'core':  return g.has('bands')?'Pallof press (band) + plank':'Plank / side plank';
+    case 'carry': return g.has('sandbag')?'Sandbag carry (walk)':(g.has('db')&&loadOK)?'Suitcase carry (dumbbell)':'Heavy-object bear-hug carry (walk)';
+  }
+}
+
+/* power/plyo with substitutions */
+function jumpEx(g){ return g.has('box')?'Box jump, soft landing':'Squat jump, soft landing (no box needed)'; }
+function ropeEx(g){ return g.has('rope')?'Jump rope':'Pogo hops (no rope needed)'; }
+function ladderEx(g){ return g.has('ladder')?'Agility ladder footwork':(g.has('cones')?'Cone footwork drills':'Line footwork (use a crack or tape)'); }
+function mbThrow(g,light){ return g.has('medball')?('Med-ball rotational throw'+(light?' (light)':'')):'Rotational throw mimic / band rotation (no ball)'; }
+function mbPartner(g){ return g.has('medball')?'Med-ball partner throws (skill)':'Partner rotational toss mimic / shadow swings'; }
+
+/* ---------- BUILD ---------- */
+document.getElementById('go').onclick=build;
+function build(){
+  const need=['age','sport','exp','spurt','days','fmt'];
+  const missing=need.filter(k=>S[k]===null);
+  if(missing.length){alert('Please answer: '+missing.join(', '));return;}
+
+  const stage=stageOf(S.age,S.sport);
+  const meta=STAGE_META[stage];
+  const spurtMode=(S.spurt==='yes');
+  const unsure=(S.spurt==='unsure');
+  const female=(S.sport==='softball');
+  const sd=strengthDose(stage,S.exp), pd=powerDose(stage);
+  const g=S.gear;
+  // loading allowed only post-Learn-to-Train; dumbbells circa-PHV, never if mid-spurt heavy
+  const loadOK = (stage!=='fun' && stage!=='learn');
+
+  /* ----- warnings ----- */
+  let warns=[];
+  if(spurtMode){
+    warns.push(["Growth spurt active — program adjusted",
+      "High-impact jumping and bounding volume has been cut, mobility added, and load held light. Do not push through knee or heel pain (Osgood-Schlatter / Sever's). If pain persists, stop and see a professional."]);
+  }
+  if(unsure){
+    warns.push(["Growth-spurt status unknown",
+      "Watch for a fast height jump, new shoe sizes, clumsiness, or sore knees/heels. If you see those, treat this as a growth spurt: lower the impact and keep load light. When in doubt, train lighter."]);
+  }
+  if(female && (stage==='train'||stage==='learn'||stage==='compete')){
+    warns.push(["ACL-prevention warm-up included (female athlete)",
+      "A neuromuscular warm-up (soft, knee-over-toe landing drills, single-leg balance, hamstring work) is built into every session. It cuts ACL injury risk most when done consistently and unfatigued, before the main work."]);
+  }
+  if(g.size===0){
+    warns.push(["No gear selected — bodyweight only",
+      "You did not check any equipment, so this block uses bodyweight and substitutes (squat jumps instead of box jumps, pogo hops instead of rope, line footwork instead of a ladder). Add gear above to unlock more options."]);
+  }
+
+  /* ----- power / plyo block (spurt-aware, gear-aware) ----- */
+  let powerBlock;
+  if(spurtMode){
+    powerBlock=[
+      ['Low pogo hops, quiet landings (low volume)', pd],
+      [g.has('box')?'Box step-down, slow soft landing':'Slow step-down off a stair/curb', '2 x 5 each'],
+      [mbThrow(g,true), '2 x 6 each'],
+      [ladderEx(g)+' (technique, easy)', '2 trips'],
+      ['Hip + ankle mobility flow', '2 sets']
+    ];
+  } else if(stage==='fun'){
+    powerBlock=[
+      ['Two-foot jumps, land soft', pd],
+      ['Broad jump, stick it', pd],
+      [ropeEx(g)+' / skipping games', '1-2 trips'],
+      [mbThrow(g,true)+' (play)', '1-2 x 6']
+    ];
+  } else {
+    powerBlock=[
+      [jumpEx(g), pd],
+      ['Broad jump for distance', pd],
+      ['Lateral bound (skater), stick landing', pd+' each'],
+      [mbThrow(g,false), pd+' each'],
+      [ladderEx(g)+' / acceleration', '3-4 reps']
+    ];
+  }
+
+  /* ----- strength block (gear-aware) ----- */
+  const strengthBlock=[
+    [exPattern('squat',g,loadOK), sd],
+    [exPattern('push',g,loadOK), sd],
+    [exPattern('pull',g,loadOK), sd],
+    [exPattern('core',g,loadOK), '2 x 20-30s'],
+    [exPattern('carry',g,loadOK), carry]
+  ];
+  if(stage!=='fun' && S.days>=3){
+    strengthBlock.splice(3,0,[exPattern('hinge',g,loadOK), sd]);
+  }
+
+  /* ----- engine / play block (gear-aware) ----- */
+  const engineBlock = (stage==='fun')
+    ? [['Movement games / tag / relays','play'],['Animal walks','pick 2'],['Throw & catch','20'],['Obstacle course','1 lap'],['Free play','fun']]
+    : [['Easy bike or tempo run','8 min'],[mbPartner(g),'15-20'],[ropeEx(g)+', easy','3 x 30s'],['Mobility + hip flow','1 set'],['Free play sport','fun']];
+
+  /* ACL warm-up rows for females (gear-aware hamstring) */
+  const aclWarm = (female && (stage==='train'||stage==='learn'||stage==='compete'))
+    ? [['Knee-over-toe landing drill','2 x 5'],['Single-leg balance','30s each'],[g.has('bands')?'Band hamstring curl':'Nordic / sliding hamstring','2 x 6'],['Lateral hops, soft','2 x 6']]
+    : null;
+
+  /* ----- day assignment ----- */
+  const A={tag:'A',name:'Strength Day',color:'#1C2B1E',blocks:[['Strength',strengthBlock]]};
+  const B={tag:'B',name:(spurtMode?'Power & Mobility Day':'Power & Speed Day'),color:'#C8892A',blocks:[['Power / Plyometric',powerBlock]]};
+  const C={tag:'C',name:'Play & Engine Day',color:'#5C7A62',blocks:[['Engine / Play',engineBlock]]};
+  if(stage!=='fun'){ A.blocks.push(['Quick Power (skill)',[[mbThrow(g,false),pd+' each'],[jumpEx(g),pd]]]);
+                     B.blocks.unshift(['Strength (lighter)',[[exPattern('squat',g,loadOK),sd],[exPattern('push',g,loadOK),sd]]]); }
+
+  let dayPlan;
+  if(S.days==2) dayPlan=[A,B];
+  else if(S.days==3) dayPlan=[A,B,C];
+  else dayPlan=[A,B,C,{...A,tag:'D',name:'Strength Day (variation)'}];
+
+  /* ----- 4-week progression ----- */
+  const weeks=[
+    ['Week 1','Learn the movements. Stay 2 reps short of failure. Lighter end of every range.'],
+    ['Week 2','Add a little: 1 more rep per set or slightly more range/control.'],
+    ['Week 3','Top of the range. Best quality reps. This is the hardest week.'],
+    ['Week 4','Deload. Cut volume ~40%. Move well, recover, feel fresh.']
+  ];
+
+  /* ----- render ----- */
+  const warmup = aclWarm
+    ? [['ACL-Prevention Warm-Up (every session, do first)', aclWarm]]
+    : [['Movement Prep (every session)', [['Dynamic warm-up: skips, lunges, leg swings','5-8 min'],['A few easy throws to warm the body','2 min']]]];
+
+  let html='';
+  warns.forEach(([t,p])=>{html+=`<div class="warnbox"><div class="wl">${t}</div><p>${p}</p></div>`;});
+
+  const gearLabel = g.size===0 ? 'Bodyweight only' : ('Gear: '+[...g].map(x=>({rope:'rope',box:'box',ladder:'ladder',medball:'med-ball',sandbag:'sandbag',bands:'bands',db:'dumbbells',bar:'pull-up bar',barbell:'barbell',cones:'cones'}[x])).join(', '));
+  html+=`<div class="blockhead"><h2>${S.name?S.name+' — ':''}4-Week Block</h2>
+    <div class="meta">${meta.name} &middot; ${S.sport==='softball'?'Softball':'Baseball'} &middot; ${S.days} days/week &middot; ${gearLabel} &middot; ${S.fmt==='group'?'Group / stations':'Individual'}</div></div>
+    <div class="blockbody">`;
+
+  // weeks strip
+  html+='<div class="wk">'+weeks.map(([w,d])=>`<div class="wkchip"><b>${w}.</b> ${d}</div>`).join('')+'</div>';
+
+  // warm-up
+  warmup.forEach(([title,rows])=>{
+    html+=renderDay({tag:'',name:title,color:'#6E8F74',blocks:[['',rows]]},true);
+  });
+
+  // session days
+  html+=`<p class="note" style="margin-top:14px;"><b>The week:</b> rotate these ${dayPlan.length} sessions on non-consecutive days. Every session is full-body. Each completed session is its own win.</p>`;
+  dayPlan.forEach(d=>html+=renderDay(d,false));
+
+  // group note
+  if(S.fmt==='group'){
+    html+=`<p class="note"><b>Group / stations:</b> set each exercise as a station with enough gear for 2-4 athletes; rotate on a timer. Cap reps for quality. For mixed maturity, scale the dose at each station to each athlete (lighter/fewer for younger or in-spurt kids).</p>`;
+  }
+
+  // progression rule
+  html+=`<p class="note"><b>How to progress past this block:</b> when an athlete beats the rep goal by 2+ reps on two sessions in a row (the 2-for-2 rule), nudge the difficulty up next block (harder variation first, then light load). Hold load if form slips. Re-test before adding more.</p>`;
+
+  html+=`<div class="disclaimer"><p><b>Coach tool. Educational, not medical advice.</b> This is a starting point generated from general guidelines, not a personalized prescription. You are responsible for watching the athlete's form, scaling to the individual, and stopping at any sign of pain. It does not replace a physician or certified strength coach. Around a growth spurt or with any pain, get a professional's eyes on the athlete.</p></div>`;
+
+  html+=`<button class="printbtn" onclick="window.print()">Print this block</button>`;
+  html+='</div>';
+
+  const out=document.getElementById('out');
+  out.innerHTML=html;out.classList.add('show');
+  out.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderDay(d,isWarm){
+  let rows='';
+  d.blocks.forEach(([blabel,items])=>{
+    if(blabel) rows+=`<tr><td colspan="3" style="background:#EFF3ED;font-weight:bold;color:var(--gold-dk);font-size:.72rem;letter-spacing:.5px;text-transform:uppercase;">${blabel}</td></tr>`;
+    items.forEach(([ex,dose])=>{rows+=`<tr><td>${ex}</td><td class="dose">${dose}</td><td style="color:#9aa;">&nbsp;</td></tr>`;});
+  });
+  const head = isWarm
+    ? `<div class="day-h" style="background:${d.color}"><span>${d.name}</span></div>`
+    : `<div class="day-h" style="background:${d.color}"><span>${d.tag}. ${d.name}</span><span style="font-weight:normal;opacity:.85;">full body</span></div>`;
+  return `<div class="day">${head}
+    <table><thead><tr><th style="width:58%;">Exercise</th><th style="width:26%;">Sets x Reps</th><th>Log</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+</script>
+</body>
+</html>
