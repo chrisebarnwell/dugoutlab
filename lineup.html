@@ -596,6 +596,10 @@ select option { background: var(--forest-deep); color: var(--ink); }
       <div class="field-label">Players <span id="player-count" style="font-weight:400;color:var(--text-light)">(0 added)</span></div>
       <div id="player-list" class="roster-grid"></div>
       <button class="add-player-btn" onclick="addPlayer()">+ Add Player</button>
+      <div id="roster-saved-note" style="display:none;align-items:center;justify-content:space-between;gap:10px;margin-top:0.75rem;padding:0.6rem 0.85rem;background:rgba(110,148,118,0.12);border:1px solid var(--rule);border-radius:8px;font-size:0.82rem;color:var(--ink-soft);">
+        <span>&#10003; Roster saved on this device. It will be here next time you open the builder.</span>
+        <button onclick="clearRoster()" style="background:none;border:1px solid var(--rule);color:var(--ink-soft);border-radius:6px;padding:4px 10px;font-size:0.78rem;cursor:pointer;white-space:nowrap;">Clear roster</button>
+      </div>
     </div>
   </div>
 
@@ -887,24 +891,65 @@ window.addEventListener('DOMContentLoaded', function() {
   // Wipe any legacy API key from previous version of the site.
   try { localStorage.removeItem('dugout_api_key'); } catch (e) {}
 
-  // Start with 10 empty player rows
-  for (var i = 0; i < 10; i++) addPlayer();
+  // Load a saved roster if one exists, otherwise start with 10 empty rows.
+  var saved = loadRoster();
+  if (saved && saved.length) {
+    saved.forEach(function(p){ addPlayer(p.name, p.tier); });
+    // pad to at least 9 rows for easy editing
+    while (state.players.length < 9) addPlayer();
+    showRosterSavedNote();
+  } else {
+    for (var i = 0; i < 10; i++) addPlayer();
+  }
 });
 
+// ── ROSTER PERSISTENCE (saved on this device) ──────────────────────
+var ROSTER_KEY = 'dugout_roster_v1';
+function saveRoster() {
+  try {
+    var data = state.players
+      .filter(function(p){ return p.name && p.name.trim(); })
+      .map(function(p){ return { name: p.name.trim(), tier: p.tier }; });
+    if (data.length) localStorage.setItem(ROSTER_KEY, JSON.stringify(data));
+    else localStorage.removeItem(ROSTER_KEY);
+  } catch (e) {}
+}
+function loadRoster() {
+  try { return JSON.parse(localStorage.getItem(ROSTER_KEY) || '[]'); }
+  catch (e) { return []; }
+}
+function clearRoster() {
+  if (!confirm('Clear the saved roster from this device? This cannot be undone.')) return;
+  try { localStorage.removeItem(ROSTER_KEY); } catch (e) {}
+  // reset rows
+  state.players = [];
+  document.getElementById('player-list').innerHTML = '';
+  for (var i = 0; i < 10; i++) addPlayer();
+  var note = document.getElementById('roster-saved-note');
+  if (note) note.style.display = 'none';
+}
+function showRosterSavedNote() {
+  var note = document.getElementById('roster-saved-note');
+  if (note) note.style.display = 'flex';
+}
+
 // ── PLAYER MANAGEMENT ──────────────────────────────────────────────
-function addPlayer() {
+function addPlayer(prefillName, prefillTier) {
   var idx = state.players.length;
-  state.players.push({ name: '', tier: '2' });
+  var nm = prefillName || '';
+  var tr = prefillTier || '2';
+  state.players.push({ name: nm, tier: tr });
 
   var row = document.createElement('div');
   row.className = 'player-row';
   row.dataset.idx = idx;
+  var esc = nm.replace(/"/g, '&quot;');
   row.innerHTML =
-    '<input type="text" placeholder="Player name" onchange="updatePlayer(' + idx + ',\'name\',this.value)">' +
+    '<input type="text" placeholder="Player name" value="' + esc + '" onchange="updatePlayer(' + idx + ',\'name\',this.value)">' +
     '<select class="tier-select" onchange="updatePlayer(' + idx + ',\'tier\',this.value)">' +
-    '<option value="1">T1</option>' +
-    '<option value="2" selected>T2</option>' +
-    '<option value="3">T3</option>' +
+    '<option value="1"' + (tr==='1'?' selected':'') + '>T1</option>' +
+    '<option value="2"' + (tr==='2'?' selected':'') + '>T2</option>' +
+    '<option value="3"' + (tr==='3'?' selected':'') + '>T3</option>' +
     '</select>' +
     '<button class="remove-btn" onclick="removePlayer(' + idx + ')">&#x2715;</button>';
 
@@ -915,6 +960,8 @@ function addPlayer() {
 function updatePlayer(idx, field, val) {
   if (state.players[idx]) state.players[idx][field] = val;
   updateEHDisplay();
+  saveRoster();
+  showRosterSavedNote();
 }
 
 function removePlayer(idx) {
@@ -933,6 +980,7 @@ function removePlayer(idx) {
     state.players[i] = { name: inp.value, tier: sel.value };
   });
   updatePlayerCount();
+  saveRoster();
 }
 
 function updatePlayerCount() {
