@@ -21,6 +21,7 @@
     <li><a href="lineup.html">Lineup Builder</a></li>
     <li><a href="toolkit.html">Toolkit</a></li>
     <li><a href="train.html">Train</a></li>
+    <li><a href="fitness.html">Fitness</a></li>
     <li><a href="articles.html">Articles</a></li>
     <li><a href="stages.html">The 4 Stages</a></li>
     <li><a href="about.html">About</a></li>
@@ -36,6 +37,7 @@
   <a href="lineup.html">Lineup Builder</a>
   <a href="toolkit.html">Toolkit</a>
   <a href="train.html">Train</a>
+  <a href="fitness.html">Fitness</a>
   <a href="articles.html">Articles</a>
   <a href="stages.html">The 4 Stages</a>
   <a href="about.html">About</a>
@@ -58,65 +60,63 @@
       </div>
     </div>
 
-    <!-- Slide 2: Age Chart -->
+    <!-- Slide 2: Practice Evolution Chart -->
     <div class="hero-slide" data-slide="1">
       <div class="slide-split">
         <div class="copy">
-          <div class="eyebrow">The Framework &middot; 4 stages</div>
+          <div class="eyebrow">The Framework &middot; The Evolution of Practice</div>
           <h2>Coach the age, <span class="accent">not the calendar.</span></h2>
-          <p>Free play dominates early. Specialization comes late. Most coaches reverse it.</p>
+          <p>How the balance of practice should shift across development. Most coaches apply pro refinement tools to players who haven't solved transfer yet.</p>
           <a href="stages.html" class="arrow-link">See the full framework <span class="arrow">&#8594;</span></a>
         </div>
         <div class="slide-visual">
-          <div class="mini-chart-header">
-            <span>Play / exploration</span>
-            <span>Specialization</span>
+          <div class="evo-chart" aria-label="Stacked area chart showing practice-type balance across four development stages">
+            <svg viewBox="0 0 520 300" preserveAspectRatio="xMidYMid meet" role="img">
+              <!-- defs -->
+              <defs>
+                <pattern id="drillHatch" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)">
+                  <rect width="7" height="7" fill="#C8862E" opacity="0.92"></rect>
+                  <line x1="0" y1="0" x2="0" y2="7" stroke="#a06e1f" stroke-width="2" opacity="0.5"></line>
+                </pattern>
+              </defs>
+              <!-- x positions: 40, 190, 340, 480 ; y plot area 30..250 -->
+              <!-- ECOLOGICAL (bottom band): 70,47,22,10 -->
+              <path d="M40,250 L190,250 L340,250 L480,250 L480,228 L340,202 L190,147 L40,96 Z" fill="#6E9476"></path>
+              <!-- VARIABLE (middle band): 26,44,60,62 -->
+              <path d="M40,96 L190,147 L340,202 L480,228 L480,91 L340,70 L190,50 L40,39 Z" fill="#3E6B4E"></path>
+              <!-- ISOLATED DRILLING (top band): 4,9,18,28 -->
+              <path d="M40,39 L190,50 L340,70 L480,91 L480,30 L340,30 L190,30 L40,30 Z" fill="url(#drillHatch)"></path>
+              <!-- pro zone label -->
+              <text x="472" y="44" text-anchor="end" font-family="Inter,sans-serif" font-size="8" fill="#f4efe6" opacity="0.55">Elite refinement zone</text>
+              <text x="472" y="54" text-anchor="end" font-family="Inter,sans-serif" font-size="8" fill="#f4efe6" opacity="0.4">Pro coaches work here</text>
+              <!-- ecological % labels -->
+              <text x="36" y="178" text-anchor="end" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#f4efe6">70%</text>
+              <text x="190" y="205" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#f4efe6">47%</text>
+              <text x="340" y="232" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#f4efe6">22%</text>
+              <text x="484" y="246" text-anchor="start" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#f4efe6">10%</text>
+              <!-- variable % labels -->
+              <text x="36" y="72" text-anchor="end" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#f4efe6">26%</text>
+              <text x="265" y="115" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#f4efe6">60%</text>
+              <text x="484" y="165" text-anchor="start" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#f4efe6">62%</text>
+              <!-- drilling % labels -->
+              <text x="40" y="26" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#C8862E">4%</text>
+              <text x="265" y="48" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#e2a85a">18%</text>
+              <text x="484" y="74" text-anchor="start" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#e2a85a">28%</text>
+              <!-- x axis stage labels -->
+              <text x="40" y="270" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" font-weight="700" fill="#f4efe6">T-Ball</text>
+              <text x="40" y="282" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#f4efe6" opacity="0.5">AGES 4-6</text>
+              <text x="190" y="270" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" font-weight="700" fill="#f4efe6">Sampling</text>
+              <text x="190" y="282" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#f4efe6" opacity="0.5">AGES 7-12</text>
+              <text x="340" y="270" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" font-weight="700" fill="#f4efe6">Specializing</text>
+              <text x="340" y="282" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#f4efe6" opacity="0.5">AGES 13-15</text>
+              <text x="480" y="270" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" font-weight="700" fill="#f4efe6">Investment</text>
+              <text x="480" y="282" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#f4efe6" opacity="0.5">AGES 16+</text>
+            </svg>
           </div>
-          <div class="mini-chart-bars">
-            <div class="mini-chart-col">
-              <div class="mini-chart-bars-pair">
-                <div class="mini-chart-bar play" style="height:70%"></div>
-                <div class="mini-chart-bar spec" style="height:8%"></div>
-              </div>
-              <div class="mini-chart-label">
-                <div class="stage">T-Ball</div>
-                <div class="age">AGES 4-6</div>
-              </div>
-            </div>
-            <div class="mini-chart-col">
-              <div class="mini-chart-bars-pair">
-                <div class="mini-chart-bar play" style="height:47%"></div>
-                <div class="mini-chart-bar spec" style="height:9%"></div>
-              </div>
-              <div class="mini-chart-label">
-                <div class="stage">Sampling</div>
-                <div class="age">AGES 7-12</div>
-              </div>
-            </div>
-            <div class="mini-chart-col">
-              <div class="mini-chart-bars-pair">
-                <div class="mini-chart-bar play" style="height:22%"></div>
-                <div class="mini-chart-bar spec" style="height:18%"></div>
-              </div>
-              <div class="mini-chart-label">
-                <div class="stage">Specializing</div>
-                <div class="age">AGES 13-15</div>
-              </div>
-            </div>
-            <div class="mini-chart-col">
-              <div class="mini-chart-bars-pair">
-                <div class="mini-chart-bar play" style="height:10%"></div>
-                <div class="mini-chart-bar spec" style="height:23%"></div>
-              </div>
-              <div class="mini-chart-label">
-                <div class="stage">Investment</div>
-                <div class="age">AGES 16+</div>
-              </div>
-            </div>
-          </div>
-          <div class="mini-chart-legend">
-            <span><span class="swatch" style="background:#C8862E"></span>Play</span>
-            <span><span class="swatch" style="background:#1a3024;border:1px solid rgba(244,239,230,0.12)"></span>Specialization</span>
+          <div class="mini-chart-legend evo-legend">
+            <span><span class="swatch" style="background:#6E9476"></span>Ecological / Play-Based</span>
+            <span><span class="swatch" style="background:#3E6B4E"></span>Variable / Game-Realistic</span>
+            <span><span class="swatch" style="background:#C8862E"></span>Isolated Drilling</span>
           </div>
         </div>
       </div>
@@ -175,28 +175,6 @@
       </div>
     </div>
 
-    <!-- Slide 4: The Stories -->
-    <div class="hero-slide" data-slide="3">
-      <div class="slide-stories">
-        <div class="eyebrow">The stories behind this site</div>
-        <h2>Not a marketing slogan. <span class="accent">A confession.</span></h2>
-        <div class="story-cards">
-          <a href="articles/the-bear-story.html" class="story-card">
-            <div class="kicker">A Confession &middot; 8 min read</div>
-            <div class="title">The Bear Story</div>
-            <div class="summary">A coach lit a pilot light in me when I was nine. It got me to pro ball. I still don't know if it pushed me or capped me. Neither does anyone.</div>
-            <div class="read">Read <span class="arrow">&#8594;</span></div>
-          </a>
-          <a href="articles/kid-in-the-dugout.html" class="story-card">
-            <div class="kicker">For Coaches Who Feel It &middot; 10 min read</div>
-            <div class="title">The Kid in the Dugout Isn't My Son</div>
-            <div class="summary">Why your chest gets tight before a game you don't care about winning &mdash; and what to do with it.</div>
-            <div class="read">Read <span class="arrow">&#8594;</span></div>
-          </a>
-        </div>
-      </div>
-    </div>
-
   </div>
 
   <!-- Controls -->
@@ -205,10 +183,9 @@
       <button class="hero-slider-dot active" data-target="0" aria-label="Go to slide 1"></button>
       <button class="hero-slider-dot" data-target="1" aria-label="Go to slide 2"></button>
       <button class="hero-slider-dot" data-target="2" aria-label="Go to slide 3"></button>
-      <button class="hero-slider-dot" data-target="3" aria-label="Go to slide 4"></button>
     </div>
     <div class="hero-slider-meta">
-      <span class="hero-slider-counter" id="slider-counter">01 / 04</span>
+      <span class="hero-slider-counter" id="slider-counter">01 / 03</span>
       <div class="hero-slider-arrows">
         <button class="hero-slider-arrow" id="slider-prev" aria-label="Previous slide">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -400,6 +377,7 @@
         <li><a href="lineup.html">Lineup Builder</a></li>
     <li><a href="toolkit.html">Toolkit</a></li>
         <li><a href="train.html">Train</a></li>
+    <li><a href="fitness.html">Fitness</a></li>
       </ul>
     </div>
     <div class="footer-links">

@@ -81,9 +81,35 @@
     .topbar{display:none;}
     body{background:#fff;}
   }
+  /* MVP login gate (client-side curtain, NOT real security) */
+  #gate{position:fixed;inset:0;z-index:999;background:var(--forest);display:flex;align-items:center;justify-content:center;padding:24px;}
+  #gate .gatecard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:34px;max-width:380px;width:100%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.4);}
+  #gate .glogo{font-family:Georgia,serif;font-weight:bold;font-size:1.6rem;color:var(--forest);}
+  #gate .glogo span{color:var(--gold);}
+  #gate .gbadge{display:inline-block;background:var(--gold);color:var(--forest);font-size:.62rem;font-weight:bold;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:12px;margin:10px 0 18px;}
+  #gate h2{font-family:Georgia,serif;font-size:1.2rem;color:var(--forest);margin-bottom:6px;}
+  #gate p{font-size:.85rem;color:var(--sub);margin-bottom:18px;}
+  #gate input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:9px;font:inherit;font-size:1rem;margin-bottom:12px;text-align:center;}
+  #gate button{width:100%;background:var(--gold);color:#fff;border:none;border-radius:9px;padding:13px;font:inherit;font-weight:bold;font-size:1rem;cursor:pointer;}
+  #gate button:hover{background:var(--gold-dk);}
+  #gate .gerr{color:#B4471F;font-size:.85rem;margin-top:10px;min-height:1em;}
+  #gate .gnote{font-size:.72rem;color:var(--ltgreen);margin-top:16px;line-height:1.4;}
+  body.locked{overflow:hidden;}
 </style>
 </head>
-<body>
+<body class="locked">
+<div id="gate">
+  <div class="gatecard">
+    <div class="glogo">Dugout<span>Lab</span></div>
+    <div class="gbadge">MVP Login &middot; Private</div>
+    <h2>Coach access only</h2>
+    <p>This is the private program generator. Enter the access code to continue.</p>
+    <input type="password" id="gpass" placeholder="Access code" autocomplete="off" onkeydown="if(event.key==='Enter')tryGate()">
+    <button onclick="tryGate()">Enter</button>
+    <div class="gerr" id="gerr"></div>
+    <div class="gnote">MVP gate only. This is not full security. For real protection, keep this page behind Cloudflare Access.</div>
+  </div>
+</div>
 <div class="topbar"></div>
 <header>
   <div class="head-inner">
@@ -179,6 +205,19 @@
 </footer>
 
 <script>
+/* ---------- MVP LOGIN GATE (client-side curtain, not real security) ---------- */
+function tryGate(){
+  var v=document.getElementById('gpass').value;
+  if(v==='DugoutLabBoss'){
+    document.getElementById('gate').style.display='none';
+    document.body.classList.remove('locked');
+    try{sessionStorage.setItem('dl_coach','1');}catch(e){}
+  } else {
+    document.getElementById('gerr').textContent='Incorrect code. Try again.';
+  }
+}
+// stay unlocked for the session once entered
+try{ if(sessionStorage.getItem('dl_coach')==='1'){ var g=document.getElementById('gate'); if(g){g.style.display='none';document.body.classList.remove('locked');} } }catch(e){}
 /* ---------- STATE ---------- */
 const S={name:"",age:null,sport:null,exp:null,spurt:null,days:null,gear:new Set(),fmt:null};
 
