@@ -237,6 +237,7 @@ button { font: inherit; cursor: pointer; }
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
   padding: 0.8rem 1.6rem;
   border-radius: 10px;
   font-family: var(--sans);
@@ -269,7 +270,7 @@ button { font: inherit; cursor: pointer; }
 }
 .btn-outline:hover { border-color: var(--gold); color: var(--gold); background: transparent; }
 .btn-forest { background: var(--forest2); color: var(--ink); border: 1px solid var(--rule); }
-.btn-forest:hover { background: var(--forest3); color: var(--ink); border-color: var(--gold); }
+.btn-forest:hover { background: var(--forest3); color: var(--gold-light); border-color: var(--gold); }
 .btn-sm { padding: 0.55rem 1.1rem; font-size: 0.85rem; }
 .btn-lg { padding: 0.95rem 2.2rem; font-size: 1rem; }
 .btn-full { width: 100%; justify-content: center; }
@@ -471,7 +472,7 @@ button { font: inherit; cursor: pointer; }
   border-color: #d8d0bf;
   color: var(--cream-ink-soft);
 }
-.section-cream .filter-btn:hover { border-color: var(--gold); color: var(--gold-dark); }
+.section-cream .filter-btn:hover { border-color: var(--gold-dark); color: #8a5e16; background: #fff; }
 .section-cream .filter-btn.active {
   background: var(--cream-ink);
   color: var(--cream);
@@ -1402,25 +1403,3 @@ button { font: inherit; cursor: pointer; }
   .article-body p, .article-body h2, .article-body h3 { color: black !important; }
 }
 
-/* ── LAB BRAND MARK ──────────────────────────────────────────────── */
-.logo-mark {
-  width: 22px;
-  height: 27px;
-  margin-right: 8px;
-  vertical-align: -6px;
-  color: var(--gold);
-  display: inline-block;
-}
-
-/* Hero flask: bubbling baseballs */
-.hero-flask { width: 120px; height: auto; margin: 0 0 1rem; display: block; }
-.hero-flask .bubble { animation: labRise 4.5s ease-in infinite; transform-origin: center; opacity: 0; }
-.hero-flask .bubble.b2 { animation-delay: 1.5s; animation-duration: 5.2s; }
-.hero-flask .bubble.b3 { animation-delay: 2.8s; animation-duration: 4s; }
-@keyframes labRise {
-  0%   { transform: translateY(26px) scale(0.6); opacity: 0; }
-  15%  { opacity: 1; }
-  80%  { opacity: 1; }
-  100% { transform: translateY(-34px) scale(1.05); opacity: 0; }
-}
-@media (max-width: 640px) { .hero-flask { width: 96px; } }
