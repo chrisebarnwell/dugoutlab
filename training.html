@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training &amp; Athletic Development &mdash; DugoutLab</title>
+<meta name="description" content="Evidence-based physical development for baseball and softball players, from first-ball through the pros. Bodyweight-first, age-appropriate, research-backed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="assets/flask.svg">
+<link rel="stylesheet" href="css/main.css">
+<style>
+  .fit-hero { padding: 3rem 0 1rem; }
+  .fit-hero .eyebrow { color: var(--gold); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; }
+  .fit-hero h1 { font-family: var(--serif); font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.08; margin: 0.6rem 0 1rem; max-width: 18ch; }
+  .fit-hero h1 em { color: var(--gold); font-style: italic; }
+  .fit-hero p { color: var(--ink-soft); font-size: 1.1rem; max-width: 60ch; }
+  .fit-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1.5rem; }
+  .fit-pill { background: var(--forest3); border: 1px solid var(--rule); color: var(--gold-light); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 7px 13px; border-radius: 20px; }
+
+  .fit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin: 2.5rem 0; }
+  .fit-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.75rem; text-decoration: none; color: var(--ink); display: flex; flex-direction: column; transition: transform 0.15s, border-color 0.15s; position: relative; overflow: hidden; }
+  .fit-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--gold); }
+  .fit-card:hover { transform: translateY(-3px); border-color: var(--gold); }
+  .fit-card .fc-kicker { color: var(--gold); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem; }
+  .fit-card h3 { font-family: var(--serif); font-size: 1.5rem; margin-bottom: 0.6rem; }
+  .fit-card p { color: var(--ink-soft); font-size: 0.95rem; flex: 1; }
+  .fit-card .fc-go { margin-top: 1rem; color: var(--gold); font-weight: 600; font-size: 0.9rem; }
+  .fit-card.locked::before { background: var(--ink-faint); }
+  .fit-card.locked .fc-kicker { color: var(--ink-faint); }
+
+  .fit-principles { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 2rem; margin: 2rem 0; }
+  .fit-principles h2 { font-family: var(--serif); font-size: 1.6rem; margin-bottom: 1rem; }
+  .fit-principles ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1rem; }
+  .fit-principles li { padding-left: 1.5rem; position: relative; color: var(--ink-soft); font-size: 0.95rem; }
+  .fit-principles li::before { content: ""; position: absolute; left: 0; top: 0.5rem; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
+  .fit-principles li b { color: var(--ink); }
+
+  .fit-disclaimer { border: 1px dashed var(--rule); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin: 2rem 0 3rem; }
+  .fit-disclaimer p { color: var(--ink-faint); font-size: 0.85rem; }
+  .fit-disclaimer b { color: var(--ink-soft); }
+  .breadcrumb { padding-top: 1.5rem; }
+  .breadcrumb a { color: var(--ink-faint); text-decoration: none; font-size: 0.85rem; }
+  .breadcrumb a:hover { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo"><svg class="logo-mark" viewBox="0 0 140 170" aria-hidden="true"><path d="M55 44 L55 78 L26 138 q-5 12 8 12 L106 150 q13 0 8 -12 L85 78 L85 44 Z" fill="none" stroke="currentColor" stroke-width="9" stroke-linejoin="round"/><path d="M49 44 L91 44" stroke="currentColor" stroke-width="9" stroke-linecap="round"/><path d="M64.5 100 L36 138 q-3.4 8 5.2 8 L99 146 q8.6 0 5.2 -8 L75.5 100 Z" fill="#C8862E"/><circle cx="62" cy="126" r="8" fill="#f4efe6" stroke="#0F1F18" stroke-width="2"/><path d="M57.5 120.5 q3.4 5.8 0 11.4 M66.5 120.5 q-3.4 5.8 0 11.4" stroke="#0F1F18" fill="none" stroke-width="1.6" stroke-linecap="round"/></svg>Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="builder.html">Build a Practice</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="drills.html">Drill Library</a></li>
+    <li><a href="training.html" class="active">Training</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="stages.html">The 4 Stages</a>
+  <a href="builder.html">Build a Practice</a>
+  <a href="articles.html">Articles</a>
+  <a href="games.html">Games</a>
+  <a href="drills.html">Drill Library</a>
+  <a href="training.html">Training</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="about.html">About</a>
+</div>
+
+<div class="container">
+  <div class="breadcrumb"><a href="index.html">&larr; Home</a></div>
+
+  <section class="fit-hero">
+    <div class="eyebrow">Training &amp; Athletic Development</div>
+    <h1>Build the <em>athlete</em>, not just the player.</h1>
+    <p>The physical side of development, done right. How to build strength, speed, power, and movement for baseball and softball players from first-ball through the pros. Bodyweight-first, matched to age and maturity, and grounded in the research, not the trends.</p>
+    <div class="fit-pills">
+      <span class="fit-pill">Baseball &amp; Softball</span>
+      <span class="fit-pill">Ages 6 to Pro</span>
+      <span class="fit-pill">Bodyweight First</span>
+      <span class="fit-pill">Evidence Based</span>
+    </div>
+  </section>
+
+  <div class="fit-grid">
+    <a href="development.html" class="fit-card">
+      <div class="fc-kicker">The Playbook</div>
+      <h3>The Development Guide</h3>
+      <p>The full, plain-language guide to physical development at every age. What to build, what to avoid, and the three things that matter most. The thinking behind everything here.</p>
+      <div class="fc-go">Read the guide &rarr;</div>
+    </a>
+    <a href="stage-finder.html" class="fit-card">
+      <div class="fc-kicker">Quick Tool</div>
+      <h3>Stage Finder</h3>
+      <p>Answer two quick questions and see what good, safe training looks like for your athlete's stage, and what to avoid. A guide for understanding, not a prescription.</p>
+      <div class="fc-go">Find the stage &rarr;</div>
+    </a>
+  </div>
+
+  <div class="fit-principles">
+    <h2>The three rules that govern every age</h2>
+    <ul>
+      <li><b>Readiness over age.</b> Maturity, not a birthday, sets the program. Two kids the same age can be two years apart. Train the body in front of you.</li>
+      <li><b>Fun is the engine.</b> In surveys of why kids quit sports, losing the fun is consistently the top answer. Reward effort and showing up. Bored kids quit.</li>
+      <li><b>Move well, then load.</b> Master bodyweight patterns before any external weight. Quality reps beat heavy reps every time.</li>
+    </ul>
+  </div>
+
+
+  <div class="fit-principles" style="margin-top:2.5rem">
+    <h2>Guidelines &amp; sources this section follows</h2>
+    <ul>
+      <li><b>NSCA Position Statement on Long-Term Athletic Development</b> (Lloyd et al., 2016). Resistance training is safe and beneficial for youth when supervised and technique-led.</li>
+      <li><b>NSCA Position Statement on Youth Resistance Training</b> (Faigenbaum et al., 2009). Bodyweight mastery and movement quality before external load.</li>
+      <li><b>AAP Clinical Report: Sports Specialization and Intensive Training</b> (Brenner, 2016). Workload, rest, and multi-sport guidance.</li>
+      <li><b>IOC Consensus Statement on Youth Athletic Development</b> (Bergeron et al., 2015). Growth, maturation, and injury risk around the growth spurt.</li>
+      <li><b>Pitch Smart / ASMI guidelines.</b> Throwing volume and rest for baseball arms.</li>
+    </ul>
+    <p style="color:var(--ink-faint);font-size:0.85rem;margin-top:1rem">A caution we take seriously: the popular "windows of trainability" idea from early LTAD writing is contested in the research. We treat stages as a planning framework, not a biological law. Anything on these pages without a source behind it gets cut.</p>
+  </div>
+
+  <div class="fit-disclaimer">
+    <p><b>Educational resource only. Not medical advice.</b> These pages explain general principles of youth athletic development. They are not a personalized training prescription and do not replace a qualified strength coach, athletic trainer, or physician who can see your athlete. Around a growth spurt or with any pain, check with a professional first.</p>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p>
+      <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="builder.html">Practice Builder</a></li>
+        <li><a href="games.html">Games Library</a></li>
+        <li><a href="drills.html">Drill Library</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">All Articles</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-sponsor">
+    <div class="sponsor-label">Our Sponsor</div>
+    <div class="sponsor-line">
+      DugoutLab is made free thanks to <a href="https://gamedayhelpers.com" target="_blank" rel="noopener">GamedayHelpers.com</a>
+      <span class="sponsor-tag">Let coaches coach. Let parents enjoy the game.</span>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+</body>
+</html>

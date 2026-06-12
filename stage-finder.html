@@ -71,7 +71,7 @@
 <header>
   <div class="head-inner">
     <a href="index.html" style="text-decoration:none;color:inherit;"><div class="logo">Dugout<span>Lab</span><small>Develop the Athlete, Not Just the Player</small></div></a>
-    <a href="fitness.html" style="color:#9DB8A2;text-decoration:none;font-size:.8rem;">&larr; Back to Fitness</a>
+    <a href="training.html" style="color:#9DB8A2;text-decoration:none;font-size:.8rem;">&larr; Back to Fitness</a>
   </div>
 </header>
 
@@ -113,8 +113,8 @@ const STAGES={
     goal:"At this age you are building a brain that controls a body. Almost all the gain comes from movement variety and play, not from training load. The win is a kid who loves to move and can handle their own bodyweight.",
     build:["Bodyweight movement as play: animal walks, hops, skips","Throwing, catching, kicking many ball sizes","Easy squats, knee push-ups, plank held like a game","Short sprints, tag, relays, obstacle courses","Light, fun med-ball or beanbag tosses"],
     avoid:["Any weights or max-effort lifting","Strict sets-and-reps grinding","Playing one sport year-round","Long instructions (keep it short and fun)"]},
-  learn:{name:"Learn to Train",color:"#5C7A62",dark:false,sub:"The skill-building window",
-    goal:"This is the best window for learning how to move. The nervous system soaks up technique. Master bodyweight strength and clean movement now and everything later is built on it.",
+  learn:{name:"Learn to Train",color:"#5C7A62",dark:false,sub:"The skill-building years",
+    goal:"A productive stretch for learning how to move: no growth spurt yet, and years of practice ahead. (Strict windows that close are contested in the research; skills can be learned at any age.) Master bodyweight strength and clean movement now and everything later is built on it.",
     build:["Master bodyweight: squats, push-ups, rows, planks","Jumps and landings that are soft and silent","Sprint mechanics, footwork and agility games","Light rotational med-ball work as a skill","Controlled carries (sandbag, suitcase) as the one loaded move"],
     avoid:["Heavy lifting for strength","Specializing in one sport this early","Copying high-school or pro programs","Trading good form for more reps"]},
   train:{name:"Train to Train",color:"#C8892A",dark:false,sub:"Through the growth spurt",
@@ -165,7 +165,7 @@ function render(){
   let spurtBox='';
   if(selSpurt==='yes'){
     spurtBox=`<div class="spurt"><div class="cl-label">Because they are in a growth spurt</div>
-      <p>This is the most injury-prone window. Bones are outgrowing tendons, so lower the jumping and high-impact volume, lean into mobility and clean technique, and never push through knee or heel pain. Strength work stays light and form-first. If pain shows up, see a professional before continuing.</p></div>`;
+      <p>Overuse complaints climb in this stretch. Bones are outgrowing tendons, so lower the jumping and high-impact volume, lean into mobility and clean technique, and never push through knee or heel pain. Strength work stays light and form-first. If pain shows up, see a professional before continuing.</p></div>`;
   } else if(selSpurt==='unsure'){
     spurtBox=`<div class="spurt"><div class="cl-label">Not sure about the growth spurt?</div>
       <p>Watch for a recent fast height jump, sudden shoe-size changes, new clumsiness, or aching knees/heels. If you see those, treat it like a growth spurt: lower the impact, prioritize mobility, and check with a professional. When in doubt, train lighter.</p></div>`;
