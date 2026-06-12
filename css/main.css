@@ -249,6 +249,15 @@ button { font: inherit; cursor: pointer; }
   white-space: nowrap;
 }
 .btn:hover { text-decoration: none; }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible, a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
 .btn-primary { background: var(--gold); color: var(--forest); }
 .btn-primary:hover { background: var(--gold-light); color: var(--forest); }
 .btn-secondary { background: var(--ink); color: var(--forest); }
@@ -1392,3 +1401,26 @@ button { font: inherit; cursor: pointer; }
   .article-body { color: black; }
   .article-body p, .article-body h2, .article-body h3 { color: black !important; }
 }
+
+/* ── LAB BRAND MARK ──────────────────────────────────────────────── */
+.logo-mark {
+  width: 22px;
+  height: 27px;
+  margin-right: 8px;
+  vertical-align: -6px;
+  color: var(--gold);
+  display: inline-block;
+}
+
+/* Hero flask: bubbling baseballs */
+.hero-flask { width: 120px; height: auto; margin: 0 0 1rem; display: block; }
+.hero-flask .bubble { animation: labRise 4.5s ease-in infinite; transform-origin: center; opacity: 0; }
+.hero-flask .bubble.b2 { animation-delay: 1.5s; animation-duration: 5.2s; }
+.hero-flask .bubble.b3 { animation-delay: 2.8s; animation-duration: 4s; }
+@keyframes labRise {
+  0%   { transform: translateY(26px) scale(0.6); opacity: 0; }
+  15%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(-34px) scale(1.05); opacity: 0; }
+}
+@media (max-width: 640px) { .hero-flask { width: 96px; } }
