@@ -41,7 +41,7 @@ function wzBuild() {
   var ageMax = ageMaxMap[ageGroup];
 
   var ageLabels = {
-    tball:  'T-Ball (Ages 4-7)',
+    tball:  'Ages 4-7',
     young:  'Ages 7-9',
     middle: 'Ages 10-12',
     teen:   'Ages 13+',
@@ -260,7 +260,7 @@ function wzPrint() {
     + '<span style="font-size:8px;color:#7aab90">DugoutLab &middot; dugoutlab.com &middot; Free for Little League coaches</span>'
     + '<span style="font-size:8px;color:#c8781a;font-weight:700">Share freely.</span></div>'
     + '<div class="no-print" style="text-align:center;padding:14px">'
-    + '<button onclick="window.print()" style="background:#c8781a;color:#fff;border:none;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:700;cursor:pointer;margin-right:8px">Print / Save PDF</button>'
+    + '<button onclick="window.print()" style="background:#c8781a;color:#10210f;border:none;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:700;cursor:pointer;margin-right:8px">Print / Save PDF</button>'
     + '<button onclick="window.close()" style="background:#eee;color:#333;border:none;border-radius:8px;padding:9px 22px;font-size:13px;cursor:pointer">Close</button>'
     + '</div></body></html>';
 
