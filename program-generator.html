@@ -29,7 +29,7 @@
   .q .hint{font-weight:normal;color:var(--sub);font-size:.8rem;}
   .opts{display:flex;gap:8px;flex-wrap:wrap;}
   .opt{border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:9px 14px;font:inherit;font-size:.88rem;cursor:pointer;transition:.15s;}
-  .opt:hover{border-color:var(--ltgreen);}
+  .opt:hover{border-color:var(--ltgreen);background:rgba(92,122,98,0.10);}
   .opt.sel{background:var(--forest);color:#fff;border-color:var(--forest);}
   .opt.sel.gold{background:var(--gold);border-color:var(--gold);}
   .opt.locked{opacity:.4;cursor:not-allowed;background:#f0f0ec;border-style:dashed;position:relative;}
@@ -40,8 +40,8 @@
   .row{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
   @media(max-width:720px){.row{grid-template-columns:1fr;}}
 
-  .gen-btn{margin-top:10px;background:var(--gold);color:#fff;border:none;border-radius:10px;padding:14px 26px;font:inherit;font-weight:bold;font-size:1rem;cursor:pointer;letter-spacing:.5px;}
-  .gen-btn:hover{background:var(--gold-dk);}
+  .gen-btn{margin-top:10px;background:var(--gold);color:#10210f;border:none;border-radius:10px;padding:14px 26px;font:inherit;font-weight:bold;font-size:1rem;cursor:pointer;letter-spacing:.5px;}
+  .gen-btn:hover{background:#e2a85a;}
   .gen-btn:disabled{background:#ccc;opacity:.5;cursor:not-allowed;}
 
   .out{margin-top:26px;display:none;}
@@ -90,8 +90,8 @@
   #gate h2{font-family:Georgia,serif;font-size:1.2rem;color:var(--forest);margin-bottom:6px;}
   #gate p{font-size:.85rem;color:var(--sub);margin-bottom:18px;}
   #gate input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:9px;font:inherit;font-size:1rem;margin-bottom:12px;text-align:center;}
-  #gate button{width:100%;background:var(--gold);color:#fff;border:none;border-radius:9px;padding:13px;font:inherit;font-weight:bold;font-size:1rem;cursor:pointer;}
-  #gate button:hover{background:var(--gold-dk);}
+  #gate button{width:100%;background:var(--gold);color:#10210f;border:none;border-radius:9px;padding:13px;font:inherit;font-weight:bold;font-size:1rem;cursor:pointer;}
+  #gate button:hover{background:#e2a85a;}
   #gate .gerr{color:#B4471F;font-size:.85rem;margin-top:10px;min-height:1em;}
   #gate .gnote{font-size:.72rem;color:var(--ltgreen);margin-top:16px;line-height:1.4;}
   body.locked{overflow:hidden;}

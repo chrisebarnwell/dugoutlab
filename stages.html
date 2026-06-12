@@ -8,13 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="assets/flask.svg">
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
 <nav class="nav">
-  <a href="index.html" class="nav-logo"><svg class="logo-mark" viewBox="0 0 140 170" aria-hidden="true"><path d="M55 44 L55 78 L26 138 q-5 12 8 12 L106 150 q13 0 8 -12 L85 78 L85 44 Z" fill="none" stroke="currentColor" stroke-width="9" stroke-linejoin="round"/><path d="M49 44 L91 44" stroke="currentColor" stroke-width="9" stroke-linecap="round"/><path d="M64.5 100 L36 138 q-3.4 8 5.2 8 L99 146 q8.6 0 5.2 -8 L75.5 100 Z" fill="#C8862E"/><circle cx="62" cy="126" r="8" fill="#f4efe6" stroke="#0F1F18" stroke-width="2"/><path d="M57.5 120.5 q3.4 5.8 0 11.4 M66.5 120.5 q-3.4 5.8 0 11.4" stroke="#0F1F18" fill="none" stroke-width="1.6" stroke-linecap="round"/></svg>Dugout<span>Lab</span></a>
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
     <ul class="nav-links">
     <li><a href="stages.html" class="active">The 4 Stages</a></li>
     <li><a href="builder.html">Build a Practice</a></li>
@@ -86,6 +85,164 @@
   </div>
 </section>
 
+<!-- ─── PRACTICE MIX WIZARD ─── -->
+<section class="section" id="practice-mix" style="padding-top:0">
+  <div class="container-sm">
+    <div style="max-width:680px;margin-bottom:1.5rem">
+      <div class="eyebrow" style="color:var(--gold)">Make It Yours</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(1.5rem,3.5vw,2rem);font-weight:600;color:var(--ink);line-height:1.15;letter-spacing:-0.015em;margin-bottom:0.7rem">Your Team's Practice Mix</h2>
+      <p style="font-size:0.95rem;color:var(--ink-soft);line-height:1.65">The chart above shows the research-aligned balance by stage. Answer three questions and get the weighting for your team, in minutes, ready to print and tape to your clipboard. No drills prescribed. The mix is yours to fill.</p>
+    </div>
+
+    <div style="background:var(--forest-deep);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1.75rem 1.5rem">
+
+      <div class="wz-q-label" style="color:var(--gold);font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem">1. Player ages</div>
+      <div class="wz-opts-row" id="pm-age" style="margin-bottom:1.25rem">
+        <button class="wz-opt" onclick="pmPick('age','a46',this)">4-6</button>
+        <button class="wz-opt active" onclick="pmPick('age','a79',this)">7-9</button>
+        <button class="wz-opt" onclick="pmPick('age','a1012',this)">10-12</button>
+        <button class="wz-opt" onclick="pmPick('age','a1315',this)">13-15</button>
+        <button class="wz-opt" onclick="pmPick('age','a16',this)">16+</button>
+      </div>
+
+      <div class="wz-q-label" style="color:var(--gold);font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem">2. Where is the group?</div>
+      <div class="wz-opts-row" id="pm-skill" style="margin-bottom:1.25rem">
+        <button class="wz-opt" onclick="pmPick('skill','first',this)">First season</button>
+        <button class="wz-opt active" onclick="pmPick('skill','dev',this)">Developing</button>
+        <button class="wz-opt" onclick="pmPick('skill','adv',this)">Advanced</button>
+      </div>
+
+      <div class="wz-q-label" style="color:var(--gold);font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem">3. Practice length</div>
+      <div class="wz-opts-row" id="pm-len" style="margin-bottom:1.5rem">
+        <button class="wz-opt" onclick="pmPick('len','60',this)">60 min</button>
+        <button class="wz-opt active" onclick="pmPick('len','75',this)">75 min</button>
+        <button class="wz-opt" onclick="pmPick('len','90',this)">90 min</button>
+        <button class="wz-opt" onclick="pmPick('len','120',this)">120 min</button>
+      </div>
+
+      <!-- Result -->
+      <div style="border-top:1px solid var(--rule);padding-top:1.5rem">
+        <div id="pm-bar" style="display:flex;height:46px;border-radius:9px;overflow:hidden;margin-bottom:1rem"></div>
+        <div id="pm-rows" style="display:grid;gap:0.45rem;margin-bottom:1.25rem"></div>
+        <p style="font-size:0.78rem;color:var(--text-light);line-height:1.55;margin-bottom:1.1rem">A research-aligned starting point, not a prescription. Warm-up counts toward play time if the warm-up is a game. Adjust for what your team needs this week.</p>
+        <button class="btn btn-primary btn-sm" onclick="pmPrint()">Print / Save PDF</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var BASE = {
+    a46:   { label:'Ages 4-6',   eco:70, vary:26, iso:4  },
+    a79:   { label:'Ages 7-9',   eco:55, vary:38, iso:7  },
+    a1012: { label:'Ages 10-12', eco:40, vary:50, iso:10 },
+    a1315: { label:'Ages 13-15', eco:22, vary:60, iso:18 },
+    a16:   { label:'Ages 16+',   eco:10, vary:62, iso:28 }
+  };
+  var SKILL = {
+    first: { label:'First season', eco:+8,  vary:-2, iso:-6 },
+    dev:   { label:'Developing',   eco:0,   vary:0,  iso:0  },
+    adv:   { label:'Advanced',     eco:-6,  vary:+2, iso:+4 }
+  };
+  var BUCKETS = [
+    { key:'eco',  name:'Games &amp; live play',      color:'#3a8a5e', desc:'Small-sided games, scrimmage situations, live reads' },
+    { key:'vary', name:'Varied skill work', color:'#5fa382', desc:'Stations with changing speeds, locations, and decisions' },
+    { key:'iso',  name:'Isolated technique', color:'#c8862e', desc:'Blocked reps on one specific fix, then back into play' }
+  ];
+  var state = { age:'a79', skill:'dev', len:'75' };
+
+  window.pmPick = function(k, v, btn){
+    state[k] = v;
+    var row = btn.parentNode.querySelectorAll('.wz-opt');
+    for (var i=0;i<row.length;i++) row[i].classList.remove('active');
+    btn.classList.add('active');
+    render();
+  };
+
+  function mix(){
+    var b = BASE[state.age], a = SKILL[state.skill];
+    var raw = { eco: b.eco + a.eco, vary: b.vary + a.vary, iso: Math.max(0, b.iso + a.iso) };
+    var total = raw.eco + raw.vary + raw.iso;
+    var pct = {
+      eco:  Math.round(raw.eco  / total * 100),
+      vary: Math.round(raw.vary / total * 100)
+    };
+    pct.iso = 100 - pct.eco - pct.vary;
+    return pct;
+  }
+
+  function mins(pct){
+    var L = parseInt(state.len, 10);
+    var m = {
+      eco:  Math.round(pct.eco  * L / 100 / 5) * 5,
+      vary: Math.round(pct.vary * L / 100 / 5) * 5
+    };
+    m.iso = L - m.eco - m.vary;
+    if (m.iso < 0) { m.vary += m.iso; m.iso = 0; }
+    return m;
+  }
+
+  function render(){
+    var pct = mix(), m = mins(pct);
+    var bar = document.getElementById('pm-bar');
+    var rows = document.getElementById('pm-rows');
+    bar.innerHTML = '';
+    rows.innerHTML = '';
+    BUCKETS.forEach(function(bk){
+      var seg = document.createElement('div');
+      seg.style.cssText = 'background:'+bk.color+';width:'+pct[bk.key]+'%;display:flex;align-items:center;justify-content:center;font-size:0.82rem;font-weight:700;color:#10210f;transition:width 0.25s';
+      if (pct[bk.key] >= 10) seg.textContent = pct[bk.key] + '%';
+      bar.appendChild(seg);
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:baseline;gap:0.6rem;font-size:0.88rem';
+      row.innerHTML = '<span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:'+bk.color+';flex-shrink:0;align-self:center"></span>'
+        + '<span style="color:var(--ink);font-weight:600;min-width:148px">'+bk.name+'</span>'
+        + '<span style="color:var(--gold);font-weight:700;min-width:88px">'+m[bk.key]+' min &middot; '+pct[bk.key]+'%</span>'
+        + '<span style="color:var(--text-light);font-size:0.78rem">'+bk.desc+'</span>';
+      rows.appendChild(row);
+    });
+  }
+
+  window.pmPrint = function(){
+    var pct = mix(), m = mins(pct);
+    var b = BASE[state.age], sk = SKILL[state.skill];
+    var rowsHtml = BUCKETS.map(function(bk){
+      return '<tr>'
+        + '<td style="padding:10px 12px;border:1px solid #888;font-weight:bold">'+bk.name+'</td>'
+        + '<td style="padding:10px 12px;border:1px solid #888;text-align:center;font-size:18px;font-weight:bold">'+pct[bk.key]+'%</td>'
+        + '<td style="padding:10px 12px;border:1px solid #888;text-align:center;font-size:18px;font-weight:bold">'+m[bk.key]+' min</td>'
+        + '<td style="padding:10px 12px;border:1px solid #888;font-size:12px">'+bk.desc+'</td>'
+        + '</tr>';
+    }).join('');
+    var barHtml = '<div style="display:flex;height:34px;border:1px solid #555;margin:14px 0 20px">'
+      + BUCKETS.map(function(bk){
+          var fills = { eco:'#fff', vary:'#eee', iso:'repeating-linear-gradient(45deg,#fff,#fff 4px,#ccc 4px,#ccc 6px)' };
+          return '<div style="width:'+pct[bk.key]+'%;background:'+fills[bk.key]+';border-right:1px solid #555;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold">'+(pct[bk.key]>=10?pct[bk.key]+'%':'')+'</div>';
+        }).join('')
+      + '</div>';
+    var html = '<!DOCTYPE html><html><head><title>Practice Mix - DugoutLab</title></head>'
+      + '<body style="font-family:Helvetica,Arial,sans-serif;color:#111;max-width:720px;margin:24px auto;padding:0 18px">'
+      + '<div style="border:2px solid #333;padding:6px 14px;display:inline-block;font-weight:bold;letter-spacing:1px">DUGOUTLAB &middot; PRACTICE MIX</div>'
+      + '<h1 style="font-size:22px;margin:16px 0 2px">' + b.label + ' &middot; ' + sk.label + ' &middot; ' + state.len + '-minute practice</h1>'
+      + '<p style="font-size:13px;color:#444;margin:4px 0 0">Practice weighting only. Choose your own drills and games to fill each block.</p>'
+      + barHtml
+      + '<table style="width:100%;border-collapse:collapse;font-size:14px">' + rowsHtml + '</table>'
+      + '<p style="font-size:11px;color:#555;margin-top:18px;line-height:1.5"><b>A starting point, not a prescription.</b> Warm-up counts toward play time when the warm-up is a game. Based on motor learning research summarized at dugoutlab.com/how-kids-learn.html (contextual interference, ecological dynamics, small-sided games) and the LTAD / USA Baseball ADM frameworks.</p>'
+      + '<p style="font-size:11px;color:#555">dugoutlab.com &middot; Free for volunteer coaches &middot; Made free thanks to GamedayHelpers.com</p>'
+      + '<div style="margin-top:14px"><button onclick="window.print()" style="background:#fff;color:#111;border:2px solid #333;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:bold;cursor:pointer;margin-right:8px">Print / Save PDF</button>'
+      + '<button onclick="window.close()" style="background:#eee;color:#333;border:none;border-radius:8px;padding:9px 22px;font-size:13px;cursor:pointer">Close</button></div>'
+      + '<style>@media print{button{display:none}}</style>'
+      + '</body></html>';
+    var w = window.open('', '_blank');
+    w.document.write(html);
+    w.document.close();
+  };
+
+  render();
+})();
+</script>
+
 <!-- ─── WHY THIS MATTERS / FRAMEWORK INTRO ─── -->
 <section class="section section-cream" id="why-this-matters">
   <div class="container-sm">
@@ -99,8 +256,8 @@
       <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
         <div style="background:var(--forest3);color:white;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;flex-shrink:0">1</div>
         <div>
-          <div style="font-family:var(--serif);font-size:1.3rem;font-weight:700;color:var(--forest)">T-Ball Stage</div>
-          <div style="font-size:0.82rem;color:var(--text-light)">Ages 4-7 &middot; Most T-Ball teams</div>
+          <div style="font-family:var(--serif);font-size:1.3rem;font-weight:700;color:var(--forest)">Ages 4-7</div>
+          <div style="font-size:0.82rem;color:var(--text-light)">Where most kids start</div>
         </div>
       </div>
       <div style="padding-left:3.5rem">
@@ -117,7 +274,7 @@
         </div>
         <p style="font-size:0.85rem;color:var(--text-light)">What doesn't matter yet: mechanics, pitch count, winning, positions.</p>
         <div style="margin-top:0.75rem">
-          <a href="builder.html?age=tball" class="btn btn-sm btn-forest">Build a T-Ball practice</a>
+          <a href="builder.html?age=tball" class="btn btn-sm btn-forest">Build a practice for ages 4-7</a>
         </div>
       </div>
     </div>
@@ -125,10 +282,10 @@
     <!-- STAGE 2 -->
     <div style="margin-bottom:2.5rem">
       <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-        <div style="background:var(--gold);color:white;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;flex-shrink:0">2</div>
+        <div style="background:var(--gold);color:var(--forest);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;flex-shrink:0">2</div>
         <div>
           <div style="font-family:var(--serif);font-size:1.3rem;font-weight:700;color:var(--forest)">Sampling Stage</div>
-          <div style="font-size:0.82rem;color:var(--text-light)">Ages 7-12 &middot; Most Little League rec teams</div>
+          <div style="font-size:0.82rem;color:var(--text-light)">Ages 7-12 &middot; Most rec teams</div>
         </div>
       </div>
       <div style="padding-left:3.5rem">
@@ -259,7 +416,7 @@
   // Data: each stage has 3 stacked values (ecological, variable, isolated).
   // Values are research-aligned proportions of practice time.
   var stages = [
-    { name: 'T-Ball',       age: 'Ages 4-6',   eco: 70, vary: 26, iso: 4 },
+    { name: 'Ages 4-6',     age: 'First years',   eco: 70, vary: 26, iso: 4 },
     { name: 'Sampling Years',     age: 'Ages 7-12',  eco: 47, vary: 44, iso: 9 },
     { name: 'Specializing Years', age: 'Ages 13-15', eco: 22, vary: 60, iso: 18 },
     { name: 'Investment Years',   age: 'Ages 16+',   eco: 10, vary: 62, iso: 28 },
