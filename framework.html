@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Practice Framework &mdash; DugoutLab</title>
+<meta name="description" content="A structure for practice by age, skill level, and sport. Not drills. The blueprint: how to weight your time and what each block is for. You bring the activities.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="framework.html" class="active">Practice Framework</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="training.html">Training</a></li>
+    <li><a href="coach-dad.html">Coach Dad</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="stages.html">The 4 Stages</a>
+  <a href="framework.html">Practice Framework</a>
+  <a href="articles.html">Articles</a>
+  <a href="training.html">Training</a>
+  <a href="coach-dad.html">Coach Dad</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="eyebrow">Structure, Not Scripts</div>
+    <h1>The Practice Framework</h1>
+    <p>We don't hand you drills. We hand you the blueprint: how to weight your time and what each block is for. You bring the activities. The structure does the teaching.</p>
+  </div>
+</div>
+
+<section class="section section-cream" style="padding-top:1.75rem">
+  <div class="container-sm">
+
+    <div style="background:white;border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:var(--radius);padding:1.5rem 1.75rem;margin-bottom:1.75rem;box-shadow:var(--shadow)">
+      <p style="font-size:0.95rem;line-height:1.65;margin:0">Most coaching sites hand you a list of drills and let you guess how to assemble them. We do the opposite. The hard part isn't the drill. It's the <b>shape of the hour</b>: how much play, how much skill work, how much focused technique, and in what order. Get the shape right and almost any activity works. Get it wrong and the best drill in the world falls flat. <a href="how-kids-learn.html" style="font-weight:600">The reasoning lives here &rarr;</a></p>
+    </div>
+
+    <!-- WIZARD -->
+    <div style="background:var(--forest-deep);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1.75rem 1.5rem">
+
+      <div class="fw-q-label">1. Player ages</div>
+      <div class="wz-opts-row" id="fw-age" style="margin-bottom:1.25rem">
+        <button class="wz-opt" onclick="fwPick('age','a46',this)">4-6</button>
+        <button class="wz-opt active" onclick="fwPick('age','a79',this)">7-9</button>
+        <button class="wz-opt" onclick="fwPick('age','a1012',this)">10-12</button>
+        <button class="wz-opt" onclick="fwPick('age','a1315',this)">13-15</button>
+        <button class="wz-opt" onclick="fwPick('age','a16',this)">16+</button>
+      </div>
+
+      <div class="fw-q-label">2. Where is the group?</div>
+      <div class="wz-opts-row" id="fw-skill" style="margin-bottom:1.25rem">
+        <button class="wz-opt" onclick="fwPick('skill','first',this)">First season</button>
+        <button class="wz-opt active" onclick="fwPick('skill','dev',this)">Developing</button>
+        <button class="wz-opt" onclick="fwPick('skill','adv',this)">Advanced</button>
+      </div>
+
+      <div class="fw-q-label">3. Sport</div>
+      <div class="wz-opts-row" id="fw-sport" style="margin-bottom:1.25rem">
+        <button class="wz-opt active" onclick="fwPick('sport','baseball',this)">Baseball</button>
+        <button class="wz-opt" onclick="fwPick('sport','softball',this)">Softball</button>
+      </div>
+
+      <div class="fw-q-label">4. Practice length</div>
+      <div class="wz-opts-row" id="fw-len" style="margin-bottom:1.5rem">
+        <button class="wz-opt" onclick="fwPick('len','60',this)">60 min</button>
+        <button class="wz-opt active" onclick="fwPick('len','75',this)">75 min</button>
+        <button class="wz-opt" onclick="fwPick('len','90',this)">90 min</button>
+        <button class="wz-opt" onclick="fwPick('len','120',this)">120 min</button>
+      </div>
+
+      <div style="border-top:1px solid var(--rule);padding-top:1.5rem">
+        <div id="fw-mixbar" style="display:flex;height:38px;border-radius:8px;overflow:hidden;margin-bottom:0.5rem"></div>
+        <div id="fw-mixlegend" style="display:flex;flex-wrap:wrap;gap:1rem;font-size:0.72rem;color:var(--text-light);margin-bottom:1.5rem"></div>
+        <div id="fw-blocks" style="display:grid;gap:0.6rem;margin-bottom:1.25rem"></div>
+        <p style="font-size:0.78rem;color:var(--text-light);line-height:1.55;margin-bottom:1.1rem">A research-aligned starting point, not a prescription. Warm-up counts as play time when the warm-up is a game. Adjust for what your team needs this week.</p>
+        <button class="btn btn-primary btn-sm" onclick="fwPrint()">Print / Save the blueprint</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- THE FIVE BLOCKS EXPLAINED -->
+<section class="section section-white">
+  <div class="container-sm">
+    <div class="section-label mb-2">The Anatomy of a Block</div>
+    <h2 style="font-family:var(--serif);font-weight:600;color:var(--ink);font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:1.5rem">Every practice, five jobs</h2>
+
+    <div class="grid-1" style="display:grid;gap:1rem">
+      <div class="card">
+        <div class="card-eyebrow" style="color:#3a8a5e">Block 1 &middot; Play</div>
+        <div class="card-title">Arrival &amp; Free Play</div>
+        <p style="font-size:0.92rem;color:var(--ink-soft);line-height:1.6;margin:0">Kids arrive at different times. The field should already be a game, not a line. A movement game that gets blood moving and decisions firing. Nobody waits. Nobody stands. This is also where you watch and learn who needs what today.</p>
+      </div>
+      <div class="card">
+        <div class="card-eyebrow" style="color:#5fa382">Block 2 &middot; Varied skill</div>
+        <div class="card-title">Skill Stations</div>
+        <p style="font-size:0.92rem;color:var(--ink-soft);line-height:1.6;margin:0">Small groups, changing conditions. The same skill under different speeds, angles, and decisions. This is where the contextual-interference research pays off: messier reps that look worse today and transfer better Saturday. Keep groups tiny so touches stay high.</p>
+      </div>
+      <div class="card">
+        <div class="card-eyebrow" style="color:#c8862e">Block 3 &middot; Technique</div>
+        <div class="card-title">One Focused Fix</div>
+        <p style="font-size:0.92rem;color:var(--ink-soft);line-height:1.6;margin:0">The only block where blocked, repetitive reps earn their place. Pick one thing. Run clean reps to install it, then fold it straight back into play. For the youngest groups this block is tiny or absent on purpose. Technique without perception transfers poorly.</p>
+      </div>
+      <div class="card">
+        <div class="card-eyebrow" style="color:#3a8a5e">Block 4 &middot; Play</div>
+        <div class="card-title">Small-Sided &amp; Live</div>
+        <p style="font-size:0.92rem;color:var(--ink-soft);line-height:1.6;margin:0">The heart of the practice. Read-and-react reps inside a game with a score, a constraint, or a consequence. This is where the perceiving stays attached to the moving, which is the actual skill of baseball and softball.</p>
+      </div>
+      <div class="card">
+        <div class="card-eyebrow" style="color:#7a9480">Block 5 &middot; Play</div>
+        <div class="card-title">The Closer</div>
+        <p style="font-size:0.92rem;color:var(--ink-soft);line-height:1.6;margin:0">End on something they will tell their parents about in the car. A quick compete, a team challenge, a win. The last five minutes are what they remember, and memory is what brings them back tomorrow.</p>
+      </div>
+    </div>
+
+    <div style="background:var(--cream);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-top:1.75rem">
+      <p style="font-size:0.9rem;color:var(--cream-ink-soft,#444);line-height:1.65;margin:0">Notice there are no drill names anywhere here. That is the point. A million activities can fill these blocks. Your job is to keep the shape and let the kids play inside it. If you want help thinking through what to put in a block, the <a href="articles.html" style="font-weight:600">articles</a> walk through the principles, and <a href="stages.html" style="font-weight:600">the 4 Stages</a> show how the weighting shifts as they grow.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section class="section section-cream">
+  <div class="container-sm">
+    <div class="section-label mb-2">Guidelines &amp; Sources This Framework Follows</div>
+    <ul style="font-size:0.9rem;color:var(--cream-ink-soft,#444);line-height:1.7">
+      <li>Shea &amp; Morgan (1979) and contextual-interference research: varied practice transfers better than blocked.</li>
+      <li>Ecological dynamics (Davids; Gray): perception and action are coupled; train them together.</li>
+      <li>Constraints-led approach: change the task, not the instruction.</li>
+      <li>Visek FUN MAPS (2015): competence, belonging, and play drive enjoyment, which drives retention.</li>
+      <li>LTAD framework and USA Baseball ADM: weighting shifts by developmental stage. Used as a planning tool; the original "windows of trainability" claims are contested and not relied on here.</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand"><div class="logo">Dugout<span>Lab</span></div><p>Evidence-based coaching for youth baseball and softball. Free, always.</p><div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div></div>
+    <div class="footer-links"><h4>Build</h4><ul><li><a href="framework.html">Practice Framework</a></li><li><a href="lineup.html">Lineup Builder</a></li><li><a href="progression.html">Season Plan</a></li></ul></div>
+    <div class="footer-links"><h4>Learn</h4><ul><li><a href="how-kids-learn.html">How Kids Learn</a></li><li><a href="stages.html">The 4 Stages</a></li><li><a href="articles.html">Articles</a></li><li><a href="about.html">About</a></li></ul></div>
+  </div>
+  <div class="footer-sponsor">
+    <div class="sponsor-label">Our Sponsor</div>
+    <div class="sponsor-line">
+      DugoutLab is made free thanks to <a href="https://gamedayhelpers.com" target="_blank" rel="noopener">GamedayHelpers.com</a>
+      <span class="sponsor-tag">Let coaches coach. Let parents enjoy the game.</span>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span><span>dugoutlab.com</span></div>
+</footer>
+
+<style>
+.fw-q-label { color:var(--gold); font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.5rem; }
+</style>
+
+<script src="js/site.js"></script>
+<script>
+(function(){
+  var BASE = {
+    a46:   { label:'Ages 4-6',   eco:70, vary:26, iso:4  },
+    a79:   { label:'Ages 7-9',   eco:55, vary:38, iso:7  },
+    a1012: { label:'Ages 10-12', eco:40, vary:50, iso:10 },
+    a1315: { label:'Ages 13-15', eco:22, vary:60, iso:18 },
+    a16:   { label:'Ages 16+',   eco:10, vary:62, iso:28 }
+  };
+  var SKILL = {
+    first: { label:'First season', eco:+8, vary:-2, iso:-6 },
+    dev:   { label:'Developing',   eco:0,  vary:0,  iso:0  },
+    adv:   { label:'Advanced',     eco:-6, vary:+2, iso:+4 }
+  };
+  var SPORT = {
+    baseball: { label:'Baseball', note:'Standard bases and overhand throwing progressions.' },
+    softball: { label:'Softball', note:'Tighter base paths and faster reaction windows at the plate; if you coach pitching, give the windmill motion its own focused block on a separate day.' }
+  };
+  var MIXLEG = [
+    { name:'Play', color:'#3a8a5e' },
+    { name:'Varied skill', color:'#5fa382' },
+    { name:'Focused technique', color:'#c8862e' }
+  ];
+  var state = { age:'a79', skill:'dev', sport:'baseball', len:'75' };
+
+  window.fwPick = function(k,v,btn){
+    state[k]=v;
+    var row=btn.parentNode.querySelectorAll('.wz-opt');
+    for(var i=0;i<row.length;i++) row[i].classList.remove('active');
+    btn.classList.add('active');
+    render();
+  };
+
+  function pct(){
+    var b=BASE[state.age], a=SKILL[state.skill];
+    var raw={eco:b.eco+a.eco, vary:b.vary+a.vary, iso:Math.max(0,b.iso+a.iso)};
+    var t=raw.eco+raw.vary+raw.iso;
+    var pe=Math.round(raw.eco/t*100), pv=Math.round(raw.vary/t*100);
+    return {eco:pe, vary:pv, iso:100-pe-pv};
+  }
+
+  function blocks(){
+    var p=pct(), L=parseInt(state.len,10);
+    var playMin=Math.round(p.eco*L/100);
+    var variedMin=Math.round(p.vary*L/100);
+    var techMin=L-playMin-variedMin;
+    if(techMin<0){variedMin+=techMin;techMin=0;}
+    // subdivide play
+    var closer=5;
+    var warmup=Math.max(5, Math.round(playMin*0.35/5)*5);
+    var live=playMin-warmup-closer;
+    if(live<0){warmup+=live;live=0;}
+    if(warmup<0)warmup=0;
+    var out=[
+      {tag:'Play', color:'#3a8a5e', name:'Arrival &amp; Free Play', min:warmup, desc:'A movement game in motion before the first whistle. No lines, no waiting.'},
+      {tag:'Varied skill', color:'#5fa382', name:'Skill Stations', min:variedMin, desc:'Small groups, changing conditions. Same skill, different speeds and angles.'},
+      {tag:'Technique', color:'#c8862e', name:'One Focused Fix', min:techMin, desc:'Pick one thing. Clean reps to install it, then back into play.'},
+      {tag:'Play', color:'#3a8a5e', name:'Small-Sided &amp; Live', min:live, desc:'Read-and-react reps inside a game with a score or a constraint.'},
+      {tag:'Play', color:'#7a9480', name:'The Closer', min:closer, desc:'End on a compete or a win they will talk about in the car.'}
+    ];
+    return out.filter(function(b){return b.min>0;});
+  }
+
+  function render(){
+    var p=pct(), bl=blocks();
+    // mix bar
+    var bar=document.getElementById('fw-mixbar'); bar.innerHTML='';
+    [['eco','#3a8a5e'],['vary','#5fa382'],['iso','#c8862e']].forEach(function(x){
+      var seg=document.createElement('div');
+      seg.style.cssText='background:'+x[1]+';width:'+p[x[0]]+'%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#10210f;transition:width 0.25s';
+      if(p[x[0]]>=10) seg.textContent=p[x[0]]+'%';
+      bar.appendChild(seg);
+    });
+    var leg=document.getElementById('fw-mixlegend'); leg.innerHTML='';
+    MIXLEG.forEach(function(m){
+      var s=document.createElement('span');
+      s.style.cssText='display:flex;align-items:center;gap:0.4rem';
+      s.innerHTML='<span style="width:10px;height:10px;border-radius:2px;background:'+m.color+';display:inline-block"></span>'+m.name;
+      leg.appendChild(s);
+    });
+    // blocks
+    var wrap=document.getElementById('fw-blocks'); wrap.innerHTML='';
+    bl.forEach(function(b,i){
+      var row=document.createElement('div');
+      row.style.cssText='display:flex;gap:0.9rem;align-items:flex-start;background:var(--forest2);border:1px solid var(--rule);border-left:4px solid '+b.color+';border-radius:9px;padding:0.85rem 1rem';
+      row.innerHTML='<div style="font-family:var(--mono);font-size:1.05rem;font-weight:700;color:'+b.color+';min-width:54px">'+b.min+' min</div>'
+        +'<div><div style="font-weight:700;color:var(--ink);font-size:0.95rem;margin-bottom:0.15rem">'+b.name+'</div>'
+        +'<div style="font-size:0.8rem;color:var(--text-light);line-height:1.45">'+b.desc+'</div></div>';
+      wrap.appendChild(row);
+    });
+    var sportNote=document.createElement('div');
+    sportNote.style.cssText='font-size:0.78rem;color:var(--gold);margin-top:0.25rem';
+    sportNote.innerHTML='Sport note ('+SPORT[state.sport].label+'): '+SPORT[state.sport].note;
+    wrap.appendChild(sportNote);
+  }
+
+  window.fwPrint=function(){
+    var p=pct(), bl=blocks(), b=BASE[state.age], sk=SKILL[state.skill], sp=SPORT[state.sport], L=state.len;
+    var rows=bl.map(function(x){
+      return '<tr><td style="padding:9px 11px;border:1px solid #888;font-weight:bold;text-align:center;width:70px;font-size:16px">'+x.min+'<div style="font-size:9px;font-weight:normal">min</div></td>'
+        +'<td style="padding:9px 11px;border:1px solid #888"><b>'+x.name.replace('&amp;','&')+'</b><div style="font-size:11px;color:#444;margin-top:2px">'+x.desc+'</div>'
+        +'<div style="margin-top:6px;border:1px dashed #aaa;border-radius:4px;height:26px"></div></td></tr>';
+    }).join('');
+    var html='<!DOCTYPE html><html><head><title>Practice Blueprint - DugoutLab</title></head>'
+      +'<body style="font-family:Helvetica,Arial,sans-serif;color:#111;max-width:720px;margin:24px auto;padding:0 18px">'
+      +'<div style="border:2px solid #333;padding:6px 14px;display:inline-block;font-weight:bold;letter-spacing:1px">DUGOUTLAB &middot; PRACTICE BLUEPRINT</div>'
+      +'<h1 style="font-size:21px;margin:16px 0 2px">'+b.label+' &middot; '+sk.label+' &middot; '+sp.label+' &middot; '+L+'-minute practice</h1>'
+      +'<p style="font-size:13px;color:#444;margin:4px 0 4px">Weighting: '+p.eco+'% play &middot; '+p.vary+'% varied skill &middot; '+p.iso+'% focused technique. Write your own activity in each blank box.</p>'
+      +'<table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:12px">'+rows+'</table>'
+      +'<p style="font-size:11px;color:#555;margin-top:14px"><b>Sport note ('+sp.label+'):</b> '+sp.note+'</p>'
+      +'<p style="font-size:11px;color:#555;margin-top:6px;line-height:1.5"><b>A starting point, not a prescription.</b> Based on motor-learning research summarized at dugoutlab.com/how-kids-learn.html and the LTAD / USA Baseball ADM frameworks.</p>'
+      +'<p style="font-size:11px;color:#555">dugoutlab.com &middot; Free for volunteer coaches &middot; Made free thanks to GamedayHelpers.com</p>'
+      +'<div style="margin-top:14px"><button onclick="window.print()" style="background:#fff;color:#111;border:2px solid #333;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:bold;cursor:pointer;margin-right:8px">Print / Save PDF</button>'
+      +'<button onclick="window.close()" style="background:#eee;color:#333;border:none;border-radius:8px;padding:9px 22px;font-size:13px;cursor:pointer">Close</button></div>'
+      +'<style>@media print{button{display:none}}</style></body></html>';
+    var w=window.open('','_blank'); w.document.write(html); w.document.close();
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
