@@ -9,6 +9,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
+<style>
+  .cd-block { margin-bottom:1.15rem; }
+  .cd-tag { font-size:0.66rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.3rem; }
+  .cd-text { font-size:1.02rem; line-height:1.6; color:var(--ink); margin:0; }
+  .cd-anchor { background:var(--gold); color:var(--forest-deep); border-radius:10px; padding:0.85rem 1.1rem; font-family:var(--serif); font-size:1.15rem; font-weight:600; margin-top:1.3rem; }
+</style>
 </head>
 <body>
 <nav class="nav">
@@ -59,33 +65,40 @@
       </ul>
     </div>
 
-    <h2 style="font-family:var(--serif);font-weight:600;color:var(--cream-ink,#1a1a1a);font-size:1.5rem;margin:2rem 0 1rem">Start the six weeks</h2>
-    <p style="font-size:0.98rem;line-height:1.65;color:var(--cream-ink-soft,#444);margin-bottom:1.25rem">Tell us where to send it. That is the whole sign-up.</p>
+    <h2 style="font-family:var(--serif);font-weight:600;color:var(--cream-ink,#1a1a1a);font-size:1.5rem;margin:2rem 0 0.5rem">The program, at your pace</h2>
+    <p style="font-size:0.95rem;line-height:1.65;color:var(--cream-ink-soft,#444);margin-bottom:1.5rem">Forty-two days, six weeks. One card a day. Your progress is saved on this device, so you can close the tab and pick up where you left off. No sign-up, no email, nothing to lose.</p>
 
-    <!-- ════════════════════════════════════════════════════════════════
-         GOOGLE FORM INTAKE
-         Replace the src below with your published Google Form embed URL.
-         In your Form: ... menu -> Embed HTML -> copy the src value.
-         Until then this shows a fallback button.
-    ════════════════════════════════════════════════════════════════ -->
-    <div id="cd-form-wrap" style="background:white;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)">
-      <iframe
-        id="cd-form"
-        src="REPLACE_WITH_GOOGLE_FORM_EMBED_URL"
-        width="100%"
-        height="640"
-        frameborder="0"
-        marginheight="0"
-        marginwidth="0"
-        style="display:block;border:0"
-        title="Coach Dad sign-up">Loading the sign-up form&hellip;</iframe>
+    <div id="cd-reader" style="background:var(--forest-deep);border:1px solid var(--rule);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.18)">
+      <div style="padding:1.1rem 1.4rem;border-bottom:1px solid var(--rule)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.5rem">
+          <span id="cd-weeklabel" style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)"></span>
+          <span id="cd-count" style="font-family:var(--mono);font-size:0.78rem;color:var(--ink-soft)"></span>
+        </div>
+        <div style="height:7px;background:rgba(255,255,255,0.10);border-radius:99px;overflow:hidden">
+          <div id="cd-progress" style="height:100%;background:var(--gold);width:0%;transition:width 0.3s"></div>
+        </div>
+      </div>
+      <div style="padding:1.6rem 1.5rem">
+        <div style="display:flex;align-items:baseline;gap:0.7rem;margin-bottom:1.1rem;flex-wrap:wrap">
+          <span id="cd-daynum" style="font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--gold)"></span>
+          <span id="cd-title" style="font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--ink);letter-spacing:-0.01em"></span>
+        </div>
+        <div class="cd-block"><div class="cd-tag">The idea</div><p id="cd-read" class="cd-text"></p></div>
+        <div class="cd-block"><div class="cd-tag" style="color:#7ad6a8">One rep today</div><p id="cd-rep" class="cd-text"></p></div>
+        <div class="cd-block"><div class="cd-tag" style="color:#e2a85a">Watch for</div><p id="cd-watch" class="cd-text"></p></div>
+        <div class="cd-anchor"><span style="font-size:0.66rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--forest-deep);opacity:0.65;display:block;margin-bottom:0.2rem">Anchor</span><span id="cd-anchor"></span></div>
+      </div>
+      <div style="padding:1.1rem 1.4rem;border-top:1px solid var(--rule);display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center">
+        <button id="cd-prev" class="btn btn-forest btn-sm" onclick="cdNav(-1)">&larr; Back</button>
+        <button id="cd-done" class="btn btn-primary btn-sm" onclick="cdComplete()">Mark done &amp; continue</button>
+        <button id="cd-next" class="btn btn-forest btn-sm" onclick="cdNav(1)">Next &rarr;</button>
+        <span style="flex:1"></span>
+        <button class="btn btn-forest btn-sm" onclick="cdToday()">Jump to today</button>
+        <button class="btn btn-forest btn-sm" onclick="cdReset()" style="opacity:0.7">Reset</button>
+      </div>
     </div>
 
-    <noscript>
-      <p style="margin-top:1rem"><a href="REPLACE_WITH_GOOGLE_FORM_PUBLIC_URL" class="btn btn-primary">Open the sign-up form</a></p>
-    </noscript>
-
-    <p style="font-size:0.8rem;color:var(--cream-ink-soft,#666);margin-top:1rem;line-height:1.55">Your email is used only to send Coach Dad and is never sold or shared. Delivered from info@gamedayhelpers.com.</p>
+    <p style="font-size:0.8rem;color:var(--cream-ink-soft,#666);margin-top:1rem;line-height:1.55">Inspired by the Book of James on the discipline of the tongue and Matthew Kelly's work on intentional speech, pointed at the field and the family.</p>
 
   </div>
 </section>
@@ -107,14 +120,42 @@
 </footer>
 
 <script src="js/site.js"></script>
+<script src="js/coach-dad-data.js"></script>
 <script>
-// Friendly fallback if the form URL hasn't been set yet
 (function(){
-  var f=document.getElementById('cd-form');
-  if(f && f.src.indexOf('REPLACE_WITH')>-1){
-    document.getElementById('cd-form-wrap').innerHTML=
-      '<div style="padding:2rem 1.75rem;text-align:center;color:#555;font-size:0.95rem">The sign-up form is being connected. Check back shortly, or email <a href="mailto:info@gamedayhelpers.com">info@gamedayhelpers.com</a> to be added.</div>';
+  var DATA = window.COACH_DAD;
+  var KEY_DONE = 'cd_completed_v1';
+  var KEY_VIEW = 'cd_view_v1';
+  function getDone(){ try { return JSON.parse(localStorage.getItem(KEY_DONE)) || []; } catch(e){ return []; } }
+  function setDone(a){ try { localStorage.setItem(KEY_DONE, JSON.stringify(a)); } catch(e){} }
+  function setView(v){ try { localStorage.setItem(KEY_VIEW, String(v)); } catch(e){} }
+  function firstIncomplete(){ var done=getDone(); for (var i=1;i<=42;i++){ if (done.indexOf(i)===-1) return i; } return 42; }
+  function getView(){ var v=parseInt(localStorage.getItem(KEY_VIEW),10); return (v>=1&&v<=42)?v:firstIncomplete(); }
+  var view = getView();
+  function card(n){ return DATA.days[n-1]; }
+  function render(){
+    var c=card(view), done=getDone();
+    document.getElementById('cd-weeklabel').textContent = DATA.weeks[c.w];
+    document.getElementById('cd-count').textContent = done.length + ' of 42 complete';
+    document.getElementById('cd-progress').style.width = (done.length/42*100) + '%';
+    document.getElementById('cd-daynum').textContent = 'Day ' + c.d;
+    document.getElementById('cd-title').textContent = c.title;
+    document.getElementById('cd-read').textContent = c.read;
+    document.getElementById('cd-rep').textContent = c.rep;
+    document.getElementById('cd-watch').textContent = c.watch;
+    document.getElementById('cd-anchor').textContent = c.anchor;
+    var isDone = done.indexOf(c.d)>-1;
+    document.getElementById('cd-done').innerHTML = isDone ? 'Completed ✓ &nbsp;Next &rarr;' : 'Mark done &amp; continue';
+    var prev=document.getElementById('cd-prev'), next=document.getElementById('cd-next');
+    prev.disabled=(view<=1); next.disabled=(view>=42);
+    prev.style.opacity=(view<=1)?0.4:1; next.style.opacity=(view>=42)?0.4:1;
+    setView(view);
   }
+  window.cdNav=function(dir){ var n=view+dir; if(n<1)n=1; if(n>42)n=42; view=n; render(); document.getElementById('cd-reader').scrollIntoView({behavior:'smooth',block:'start'}); };
+  window.cdComplete=function(){ var done=getDone(), c=card(view); if(done.indexOf(c.d)===-1){done.push(c.d);setDone(done);} if(view<42)view++; render(); document.getElementById('cd-reader').scrollIntoView({behavior:'smooth',block:'start'}); };
+  window.cdToday=function(){ view=firstIncomplete(); render(); document.getElementById('cd-reader').scrollIntoView({behavior:'smooth',block:'start'}); };
+  window.cdReset=function(){ if(confirm('Reset your Coach Dad progress on this device?')){ setDone([]); view=1; render(); } };
+  render();
 })();
 </script>
 </body>
