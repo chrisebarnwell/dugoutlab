@@ -977,10 +977,10 @@ button { font: inherit; cursor: pointer; }
   margin: 0 auto;
   position: relative;
   min-height: 440px;
+  display: grid;
 }
 .hero-slide {
-  position: absolute;
-  inset: 0;
+  grid-area: 1 / 1;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.5s ease;
@@ -989,7 +989,6 @@ button { font: inherit; cursor: pointer; }
   align-items: center;
 }
 .hero-slide.active {
-  position: relative;
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
