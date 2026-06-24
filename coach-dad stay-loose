@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stay Loose | The Game Nobody Sees</title>
+<!--
+  COACH DAD PROJECT  -  STAY LOOSE  -  THE GAME NOBODY SEES
+  Integration: self-contained. Edit CSS variables in :root to match DugoutLab.
+  Edit content in the INNINGS and CARDS arrays in the script. Progress saves
+  to the reader's browser. Print a lesson with the Print button (toner light).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* DugoutLab palette, pulled from the repo css/main.css */
+    --field:#0F1F18; --field-2:#0a1610; --chalk:#faf7ef; --paper:#f4efe6;
+    --clay:#a06e1f; --amber:#C8862E; --amber-d:#a06e1f; --ink:#0F1F18; --ink-2:#5b574c;
+    --seam:#3e6b4e; --line:#d8d0bf;
+    --display:"Playfair Display","Lora",Georgia,serif;
+    --body:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;font-family:var(--body);color:var(--ink);background:var(--field-2);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px;}
+
+  header.board{background:repeating-linear-gradient(0deg,rgba(255,255,255,0.02) 0 2px,transparent 2px 4px),linear-gradient(180deg,var(--field),var(--field-2));border-bottom:4px solid var(--amber);color:var(--chalk);padding:28px 0 20px;}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.22em;text-transform:uppercase;color:var(--amber);margin:0 0 6px;}
+  .board h1{font-family:var(--display);font-weight:800;text-transform:uppercase;line-height:0.92;font-size:clamp(38px,9vw,70px);margin:0 0 2px;}
+  .board .sub{font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:0.04em;opacity:0.85;font-size:clamp(14px,3.4vw,19px);margin:0 0 18px;}
+
+  .score{display:grid;grid-template-columns:auto repeat(6,1fr) auto;gap:5px;background:var(--field-2);border:2px solid rgba(232,178,58,0.35);border-radius:6px;padding:9px;}
+  .score .cell{text-align:center;padding:7px 3px;border-radius:4px;background:rgba(255,255,255,0.03);}
+  .score button.cell{border:0;cursor:pointer;color:inherit;font:inherit;}
+  .score button.cell:hover{background:rgba(232,178,58,0.10);}
+  .score button.cell:focus-visible{outline:2px solid var(--amber);}
+  .score .label{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.6;display:block;}
+  .score .bulb{font-family:var(--display);font-weight:800;font-size:clamp(18px,4.6vw,26px);color:rgba(246,242,231,0.30);transition:color .5s,text-shadow .5s;}
+  .score .cell.lit .bulb{color:var(--amber);text-shadow:0 0 12px rgba(232,178,58,0.7);}
+  .score .cell.head{background:transparent;display:flex;align-items:center;}
+  .score .cell.head .bulb{font-size:12px;color:var(--chalk);opacity:0.7;}
+  .score .cell.final .bulb{color:rgba(232,178,58,0.30);}
+  .score .cell.final.lit .bulb{color:var(--amber);}
+
+  /* dashboard */
+  #dashboard{background:var(--field);color:var(--chalk);border-bottom:1px solid rgba(255,255,255,0.1);padding:14px 0;}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .stat{background:rgba(255,255,255,0.04);border-radius:6px;padding:9px 6px;text-align:center;}
+  .stat .v{font-family:var(--display);font-weight:800;font-size:clamp(20px,5vw,28px);color:var(--amber);line-height:1;}
+  .stat .l{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.7;margin-top:4px;display:block;}
+  .joke{margin-top:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:0.02em;opacity:0.82;text-align:center;}
+  .joke b{color:var(--amber);font-weight:400;}
+
+  main{background:var(--paper);}
+  #player{padding:26px 0 10px;min-height:50vh;}
+  .lessonmeta{font-family:var(--mono);font-size:11px;letter-spacing:0.08em;color:var(--clay);text-transform:uppercase;margin:0 0 6px;}
+  .lessontitle{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(26px,6vw,40px);line-height:0.96;margin:0 0 16px;color:var(--ink);}
+  h2.sec{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(22px,5vw,32px);margin:0 0 6px;}
+  h2 .tag{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;color:var(--clay);display:block;margin-bottom:4px;text-transform:uppercase;}
+  .lead{font-size:16px;color:var(--ink-2);margin:0 0 14px;}
+
+  .innbrief{border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:0 0 20px;background:var(--chalk);}
+  .innbrief .quote{font-family:var(--display);font-weight:600;font-size:clamp(17px,4vw,21px);line-height:1.2;border-left:4px solid var(--clay);padding-left:12px;margin:0 0 12px;}
+  .innbrief .quote .by{display:block;font-family:var(--mono);font-size:11px;font-weight:400;letter-spacing:0.08em;color:var(--ink-2);margin-top:5px;text-transform:uppercase;}
+  .innbrief .sci{font-size:14px;color:var(--ink-2);margin:0;}
+  .innbrief .sci b{color:var(--clay);font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;display:block;margin-bottom:5px;font-weight:400;}
+
+  .art{font-size:16.5px;margin:0 0 14px;color:var(--ink);}
+
+  .block{background:var(--chalk);border:1px solid var(--line);border-left:4px solid var(--clay);border-radius:6px;padding:13px 15px;margin:16px 0;}
+  .block.breath{border-left-color:var(--field);}
+  .block.reflect{border-left-color:var(--amber-d);}
+  .blockh{font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--clay);display:block;margin-bottom:7px;}
+  .block.breath .blockh{color:var(--field);}
+  .block p{margin:0 0 8px;font-size:15px;}
+  .check{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-2);cursor:pointer;margin-top:8px;}
+  .check input{width:20px;height:20px;accent-color:var(--clay);cursor:pointer;}
+  .reflect input[type=text]{width:100%;margin-top:8px;font-family:var(--body);font-size:15px;padding:9px;border:1px solid var(--line);border-radius:5px;background:var(--paper);}
+  .reflect input[type=text]:focus-visible{outline:2px solid var(--clay);}
+
+  .example{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--seam);border-radius:6px;padding:11px 13px;margin:16px 0;}
+  .example .exh{font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--seam);display:block;margin-bottom:7px;}
+  .example .exrow{display:grid;grid-template-columns:62px 1fr;gap:8px;font-size:14px;margin:4px 0;}
+  .example .exrow .ek{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-2);padding-top:2px;}
+
+  .watch{font-size:14px;color:var(--ink-2);margin:14px 0 0;}
+  .watch b{color:var(--ink);font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;}
+  .anchorline{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:clamp(18px,4.4vw,24px);color:var(--clay);border-top:2px solid var(--line);margin-top:18px;padding-top:14px;letter-spacing:0.01em;}
+
+  .wizardnav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 0;padding-top:16px;border-top:1px solid var(--line);}
+  .btn{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:0.03em;font-size:15px;cursor:pointer;border:0;border-radius:6px;padding:11px 20px;}
+  .btn.primary{background:var(--field);color:var(--chalk);}
+  .btn.primary.done{background:var(--amber);color:var(--ink);}
+  .btn.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line);}
+  .btn:focus-visible{outline:3px solid var(--clay);outline-offset:2px;}
+  .btn.pushright{margin-left:auto;}
+  .printbtn{background:transparent;border:1px solid var(--line);color:var(--ink-2);font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;border-radius:5px;padding:8px 12px;cursor:pointer;}
+
+  .setup{display:grid;gap:14px;margin:16px 0;}
+  .field-box{background:var(--chalk);border:1px solid var(--line);border-radius:8px;padding:14px 16px;}
+  .field-box label{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--clay);display:block;margin-bottom:7px;}
+  .field-box textarea,.field-box input[type=number]{width:100%;font-family:var(--body);font-size:15px;color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:9px;background:var(--paper);resize:vertical;}
+  .field-box textarea:focus-visible,.field-box input:focus-visible{outline:2px solid var(--clay);}
+  .hint{font-size:13px;color:var(--ink-2);margin:4px 0 0;}
+  .note{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--seam);border-radius:6px;padding:13px 16px;font-size:14px;color:var(--ink-2);margin:16px 0;}
+  .note b{color:var(--ink);}
+
+  .finalbox{text-align:center;background:var(--field);color:var(--chalk);border:2px solid var(--amber);border-radius:8px;padding:26px 20px;}
+  .finalbox .big{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(30px,8vw,52px);color:var(--amber);margin:0 0 6px;}
+
+  footer{background:var(--field-2);color:var(--chalk);padding:24px 0 28px;}
+  footer h4{font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber);margin:0 0 8px;}
+  footer .src{font-size:12px;opacity:0.8;line-height:1.7;}
+  footer .sponsor{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.12);font-size:12px;opacity:0.7;font-family:var(--mono);}
+
+  a.skip{position:absolute;left:-999px;}
+  a.skip:focus{left:8px;top:8px;background:var(--amber);color:var(--ink);padding:8px;z-index:9;border-radius:4px;}
+
+  @media (max-width:560px){ .score{grid-template-columns:repeat(4,1fr);} .score .cell.head{display:none;} .stats{grid-template-columns:repeat(2,1fr);} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important;} }
+
+  @media print {
+    body{background:#fff;color:#000;font-family:Helvetica,Arial,sans-serif;}
+    header.board,#dashboard,#scoreboard,.wizardnav,.printbtn,footer .sponsor,a.skip{display:none !important;}
+    main{background:#fff;}
+    .innbrief,.block,.example,.note,.field-box{background:#fff !important;color:#000 !important;border:1px solid #000 !important;}
+    .blockh,.block.breath .blockh,.lessonmeta,.example .exh,.innbrief .sci b{color:#000 !important;}
+    .anchorline,.lessontitle,.innbrief .quote{color:#000 !important;border-color:#000 !important;}
+    input[type=text],input[type=number],textarea,.btn{display:none !important;}
+    .check input{-webkit-appearance:checkbox;appearance:checkbox;}
+    .art,.block p{font-size:12pt;}
+  }
+  #workbook{display:none;}
+  .wbbtn{background:transparent;border:1px solid var(--amber);color:var(--amber);font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;border-radius:5px;padding:7px 12px;cursor:pointer;}
+  .wbbtn:focus-visible{outline:2px solid var(--amber);}
+  @media print {
+    body.printall header.board, body.printall #dashboard, body.printall #scoreboard, body.printall #player, body.printall footer .sponsor { display:none !important; }
+    body.printall #workbook { display:block; font-family:Helvetica,Arial,sans-serif; color:#000; }
+    #workbook .wblesson{ page-break-after:always; }
+    #workbook .wbcover{ page-break-after:always; text-align:center; padding-top:28vh; }
+    #workbook .wbcover h1{ font-size:34pt; margin:0 0 8pt; }
+    #workbook .wbtitle{ font-size:18pt; margin:6pt 0; }
+    #workbook .wbinn{ font-weight:bold; border-bottom:1px solid #000; padding-bottom:4pt; text-transform:uppercase; }
+    #workbook .wbmeta{ font-size:9pt; letter-spacing:0.05em; text-transform:uppercase; }
+    #workbook .wbquote{ font-style:italic; }
+    #workbook .wbanchor{ font-weight:bold; border-top:1px solid #000; padding-top:6pt; margin-top:8pt; }
+    #workbook .wbline{ letter-spacing:2px; color:#000; }
+    #workbook p{ font-size:11pt; line-height:1.5; margin:6pt 0; }
+  }
+</style>
+</head>
+<body>
+<a href="#player" class="skip">Skip to your lesson</a>
+
+<header class="board">
+  <div class="wrap">
+    <p class="eyebrow">Coach Dad Project</p>
+    <h1>Stay Loose</h1>
+    <p class="sub">The game nobody sees</p>
+    <div class="score" id="scoreboard" aria-label="Progress by inning. Tap an inning to jump.">
+      <div class="cell head"><span class="bulb">INN</span></div>
+      <div class="cell final" data-final><span class="label">Final</span><span class="bulb">F</span></div>
+    </div>
+  </div>
+</header>
+
+<div id="dashboard">
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><span class="v" id="statAvg">.000</span><span class="l">Batting avg</span></div>
+      <div class="stat"><span class="v" id="statStreak">0</span><span class="l">Day streak</span></div>
+      <div class="stat"><span class="v" id="statInn">0/6</span><span class="l">Innings</span></div>
+      <div class="stat"><span class="v" id="statAB">0</span><span class="l">At bats</span></div>
+    </div>
+    <p class="joke"><b>Dugout joke of the day:</b> <span id="joke"></span></p>
+    <p style="text-align:center;margin-top:8px;"><button class="wbbtn" data-printall="1">Print all 42 as a workbook</button></p>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <div id="player"></div>
+    <div id="workbook" aria-hidden="true"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <h4>Guidelines and sources this guide follows</h4>
+    <p class="src">
+      Play as the engine: Fredrickson and Levenson, 1998 (positive emotions speed recovery from the stress surge); Fredrickson's broaden and build theory; Gottman's 5 to 1 ratio and emotional bank account.<br>
+      Regulation: Jill Bolte Taylor on the roughly 90 second surge (an approximation); Balban and colleagues, 2023, Cell Reports Medicine, Stanford, on the physiological sigh; Lieberman and colleagues, 2007, on naming feelings; Goleman on the amygdala hijack; Gollwitzer on if-then plans; Gross on reappraisal over suppression. Focused-attention practice trains attention by noticing the mind drift and returning it, the core mechanism in mindfulness research (for example, Amishi Jha).<br>
+      The home: Wang and Kenny, 2014, Child Development, on harsh verbal discipline; Baumrind on authoritative parenting; developmental neuroscience on the prefrontal cortex maturing into the mid twenties; Siegel and Bryson's upstairs and downstairs brain.<br>
+      Quotes verified. The disputed Babe Ruth "fear of striking out" line was left out on purpose.
+    </p>
+    <p class="sponsor">DugoutLab is made free thanks to GamedayHelpers.com</p>
+  </div>
+</footer>
+
+<script>
+/* ====================  CONTENT  ==================== */
+const INNINGS = {
+  1:{title:"Loosen Up",pillar:"Notice",quote:'"You can observe a lot by watching."',by:"Yogi Berra",
+     science:"You cannot stop the spark, but you can learn its tells. The same eye that spots the surge can spot a kid asking to play. This inning, you scout yourself.",
+     breath:{name:"The Physiological Sigh",how:"Two inhales through the nose, a big one then a small top-up, then a long slow exhale through the mouth. Repeat three times. Stanford found this the fastest way to drop your arousal."}},
+  2:{title:"Play Drains the Heat",pillar:"Reset",quote:'"It ain\'t over till it\'s over."',by:"Yogi Berra",
+     science:"The surge clears in about 90 seconds if you stop feeding it. Amusement physically speeds that recovery. Play is not a distraction. It is the fastest brake you own.",
+     breath:{name:"The Long Exhale",how:"Breathe in for a count of 4, out for a count of 8. Six slow rounds. The long exhale flips on the calm branch of your nervous system."}},
+  3:{title:"Crowd Out the Loop",pillar:"Refocus",quote:'"You can\'t think and hit at the same time."',by:"Yogi Berra",
+     science:"After 90 seconds the chemicals are gone. What keeps anger alive is the story you keep telling. Name it, then move your attention somewhere better.",
+     breath:{name:"Box Breathing",how:"In for 4, hold for 4, out for 4, hold for 4. Six rounds. It parks your attention on the count instead of the angry story."}},
+  4:{title:"Warm the House",pillar:"Lead",quote:'"If they don\'t play together, the club won\'t be worth a dime."',by:"Babe Ruth",
+     science:"Kids borrow your nervous system. You are the thermostat, not the thermometer. Every warm moment is a deposit, and the warm ones need to outnumber the hard ones about five to one.",
+     breath:{name:"Coherent Breathing",how:"Slow it to about six breaths a minute. In for 5, out for 5, for two minutes. This is the steady base your kids borrow from you."}},
+  5:{title:"Play Is the Connection",pillar:"Connect",quote:'"Every strike brings me closer to the next home run."',by:"attributed to Babe Ruth",
+     science:"You cannot reach a flooded kid, or a flooded you. Play is how you connect first. The deposits do not stop at the kids. You out deposit the doubt at home, too.",
+     breath:{name:"Three Before You Connect",how:"Before any hard talk, three physiological sighs. It gets you under the line where you can actually reach them."}},
+  6:{title:"The Fun Dad Who Doesn't Snap",pillar:"Become",quote:'"A life is not important except in the impact it has on other lives."',by:"Jackie Robinson",
+     science:"Decide the move before the moment. Reframe instead of bottle. Repair after a blowup. You are not killing the fire that made you a player. You are giving it a new job.",
+     breath:{name:"Your Pre-Game Breath",how:"Pick the breath that worked best these six weeks. Do it every morning before the house wakes. Make it your ritual."}}
+};
+
+const CARDS = [
+  {d:1,i:1,t:"The tight tells",action:"Name your earliest physical tell out loud once today, the moment you feel it rising.",watch:"Waiting until you are already yelling.",anchor:"Tight warns you first.",reflect:"What is your earliest tell, the first sign in your body that the heat is coming?",
+   article:["Every blowup has a warmup. Before the words come out, your body tips its hand. Your jaw sets. Your chest goes tight. Your voice drops into a mutter. You have felt it a hundred times and missed it a hundred times, because you were watching the kids and not yourself.","A good coach reads the field before the pitch. This week you read yourself first. You are not trying to stop the spark. You cannot. You are learning to feel it a half second sooner. That half second is the whole game. It is the gap where you still get a vote."],
+   ex:{moment:"The kids are loud again and you catch yourself muttering under your breath, half to yourself: unbelievable.",trap:"It feels like harmless venting. The room hears every word. It is a quiet withdrawal.",move:"The mutter is your earliest tell. The second you hear it start, that is the surge. Sigh, and do not narrate."}},
+  {d:2,i:1,t:"The joy map",action:"Write down the one time of day your house already laughs, and protect it.",watch:"Believing there is no fun left.",anchor:"Find the loose spots.",reflect:"When does your house already laugh? Name the loose spot.",
+   article:["You think the house is all chaos. It is not. Somewhere in the day there is already laughter. The drive to school. The bath. The wrestle before bed. Play is not missing. It is just unmapped.","Find the loose spots and you find your leverage. The plan is simple. Protect the fun you already have, then grow it. You do not have to invent joy from scratch. You have to notice where it already lives and stop stepping on it."]},
+  {d:3,i:1,t:"The spark is not a verdict",action:"Next surge, tell yourself out loud or in your head: that is the alarm, not a verdict.",watch:"Beating yourself up for feeling it.",anchor:"Feel the spark, pick the flame.",reflect:"What story did you tell yourself today when you got frustrated?",
+   article:["When the heat rises, you make it mean something about you. I am a bad dad. I am failing. That is a verdict, and verdicts make you defensive, which makes you sharp. But the spark itself is just chemistry. Old wiring doing its job.","Name it for what it is. The alarm, not a verdict. You did not choose the surge. You only choose what you do with it. A hitter who treats a strike as proof he is worthless presses harder and digs the hole deeper. Let the spark be a spark. Then pick your next pitch."]},
+  {d:4,i:1,t:"Count tight and loose",action:"Keep two tallies today: times you snapped or went cold, and times you laughed with your kids.",watch:"Only counting the misses.",anchor:"Watch both columns.",reflect:"Two numbers today: how many snaps, how many laughs?",
+   article:["You cannot coach what you do not chart. Today you keep two simple tallies. How many times you snapped or went cold, and how many times you laughed with your kids. No judgment on either. Just the truth.","Most dads only feel the misses, so the whole day reads like a loss even when it was not. Two columns gives you the real box score. You might be doing better than the voice in your head says. You might not. Either way, now you know your line, and you can watch it move."]},
+  {d:5,i:1,t:"Catch their bids",action:"Catch one bid for play or connection today and turn toward it instead of brushing it off.",watch:"Saying not now on autopilot.",anchor:"Turn toward the bid.",reflect:"What was one bid for play you caught, or missed, today?",
+   article:["Kids do not ask for attention with a memo. They ask in tiny bids. A silly noise. Watch this, Dad. A toy held up. A dumb question you have answered twice. Each one is a small knock on the door.","When you are tight, you swat the bids away on autopilot. Not now. In a minute. Stop. Every bid you turn toward is a deposit. Every one you brush off is a small withdrawal. Today, catch one and turn toward it. The whole relationship is built one bid at a time."]},
+  {d:6,i:1,t:"The driveway reset",action:"Before you walk in today, take three slow breaths and pick one light thing to do first.",watch:"Carrying the workday through the door.",anchor:"Reset before you enter.",reflect:"Did you reset before you walked in, or carry the day through the door?",
+   article:["You do not arrive home neutral. You pull in carrying the whole day, the traffic, the work, the last argument. Then the door opens and the noise hits, and the charge you walked in with goes off on the nearest kid.","Pros do not walk straight from the bus to the box. They have a routine to shift gears. Yours is thirty seconds in the driveway. Three slow breaths. Pick one light thing to do first when you walk in. You do not bring the game home. You reset, then you enter."]},
+  {d:7,i:1,t:"Inning 1 check",action:"Write down the one trigger that fires most and the one tell that warns you earliest.",watch:"Telling yourself you already know your house.",anchor:"You cannot shift what you will not see.",reflect:"Your top trigger and your earliest tell. Write them.",
+   article:["One week in, you did the unglamorous part most people skip. You watched yourself. You found your tells, your triggers, your loose spots. That is the scouting report on you, and it is worth more than any tip.","Awareness is not the whole fix, but nothing changes without it. You cannot shift what you will not see. Write the one trigger that fires most and the one tell that warns you earliest. That pair is your early-warning system for the next five innings."]},
+
+  {d:8,i:2,t:"The sigh, then the smile",action:"Practice three physiological sighs now, before you need them, then make yourself smile.",watch:"Waiting to learn it mid blowup.",anchor:"Sigh, then smile.",reflect:"Did the sigh take the edge off when you used it today?",
+   article:["When the heat hits, your body is the fastest way out, faster than logic. The physiological sigh, two inhales and one long exhale, drops your arousal in seconds. It is the most reliable reset you own.","Then add the part most people miss. A smile or a small laugh right after speeds the recovery even more. Positive feeling physically drains the leftover surge. So the order is simple. Sigh first to take the edge off. Then reach for light to clear the rest."]},
+  {d:9,i:2,t:"Break it with silly",action:"Next time it tips toward a blowup, drop one piece of silly instead of bearing down.",watch:"Thinking you have to be stern to be in charge.",anchor:"Silly breaks the spiral.",reflect:"Where could one piece of silly have broken a standoff today?",
+   article:["A standoff with a kid is a tug of war. The harder you pull, the harder they pull. Silly cuts the rope. A goofy voice, a sudden funny face, a dumb game flips the whole room out of the fight, and nobody had to lose.","You think being stern keeps you in charge. Often it just locks you both in. The calm, playful adult is the one actually running the room. Next time it tips toward a blowup, drop one piece of silly instead. Watch how fast the air changes."]},
+  {d:10,i:2,t:"Feet, breath, play",action:"One time today, feel your feet on the floor, take one breath, then say one warm or funny thing.",watch:"Staying up in your head.",anchor:"Feet down, then lighten.",reflect:"Did you get back in your body before you responded today?",
+   article:["When you flood, you leave your body and move into the story in your head. He always does this. She never listens. Up there, everything is worse than it is. The way back down is through your body.","Feel your feet on the floor. Take one breath. That puts you back in the room, in the actual moment, where things are smaller than the story says. Then say one warm or funny thing. Feet first, then light. That is the whole sequence."]},
+  {d:11,i:2,t:"The reset game",action:"Turn one escalating moment into a quick game today, a race, a tickle, a betcha cannot.",watch:"Needing to win the standoff.",anchor:"Build the off ramp.",reflect:"What stuck moment today could have become a game?",
+   article:["Some moments need an exit ramp. Two kids dug in, or one kid melting down, and there is no clean way out without somebody caving. A small game builds the ramp.","A tickle. A race to the couch. Betcha cannot get your pajamas on before I count to ten. It gives everyone a way down with their dignity. You are not rewarding bad behavior. You are breaking a spiral that words were only feeding. Turn one stuck moment into a game today."]},
+  {d:12,i:2,t:"Step out loose",action:"If you flood, say I need a sec, I will be right back. Reset. Come back with a warm tone.",watch:"Storming off in silence and staying cold.",anchor:"Leave to come back loose.",reflect:"If you stepped out today, did you come back loose or cold?",
+   article:["Walking away to cool down is a skill, not a failure. When you are flooded, you cannot think straight, and anything you say comes out as a weapon. Better to step out than to swing.","But how you leave matters. Storming off in silence reads as punishment and leaves everyone scared. Say it plain. I need a sec, I will be right back. Reset. Then come back light, not cold. You left to protect the room, not to abandon it."]},
+  {d:13,i:2,t:"Drop the volume, raise the play",action:"When you feel it rising, deliberately speak softer and slower, and add one light touch.",watch:"Matching their volume.",anchor:"Quiet cools, playful warms.",reflect:"Who set the volume in your house today, you or the chaos?",
+   article:["You cannot be loud and loose at the same time. When your volume climbs, your whole body tightens with it, and the kids match you. Three loud people is not control. It is a tie at the top of everyone's lungs.","You set the volume in this house. Drop yours on purpose. Slower, softer, lower. A room follows the lowest steady voice, not the loudest. Add one light touch and you have turned the dial the other way. Quiet cools. Playful warms. Use both."],
+   ex:{moment:"Two kids screaming over each other and your voice climbs to get above it.",trap:"Out yelling them. Now three people are loud, and you just taught them that volume wins.",move:"You set the volume in this house. Drop yours on purpose, slow and quiet. A room follows the lowest steady voice, not the loudest."}},
+  {d:14,i:2,t:"Inning 2 check",action:"Note one moment a breath or a laugh changed the outcome today.",watch:"Quitting because you missed some.",anchor:"Play is the fastest brake.",reflect:"One moment a breath or a laugh changed the outcome.",
+   article:["This week you stopped gritting through the surge and started draining it. The sigh. The silly. The reset game. These are not soft. They are the fastest tools you have, and they work because of how your body is built, not how tough you are.","Note one moment a breath or a laugh changed the outcome. That is proof, not theory. You felt it work. Keep the reps. The breath gets faster and the play gets easier every single time you use it."]},
+
+  {d:15,i:3,t:"Name it, then flip it",action:"Say the feeling out loud once today, then name one good or funny thing in the room.",watch:"Naming it, then diving back into the story.",anchor:"Name it, then flip it.",reflect:"What feeling did you name out loud today?",
+   article:["After the first ninety seconds, the chemicals of anger are gone. What keeps it alive is the story you keep telling yourself. Saying the feeling out loud, even just I am frustrated right now, quiets the brain's alarm. It is proven in the scans.","But naming it is only half. If you name it and then dive right back into the story, you reload. So name it, then flip your attention to one light or good thing in the room. Name it, then flip it. You starve the loop and feed something better."],
+   ex:{moment:"You ask the 8 year old to do something and get a no with attitude, or the 12 year old gives you the eye roll and the mouth.",trap:"Matching the attitude and turning it into a power struggle you both lose.",move:"Name it, do not mirror it. Low and calm: that tone will not work, try again. Then wait. Do not feed it."}},
+  {d:16,i:3,t:"Shrink the story",action:"Catch one story today and shrink it down to the plain fact before you respond.",watch:"Believing the worst version.",anchor:"Facts cool, stories burn.",reflect:"What story did you shrink down to a plain fact today?",
+   article:["He never listens. She always does this. I am a terrible father. Notice the words. Never. Always. Terrible. The story is always bigger and uglier than the facts. And the bigger the story, the hotter you get.","Catch one story today and shrink it to the plain fact. The fact is usually small. He did not put his shoes on the first time I asked. That is annoying, not a crisis. Facts you can handle calmly. Stories light you on fire. Stay with the fact."]},
+  {d:17,i:3,t:"HALT, then refuel",action:"When the heat rises, ask which of the four you are: hungry, angry, lonely, tired. Fix that first.",watch:"Blaming the kid for your empty tank.",anchor:"Check your tank first.",reflect:"Which of the four were you when you snapped: hungry, angry, lonely, tired?",
+   article:["Hungry. Angry. Lonely. Tired. When you are running low on any of them, your fuse is half as long and you do not even notice. The kid did not change. Your tank did.","When the heat rises, run the checklist. Which of the four am I right now? Then fix that first, before you correct anybody. A snack, ten minutes, water, a real conversation with an adult. You cannot pour calm into the house from an empty tank."]},
+  {d:18,i:3,t:"Guard your sleep",action:"Protect thirty more minutes of sleep tonight. For patience, not productivity.",watch:"Treating sleep as optional.",anchor:"Rested dad, looser dad.",reflect:"What time will you be in bed tonight?",
+   article:["A tired brain has a hair trigger and no sense of humor. Short sleep makes the alarm louder and the brakes weaker. You will snap at things that would not have touched you rested, and you will not feel like playing at all.","This is not a soft suggestion. It is mechanical. Protect thirty more minutes tonight. Not for productivity. For patience. The most loving thing you can do for your kids tomorrow might be going to bed tonight."]},
+  {d:19,i:3,t:"You cannot think and hit",action:"One tense moment today, drop the running commentary in your head and just respond to what is in front of you.",watch:"Gripping tighter.",anchor:"Loose mind, clean play.",reflect:"When did the commentary in your head get loud today?",
+   article:["A hitter thinking about his hands, the count, the crowd, and his last at-bat all at once cannot hit. The grip on the mind kills the swing. Parenting is the same. A mind full of commentary cannot respond cleanly to the kid in front of it.","Quiet the inner noise and the right move shows up on its own. You know what to do. You just cannot hear it over your own play-by-play. One tense moment today, drop the commentary and simply respond to what is actually happening. Loose mind, clean play."]},
+  {d:20,i:3,t:"Stop reloading, start a game",action:"Catch yourself stewing today and go start a two minute game with a kid instead.",watch:"Calling rumination processing.",anchor:"Crowd it out.",reflect:"Did you catch yourself reloading a slight today? What did you do instead?",
+   article:["Replaying what made you mad does not process it. It reloads it. Every time you run the tape, your body pumps the chemicals again. That is not venting. That is feeding the fire and calling it thinking.","You cannot win the fight against a thought by pushing it away. You win by filling the space with something better. Catch yourself stewing today and go start a two minute game with a kid instead. You cannot rerun the anger and play at the same time. Pick play."]},
+  {d:21,i:3,t:"Inning 3 check",action:"Note one time you swapped the angry loop for a light moment and felt it break.",watch:"Missing the win.",anchor:"Starve the loop, feed the play.",reflect:"One time you swapped the loop for a light moment.",
+   article:["This inning was about your attention. Where it goes, your energy follows. Point it at the angry story and the fire grows. Point it at the fact, the breath, the kid, the game, and the fire dies for lack of fuel.","Note one time you swapped the loop for a light moment and felt it break. That is the muscle. It gets stronger with reps. You are learning that you do not have to win the argument in your head. You just have to stop feeding it."]},
+
+  {d:22,i:4,t:"Thermostat, set to warm",action:"Walk into one tense room today and warm it on purpose instead of matching the heat.",watch:"Only trying to lower it, never to raise it.",anchor:"Thermostat, not thermometer.",reflect:"Did you warm a room today, or just match it?",
+   article:["A thermometer reads the room. A thermostat sets it. Most of us walk in and react to whatever temperature we find. Hot kids make a hot dad. But you are not furniture. You are the thermostat.","And the setting is not just cool. It is warm. Lowering the heat is half the job. Raising the warmth is the other half. Walk into one tense room today and warm it on purpose, instead of matching it. The whole house runs off your dial whether you mean it to or not."]},
+  {d:23,i:4,t:"Five to one",action:"Make five small deposits with one kid today: a wink, a thanks, a joke, a touch, a love you. Count them.",watch:"Letting the negatives outnumber.",anchor:"Five deposits, one withdrawal.",reflect:"Name your five deposits with one kid today.",
+   article:["Healthy homes are not the ones with no conflict. They are the ones where the good outweighs the bad by about five to one. Five warm moments for every hard one. That ratio is the whole game, and you are the one banking the deposits.","Deposits are small. A wink. A thanks. A joke. A hand on the shoulder. An I love you for no reason. None of them are big, but they add up to an account the hard moments draw from. Make five small deposits with one kid today. Count them. Build the balance."]},
+  {d:24,i:4,t:"Redirect, do not match",action:"Next fight, do not referee who started it. Hand it back, or redirect both into something else.",watch:"Escalating to win.",anchor:"Stay out of the courtroom.",reflect:"Did you stay out of the courtroom, or jump in as judge?",
+   article:["Two kids fighting is a fire. Jumping in to judge who started it pours gas on it, because now you are in the fight too, and you can never actually know who started it. The investigation becomes the main event.","Unless someone is in danger, do not referee. Hand it back. I trust you two to sort this out. Or redirect both into something else entirely. Kids resolve far more than we give them credit for the moment we stop being the judge. Stay out of the courtroom."],
+   ex:{moment:"The constant bicker, a shove, he started it, she got more, not fair.",trap:"Jumping in as judge to find who started it. You cannot know, and now you own their fight.",move:"Do not referee. Unless someone is unsafe, hand it back: I trust you two to sort this out. Or redirect both into a quick game."}},
+  {d:25,i:4,t:"Warm and firm",action:"Hold one boundary today in a calm, warm tone. One ask, one consequence, said once.",watch:"Thinking calm means caving.",anchor:"Warm and firm.",reflect:"Where did you hold a line warm and firm today?",
+   article:["Loose does not mean soft. The strongest parenting is both warm and firm at the same time. High warmth without firm limits raises kids who run the house. Firm limits without warmth raises kids who fear you. You need both, together.","So hold the line, but hold it calm. One clear ask. Then a real consequence, said once, in a warm and even tone. No lecture, no stream, no rising voice. The boundary does the work. Your job is just to be the calm wall it leans on."],
+   ex:{moment:"You ask the 4 year old to put shoes on. Nothing. You ask again. The slow no, the stall, the ignore.",trap:"Repeat, repeat, repeat, then snap. The lecture stream that ends in a blowup.",move:"One calm ask. Then one clear choice with a consequence, said once, warm and firm. Action, not more words."}},
+  {d:26,i:4,t:"The freeze is a withdrawal too",action:"When you want to go cold today, stay in the room and offer one warm thing instead.",watch:"Punishing with silence.",anchor:"Stay warm, stay in.",reflect:"Did you go cold anywhere today? What could warm look like there?",
+   article:["Not all damage is loud. Going cold, shutting down, the silent treatment, these feel like control to you and like danger to a kid. Silence from a parent is one of the scariest things a child can feel, because they fill it in with the worst story.","The freeze drains the account as fast as the yell. When you feel yourself going cold, the move is not to disappear. Stay in the room. Offer one warm thing, even something small. You can be quiet and still be present. Stay warm. Stay in."]},
+  {d:27,i:4,t:"Surprise deposit",action:"Do one surprising fun thing today that no one asked for and no one earned.",watch:"Waiting for them to earn it.",anchor:"Give it before it is earned.",reflect:"What surprise deposit did you give that no one earned?",
+   article:["The deposits that land hardest are the ones nobody earned. A planned reward teaches a transaction. A surprise teaches something better. You are loved for nothing, just because.","Do one surprising fun thing today that no one asked for and no one earned. Pancakes for no reason. A spontaneous ten minutes on the floor. A note in a lunchbox. It tells your kids the good stuff is not a paycheck for good behavior. It is just how this house feels."]},
+  {d:28,i:4,t:"Inning 4 check",action:"Note one time your warmth visibly changed the room this week.",watch:"Sliding back to cold or hot.",anchor:"You set the ratio.",reflect:"One time your warmth changed the room.",
+   article:["This inning you stopped reading the room and started setting it. You ran the thermostat toward warm. You banked deposits. You held lines without heat. A calmer house does not start with calmer kids. It starts with a calmer you.","Note one time your warmth visibly changed the room. That is your power, and it is bigger than your volume ever was. You set the ratio in this house. Five to one is not luck. It is a choice you make, over and over, in small moments."]},
+
+  {d:29,i:5,t:"Connect, then correct",action:"With one upset kid today, reconnect with calm or play first. Hold the lesson until they are back down.",watch:"Teaching into the storm.",anchor:"Connect first, correct later.",reflect:"Where did you connect before you corrected today?",
+   article:["A flooded kid cannot learn. Past a certain point of upset, the thinking part of the brain is offline, and every lesson you try to deliver just bounces off. You are coaching a kid who literally cannot hear you yet.","So connect first, correct later. Get them back under the line before you teach anything. Often the fastest bridge is play, or just calm presence. The lesson can wait five minutes. The connection cannot. Reach them, then teach them. Never the other way around."]},
+  {d:30,i:5,t:"Roughhouse on purpose",action:"Five minutes of roughhouse or chase today. Get on the floor. Let them win.",watch:"Being too tired or too cool for it.",anchor:"Get on the floor.",reflect:"Did you get on the floor today?",
+   article:["Physical play is not just letting off steam. Wrestling, chasing, lifting them upside down, it builds connection fast and burns off the very energy that turns into fighting. For a lot of dads it is the most natural way in.","Five minutes of roughhouse today. Get on the floor. Let them pin you. Let them win. You are too tired, sure. Do it anyway. It pays back more than it costs, in laughter, in closeness, and in a calmer house an hour later when the wild energy has somewhere to go."]},
+  {d:31,i:5,t:"The inside joke",action:"Start or repeat one inside joke with each kid today.",watch:"Only ever being the serious one.",anchor:"Build the inside joke.",reflect:"What is one inside joke you have with each kid?",
+   article:["A shared joke is a tiny secret society, just you and one kid. It says we are a team, we have a thing nobody else has. Those private deposits pay out for years, long after they forget what the joke even was.","Start or repeat one inside joke with each kid today. A silly word. A bit you do. A face. It does not have to be funny to anyone else. It only has to be yours. You are building a thread between you that the hard days cannot easily cut."]},
+  {d:32,i:5,t:"Deposit with your partner",action:"Make one unprompted, light, warm gesture toward your partner today. No agenda.",watch:"Waiting to feel affirmed before you give.",anchor:"Out deposit the doubt.",reflect:"What was your one no-agenda gesture toward your partner today?",
+   article:["The warmest house in the world cools fast if the two adults in it are at war. And here is the quiet truth. You do not fix a strained marriage by talking about how strained it is. You fix it the same way you fix everything else here. Deposits.","Make one unprompted, light, warm gesture toward your partner today. No agenda. No keeping score. No waiting to feel appreciated first. Just give one. Doubt does not get argued away. It gets out deposited, one small warm moment at a time, until the account tips."]},
+  {d:33,i:5,t:"Lighter self-talk",action:"Catch one harsh thing you say about yourself today and answer it like you would coach a kid you love.",watch:"Modeling self punishment.",anchor:"Coach yourself like a kid you love.",reflect:"What harsh thing did you say to yourself, and how did you answer it?",
+   article:["Listen to how you talk to yourself when you blow it. Idiot. Useless. You always do this. That voice is not motivation. It is the exact harshness you are trying to get out of the house, just pointed inward. And your kids are learning it from you.","How you treat yourself after a mistake is the template they will use on themselves. So catch one brutal self-judgment today and answer it the way you would talk to a kid you love. Firm, honest, kind. You cannot model a calm inner voice you do not have."]},
+  {d:34,i:5,t:"The look",action:"Give each kid the look once today, the one that says glad you are mine. No words, no lesson.",watch:"Saving it for big moments.",anchor:"The look is a deposit.",reflect:"Who got the look today?",
+   article:["Sometimes the most powerful thing you can give a kid is wordless. One look that says, I am glad you are mine. Win or lose, loud or calm, mess or no mess. They feel it instantly, and they remember it longer than anything you say.","Give each kid that look once today. No lesson attached. No but. Just the look. In a world that grades them all day, you can be the one face that is simply glad they exist. That look is a deposit that never bounces."]},
+  {d:35,i:5,t:"Inning 5 check",action:"Note one person, a kid or your partner, who softened this week as the deposits added up.",watch:"Rushing back to fixing and correcting.",anchor:"Connection produces the behavior.",reflect:"Who softened this week as the deposits added up?",
+   article:["This inning was the engine of the whole course. You connected before you corrected. You played your way in. You deposited with the kids and with your partner. Connection is not the reward for good behavior. It is the thing that produces it.","Note one person who softened this week as the deposits added up. That is the loop running in reverse. Warmth in, warmth back. You are not managing your family anymore. You are warming it. Big difference."]},
+
+  {d:36,i:6,t:"The plan, made in advance",action:"Write your if-then plan and say it out loud: if I feel the surge, then I sigh and reach for something light.",watch:"Hoping you will remember in the heat.",anchor:"Decide before the moment.",reflect:"Write your if-then plan in one line.",
+   article:["Willpower in the heat of the moment is a coin flip. The thing that actually works is deciding the move before the moment ever comes. If this happens, then I do that. Plan it once, cold, and your brain runs it automatically when it counts.","Build yours and point it at play. If I feel the surge, then I take one sigh and reach for something light. Say it out loud until it is automatic. You are not hoping to remember in the storm. You are pre-loading the response so it is already there waiting."]},
+  {d:37,i:6,t:"Reframe, do not bottle",action:"Reframe one trigger today instead of swallowing it. He is four and tired beats he is disrespecting me.",watch:"White knuckling silence.",anchor:"Reframe, then lighten.",reflect:"What trigger did you reframe instead of bottling today?",
+   article:["Swallowing your anger does not make it disappear. It leaks out sideways, in the mutter, the cold shoulder, the snap an hour later over nothing. Bottling is not control. It is a delay.","The move that actually works is reframing. Change the story, not just the volume. He is four and tired beats he is disrespecting me. Same kid, same moment, completely different fuse. Reframe one trigger today instead of stuffing it down. Then let it go for real."]},
+  {d:38,i:6,t:"Repair is a deposit",action:"Repair one moment you got wrong this week. Own it fast and warm, no defending.",watch:"Protecting your authority.",anchor:"Repair builds trust.",reflect:"What did you repair this week?",
+   article:["You will still blow it. Everybody does. What separates a good dad from a haunted one is not a clean record. It is the repair. When you snap, own it fast and warm. I lost my cool. That was not fair to you. I am sorry.","Repair builds more trust than never rupturing would have, because it teaches them what to do with their own mistakes. It models that big people apologize, that love survives conflict, that the relationship is bigger than the bad moment. Repair one thing you got wrong this week."]},
+  {d:39,i:6,t:"Let them grade you",action:"Ask a kid or your partner: am I more fun to be around lately? Take the answer without defending it.",watch:"Fishing for praise.",anchor:"Let them grade you.",reflect:"What did your family say when you asked how you are doing?",
+   article:["You ask your kids how they are doing all day. Turn it around. Ask your family how you are doing. It keeps you honest, and it shows them that growing up never stops, that grown men still work on themselves.","Ask a kid or your partner, am I more fun to be around lately? Then take the answer without defending it. Do not fish for praise. Fish for truth. If it stings, that is information, not an attack. The willingness to ask is itself a deposit."]},
+  {d:40,i:6,t:"The dad they will remember",action:"Do one purely fun thing with the kids today, for no reason at all.",watch:"Being only the enforcer.",anchor:"Be the one they want around.",reflect:"What purely fun thing did you do for no reason?",
+   article:["Decades from now, your kids will not remember the lectures. They will not remember the scores. They will remember two things. Whether home felt safe, and whether you were fun to be around. That is the whole legacy.","So do one purely fun thing today, for no reason at all. No lesson, no agenda, no payoff. Just fun. You are not only raising kids. You are writing the memory they will carry of their father. Make it one they would want to come home to."]},
+  {d:41,i:6,t:"A new job for the beast",action:"Take one ounce of your old competitive fire and pour it into making them laugh today.",watch:"Thinking you have to go quiet to be calm.",anchor:"Same fire, new field.",reflect:"Where did you pour your fire into fun today?",
+   article:["The intensity in you is not the enemy. It is what made you a player. It is drive, fire, the refusal to quit. You are not here to kill it. You are here to give it a better job.","Not enforcer. Entertainer. Take the same fire you used to compete and pour it into making your house fun, making your kids laugh, showing up with energy instead of edge. Same engine, new field. That is how you grow without losing the part of you that always made you, you."]},
+  {d:42,i:6,t:"Stay loose, lead the house",action:"Write one line about the dad your reps are building. Then go be him.",watch:"Quitting now that the program is over.",anchor:"Stay loose. Lead the house.",reflect:"One line: the dad your reps are building.",
+   article:["You started this because the calm coach everybody else got to see was not the man who showed up at home. Six innings later, you are closing that gap. Loose, warm, present. Not perfect. Present.","You already knew how to do this. You do it in the dugout every week. Now you do it in the room nobody sees, which is the only one that ever really counted. Write one line about the dad your reps are building. Then go be him. Stay loose. Lead the house."]}
+];
+
+const JOKES = [
+  "Why did the baseball player bring string to the game? To tie the score.",
+  "Why was the baseball stadium so cool? It was full of fans.",
+  "What has eighteen legs and catches flies? A baseball team.",
+  "Why did the dad bring a ladder to the ballpark? He heard the drinks were on the house.",
+  "Why are spiders great at baseball? They know how to catch flies.",
+  "Why did the baseball go to the bank? To get its bases covered.",
+  "What do you call a catcher who works overtime? A real keeper.",
+  "Why did the scarecrow make the team? He was outstanding in his field."
+];
+
+/* ====================  STATE  ==================== */
+const KEY="coachdad_stayloose_v3";
+let state=loadState();
+function loadState(){ try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}
+  return {done:{},breath:{},notes:{},log:{},setup:{why:"",baseline:"",plan:""},cursor:0}; }
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){} }
+
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function inningDays(i){return CARDS.filter(c=>c.i===i);}
+function inningDoneCount(i){return inningDays(i).filter(c=>state.done[c.d]).length;}
+function inningDone(i){return inningDoneCount(i)===inningDays(i).length;}
+function totalDone(){return CARDS.filter(c=>state.done[c.d]).length;}
+function inningsComplete(){let n=0;for(let i=1;i<=6;i++)if(inningDone(i))n++;return n;}
+function lessonNum(c){return c.d-(c.i-1)*7;}
+function cardByDay(d){return CARDS[d-1];}
+
+function fmtDate(dt){ return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0"); }
+function recordToday(){ state.log[fmtDate(new Date())]=true; }
+function streak(){
+  const has=k=>!!state.log[k];
+  let cur=new Date();
+  if(!has(fmtDate(cur))){ cur.setDate(cur.getDate()-1); if(!has(fmtDate(cur)))return 0; }
+  let s=0;
+  while(has(fmtDate(cur))){ s++; cur.setDate(cur.getDate()-1); }
+  return s;
+}
+function avgStr(){ const a=totalDone()/42; if(a>=1)return "1.000"; return a.toFixed(3).replace(/^0/,""); }
+
+/* ====================  SCOREBOARD  ==================== */
+function buildScoreboard(){
+  const board=document.getElementById("scoreboard");
+  const fin=board.querySelector("[data-final]");
+  for(let i=1;i<=6;i++){
+    const cell=document.createElement("button");
+    cell.type="button"; cell.className="cell"; cell.dataset.inning=i;
+    cell.setAttribute("aria-label","Inning "+i+", jump to it");
+    cell.innerHTML='<span class="label">Inn '+i+'</span><span class="bulb" id="bulb'+i+'">'+i+'</span>';
+    cell.addEventListener("click",()=>goTo((i-1)*7+1));
+    board.insertBefore(cell,fin);
+  }
+}
+function refreshScoreboard(){
+  for(let i=1;i<=6;i++){
+    const cell=document.querySelector('.cell[data-inning="'+i+'"]'); if(!cell)continue;
+    const done=inningDone(i); cell.classList.toggle("lit",done);
+    const b=document.getElementById("bulb"+i);
+    b.textContent=done?i:(inningDoneCount(i)+"/7"); b.style.fontSize=done?"":"14px";
+  }
+  document.querySelector(".cell.final").classList.toggle("lit",totalDone()===42);
+}
+
+/* ====================  DASHBOARD  ==================== */
+function refreshDashboard(){
+  document.getElementById("statAvg").textContent=avgStr();
+  document.getElementById("statStreak").textContent=streak();
+  document.getElementById("statInn").textContent=inningsComplete()+"/6";
+  document.getElementById("statAB").textContent=totalDone();
+  const idx=new Date().getDate()%JOKES.length;
+  document.getElementById("joke").textContent=JOKES[idx];
+}
+
+/* ====================  PLAYER (wizard)  ==================== */
+function exampleHTML(ex){
+  return '<div class="example"><span class="exh">In your house</span>'
+    +'<div class="exrow"><span class="ek">Moment</span><span>'+esc(ex.moment)+'</span></div>'
+    +'<div class="exrow"><span class="ek">Trap</span><span>'+esc(ex.trap)+'</span></div>'
+    +'<div class="exrow"><span class="ek">Move</span><span>'+esc(ex.move)+'</span></div></div>';
+}
+function render(){
+  const host=document.getElementById("player");
+  const cur=state.cursor||0;
+  if(cur===0){ host.innerHTML=orientationHTML(); wireOrientation(); }
+  else if(cur>=1&&cur<=42){ host.innerHTML=lessonHTML(cardByDay(cur)); }
+  else { host.innerHTML=finalHTML(); }
+  refreshScoreboard(); refreshDashboard();
+}
+function orientationHTML(){
+  return '<p class="lessonmeta">Pregame &bull; before inning 1</p>'
+    +'<h2 class="sec"><span class="tag">The real arena</span>Bring the coach home</h2>'
+    +'<p class="lead">On the field you are the calm one, patient with everybody else\'s kids under pressure with people watching. The patience is real and it is yours. The problem is the arena. The hardest game has no crowd. It is your house on a Tuesday night when you are tired and nobody is watching. That is the game this trains.</p>'
+    +'<div class="innbrief"><p class="quote">Anyone can hold it together for two hours with a crowd watching. The man gets built in the room nobody sees.<span class="by">Six innings. One lesson a day. Read it, breathe, run the move, reflect.</span></p></div>'
+    +'<div class="block breath"><span class="blockh">Your daily 3-minute reset</span>'
+    +'<p>Every lesson comes with the same three minute breath. Everyone has three minutes. It does two jobs at once. It drops your engine, and it trains the one skill underneath patience: putting your attention where you choose.</p>'
+    +'<p><b>Minute 1, land.</b> Slow breathing, the exhale longer than the inhale, for about a minute. This pulls you out of the surge.</p>'
+    +'<p><b>Minute 2, lock on.</b> Pick one thing and hold your attention on it, the feel of the breath or today\'s one move. Here is the part nobody tells you. Your mind will wander in seconds. That is not a sign you are bad at this. The wandering is the gym. The skill is noticing you drifted and bringing your focus back, gently, again and again. Each return is a rep, like tracking a pitch all the way to the bat.</p>'
+    +'<p><b>Minute 3, carry it.</b> Bring today\'s move to mind, see yourself doing it once, calm, then walk into the day.</p>'
+    +'<p>You are learning, in the quiet, to aim your attention on purpose. Then you can do it in the storm, when a kid is screaming and your focus wants to lock onto the anger. Same skill. You just practice it here first.</p></div>'
+    +'<div class="setup">'
+    +'<div class="field-box"><label for="why">Your why (one line)</label><textarea id="why" rows="2" placeholder="The kind of dad I want my kids to remember."></textarea><p class="hint">Read this on the hard days.</p></div>'
+    +'<div class="field-box"><label for="baseline">Baseline: how many times did you snap or go cold yesterday?</label><input type="number" id="baseline" min="0" placeholder="0"><p class="hint">No judgment. This is the line you watch drop.</p></div>'
+    +'<div class="field-box"><label for="plan">Your one if-then plan</label><textarea id="plan" rows="2" placeholder="If I feel the surge, then I take one sigh and reach for something light."></textarea><p class="hint">Deciding the move before the moment beats willpower in the moment.</p></div>'
+    +'</div>'
+    +'<p class="note"><b>What this is, and is not.</b> Built on established research. Not a clinical treatment, and not couples therapy. It trains your skills and warms your home, the part you control. If a deeper wound needs more, getting help is strength.</p>'
+    +'<div class="wizardnav"><button class="btn primary pushright" data-go="1">Start inning 1</button></div>';
+}
+function lessonHTML(c){
+  const inn=INNINGS[c.i];
+  const first=lessonNum(c)===1;
+  const done=!!state.done[c.d];
+  const breathed=!!state.breath[c.d];
+  let h='';
+  h+='<p class="lessonmeta">Inning '+c.i+' of 6 &bull; '+esc(inn.title)+' &bull; Lesson '+lessonNum(c)+' of 7</p>';
+  if(first){
+    h+='<div class="innbrief"><p class="quote">'+inn.quote+'<span class="by">'+esc(inn.by)+'</span></p>'
+      +'<p class="sci"><b>The science</b>'+esc(inn.science)+'</p></div>';
+  }
+  h+='<h2 class="lessontitle">Day '+c.d+': '+esc(c.t)+'</h2>';
+  c.article.forEach(p=>{ h+='<p class="art">'+esc(p)+'</p>'; });
+  h+='<div class="block breath"><span class="blockh">The 3-minute reset</span>'
+    +'<p><b>Minute 1, land.</b> '+esc(inn.breath.name)+'. '+esc(inn.breath.how)+' Keep it going for about a minute. This drops your engine out of the surge.</p>'
+    +'<p><b>Minute 2, lock on.</b> Put all your attention on one thing: today\'s move. '+esc(c.action)+' Your mind will drift in seconds, to the list, the noise, the last argument. That is not failure. That is the rep. The moment you notice you drifted, bring it back. Notice, return. Notice, return.</p>'
+    +'<p><b>Minute 3, carry it.</b> Picture yourself doing that one move today, once, calm. Then open your eyes and take it with you.</p>'
+    +'<label class="check"><input type="checkbox" data-breath="'+c.d+'"'+(breathed?' checked':'')+'> 3-minute reset done today</label></div>';
+  h+='<div class="block"><span class="blockh">Your move today</span><p>'+esc(c.action)+'</p></div>';
+  if(c.ex) h+=exampleHTML(c.ex);
+  h+='<p class="watch"><b>Watch for</b> &bull; '+esc(c.watch)+'</p>';
+  h+='<div class="block reflect"><span class="blockh">Reflection</span><p>'+esc(c.reflect)+'</p>'
+    +'<input type="text" data-note="'+c.d+'" value="'+esc(state.notes[c.d]||"")+'" placeholder="One line, if you want"></div>';
+  h+='<p class="anchorline">'+esc(c.anchor)+'</p>';
+
+  const last=lessonNum(c)===7;
+  let primary;
+  if(done){ primary=(c.d===42)?'<button class="btn primary pushright" data-go="43">See your final</button>':'<button class="btn primary done pushright" data-go="'+(c.d+1)+'">'+(last?'Next inning':'Next lesson')+' &rsaquo;</button>'; }
+  else { primary='<button class="btn primary pushright" data-complete="'+c.d+'">'+(last?'Finish the inning':'Mark complete')+' &rsaquo;</button>'; }
+  h+='<div class="wizardnav">';
+  h+= (c.d>1)?'<button class="btn ghost" data-go="'+(c.d-1)+'">&lsaquo; Back</button>':'<button class="btn ghost" data-go="0">&lsaquo; Pregame</button>';
+  h+='<button class="printbtn" data-print="1">Print this lesson</button>';
+  h+=primary;
+  h+='</div>';
+  return h;
+}
+function finalHTML(){
+  return '<div class="finalbox"><p class="big">Complete Game</p>'
+    +'<p>Final out recorded. You threw all six innings. The crowd never saw this game, and it is the one that counted most. Six weeks does not finish a man, it builds a longer fuse and a louder laugh. Pick the one rep that helped most and keep it for life. The coach is home now.</p></div>'
+    +'<div class="wizardnav"><button class="btn ghost" data-go="42">&lsaquo; Back</button>'
+    +'<button class="btn primary pushright" data-go="1">Run it again</button></div>';
+}
+
+/* ====================  NAV + EVENTS  ==================== */
+function goTo(n){ state.cursor=Math.max(0,Math.min(43,n)); save(); render(); window.scrollTo({top:0,behavior:"smooth"}); }
+function wireOrientation(){
+  const why=document.getElementById("why"),bl=document.getElementById("baseline"),pl=document.getElementById("plan");
+  if(!why)return;
+  why.value=state.setup.why||""; bl.value=state.setup.baseline||""; pl.value=state.setup.plan||"";
+  why.addEventListener("input",()=>{state.setup.why=why.value;save();});
+  bl.addEventListener("input",()=>{state.setup.baseline=bl.value;save();});
+  pl.addEventListener("input",()=>{state.setup.plan=pl.value;save();});
+}
+document.addEventListener("click",e=>{
+  const go=e.target.closest("[data-go]"); if(go){ goTo(parseInt(go.dataset.go,10)); return; }
+  const comp=e.target.closest("[data-complete]"); if(comp){ const d=parseInt(comp.dataset.complete,10);
+    state.done[d]=true; recordToday(); save(); goTo(d+1<=42?d+1:43); return; }
+  const pa=e.target.closest("[data-printall]"); if(pa){ printWorkbook(); return; }
+  const pr=e.target.closest("[data-print]"); if(pr){ window.print(); return; }
+});
+document.addEventListener("change",e=>{
+  const b=e.target.closest("[data-breath]"); if(b){ const d=b.dataset.breath;
+    state.breath[d]=b.checked; if(b.checked)recordToday(); save(); refreshDashboard(); }
+});
+document.addEventListener("input",e=>{
+  const n=e.target.closest("[data-note]"); if(n){ state.notes[n.dataset.note]=n.value; save(); }
+});
+
+/* ====================  WORKBOOK PRINT  ==================== */
+function wbLessonHTML(c){
+  const inn=INNINGS[c.i];
+  const first=lessonNum(c)===1;
+  let h='<section class="wblesson">';
+  if(first){ h+='<p class="wbinn">Inning '+c.i+': '+esc(inn.title)+'</p>'
+    +'<p class="wbquote">'+inn.quote+' '+esc(inn.by)+'</p>'; }
+  h+='<p class="wbmeta">Day '+c.d+' of 42 &bull; Inning '+c.i+' &bull; Lesson '+lessonNum(c)+' of 7</p>';
+  h+='<h2 class="wbtitle">'+esc(c.t)+'</h2>';
+  c.article.forEach(p=>{ h+='<p>'+esc(p)+'</p>'; });
+  h+='<p><b>The 3-minute reset.</b> Minute 1, land: '+esc(inn.breath.name)+', '+esc(inn.breath.how)+' (about a minute). Minute 2, lock on: put all attention on today\'s move; when the mind drifts, notice and bring it back, each return is a rep. Minute 3, carry it: picture doing the move once, calm.  [ ] Done</p>';
+  h+='<p><b>Your move today:</b> '+esc(c.action)+'</p>';
+  if(c.ex)h+='<p><b>In your house.</b> Moment: '+esc(c.ex.moment)+'  Trap: '+esc(c.ex.trap)+'  Move: '+esc(c.ex.move)+'</p>';
+  h+='<p><b>Watch for:</b> '+esc(c.watch)+'</p>';
+  h+='<p><b>Reflection:</b> '+esc(c.reflect)+'</p>';
+  h+='<p class="wbline">________________________________________________</p>';
+  h+='<p class="wbanchor">'+esc(c.anchor)+'</p></section>';
+  return h;
+}
+function printWorkbook(){
+  let html='<section class="wbcover"><h1>Stay Loose</h1><p>The game nobody sees. A 42 day course for the coach-dad.</p></section>';
+  CARDS.forEach(c=>{ html+=wbLessonHTML(c); });
+  document.getElementById("workbook").innerHTML=html;
+  document.body.classList.add("printall");
+  window.print();
+}
+window.addEventListener("afterprint",()=>document.body.classList.remove("printall"));
+
+/* INIT */
+buildScoreboard();
+render();
+</script>
+</body>
+</html>
