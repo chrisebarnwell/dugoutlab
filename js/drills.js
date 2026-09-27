@@ -1,4 +1,4 @@
-// ── DUGOUTLAB — DRILLS.JS ──────────────────────────────────────────
+// ── DUGOUTLAB: DRILLS.JS ──────────────────────────────────────────
 
 var dlFilters = { age: 'all', cat: 'all', skill: 'all' };
 

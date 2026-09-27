@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lineup Builder — DugoutLab</title>
-<meta name="description" content="Build a complete 5-inning position lineup matrix for your youth baseball or softball team. Handles tiers, pitching rotations, catching splits, EH slots, and development priorities. Pure JavaScript — no API key, no data ever leaves your device.">
+<title>Lineup Builder | DugoutLab</title>
+<meta name="description" content="Build a complete 5-inning position lineup matrix for your youth baseball or softball team. Handles tiers, pitching rotations, catching splits, EH slots, and development priorities. Pure JavaScript. No API key, no data ever leaves your device.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
@@ -555,7 +555,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
   <div class="page-hero-inner">
     <div class="eyebrow">Lineup Builder &middot; Pure JavaScript, no AI, no data leaves your device</div>
     <h1>Build Your <em style="color:var(--gold);font-style:italic">Lineup Matrix</em></h1>
-    <p>Answer 8 questions. Get a complete position-by-inning lineup &mdash; with pitching, catching, EH slots, and development priorities all handled. Runs entirely in your browser. No accounts. No API keys. No costs.</p>
+    <p>Answer 8 questions. Get a complete position-by-inning lineup, with pitching, catching, EH slots, and development priorities all handled. Runs entirely in your browser. No accounts. No API keys. No costs.</p>
   </div>
 </div>
 
@@ -578,7 +578,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 
   <!-- ── STEP 1: ROSTER ─────────────────────────────────────────── -->
   <div class="wizard-card" id="step-1">
-    <h2>Step 1 — Roster</h2>
+    <h2>Step 1: Roster</h2>
     <p class="step-desc">Enter each player's name and assign a tier. Tier 1 = strongest, Tier 2 = developing, Tier 3 = beginners.</p>
 
     <div class="field-group">
@@ -599,7 +599,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 
   <!-- ── STEP 2: FORMAT ─────────────────────────────────────────── -->
   <div class="wizard-card" id="step-2" style="display:none">
-    <h2>Step 2 — Game Format</h2>
+    <h2>Step 2: Game Format</h2>
     <p class="step-desc">Set the game length and field configuration. EH slots are calculated automatically.</p>
 
     <div class="input-row">
@@ -616,21 +616,21 @@ select option { background: var(--forest-deep); color: var(--ink); }
     <div class="field-group">
       <div class="field-label">Outfield Format</div>
       <div class="toggle-group" id="of-format-toggle">
-        <button class="toggle-btn active" onclick="setToggle('of-format','3of',this)">3 OF — LF / CF / RF</button>
-        <button class="toggle-btn" onclick="setToggle('of-format','4of',this)">4 OF — LF / LC / RC / RF</button>
+        <button class="toggle-btn active" onclick="setToggle('of-format','3of',this)">3 OF: LF / CF / RF</button>
+        <button class="toggle-btn" onclick="setToggle('of-format','4of',this)">4 OF: LF / LC / RC / RF</button>
       </div>
     </div>
 
     <div class="field-group" style="background:var(--cream);border-radius:8px;padding:0.75rem 1rem">
       <div class="field-label" style="margin-bottom:0.15rem">EH Slots per Inning</div>
-      <div style="font-size:1.25rem;font-weight:700;color:var(--forest)" id="eh-display">—</div>
+      <div style="font-size:1.25rem;font-weight:700;color:var(--forest)" id="eh-display">&ndash;</div>
       <div style="font-size:0.78rem;color:var(--text-light);margin-top:0.2rem">Roster size minus field positions. Updates automatically.</div>
     </div>
   </div>
 
   <!-- ── STEP 3: PRIORITY ───────────────────────────────────────── -->
   <div class="wizard-card" id="step-3" style="display:none">
-    <h2>Step 3 — Game Priority</h2>
+    <h2>Step 3: Game Priority</h2>
     <p class="step-desc">How should the lineup balance development and winning?</p>
 
     <div class="priority-cards" id="priority-cards">
@@ -654,7 +654,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 
   <!-- ── STEP 4: PITCHING ───────────────────────────────────────── -->
   <div class="wizard-card" id="step-4" style="display:none">
-    <h2>Step 4 — Pitching</h2>
+    <h2>Step 4: Pitching</h2>
     <p class="step-desc">Assign pitchers to innings. One pitcher per inning by default.</p>
 
     <div class="field-group">
@@ -665,29 +665,29 @@ select option { background: var(--forest-deep); color: var(--ink); }
     <div class="field-group">
       <div class="check-row">
         <input type="checkbox" id="pitcher-eh-rule">
-        <label class="check-label" for="pitcher-eh-rule"><strong>Pitcher sits EH the inning before pitching</strong> — gives them a rest before taking the mound.</label>
+        <label class="check-label" for="pitcher-eh-rule"><strong>Pitcher sits EH the inning before pitching</strong>: gives them a rest before taking the mound.</label>
       </div>
       <div class="check-row">
         <input type="checkbox" id="pitcher-2inn">
-        <label class="check-label" for="pitcher-2inn"><strong>Allow a pitcher to throw 2 innings</strong> — useful when you have one strong arm or fewer pitchers.</label>
+        <label class="check-label" for="pitcher-2inn"><strong>Allow a pitcher to throw 2 innings</strong>: useful when you have one strong arm or fewer pitchers.</label>
       </div>
     </div>
 
     <div class="input-row">
       <div class="field-group">
         <div class="field-label">Emergency Pitcher #1</div>
-        <select id="emerg-p1"><option value="">— None —</option></select>
+        <select id="emerg-p1"><option value="">None</option></select>
       </div>
       <div class="field-group">
         <div class="field-label">Emergency Pitcher #2</div>
-        <select id="emerg-p2"><option value="">— None —</option></select>
+        <select id="emerg-p2"><option value="">None</option></select>
       </div>
     </div>
   </div>
 
   <!-- ── STEP 5: CATCHING ───────────────────────────────────────── -->
   <div class="wizard-card" id="step-5" style="display:none">
-    <h2>Step 5 — Catching</h2>
+    <h2>Step 5: Catching</h2>
     <p class="step-desc">Assign catchers to specific innings. You can use up to 3 different catchers.</p>
 
     <div class="field-group">
@@ -698,7 +698,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 
   <!-- ── STEP 6: ROTATION RULES ─────────────────────────────────── -->
   <div class="wizard-card" id="step-6" style="display:none">
-    <h2>Step 6 — Position Rotation Rules</h2>
+    <h2>Step 6: Position Rotation Rules</h2>
     <p class="step-desc">Control where your Tier 1 and Tier 2 players go.</p>
 
     <div class="field-group">
@@ -715,7 +715,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
     <div class="field-group">
       <div class="field-label">Tier 1 Max Outfield Innings</div>
       <div class="toggle-group" id="t1-of-max-toggle">
-        <button class="toggle-btn" onclick="setToggle('t1-of-max','0',this)">0 — Never</button>
+        <button class="toggle-btn" onclick="setToggle('t1-of-max','0',this)">0: Never</button>
         <button class="toggle-btn active" onclick="setToggle('t1-of-max','1',this)">1 inning max</button>
         <button class="toggle-btn" onclick="setToggle('t1-of-max','any',this)">As needed</button>
       </div>
@@ -724,14 +724,14 @@ select option { background: var(--forest-deep); color: var(--ink); }
     <div class="field-group">
       <div class="check-row">
         <input type="checkbox" id="3b-dev-slot" checked>
-        <label class="check-label" for="3b-dev-slot"><strong>3B as development slot</strong> — rotate a different Tier 2 player to 3B each inning.</label>
+        <label class="check-label" for="3b-dev-slot"><strong>3B as development slot</strong>: rotate a different Tier 2 player to 3B each inning.</label>
       </div>
     </div>
   </div>
 
   <!-- ── STEP 7: EH / BENCH RULES ──────────────────────────────── -->
   <div class="wizard-card" id="step-7" style="display:none">
-    <h2>Step 7 — EH and Bench Rules</h2>
+    <h2>Step 7: EH and Bench Rules</h2>
     <p class="step-desc">Control how sitting time is distributed.</p>
 
     <div class="field-group">
@@ -742,7 +742,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
     <div class="field-group">
       <div class="check-row">
         <input type="checkbox" id="t1-never-sit">
-        <label class="check-label" for="t1-never-sit"><strong>Tier 1 players never sit</strong> — they are in the field every inning.</label>
+        <label class="check-label" for="t1-never-sit"><strong>Tier 1 players never sit</strong>: they are in the field every inning.</label>
       </div>
       <div class="check-row">
         <input type="checkbox" id="even-sit" checked>
@@ -753,7 +753,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 
   <!-- ── STEP 8: SPECIAL RULES ──────────────────────────────────── -->
   <div class="wizard-card" id="step-8" style="display:none">
-    <h2>Step 8 — Special Rules <span style="font-size:0.8rem;font-weight:400;color:var(--text-light)">(optional)</span></h2>
+    <h2>Step 8: Special Rules <span style="font-size:0.8rem;font-weight:400;color:var(--text-light)">(optional)</span></h2>
     <p class="step-desc">Player-specific locks and inning-specific overrides.</p>
 
     <div class="field-group">
@@ -985,7 +985,7 @@ function updateEHDisplay() {
   var fpos   = parseInt(document.getElementById('field-pos') && document.getElementById('field-pos').value) || 9;
   var eh     = Math.max(0, named - fpos);
   var el     = document.getElementById('eh-display');
-  if (el) el.textContent = named > 0 ? eh + ' EH per inning' : '—';
+  if (el) el.textContent = named > 0 ? eh + ' EH per inning' : '\u2013';
 }
 
 function getNamedPlayers() {
@@ -1072,7 +1072,7 @@ function buildPitchingStep() {
   // Emergency pitcher selects
   ['emerg-p1','emerg-p2'].forEach(function(id) {
     var sel = document.getElementById(id);
-    sel.innerHTML = '<option value="">— None —</option>' +
+    sel.innerHTML = '<option value="">None</option>' +
       players.map(function(p){ return '<option value="' + p.name + '">' + p.name + '</option>'; }).join('');
   });
 }
@@ -1345,14 +1345,14 @@ function buildLineupMatrix(s) {
     var cName = (s.catchers && s.catchers[inn]) || null;
     if (cName) {
       // If already assigned (e.g. someone catching while also listed as pitcher)
-      // skip — pitcher takes precedence.
+      // skip: pitcher takes precedence.
       if (lineup[inn].positions[cName]) {
         flags.push(cName + ' set as both pitcher and catcher in inning ' + (inn + 1) + '. Kept as pitcher.');
         continue;
       }
       // Catcher-EH-prior-inning rule
       if (s.catcherEHRule && inn > 0 && lineup[inn - 1].positions[cName] === 'EH') {
-        // Already rested last inning — fine. (Rule is satisfied.)
+        // Already rested last inning, fine. (Rule is satisfied.)
       }
       lineup[inn].positions[cName] = 'C';
       posCount[cName].C = (posCount[cName].C || 0) + 1;
@@ -1432,7 +1432,7 @@ function buildLineupMatrix(s) {
           if (tier === '3') score += 30;
         }
         if (pos === '3B') {
-          // dev slot — give Tier 2/3 the chance
+          // dev slot: give Tier 2/3 the chance
           if (tier === '1') score += 20;
         }
         if (isOF) {
@@ -1642,7 +1642,7 @@ function renderLineup(data) {
   }
 
   // Title
-  document.getElementById('lineup-title').textContent = state.teamName + ' — ' + inn + '-Inning Lineup';
+  document.getElementById('lineup-title').textContent = state.teamName + ': ' + inn + '-Inning Lineup';
 
   document.getElementById('lineup-output').classList.add('show');
 }

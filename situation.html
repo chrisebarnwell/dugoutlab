@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Real Situation — DugoutLab</title>
+<title>Real Situation | DugoutLab</title>
 <meta name="description" content="A real coaching situation with a full plan: scenario, your role, solutions, drills, and exactly what to say.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -118,7 +118,7 @@
 <body>
 
 <div class="disclaimer-strip">
-  <span class="icon">&#9888;</span>Educational resource only — articles compiled and synthesized with AI assistance from publicly available research.<a href="about.html">Disclaimer</a>
+  <span class="icon">&#9888;</span>Educational resource only. Articles compiled and synthesized with AI assistance from publicly available research.<a href="about.html">Disclaimer</a>
 </div>
 
 <nav class="nav">
@@ -225,7 +225,7 @@
   }
 
   // Header
-  document.title = s.title + ' — DugoutLab';
+  document.title = s.title + ' | DugoutLab';
   document.getElementById('sit-title').textContent = s.title;
   document.getElementById('bc-title').textContent = s.title;
   document.getElementById('sit-cat').innerHTML = esc(s.category) + (s.ageRange ? ' &middot; ' + esc(s.ageRange) : '');
@@ -242,7 +242,7 @@
 
   // TL;DR
   if (s.tldr && s.tldr.length) {
-    html += '<div class="sit-tldr"><h2>TL;DR — the quick version</h2><ul>';
+    html += '<div class="sit-tldr"><h2>TL;DR: the quick version</h2><ul>';
     s.tldr.forEach(function (t) { html += '<li>' + esc(t) + '</li>'; });
     html += '</ul></div>';
   }

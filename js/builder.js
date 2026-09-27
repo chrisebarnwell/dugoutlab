@@ -6,7 +6,7 @@ function wzPickSport(val, btn) {
   if (btn) btn.classList.add('active');
 }
 
-// ── DUGOUTLAB — BUILDER.JS ─────────────────────────────────────────
+// ── DUGOUTLAB: BUILDER.JS ─────────────────────────────────────────
 
 var wzSel = { age: null, time: null, focus: null, situation: null, skill: null };
 var wzPlan = null;
@@ -77,7 +77,7 @@ function wzBuild() {
   var structures = {
     regular: [
       { slot:'warmup',      pct:.13, label:'Movement Warm-Up' },
-      { slot:'acquisition', pct:.20, label: focusLabels[focus] + ' Intro' },
+      { slot:'acquisition', pct:.20, label: focusLabels[focus] + ' Intro: Straight Reps' },
       { slot:'variable',    pct:.22, label: focusLabels[focus] + ' Work' },
       { slot:'small-sided', pct:.40, label:'Small-Sided Game' },
       { slot:'closing',     pct:.05, label:'Closing Circle' },
@@ -85,7 +85,7 @@ function wzBuild() {
     first: [
       { slot:'warmup',      pct:.20, label:'Intro Game' },
       { slot:'small-sided', pct:.28, label:'Fun Game' },
-      { slot:'acquisition', pct:.28, label:'One Simple Skill' },
+      { slot:'acquisition', pct:.28, label:'One Simple Skill: Straight Reps' },
       { slot:'small-sided', pct:.19, label:'Closing Game' },
       { slot:'closing',     pct:.05, label:'Closing Circle' },
     ],

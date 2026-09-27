@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The 4 Stages of Player Development — DugoutLab</title>
-<meta name="description" content="A simple framework for understanding what youth baseball players need at each age — and how to coach them accordingly.">
+<title>The 4 Stages of Player Development | DugoutLab</title>
+<meta name="description" content="A simple framework for understanding what youth baseball players need at each age, and how to coach them accordingly.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@
   <div class="page-hero-inner">
     <div class="eyebrow">Player Development Framework</div>
     <h1>The 4 Stages of Development</h1>
-    <p>What players need from you changes dramatically between age 5 and age 15. Here's the framework — and what it means for how you coach.</p>
+    <p>What players need from you changes dramatically between age 5 and age 15. Here's a simple framework, and what it means for how you coach.</p>
   </div>
 </div>
 
@@ -51,7 +51,7 @@
     <div style="margin-bottom:1.75rem">
       <div style="font-family:var(--mono);font-size:0.7rem;font-weight:500;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;margin-bottom:0.6rem">The Framework</div>
       <h2 style="font-family:var(--serif);font-size:clamp(1.7rem,4vw,2.4rem);font-weight:600;color:var(--ink);line-height:1.1;letter-spacing:-0.015em;margin-bottom:0.85rem">The Evolution of <em style="color:var(--gold);font-style:italic">Practice</em></h2>
-      <p style="font-size:1rem;color:var(--ink-soft);line-height:1.65;margin-bottom:1.2rem">How the balance of practice types shifts across development. Most coaches apply professional refinement tools to players who haven&#39;t solved transfer yet. This is what the research says the balance should actually look like.</p>
+      <p style="font-size:1rem;color:var(--ink-soft);line-height:1.65;margin-bottom:1.2rem">How we suggest the balance of practice time shifts as players grow. Games-first at every age, with drills where they help: a brand-new skill, safety, or a stuck kid. The percentages are our rule of thumb, not numbers from a study.</p>
       <a href="#why-this-matters" class="btn btn-outline btn-sm">Why this matters &rarr;</a>
     </div>
 
@@ -89,7 +89,7 @@
     <div style="max-width:680px;margin-bottom:1.5rem">
       <div class="eyebrow" style="color:var(--gold)">Make It Yours</div>
       <h2 style="font-family:var(--serif);font-size:clamp(1.5rem,3.5vw,2rem);font-weight:600;color:var(--ink);line-height:1.15;letter-spacing:-0.015em;margin-bottom:0.7rem">Your Team's Practice Mix</h2>
-      <p style="font-size:0.95rem;color:var(--ink-soft);line-height:1.65">The chart above shows the research-aligned balance by stage. Answer three questions and get the weighting for your team, in minutes, ready to print and tape to your clipboard. No drills prescribed. The mix is yours to fill.</p>
+      <p style="font-size:0.95rem;color:var(--ink-soft);line-height:1.65">The chart above shows our suggested balance by stage. Answer three questions and get the weighting for your team, in minutes, ready to print and tape to your clipboard. No drills prescribed. The mix is yours to fill.</p>
     </div>
 
     <div style="background:var(--forest-deep);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1.75rem 1.5rem">
@@ -122,7 +122,7 @@
       <div style="border-top:1px solid var(--rule);padding-top:1.5rem">
         <div id="pm-bar" style="display:flex;height:46px;border-radius:9px;overflow:hidden;margin-bottom:1rem"></div>
         <div id="pm-rows" style="display:grid;gap:0.45rem;margin-bottom:1.25rem"></div>
-        <p style="font-size:0.78rem;color:var(--text-light);line-height:1.55;margin-bottom:1.1rem">A research-aligned starting point, not a prescription. Warm-up counts toward play time if the warm-up is a game. Adjust for what your team needs this week.</p>
+        <p style="font-size:0.78rem;color:var(--text-light);line-height:1.55;margin-bottom:1.1rem">Our rule of thumb, a starting point, not a prescription. Warm-up counts toward play time if the warm-up is a game. Adjust for what your team needs this week.</p>
         <button class="btn btn-primary btn-sm" onclick="pmPrint()">Print / Save PDF</button>
       </div>
     </div>
@@ -219,14 +219,14 @@
           return '<div style="width:'+pct[bk.key]+'%;background:'+fills[bk.key]+';border-right:1px solid #555;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold">'+(pct[bk.key]>=10?pct[bk.key]+'%':'')+'</div>';
         }).join('')
       + '</div>';
-    var html = '<!DOCTYPE html><html><head><title>Practice Mix - DugoutLab</title></head>'
+    var html = '<!DOCTYPE html><html><head><title>Practice Mix | DugoutLab</title></head>'
       + '<body style="font-family:Helvetica,Arial,sans-serif;color:#111;max-width:720px;margin:24px auto;padding:0 18px">'
       + '<div style="border:2px solid #333;padding:6px 14px;display:inline-block;font-weight:bold;letter-spacing:1px">DUGOUTLAB &middot; PRACTICE MIX</div>'
       + '<h1 style="font-size:22px;margin:16px 0 2px">' + b.label + ' &middot; ' + sk.label + ' &middot; ' + state.len + '-minute practice</h1>'
       + '<p style="font-size:13px;color:#444;margin:4px 0 0">Practice weighting only. Choose your own drills and games to fill each block.</p>'
       + barHtml
       + '<table style="width:100%;border-collapse:collapse;font-size:14px">' + rowsHtml + '</table>'
-      + '<p style="font-size:11px;color:#555;margin-top:18px;line-height:1.5"><b>A starting point, not a prescription.</b> Warm-up counts toward play time when the warm-up is a game. Based on motor learning research summarized at dugoutlab.com/how-kids-learn.html (contextual interference, ecological dynamics, small-sided games) and the LTAD / USA Baseball ADM frameworks.</p>'
+      + '<p style="font-size:11px;color:#555;margin-top:18px;line-height:1.5"><b>A starting point, not a prescription.</b> Warm-up counts toward play time when the warm-up is a game. The percentages are our rule of thumb, not from a study. Games-first, drills where they help. The evidence behind it, including where it is thin, is at dugoutlab.com/how-kids-learn.html.</p>'
       + '<p style="font-size:11px;color:#555">dugoutlab.com &middot; Free for volunteer coaches &middot; Made free thanks to GamedayHelpers.com</p>'
       + '<div style="margin-top:14px"><button onclick="window.print()" style="background:#fff;color:#111;border:2px solid #333;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:bold;cursor:pointer;margin-right:8px">Print / Save PDF</button>'
       + '<button onclick="window.close()" style="background:#eee;color:#333;border:none;border-radius:8px;padding:9px 22px;font-size:13px;cursor:pointer">Close</button></div>'
@@ -246,7 +246,7 @@
   <div class="container-sm">
 
     <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:2rem">
-      <p style="font-size:0.9rem;color:var(--text-mid);line-height:1.65;margin:0">This framework is adapted from the Long-Term Athletic Development (LTAD) model and USA Baseball's American Development Model. It's not the only framework, but it's the most practical one for rec ball coaches who need clear priorities by age group.</p>
+      <p style="font-size:0.9rem;color:var(--text-mid);line-height:1.65;margin:0">The stage names (Sampling, Specializing, Investment) come from C&ocirc;t&eacute;'s Developmental Model of Sport Participation. The priorities also draw on Long-Term Athlete Development (LTAD, Balyi / Canadian Sport for Life) and USA Baseball's Long-Term Athlete Development Plan. These are consensus frameworks built by experts, not tested science. LTAD's age-based &quot;windows of trainability&quot; are contested (Ford et al., 2011), so we treat ages as rough guides. We use them because they give rec coaches clear priorities by age group.</p>
     </div>
 
     <!-- STAGE 1 -->
@@ -259,18 +259,18 @@
         </div>
       </div>
       <div style="padding-left:3.5rem">
-        <p style="font-size:0.95rem;color:var(--text-mid);line-height:1.7;margin-bottom:1rem">At this stage, baseball is about one thing: moving and having fun. The brain and motor system are not ready for detailed instruction. Kids at this age are still developing basic coordination and the capacity to follow multi-step instructions.</p>
+        <p style="font-size:0.95rem;color:var(--text-mid);line-height:1.7;margin-bottom:1rem">At this stage, baseball is about one thing: moving and having fun. Most kids this age are still building basic coordination, and long or multi-step instructions tend to go right past them. Keep it short and keep them moving.</p>
         <div style="background:rgba(82,183,136,0.08);border:1px solid rgba(82,183,136,0.25);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1rem">
           <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--forest3);margin-bottom:0.6rem">Your priorities at this stage</div>
           <ul style="font-size:0.88rem;color:var(--text-mid);line-height:1.7;padding-left:1.25rem;margin:0">
             <li>Every child participates, every rep. No lines.</li>
             <li>Games, games, games. Minimize standing instruction.</li>
-            <li>One cue maximum. Ever.</li>
+            <li>One cue at a time. Then let them play.</li>
             <li>End every practice on something fun and positive.</li>
             <li>The goal is: kids want to come back next week.</li>
           </ul>
         </div>
-        <p style="font-size:0.85rem;color:var(--text-light)">What doesn't matter yet: mechanics, pitch count, winning, positions.</p>
+        <p style="font-size:0.85rem;color:var(--text-light)">What can wait: detailed mechanics, winning, fixed positions. (Safety rules like pitch limits always apply.)</p>
         <div style="margin-top:0.75rem">
           <a href="framework.html" class="btn btn-sm btn-forest">Build a practice for ages 4-7</a>
         </div>
@@ -287,18 +287,18 @@
         </div>
       </div>
       <div style="padding-left:3.5rem">
-        <p style="font-size:0.95rem;color:var(--text-mid);line-height:1.7;margin-bottom:1rem">This is the most important stage for the majority of rec ball coaches. Most Little League teams of 8-12 year olds are in the Sampling Stage. The brain is now ready to begin learning sports skills, but the primary driver of long-term development is <em>variety</em> — variety of movements, variety of sports, variety of challenges within baseball itself.</p>
+        <p style="font-size:0.95rem;color:var(--text-mid);line-height:1.7;margin-bottom:1rem">This is the most important stage for the majority of rec ball coaches. Most Little League teams of 8-12 year olds are in the Sampling Stage. Kids are ready to learn real skills now. The frameworks above put the emphasis on <em>variety</em>: variety of movements, variety of sports, variety of challenges within baseball itself.</p>
         <div style="background:rgba(200,120,26,0.08);border:1px solid rgba(200,120,26,0.25);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1rem">
           <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);margin-bottom:0.6rem">Your priorities at this stage</div>
           <ul style="font-size:0.88rem;color:var(--text-mid);line-height:1.7;padding-left:1.25rem;margin:0">
-            <li>Variable practice over blocked repetition.</li>
+            <li>Games-first. Use simple, repeated reps to get a brand-new skill started, then put it into a game.</li>
             <li>Small-sided games in every practice.</li>
-            <li>External focus cues ("throw to the glove") over internal ones ("keep your elbow up").</li>
-            <li>Encourage multi-sport participation — it helps baseball.</li>
+            <li>Try outcome-focused cues (&quot;hit it over the shortstop&quot;) instead of body-part cues. Cheap to try; the evidence for it is modest.</li>
+            <li>Encourage other sports. Pediatric sports medicine groups recommend it (AAP, 2016).</li>
             <li>Enjoyment and confidence are the primary outcomes.</li>
           </ul>
         </div>
-        <p style="font-size:0.85rem;color:var(--text-light)">What doesn't matter yet: early specialization, travel ball at 8, year-round baseball.</p>
+        <p style="font-size:0.85rem;color:var(--text-light)">What can wait: specializing in one sport and year-round baseball.</p>
         <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap">
           <a href="framework.html" class="btn btn-sm btn-forest">Build an Ages 7-9 practice</a>
           <a href="framework.html" class="btn btn-sm" style="background:white;border:1px solid var(--border);color:var(--text-mid)">Build an Ages 10-12 practice</a>
@@ -316,14 +316,14 @@
         </div>
       </div>
       <div style="padding-left:3.5rem">
-        <p style="font-size:0.95rem;color:var(--text-mid);line-height:1.7;margin-bottom:1rem">Players are now physically and cognitively ready to begin sport-specific specialization. Training volume can increase. Mechanics matter more. Position-specific development begins. Competitive outcomes start to carry real meaning.</p>
+        <p style="font-size:0.95rem;color:var(--text-mid);line-height:1.7;margin-bottom:1rem">Many players are now ready to focus more on one sport. Readiness depends on maturity, not the birthday. Training volume can increase gradually. Mechanics matter more. Position-specific development begins. Competitive outcomes start to carry real meaning.</p>
         <div style="background:rgba(26,58,42,0.06);border:1px solid rgba(26,58,42,0.2);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1rem">
           <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--forest);margin-bottom:0.6rem">Your priorities at this stage</div>
           <ul style="font-size:0.88rem;color:var(--text-mid);line-height:1.7;padding-left:1.25rem;margin:0">
             <li>Skill refinement with deliberate, structured practice.</li>
             <li>Position development begins in earnest.</li>
             <li>Mental game: dealing with slumps, pressure, failure.</li>
-            <li>Physical development: strength and conditioning.</li>
+            <li>Physical development: supervised, form-first strength and conditioning.</li>
             <li>Decision-making under pressure.</li>
           </ul>
         </div>
@@ -356,10 +356,16 @@
       </div>
     </div>
 
+    <!-- SOURCES -->
+    <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.5rem;margin-bottom:2rem">
+      <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--forest);margin-bottom:0.5rem">Guidelines &amp; Sources</div>
+      <p style="font-size:0.82rem;color:var(--text-mid);line-height:1.6;margin:0">C&ocirc;t&eacute;, Baker &amp; Abernethy (2007), Developmental Model of Sport Participation. Balyi / Canadian Sport for Life, LTAD (consensus framework). Ford et al. (2011), J Sports Sci, critique of LTAD trainability windows. USA Baseball Long-Term Athlete Development Plan. Brenner / AAP (2016), sports specialization. Practice-mix percentages are our rule of thumb. Evidence on games vs drills and practice design: <a href="how-kids-learn.html">How Kids Learn</a>.</p>
+    </div>
+
     <!-- CTA -->
     <div style="background:var(--forest);border-radius:var(--radius);padding:1.75rem;text-align:center">
       <div style="font-family:var(--serif);font-size:1.15rem;font-weight:700;color:white;margin-bottom:0.5rem">Most rec coaches work in Stage 2</div>
-      <p style="font-size:0.88rem;color:rgba(255,255,255,0.7);margin-bottom:1.25rem">Ages 7-12. The Sampling Stage. The Practice Builder is built around what these players actually need.</p>
+      <p style="font-size:0.88rem;color:rgba(255,255,255,0.7);margin-bottom:1.25rem">Ages 7-12. The Sampling Stage. The Practice Builder is built around what these players need.</p>
       <a href="framework.html" class="btn btn-primary">Build a Practice for Ages 7-12</a>
     </div>
 
@@ -408,7 +414,7 @@
   var wrap = document.getElementById('evo-chart-wrap');
 
   // Data: each stage has 3 stacked values (ecological, variable, isolated).
-  // Values are research-aligned proportions of practice time.
+  // Values are DugoutLab rule-of-thumb proportions of practice time (not study data).
   var stages = [
     { name: 'Ages 4-6',     age: 'First years',   eco: 70, vary: 26, iso: 4 },
     { name: 'Sampling Years',     age: 'Ages 7-12',  eco: 47, vary: 44, iso: 9 },
@@ -508,7 +514,7 @@
   addEl('path', { d: bandPath(ecoTop, baseline), fill: COLOR_ECO, 'fill-opacity': 0.92 });
   // 2. Variable band (eco to eco+vary)
   addEl('path', { d: bandPath(varyTop, ecoTop), fill: COLOR_VARY, 'fill-opacity': 0.92 });
-  // 3. Isolated band — drawn with a diagonal hatch fill to call attention
+  // 3. Isolated band, drawn with a diagonal hatch fill to call attention
   // Define pattern
   var defs = document.createElementNS(svgNS, 'defs');
   defs.innerHTML = ''

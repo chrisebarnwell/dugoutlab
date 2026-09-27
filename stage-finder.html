@@ -98,7 +98,7 @@
   <div class="result" id="result"></div>
 
   <div class="disclaimer">
-    <p><b>Educational only. Not medical advice.</b> This tool explains what is generally appropriate at each stage of development. It does not create a personalized program and does not replace a qualified coach, athletic trainer, or doctor who can see your athlete. If your athlete is in pain or in a growth spurt, check with a professional before training.</p>
+    <p><b>Educational only. Not medical advice.</b> This tool explains what is generally appropriate at each stage of development. It does not create a personalized program and does not replace a qualified coach, athletic trainer, or doctor who can see your athlete. If your athlete is in pain or in a growth spurt, check with a professional before training. Stage names come from the LTAD framework, a consensus model, not tested science. Reasoning and sources: <a href="development.html" style="color:var(--forest)">The Development Playbook</a>.</p>
   </div>
 </div>
 
@@ -110,20 +110,20 @@
 <script>
 const STAGES={
   fun:{name:"FUNdamentals",color:"#7A9480",dark:false,sub:"The play and movement years",
-    goal:"At this age you are building a brain that controls a body. Almost all the gain comes from movement variety and play, not from training load. The win is a kid who loves to move and can handle their own bodyweight.",
+    goal:"At this age you are building body control. The priority is movement variety and play, not training load. The win is a kid who loves to move and can handle their own bodyweight.",
     build:["Bodyweight movement as play: animal walks, hops, skips","Throwing, catching, kicking many ball sizes","Easy squats, knee push-ups, plank held like a game","Short sprints, tag, relays, obstacle courses","Light, fun med-ball or beanbag tosses"],
     avoid:["Any weights or max-effort lifting","Strict sets-and-reps grinding","Playing one sport year-round","Long instructions (keep it short and fun)"]},
   learn:{name:"Learn to Train",color:"#5C7A62",dark:false,sub:"The skill-building years",
-    goal:"A productive stretch for learning how to move: no growth spurt yet, and years of practice ahead. (Strict windows that close are contested in the research; skills can be learned at any age.) Master bodyweight strength and clean movement now and everything later is built on it.",
+    goal:"A productive stretch for learning how to move: no growth spurt yet, and years of practice ahead. (LTAD's windows that open and close are contested in the research (Ford et al., 2011); skills can be learned at any age.) Master bodyweight strength and clean movement now and everything later is built on it.",
     build:["Master bodyweight: squats, push-ups, rows, planks","Jumps and landings that are soft and silent","Sprint mechanics, footwork and agility games","Light rotational med-ball work as a skill","Controlled carries (sandbag, suitcase) as the one loaded move"],
     avoid:["Heavy lifting for strength","Specializing in one sport this early","Copying high-school or pro programs","Trading good form for more reps"]},
   train:{name:"Train to Train",color:"#C8892A",dark:false,sub:"Through the growth spurt",
-    goal:"Strength and power start to take off, but this is also the highest-injury-risk window because of the growth spurt. Add light load slowly, always with form leading, and protect the joints.",
+    goal:"Strength and power start to take off, but injury risk also rises around the growth spurt. Add light load slowly, always with form leading, and protect the joints.",
     build:["Keep mastering bodyweight, add light load when ready","Keep jumping volume lower during a growth spurt","Mobility and clean technique as a priority","Rotational med-ball power, light to moderate","For girls: regular ACL-prevention warm-ups"],
     avoid:["1-rep maxes and ego lifting","Pushing through knee or heel pain","Adult bodybuilding or powerlifting splits","Training hard through a growth spurt"]},
   compete:{name:"Train to Compete",color:"#3E5A43",dark:true,sub:"Building the real engine",
     goal:"After the growth spurt the body is ready for real, progressive strength and power. This is when specialization can reasonably begin, ideally while still playing a second sport.",
-    build:["Progressive barbell strength with sound technique","Higher-intensity plyometrics and loaded jumps","A real off-season, pre-season, in-season plan","Full rotational power program","Simple testing: jumps, sprints, med-ball throws"],
+    build:["Progressive barbell strength with sound technique and a qualified coach","Higher-intensity plyometrics and loaded jumps, after the growth spurt","A real off-season, pre-season, in-season plan","Full rotational power program","Simple testing: jumps, sprints, med-ball throws"],
     avoid:["Maxing without a technique base","Year-round play with no off-season","Skipping recovery, sleep and nutrition","Generic one-size-fits-all programs"]},
   pro:{name:"College / Pro / Adult",color:"#1C2B1E",dark:true,sub:"Peak and sustain",
     goal:"The job now is to maximize power and durability across a long season. Training is individualized, periodized and managed around the competitive calendar.",
@@ -165,7 +165,7 @@ function render(){
   let spurtBox='';
   if(selSpurt==='yes'){
     spurtBox=`<div class="spurt"><div class="cl-label">Because they are in a growth spurt</div>
-      <p>Overuse complaints climb in this stretch. Bones are outgrowing tendons, so lower the jumping and high-impact volume, lean into mobility and clean technique, and never push through knee or heel pain. Strength work stays light and form-first. If pain shows up, see a professional before continuing.</p></div>`;
+      <p>Overuse complaints climb in this stretch. Bones can outpace muscles and tendons for a while, so lower the jumping and high-impact volume, lean into mobility and clean technique, and never push through knee or heel pain. Strength work stays light and form-first. If pain shows up, see a professional before continuing.</p></div>`;
   } else if(selSpurt==='unsure'){
     spurtBox=`<div class="spurt"><div class="cl-label">Not sure about the growth spurt?</div>
       <p>Watch for a recent fast height jump, sudden shoe-size changes, new clumsiness, or aching knees/heels. If you see those, treat it like a growth spurt: lower the impact, prioritize mobility, and check with a professional. When in doubt, train lighter.</p></div>`;

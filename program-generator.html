@@ -339,7 +339,7 @@ function build(){
   /* ----- warnings ----- */
   let warns=[];
   if(spurtMode){
-    warns.push(["Growth spurt active — program adjusted",
+    warns.push(["Growth spurt active: program adjusted",
       "High-impact jumping and bounding volume has been cut, mobility added, and load held light. Do not push through knee or heel pain (Osgood-Schlatter / Sever's). If pain persists, stop and see a professional."]);
   }
   if(unsure){
@@ -348,10 +348,10 @@ function build(){
   }
   if(female && (stage==='train'||stage==='learn'||stage==='compete')){
     warns.push(["ACL-prevention warm-up included (female athlete)",
-      "A neuromuscular warm-up (soft, knee-over-toe landing drills, single-leg balance, hamstring work) is built into every session. It cuts ACL injury risk most when done consistently and unfatigued, before the main work."]);
+      "A neuromuscular warm-up (soft, knee-over-toe landing drills, single-leg balance, hamstring work) is built into every session. Meta-analyses of programs like this show lower ACL injury rates in young female athletes (mostly soccer, basketball, and handball studies). They seem to work best done consistently, before the main work, while fresh."]);
   }
   if(g.size===0){
-    warns.push(["No gear selected — bodyweight only",
+    warns.push(["No gear selected: bodyweight only",
       "You did not check any equipment, so this block uses bodyweight and substitutes (squat jumps instead of box jumps, pogo hops instead of rope, line footwork instead of a ladder). Add gear above to unlock more options."]);
   }
 
@@ -408,7 +408,7 @@ function build(){
   const A={tag:'A',name:'Strength Day',color:'#1C2B1E',blocks:[['Strength',strengthBlock]]};
   const B={tag:'B',name:(spurtMode?'Power & Mobility Day':'Power & Speed Day'),color:'#C8892A',blocks:[['Power / Plyometric',powerBlock]]};
   const C={tag:'C',name:'Play & Engine Day',color:'#5C7A62',blocks:[['Engine / Play',engineBlock]]};
-  if(stage!=='fun'){ A.blocks.push(['Quick Power (skill)',[[mbThrow(g,false),pd+' each'],[jumpEx(g),pd]]]);
+  if(stage!=='fun'){ A.blocks.push(['Quick Power (skill)',[[mbThrow(g,spurtMode),pd+' each'],[spurtMode?'Low pogo hops, quiet landings (low volume)':jumpEx(g),pd]]]);
                      B.blocks.unshift(['Strength (lighter)',[[exPattern('squat',g,loadOK),sd],[exPattern('push',g,loadOK),sd]]]); }
 
   let dayPlan;
@@ -433,7 +433,7 @@ function build(){
   warns.forEach(([t,p])=>{html+=`<div class="warnbox"><div class="wl">${t}</div><p>${p}</p></div>`;});
 
   const gearLabel = g.size===0 ? 'Bodyweight only' : ('Gear: '+[...g].map(x=>({rope:'rope',box:'box',ladder:'ladder',medball:'med-ball',sandbag:'sandbag',bands:'bands',db:'dumbbells',bar:'pull-up bar',barbell:'barbell',cones:'cones'}[x])).join(', '));
-  html+=`<div class="blockhead"><h2>${S.name?S.name+' — ':''}4-Week Block</h2>
+  html+=`<div class="blockhead"><h2>${S.name?S.name+': ':''}4-Week Block</h2>
     <div class="meta">${meta.name} &middot; ${S.sport==='softball'?'Softball':'Baseball'} &middot; ${S.days} days/week &middot; ${gearLabel} &middot; ${S.fmt==='group'?'Group / stations':'Individual'}</div></div>
     <div class="blockbody">`;
 
@@ -457,7 +457,7 @@ function build(){
   // progression rule
   html+=`<p class="note"><b>How to progress past this block:</b> when an athlete beats the rep goal by 2+ reps on two sessions in a row (the 2-for-2 rule), nudge the difficulty up next block (harder variation first, then light load). Hold load if form slips. Re-test before adding more.</p>`;
 
-  html+=`<div class="disclaimer"><p><b>Coach tool. Educational, not medical advice.</b> This is a starting point generated from general guidelines, not a personalized prescription. You are responsible for watching the athlete's form, scaling to the individual, and stopping at any sign of pain. It does not replace a physician or certified strength coach. Around a growth spurt or with any pain, get a professional's eyes on the athlete.</p></div>`;
+  html+=`<div class="disclaimer"><p><b>Coach tool. Educational, not medical advice.</b> This is a starting point generated from general guidelines, not a personalized prescription. You are responsible for watching the athlete's form, scaling to the individual, and stopping at any sign of pain. It does not replace a physician or certified strength coach. Stage names come from long-term athletic development (LTAD) planning models; the "windows of trainability" idea behind them is contested, so treat stages as a planning guide, not biology. Around a growth spurt or with any pain, get a professional's eyes on the athlete.</p></div>`;
 
   html+=`<button class="printbtn" onclick="window.print()">Print this block</button>`;
   html+='</div>';

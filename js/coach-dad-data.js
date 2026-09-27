@@ -1,17 +1,17 @@
-// Coach Dad - Module 1: Mastering the Tongue (42-day program)
+// Coach Dad, Module 1: Mastering the Tongue (42-day program)
 // Content authored in the Coach Dad project. Format: read / rep / watch / anchor.
 // Sources: Book of James (the discipline of the tongue); Matthew Kelly,
 // "The Forgotten Way" (speech, encouragement, self-talk, the loving glance,
 // crucial conversations, humility); DugoutLab philosophy: effort and attitude,
-// make them want to come back tomorrow.
+// make them want to come back tomorrow. Reflective content, not research claims.
 window.COACH_DAD = {
   weeks: [
-    "Week 1 - See the Pattern",
-    "Week 2 - The Pause",
-    "Week 3 - Build Up",
-    "Week 4 - Cut the Noise",
-    "Week 5 - How You Say It",
-    "Week 6 - The Hard Ones, and Keep It"
+    "Week 1: See the Pattern",
+    "Week 2: The Pause",
+    "Week 3: Build Up",
+    "Week 4: Cut the Noise",
+    "Week 5: How You Say It",
+    "Week 6: The Hard Ones, and Keep It"
   ],
   days: [
     {d:1, w:0, title:"The small thing that steers",
@@ -25,7 +25,7 @@ window.COACH_DAD = {
      watch:"Explaining why you talked.",
      anchor:"Count, don't correct."},
     {d:3, w:0, title:"The first three seconds",
-     read:"Most of the words you regret come out in the first three seconds after a play. That is the danger zone.",
+     read:"A lot of the words we regret come out in the first few seconds after a play. Treat that as the danger zone.",
      rep:"Pick one play. After it, say nothing for three full seconds.",
      watch:"Beating the silence with a comment.",
      anchor:"Three seconds buys the right words."},
@@ -35,7 +35,7 @@ window.COACH_DAD = {
      watch:"\u201CJust one quick tip.\u201D",
      anchor:"Let it be their game."},
     {d:5, w:0, title:"The drive home",
-     read:"The car ride after a game is where most damage gets done. Kids brace for the breakdown.",
+     read:"The car ride after a game is where a lot of damage gets done. Many kids brace for the breakdown.",
      rep:"Today's ride, lead with \u201CI loved watching you play.\u201D Then stop.",
      watch:"Adding \u201Cbut.\u201D",
      anchor:"No notes in the car."},
@@ -120,8 +120,8 @@ window.COACH_DAD = {
      watch:"Missing the impact.",
      anchor:"Words build players."},
     {d:22, w:3, title:"The overcoaching cut",
-     read:"More words do not mean more learning. Often the opposite. Cut your instruction in half.",
-     rep:"Give half the coaching points you normally would.",
+     read:"More words do not always mean more learning. Short coach talk is a lens worth trying, not a law. Kids get more reps when we talk less. Try cutting your instruction in half.",
+     rep:"Give half the coaching points you normally would. A brand-new skill may still need a short demo. Show it, then let them play.",
      watch:"Sneaking them back in.",
      anchor:"Less voice, more learning."},
     {d:23, w:3, title:"Negative slips out easy",
@@ -130,7 +130,7 @@ window.COACH_DAD = {
      watch:"Disguising criticism as \u201Cjust being honest.\u201D",
      anchor:"Honest does not mean harsh."},
     {d:24, w:3, title:"No sideline coaching",
-     read:"Yelling instructions during the play splits the kid's focus. Let them play, coach after.",
+     read:"Instructions yelled during the play compete for the kid's attention. Let them play, coach after.",
      rep:"Zero in-play instructions for one inning.",
      watch:"\u201CRun! Go! Throw it!\u201D",
      anchor:"Coach between, not during."},
@@ -150,7 +150,7 @@ window.COACH_DAD = {
      watch:"The tone under the words.",
      anchor:"Calm, confident, poised."},
     {d:28, w:3, title:"Week 4 check",
-     read:"You cut the noise. Quieter sidelines make better players and calmer dads.",
+     read:"You cut the noise. A quieter sideline gives kids room to play, and it tends to make a calmer dad.",
      rep:"Note how the quieter version of you felt.",
      watch:"Sliding back to loud.",
      anchor:"Quiet is strength."},

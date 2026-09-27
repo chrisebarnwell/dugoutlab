@@ -1,4 +1,4 @@
-// ── DUGOUTLAB — SITE.JS ────────────────────────────────────────────
+// ── DUGOUTLAB: SITE.JS ────────────────────────────────────────────
 
 // ── Mobile nav ────────────────────────────────────────────────────
 function toggleMenu() {
@@ -39,7 +39,7 @@ function showDrill(id) {
   document.getElementById('modal-cue').textContent   = drill.cue || '';
   document.getElementById('modal-why').textContent   = drill.why || '';
 
-  // New enhanced fields — hide the entire box if data is missing or empty
+  // New enhanced fields: hide the entire box if data is missing or empty
   function setOrHide(elId, value) {
     var el = document.getElementById(elId);
     if (!el) return;
