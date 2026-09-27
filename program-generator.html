@@ -206,9 +206,15 @@
 
 <script>
 /* ---------- MVP LOGIN GATE (client-side curtain, not real security) ---------- */
-function tryGate(){
+var GATE_HASH='07b89df4238e946619145096dd68a8d3d670e31f3d0ee4661a665539691f8190';
+async function tryGate(){
   var v=document.getElementById('gpass').value;
-  if(v==='DugoutLabBoss'){
+  var ok=false;
+  try{
+    var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));
+    ok=Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('')===GATE_HASH;
+  }catch(e){}
+  if(ok){
     document.getElementById('gate').style.display='none';
     document.body.classList.remove('locked');
     try{sessionStorage.setItem('dl_coach','1');}catch(e){}
