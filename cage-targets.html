@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Hit Window: Where to Hang Cage Targets | DugoutLab</title>
+<meta name="description" content="A cage target tool for youth baseball and softball. Works backward from your field and exit velocity to show which launch angles land in open grass, and where to hang a target in your cage.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+.tool-wrap { max-width: 860px; margin: 0 auto; }
+.tool-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.6rem 1.5rem; margin-bottom: 1.25rem; }
+.tool-step { font-family: var(--mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.55rem; }
+.tool-h { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; color: var(--ink); letter-spacing: -0.015em; margin-bottom: 0.9rem; line-height: 1.2; }
+.tool-note { font-size: 0.82rem; color: var(--ink-faint); line-height: 1.55; margin-top: 0.7rem; }
+.preset-row { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1.2rem; }
+.field-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+.field label { display: block; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); margin-bottom: 0.35rem; }
+.field input[type=number], .field input[type=text] { width: 100%; background: var(--forest-deep); border: 1px solid var(--rule); color: var(--ink); border-radius: 8px; padding: 0.6rem 0.7rem; font-family: var(--sans); font-size: 1rem; font-weight: 600; }
+.field input:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+.ev-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.ev-val { font-family: var(--serif); font-size: 2rem; font-weight: 600; color: var(--gold); min-width: 5.2ch; line-height: 1; }
+.ev-val small { font-family: var(--sans); font-size: 0.8rem; color: var(--ink-faint); font-weight: 500; margin-left: 0.25rem; }
+input[type=range] { flex: 1; min-width: 180px; accent-color: #C8862E; height: 28px; }
+details.setup { margin-top: 1.2rem; border-top: 1px solid var(--rule); padding-top: 0.9rem; }
+details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); }
+details.setup .field-grid { margin-top: 0.9rem; }
+.big-num { font-family: var(--serif); font-size: clamp(2.3rem, 8vw, 3.8rem); font-weight: 600; color: var(--gold); line-height: 1; letter-spacing: -0.02em; }
+.big-num small { font-family: var(--sans); font-size: 0.95rem; font-weight: 600; color: var(--ink-soft); letter-spacing: 0; margin-left: 0.4rem; }
+.big-line { font-size: 1rem; color: var(--ink-soft); line-height: 1.6; margin: 0.8rem 0 1.2rem; max-width: 640px; }
+.viz { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: var(--radius); padding: 10px 8px 6px; margin-top: 0.9rem; }
+.viz svg { width: 100%; height: auto; display: block; }
+.viz-cap { font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.08em; text-transform: uppercase; margin: 1.3rem 0 0; font-weight: 600; }
+.zone-list { list-style: none; margin-top: 1rem; display: grid; gap: 0.45rem; }
+.zone-list li { display: grid; grid-template-columns: 14px 1fr auto; gap: 0.7rem; align-items: center; font-size: 0.9rem; color: var(--ink-soft); padding: 0.5rem 0.7rem; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 8px; }
+.zone-list li.is-hit { border-color: var(--gold); color: var(--ink); }
+.zone-list .sw { width: 14px; height: 14px; border-radius: 3px; }
+.zone-list .rg { font-family: var(--mono); font-size: 0.82rem; color: var(--ink); white-space: nowrap; }
+.cage-split { display: grid; grid-template-columns: 1fr 1.25fr; gap: 1.25rem; align-items: start; margin-top: 1.2rem; }
+.cage-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.cage-table th { text-align: left; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-faint); font-weight: 600; padding: 0 0.5rem 0.5rem 0; }
+.cage-table td { padding: 0.75rem 0.5rem 0.75rem 0; border-top: 1px solid var(--rule); color: var(--ink-soft); vertical-align: top; line-height: 1.45; }
+.cage-table td.ht { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; color: var(--gold-light); white-space: nowrap; }
+.cage-table td b { color: var(--ink); font-weight: 600; }
+.game-list { list-style: none; display: grid; gap: 0.6rem; }
+.game-list li { border-left: 3px solid var(--gold); padding: 0.2rem 0 0.2rem 0.9rem; color: var(--ink-soft); font-size: 0.98rem; line-height: 1.55; }
+.game-list li b { color: var(--ink); }
+.built-list { margin: 0 0 0 1.2rem; color: var(--ink-soft); font-size: 0.95rem; line-height: 1.7; }
+.src-list { margin: 0.6rem 0 0 1.2rem; color: var(--ink-soft); font-size: 0.9rem; line-height: 1.65; }
+.src-list li { margin-bottom: 0.5rem; }
+.src-list strong { color: var(--ink); }
+.model-flag { display: inline-block; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-light); border: 1px solid rgba(200,134,46,0.4); border-radius: 999px; padding: 0.25rem 0.7rem; margin-bottom: 0.9rem; }
+.score-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin: 1.2rem 0 0.9rem; }
+.score-box { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: var(--radius); padding: 0.8rem 0.6rem; text-align: center; }
+.score-lab { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.3rem; }
+.score-num { font-family: var(--serif); font-size: 2.4rem; font-weight: 600; color: var(--gold); line-height: 1; }
+.score-num.dim { color: var(--ink-soft); }
+.dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 0.9rem; }
+.dots span { width: 100%; max-width: 34px; height: 8px; border-radius: 4px; background: var(--rule); }
+.dots span.net { background: var(--gold); }
+.dots span.miss { background: #55685d; }
+.net-fan { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
+.net-btn { background: var(--forest-deep); border: 2px solid var(--gold); color: var(--ink); border-radius: 12px 12px 40px 40px; padding: 0.9rem 0.2rem 1.1rem; font-family: var(--sans); font-size: 0.74rem; font-weight: 600; line-height: 1.2; min-height: 92px; }
+.net-btn b { display: block; font-family: var(--serif); font-size: 1.7rem; color: var(--gold); line-height: 1; margin-bottom: 0.3rem; }
+.net-btn:active { background: var(--gold); color: var(--forest-deep); }
+.net-btn:active b { color: var(--forest-deep); }
+.g-result { background: var(--forest-deep); border: 2px solid var(--gold); border-radius: var(--radius-lg); padding: 1.4rem 1.2rem; text-align: center; margin-top: 0.9rem; }
+.g-result .g-big { font-family: var(--serif); font-size: 1.7rem; font-weight: 600; color: var(--ink); line-height: 1.2; }
+.g-result .g-coin { font-family: var(--serif); font-size: 1.5rem; font-weight: 700; color: var(--gold); margin-top: 0.5rem; }
+.g-result .g-small { color: var(--ink-soft); font-size: 0.95rem; margin: 0.5rem 0 1rem; }
+.sight { position: fixed; inset: 0; z-index: 2000; background: #050b08; display: none; color: #f4efe6; }
+.sight.open { display: block; }
+.sight video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.sight-top { position: absolute; top: 0; left: 0; right: 0; padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px 40px; background: linear-gradient(rgba(5,11,8,0.92), rgba(5,11,8,0)); text-align: center; }
+.sight-zone { font-family: var(--serif); font-size: 2.1rem; font-weight: 700; line-height: 1.05; letter-spacing: -0.01em; }
+.sight-zone.is-hit { color: #e2a85a; }
+.sight-sub { font-size: 1.05rem; font-weight: 600; margin-top: 0.4rem; }
+.sight-sub2 { font-size: 0.92rem; color: rgba(244,239,230,0.8); margin-top: 0.2rem; }
+.sight-ring { position: absolute; left: 50%; top: 50%; width: 130px; height: 130px; margin: -65px 0 0 -65px; border: 4px solid #f4efe6; border-radius: 50%; box-shadow: 0 0 0 2px rgba(0,0,0,0.5); }
+.sight-ring::before, .sight-ring::after { content: ""; position: absolute; background: #f4efe6; }
+.sight-ring::before { left: 50%; top: 38%; bottom: 38%; width: 2px; margin-left: -1px; }
+.sight-ring::after { top: 50%; left: 38%; right: 38%; height: 2px; margin-top: -1px; }
+.sight-ring.is-hit { border-color: #C8862E; border-width: 8px; box-shadow: 0 0 0 8px rgba(200,134,46,0.35); }
+.sight-ring.is-liner { border-color: #7ad6a8; }
+.sight-gauge { position: absolute; right: 14px; top: 24%; bottom: 24%; width: 18px; border-radius: 9px; background: rgba(5,11,8,0.6); border: 1px solid rgba(244,239,230,0.5); }
+.sight-gauge i { position: absolute; left: 0; right: 0; }
+.sight-gauge b { position: absolute; left: -10px; right: -10px; height: 4px; margin-bottom: -2px; background: #f4efe6; border-radius: 2px; box-shadow: 0 0 0 1px #000; }
+.sight-bot { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 16px calc(env(safe-area-inset-bottom, 0px) + 18px); background: linear-gradient(rgba(5,11,8,0), rgba(5,11,8,0.92)); text-align: center; }
+.sight-warn { font-size: 0.9rem; color: #e2a85a; min-height: 1.3em; margin-bottom: 0.7rem; }
+.sight-btns { display: flex; gap: 10px; justify-content: center; }
+@media (max-width: 768px) {
+  .field-grid { grid-template-columns: repeat(2, 1fr); }
+  .cage-split { grid-template-columns: 1fr; }
+  .tool-card { padding: 1.3rem 1.1rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="framework.html">Practice Framework</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="training.html">Training</a></li>
+    <li><a href="coach-dad.html">Coach Dad</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="stages.html">The 4 Stages</a>
+  <a href="framework.html">Practice Framework</a>
+  <a href="articles.html">Articles</a>
+  <a href="training.html">Training</a>
+  <a href="coach-dad.html">Coach Dad</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="index.html">&#8592; Home</a></div>
+    <div class="eyebrow">Tools &middot; Cage Targets</div>
+    <h1>The Hit Window</h1>
+    <p>In a cage, every ball hits a net. Nobody can tell a line drive to the gap from a routine fly ball. This tool works backward from your field to show which launch angles land in open grass. Then it tells you where to hang a target so the cage shows it.</p>
+  </div>
+</div>
+
+<section class="section section-white">
+  <div class="tool-wrap">
+
+    <!-- STEP 1 -->
+    <div class="tool-card">
+      <div class="tool-step">Step 01 &middot; Your hitters</div>
+      <div class="tool-h">Pick a level. Then set how hard they hit it.</div>
+      <div class="preset-row" id="presets"></div>
+      <div class="ev-row">
+        <div class="ev-val"><span id="ev-out">58</span><small>mph</small></div>
+        <input type="range" id="ev" min="30" max="100" step="1" value="58" aria-label="Exit velocity in miles per hour">
+      </div>
+      <div class="tool-note">Exit velocity is the speed of the ball off the bat. A measured number beats a guess. The presets are rough ranges from coaching sites, not studies.</div>
+
+      <details class="setup">
+        <summary>Field setup (our starting guesses, change them to match your field)</summary>
+        <div class="field-grid">
+          <div class="field"><label for="ifd">Infielders, ft from home</label><input type="number" id="ifd" min="30" max="200" step="1"></div>
+          <div class="field"><label for="ofd">Outfielders, ft from home</label><input type="number" id="ofd" min="60" max="350" step="1"></div>
+          <div class="field"><label for="fence">Fence, ft</label><input type="number" id="fence" min="100" max="420" step="1"></div>
+          <div class="field"><label for="reach">Infielder reach, ft</label><input type="number" id="reach" min="4" max="10" step="0.5"></div>
+          <div class="field"><label for="run">Fielder speed, ft/sec</label><input type="number" id="run" min="6" max="30" step="1"></div>
+          <div class="field"><label for="h0">Contact height, ft</label><input type="number" id="h0" min="1" max="4" step="0.25" value="2.5"></div>
+        </div>
+      </details>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="tool-card">
+      <div class="tool-step">Step 02 &middot; The window</div>
+      <div class="model-flag">Model estimate &middot; not measured data</div>
+      <div class="big-num" id="win-num">--</div>
+      <p class="big-line" id="win-line"></p>
+
+      <div class="viz-cap">Every launch angle, sorted by what happens</div>
+      <div class="viz" id="strip"></div>
+      <ul class="zone-list" id="zones"></ul>
+
+      <div class="viz-cap">Side view of your field (height stretched to fit)</div>
+      <div class="viz" id="traj"></div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="tool-card">
+      <div class="tool-step">Step 03 &middot; Cage or field</div>
+      <div class="preset-row" id="mode-row" style="margin-bottom:1rem">
+        <button type="button" class="wz-opt active" data-mode="cage">In a cage</button>
+        <button type="button" class="wz-opt" data-mode="field">On a field</button>
+      </div>
+      <div id="mode-cage">
+      <div class="tool-h">Measure three things. Hang the nets.</div>
+      <div class="field-grid">
+        <div class="field"><label for="dist">Tee to target, ft</label><input type="number" id="dist" min="5" max="70" step="1" value="15"></div>
+        <div class="field"><label for="cw">Cage width, ft</label><input type="number" id="cw" min="8" max="20" step="1" value="12"></div>
+        <div class="field"><label for="ch">Cage height, ft</label><input type="number" id="ch" min="7" max="16" step="1" value="12"></div>
+      </div>
+      <div class="tool-note">Tee to target is measured straight down the cage, with the tee centered between the side nets.</div>
+
+      <div class="cage-split">
+        <div>
+          <div class="viz" id="cage" style="margin-top:0"></div>
+          <div class="tool-note" style="text-align:center">View from the tee. Gold is the hit window. Green is the low liner band.</div>
+        </div>
+        <div>
+          <table class="cage-table">
+            <thead><tr><th>Aim</th><th>Where it goes</th><th>How high</th></tr></thead>
+            <tbody id="cage-rows"></tbody>
+          </table>
+        </div>
+      </div>
+      </div>
+      <div id="mode-field" hidden>
+        <div class="tool-h">Walk it off. Drop a net in each lane.</div>
+        <div class="big-num" id="fd-num">--</div>
+        <p class="big-line" id="fd-line"></p>
+        <div class="viz" id="fieldmap"></div>
+        <div class="tool-note" style="text-align:center">View from above. Gold is where hit-window balls first touch down. Rings are the five nets. Dots are fielders.</div>
+        <ul class="zone-list" id="fd-list"></ul>
+        <div class="tool-note">A big step is counted as 3 ft. Use a tape if you want it exact. No nets? Hoops, cones, or buckets work.</div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="tool-card">
+      <div class="tool-step">Step 04 &middot; See it</div>
+      <div class="tool-h">Point your phone. Find the spot.</div>
+      <ol class="built-list" id="see-cage">
+        <li>Stand at the tee. Hold the phone where the ball sits.</li>
+        <li>Aim straight down the cage. Tap <b style="color:var(--ink)">Set middle</b>.</li>
+        <li>Sweep across the net. When the ring turns gold, hang a net there.</li>
+      </ol>
+      <ol class="built-list" id="see-field" hidden>
+        <li>Stand on home plate. Aim at second base. Tap <b style="color:var(--ink)">Set middle</b>.</li>
+        <li>Turn slowly. The ring turns gold on each of the five lanes.</li>
+        <li>Send a helper down that line. Count the steps. Drop the net.</li>
+      </ol>
+      <button type="button" class="btn btn-primary btn-lg" id="sight-open" style="margin-top:1.1rem">Open the camera</button>
+      <div class="tool-note">Phone only. It uses the camera and the tilt sensor. Nothing is recorded and nothing leaves your phone.</div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="tool-card">
+      <div class="tool-step">Step 05 &middot; Play</div>
+      <div class="tool-h">Ten balls. Fill the nets. Beat your own number.</div>
+      <div class="field-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label for="coin-name">Name your coin</label><input type="text" id="coin-name" maxlength="24"></div>
+        <div class="field"><label for="p-add">Add a hitter</label>
+          <div style="display:flex;gap:0.4rem"><input type="text" id="p-add" maxlength="16" placeholder="Name"><button type="button" class="btn btn-forest btn-sm" id="p-add-btn">Add</button></div>
+        </div>
+      </div>
+      <div class="preset-row" id="players" style="margin:1rem 0 0"></div>
+      <div class="score-row">
+        <div class="score-box"><div class="score-lab">In the nets</div><div class="score-num" id="g-nets">0</div></div>
+        <div class="score-box"><div class="score-lab">Number to beat</div><div class="score-num dim" id="g-last">--</div></div>
+        <div class="score-box"><div class="score-lab" id="g-coin-lab">Joy Coin</div><div class="score-num" id="g-coins">0</div></div>
+      </div>
+      <div class="dots" id="g-dots"></div>
+      <div id="g-play">
+        <div class="tool-note" style="margin:0 0 0.5rem;text-align:center">Tap the net that caught it.</div>
+        <div class="net-fan" id="g-fan"></div>
+        <div style="display:flex;gap:0.5rem;margin-top:0.6rem">
+          <button type="button" class="btn btn-outline btn-full" id="g-miss">No net</button>
+          <button type="button" class="btn btn-forest" id="g-undo">Undo</button>
+        </div>
+      </div>
+      <div class="g-result" id="g-result" hidden>
+        <div class="g-big" id="g-big"></div>
+        <div class="g-coin" id="g-coin"></div>
+        <div class="g-small" id="g-small"></div>
+        <button type="button" class="btn btn-primary btn-lg" id="g-again">Play again</button>
+      </div>
+      <ul class="game-list" style="margin-top:1.4rem">
+        <li><b>Call it.</b> The hitter names the net before the swing.</li>
+        <li><b>One cue.</b> The net. Nothing about the body.</li>
+        <li><b>Your own number.</b> The coin is for beating your last round. Never for beating a teammate.</li>
+      </ul>
+      <div class="tool-note">Names and scores stay on this phone.</div>
+    </div>
+
+    <!-- HOW BUILT -->
+    <div class="tool-card">
+      <div class="tool-step">How this was built</div>
+      <div class="tool-h">We worked backward from the field.</div>
+      <ol class="built-list">
+        <li>Launch a ball at every angle from 10 degrees down to 60 degrees up, at the exit velocity you set.</li>
+        <li>Fly it through the air with gravity and drag until it lands.</li>
+        <li>Ask one question about each ball. Does it land where a fielder can get to it?</li>
+        <li>The angles that clear the infield and land before an outfielder arrives are the hit window.</li>
+        <li>Trace those same angles from the tee to your net. That is where the target hangs.</li>
+      </ol>
+
+      <h2 style="font-family:var(--serif);font-size:1.25rem;font-weight:600;color:var(--ink);margin:1.8rem 0 0.2rem;letter-spacing:-0.01em">Guidelines &amp; sources this tool follows</h2>
+      <ul class="src-list">
+        <li><strong>MLB Statcast glossary, Launch Angle.</strong> Ground ball below 10 degrees, line drive 10 to 25, fly ball 25 to 50, pop up above 50. Measured on major league hitters. Used here as a cross-check, not as the youth answer.</li>
+        <li><strong>Kagan, D., and Nathan, A. M. (2014).</strong> Simplified models for the drag coefficient of a pitched baseball. <em>The Physics Teacher.</em> Drag coefficient of roughly 0.31 to 0.35 from pitch tracking. We use 0.35 for every ball and speed. That is a simplification.</li>
+        <li><strong>Nathan, A. M.</strong> Trajectory Calculator, University of Illinois. The full model includes lift from backspin. Ours leaves spin out, so real fly balls carry farther than shown, most of all on hard-hit balls.</li>
+        <li><strong>FanGraphs Community, Evaluating Statcast Hit-Type Boundaries.</strong> In MLB data, balls at 20 to 25 degrees act like fly balls unless they are hit softly. Blog analysis, not peer reviewed.</li>
+        <li><strong>Exit velocity presets.</strong> Rough ranges published by coaching and training sites. We found no peer-reviewed youth dataset. Blast Motion states that no trustworthy softball chart by age exists. Flagged uncertain. Measure your own hitters.</li>
+        <li><strong>Deci, E. L., Koestner, R., and Ryan, R. M. (1999).</strong> A meta-analytic review of experiments examining the effects of extrinsic rewards on intrinsic motivation. <em>Psychological Bulletin.</em> Across 128 experiments, tangible rewards tied to performance lowered free-choice motivation, and the effect was stronger in children. Praise did not. The coin in this game is a performance reward, even when the only opponent is your own last round. Youth fit in a cage game is untested. Flagged uncertain. Watch whether kids still want to hit when no coin is on the line.</li>
+        <li><strong>Phone sight.</strong> Reads the tilt sensor in your phone. Sensor accuracy varies by phone. Check one spot against the table and a tape measure before you trust it. On a field the phone gives the direction only. Tilt is too rough to judge distance past the infield, so distance is paced off.</li>
+        <li><strong>Fielder depth, speed, reach, and reaction time.</strong> DugoutLab assumptions. Not measured. Open the field setup and change them.</li>
+      </ul>
+      <p style="font-size:0.9rem;color:var(--ink-soft);margin-top:1rem;line-height:1.65"><em>Note on certainty: this is a physics model, not a record of real youth games. It treats every ball as hit straight at a fielder, so it misses the gaps, and it ignores spin, wind, bad hops, and errors. In youth games a ground ball often becomes a baserunner. The model does not count that. We hold the window as a starting point for a target, not a rule for a swing.</em></p>
+    </div>
+
+  </div>
+</section>
+
+<div class="sight" id="sight" aria-live="polite">
+  <video id="sight-video" playsinline muted autoplay></video>
+  <div class="sight-top">
+    <div class="sight-zone" id="sight-zone">AIM DOWN THE CAGE</div>
+    <div class="sight-sub" id="sight-sub">Then tap Set middle</div>
+    <div class="sight-sub2" id="sight-sub2"></div>
+  </div>
+  <div class="sight-ring" id="sight-ring"></div>
+  <div class="sight-gauge" id="sight-gauge"></div>
+  <div class="sight-bot">
+    <div class="sight-warn" id="sight-warn"></div>
+    <div class="sight-btns">
+      <button type="button" class="btn btn-primary btn-lg" id="sight-set">Set middle</button>
+      <button type="button" class="btn btn-secondary btn-lg" id="sight-close">Done</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p>
+      <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="cage-targets.html">Cage Targets</a></li>
+        <li><a href="training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">All Articles</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-sponsor">
+    <div class="sponsor-label">Our Sponsor</div>
+    <div class="sponsor-line">
+      DugoutLab is made free thanks to <a href="https://gamedayhelpers.com" target="_blank" rel="noopener">GamedayHelpers.com</a>
+      <span class="sponsor-tag">Let coaches coach. Let parents enjoy the game.</span>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script>
+/*MODEL-START*/
+var G = 32.174, MPH = 1.46667, CD = 0.35, RHO = 1.2, REACT = 0.5;
+var BALLS = {
+  baseball: { m: 0.145, r: 0.0366 },
+  soft11:   { m: 0.170, r: 0.0445 },
+  soft12:   { m: 0.188, r: 0.0485 }
+};
+function dragK(ball) {
+  var b = BALLS[ball] || BALLS.baseball;
+  return 0.5 * RHO * CD * Math.PI * b.r * b.r / b.m * 0.3048;
+}
+function simulate(ev, angDeg, h0, k) {
+  var v = ev * MPH, a = angDeg * Math.PI / 180;
+  var vx = v * Math.cos(a), vy = v * Math.sin(a);
+  var x = 0, y = h0, t = 0, dt = 0.004, pts = [[0, h0]];
+  while (y > 0 && t < 12) {
+    var sp = Math.sqrt(vx * vx + vy * vy);
+    vx += -k * sp * vx * dt;
+    vy += (-G - k * sp * vy) * dt;
+    var nx = x + vx * dt, ny = y + vy * dt;
+    if (ny <= 0) {
+      var fr = y / (y - ny);
+      x = x + (nx - x) * fr; y = 0; t += dt * fr;
+      pts.push([x, 0]);
+      break;
+    }
+    x = nx; y = ny; t += dt;
+    pts.push([x, y]);
+  }
+  return { pts: pts, L: x, T: t };
+}
+function heightAt(pts, d) {
+  if (d <= 0) return pts[0][1];
+  for (var i = 1; i < pts.length; i++) {
+    if (pts[i][0] >= d) {
+      var p = pts[i - 1], q = pts[i];
+      var fr = (d - p[0]) / ((q[0] - p[0]) || 1);
+      return p[1] + (q[1] - p[1]) * fr;
+    }
+  }
+  return null;
+}
+function classify(sim, f) {
+  var L = sim.L, T = sim.T;
+  if (L >= f.fence) return 'over';
+  if (L < f.ifDepth) return (T >= 2) ? 'caught' : 'ground';
+  var yIF = heightAt(sim.pts, f.ifDepth);
+  if (yIF !== null && yIF <= f.reach) return 'liner';
+  var cover = f.run * Math.max(0, T - REACT);
+  if (Math.abs(L - f.ifDepth) <= cover || Math.abs(L - f.ofDepth) <= cover) return 'caught';
+  return 'hit';
+}
+function sweep(f) {
+  var k = dragK(f.ball), rows = [];
+  for (var a = -10; a <= 60.001; a += 0.5) {
+    var s = simulate(f.ev, a, f.h0, k);
+    rows.push({ ang: Math.round(a * 2) / 2, zone: classify(s, f), L: s.L, T: s.T });
+  }
+  return rows;
+}
+function ranges(rows) {
+  var out = [], cur = null;
+  rows.forEach(function (r) {
+    if (cur && cur.zone === r.zone) { cur.hi = r.ang; }
+    else { cur = { zone: r.zone, lo: r.ang, hi: r.ang }; out.push(cur); }
+  });
+  return out;
+}
+function hitWindows(rg) {
+  return rg.filter(function (r) { return r.zone === 'hit' && (r.hi - r.lo) >= 1; });
+}
+function targetBand(f, lo, hi, pathLen) {
+  var k = dragK(f.ball);
+  return {
+    lo: heightAt(simulate(f.ev, lo, f.h0, k).pts, pathLen),
+    hi: heightAt(simulate(f.ev, hi, f.h0, k).pts, pathLen)
+  };
+}
+function sprayPlace(dist, width, sprayDeg) {
+  var s = sprayDeg * Math.PI / 180;
+  if (sprayDeg === 0) return { where: 'plane', lateral: 0, path: dist };
+  var lat = dist * Math.tan(s);
+  if (lat <= width / 2) return { where: 'plane', lateral: lat, path: dist / Math.cos(s) };
+  return { where: 'side', down: (width / 2) / Math.tan(s), path: (width / 2) / Math.sin(s) };
+}
+function heightAtDist(ev, angDeg, h0, k, p) {
+  var v = ev * MPH, a = angDeg * Math.PI / 180;
+  var vx = v * Math.cos(a), vy = v * Math.sin(a);
+  var x = 0, y = h0, dt = 0.002, n = 0;
+  while (n++ < 6000) {
+    var sp = Math.sqrt(vx * vx + vy * vy);
+    vx += -k * sp * vx * dt;
+    vy += (-G - k * sp * vy) * dt;
+    var nx = x + vx * dt, ny = y + vy * dt;
+    if (nx >= p) return y + (ny - y) * ((p - x) / ((nx - x) || 1));
+    if (ny < -1) return -1;
+    x = nx; y = ny;
+  }
+  return -1;
+}
+function solveLaunch(ev, h0, k, p, y) {
+  var lo = -30, hi = 80;
+  for (var i = 0; i < 22; i++) {
+    var mid = (lo + hi) / 2;
+    if (heightAtDist(ev, mid, h0, k, p) < y) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+function camVec(alpha, beta, gamma) {
+  var r = Math.PI / 180, a = alpha * r, b = beta * r, g = gamma * r;
+  var x = -Math.cos(a) * Math.sin(g) - Math.sin(a) * Math.sin(b) * Math.cos(g);
+  var y = -Math.sin(a) * Math.sin(g) + Math.cos(a) * Math.sin(b) * Math.cos(g);
+  var z = -Math.cos(b) * Math.cos(g);
+  return { el: Math.asin(Math.max(-1, Math.min(1, z))) / r, az: Math.atan2(-x, y) / r };
+}
+function wrapDeg(d) { return ((d + 180) % 360 + 360) % 360 - 180; }
+function sightRead(f, cage, el, spray) {
+  var as = Math.abs(spray), r = Math.PI / 180, k = dragK(f.ball);
+  var o = { spray: spray, el: el };
+  if (as > 45) { o.zone = 'foul'; return o; }
+  var p, surf;
+  if (cage.dist * Math.tan(as * r) <= cage.cw / 2) { p = cage.dist / Math.cos(as * r); surf = 'back'; }
+  else { p = (cage.cw / 2) / Math.sin(as * r); surf = 'side'; }
+  var y = f.h0 + p * Math.tan(el * r);
+  if (y > cage.ch) { p = (cage.ch - f.h0) / Math.tan(el * r); y = cage.ch; surf = 'roof'; }
+  else if (y < 0) { p = f.h0 / Math.tan(-el * r); y = 0; surf = 'floor'; }
+  o.surf = surf; o.p = p; o.y = y;
+  o.launch = solveLaunch(f.ev, f.h0, k, p, y);
+  o.zone = classify(simulate(f.ev, o.launch, f.h0, k), f);
+  return o;
+}
+/*MODEL-END*/
+
+(function () {
+  var PRESETS = [
+    { id: 'bb10', label: 'Baseball 9-10',  ball: 'baseball', ev: 50, ifd: 75,  ofd: 130, fence: 200, run: 13, reach: 6 },
+    { id: 'bb12', label: 'Baseball 11-12', ball: 'baseball', ev: 58, ifd: 80,  ofd: 150, fence: 200, run: 15, reach: 6.5 },
+    { id: 'bb14', label: 'Baseball 13-14', ball: 'baseball', ev: 68, ifd: 125, ofd: 230, fence: 300, run: 18, reach: 7.5 },
+    { id: 'bbhs', label: 'Baseball HS',    ball: 'baseball', ev: 80, ifd: 135, ofd: 260, fence: 330, run: 21, reach: 8 },
+    { id: 'sb10', label: 'Softball 10U',   ball: 'soft11',   ev: 42, ifd: 70,  ofd: 115, fence: 175, run: 13, reach: 6 },
+    { id: 'sb12', label: 'Softball 12U',   ball: 'soft12',   ev: 50, ifd: 75,  ofd: 135, fence: 200, run: 15, reach: 6.5 },
+    { id: 'sb14', label: 'Softball 14U+',  ball: 'soft12',   ev: 58, ifd: 80,  ofd: 155, fence: 200, run: 17, reach: 7.5 }
+  ];
+  var COL = { ground: '#55685d', liner: '#7ad6a8', hit: '#C8862E', caught: '#8d9690', over: '#9dc5e0' };
+  var NAME = {
+    ground: 'Ground ball. A play for an infielder.',
+    liner:  'Low liner. A hit in a gap, an out at a glove.',
+    hit:    'HIT WINDOW. Over the infield, down before the outfield.',
+    caught: 'In the air long enough to be caught.',
+    over:   'Over the fence.'
+  };
+  var ORDER = ['ground', 'liner', 'hit', 'caught', 'over'];
+  var ball = 'baseball';
+  var state = {}, mode = 'cage';
+  function $(id) { return document.getElementById(id); }
+  function num(id, d) { var v = parseFloat($(id).value); return isFinite(v) ? v : d; }
+  function ftin(x) {
+    var n = Math.round(x * 12), ft = Math.floor(n / 12), inch = n % 12;
+    return ft + ' ft ' + inch + ' in';
+  }
+
+  var pr = $('presets');
+  PRESETS.forEach(function (p) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'wz-opt'; b.textContent = p.label; b.setAttribute('data-id', p.id);
+    b.addEventListener('click', function () { applyPreset(p); });
+    pr.appendChild(b);
+  });
+  function applyPreset(p) {
+    ball = p.ball;
+    $('ev').value = p.ev; $('ifd').value = p.ifd; $('ofd').value = p.ofd;
+    $('fence').value = p.fence; $('run').value = p.run; $('reach').value = p.reach;
+    Array.prototype.forEach.call(pr.children, function (c) {
+      c.classList.toggle('active', c.getAttribute('data-id') === p.id);
+    });
+    update();
+  }
+
+  function field() {
+    return {
+      ball: ball, ev: num('ev', 58), h0: num('h0', 2.5),
+      ifDepth: num('ifd', 80), ofDepth: num('ofd', 150), fence: num('fence', 200),
+      run: num('run', 15), reach: num('reach', 6.5)
+    };
+  }
+
+  function stripSVG(rg, win) {
+    var W = 720, H = 132, x0 = 24, x1 = 696, a0 = -5, a1 = 55;
+    function X(a) { return x0 + (Math.max(a0, Math.min(a1, a)) - a0) / (a1 - a0) * (x1 - x0); }
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Launch angle zones from minus 5 to 55 degrees">';
+    rg.forEach(function (r) {
+      var xa = X(r.lo - 0.25), xb = X(r.hi + 0.25);
+      if (xb > xa) s += '<rect x="' + xa.toFixed(1) + '" y="46" width="' + (xb - xa).toFixed(1) + '" height="38" fill="' + COL[r.zone] + '"/>';
+    });
+    if (win) {
+      var wa = X(win.lo - 0.25), wb = X(win.hi + 0.25), mid = (wa + wb) / 2;
+      s += '<rect x="' + wa.toFixed(1) + '" y="42" width="' + (wb - wa).toFixed(1) + '" height="46" fill="none" stroke="#f4efe6" stroke-width="3"/>';
+      s += '<text x="' + Math.max(110, Math.min(610, mid)).toFixed(1) + '" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="22" font-weight="700" fill="#f4efe6">HIT WINDOW</text>';
+    }
+    for (var a = 0; a <= 50; a += 10) {
+      s += '<line x1="' + X(a) + '" y1="84" x2="' + X(a) + '" y2="94" stroke="#f4efe6" stroke-opacity="0.5" stroke-width="2"/>';
+      s += '<text x="' + X(a) + '" y="118" text-anchor="middle" font-family="Inter,sans-serif" font-size="20" fill="#f4efe6" fill-opacity="0.7">' + a + '&#176;</text>';
+    }
+    return s + '</svg>';
+  }
+
+  function trajSVG(f) {
+    var W = 720, H = 360, px0 = 16, px1 = 704, gy = 300, top = 26;
+    var k = dragK(f.ball), arcs = [], maxY = f.reach * 2;
+    for (var a = 0; a <= 45; a += 5) {
+      var sim = simulate(f.ev, a, f.h0, k);
+      var z = classify(sim, f);
+      sim.pts.forEach(function (p) { if (p[1] > maxY) maxY = p[1]; });
+      arcs.push({ a: a, sim: sim, z: z });
+    }
+    var xMax = f.fence * 1.08;
+    function X(x) { return px0 + x / xMax * (px1 - px0); }
+    function Y(y) { return gy - y / (maxY * 1.08) * (gy - top); }
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Side view of ball flights by launch angle">';
+    s += '<line x1="' + px0 + '" y1="' + gy + '" x2="' + px1 + '" y2="' + gy + '" stroke="#f4efe6" stroke-opacity="0.45" stroke-width="2"/>';
+    function post(x, h, label) {
+      s += '<line x1="' + X(x).toFixed(1) + '" y1="' + gy + '" x2="' + X(x).toFixed(1) + '" y2="' + Y(h).toFixed(1) + '" stroke="#f4efe6" stroke-width="5" stroke-linecap="round"/>';
+      s += '<text x="' + X(x).toFixed(1) + '" y="' + (gy + 26) + '" text-anchor="middle" font-family="Inter,sans-serif" font-size="19" font-weight="700" fill="#f4efe6">' + label + '</text>';
+      s += '<text x="' + X(x).toFixed(1) + '" y="' + (gy + 48) + '" text-anchor="middle" font-family="Inter,sans-serif" font-size="17" fill="#f4efe6" fill-opacity="0.6">' + Math.round(x) + ' ft</text>';
+    }
+    arcs.forEach(function (o) {
+      var d = '', step = Math.max(1, Math.floor(o.sim.pts.length / 80));
+      for (var i = 0; i < o.sim.pts.length; i += step) {
+        var p = o.sim.pts[i];
+        d += (i === 0 ? 'M' : 'L') + X(p[0]).toFixed(1) + ',' + Y(p[1]).toFixed(1);
+      }
+      var last = o.sim.pts[o.sim.pts.length - 1];
+      d += 'L' + X(last[0]).toFixed(1) + ',' + Y(last[1]).toFixed(1);
+      s += '<path d="' + d + '" fill="none" stroke="' + COL[o.z] + '" stroke-width="' + (o.z === 'hit' ? 5 : 3) + '" stroke-linejoin="round" opacity="' + (o.z === 'hit' ? 1 : 0.8) + '"/>';
+    });
+    post(f.ifDepth, f.reach, 'Infield');
+    post(f.ofDepth, f.reach, 'Outfield');
+    post(f.fence, 6, 'Fence');
+    s += '<text x="' + px0 + '" y="' + (gy + 26) + '" font-family="Inter,sans-serif" font-size="19" font-weight="700" fill="#f4efe6">Home</text>';
+    return s + '</svg>';
+  }
+
+  function cageSVG(cw, ch, mid, liner) {
+    var W = 360, H = 300, sc = Math.min(300 / cw, 230 / ch);
+    var w = cw * sc, h = ch * sc, x0 = (W - w) / 2, y0 = 22, gy = y0 + h;
+    function Yh(ft) { return gy - Math.max(0, Math.min(ch, ft)) * sc; }
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Cage end view with target band">';
+    s += '<rect x="' + x0 + '" y="' + y0 + '" width="' + w + '" height="' + h + '" fill="none" stroke="#f4efe6" stroke-opacity="0.5" stroke-width="2" stroke-dasharray="6 5"/>';
+    if (liner && liner.lo !== null && liner.hi !== null && liner.hi > liner.lo) {
+      s += '<rect x="' + x0 + '" y="' + Yh(liner.hi) + '" width="' + w + '" height="' + (Yh(liner.lo) - Yh(liner.hi)) + '" fill="#7ad6a8" opacity="0.45"/>';
+    }
+    if (mid && mid.lo !== null && mid.hi !== null) {
+      var yt = Yh(mid.hi), yb = Yh(mid.lo);
+      s += '<rect x="' + x0 + '" y="' + yt + '" width="' + w + '" height="' + Math.max(2, yb - yt) + '" fill="#C8862E" opacity="0.9"/>';
+      s += '<text x="' + (W / 2) + '" y="' + ((yt + yb) / 2 + 7) + '" text-anchor="middle" font-family="Inter,sans-serif" font-size="19" font-weight="700" fill="#0a1610">' + ftin(Math.min(ch, mid.lo)) + ' to ' + ftin(Math.min(ch, mid.hi)) + '</text>';
+    }
+    s += '<line x1="' + (x0 - 8) + '" y1="' + gy + '" x2="' + (x0 + w + 8) + '" y2="' + gy + '" stroke="#f4efe6" stroke-width="3"/>';
+    s += '<text x="' + (W / 2) + '" y="' + (gy + 26) + '" text-anchor="middle" font-family="Inter,sans-serif" font-size="16" fill="#f4efe6" fill-opacity="0.65">' + cw + ' ft wide, ' + ch + ' ft high</text>';
+    return s + '</svg>';
+  }
+
+  function fieldSVG(f, land) {
+    var W = 360, H = 300, hx = 180, hy = 282, sc = 250 / (f.fence * 1.04), r = Math.PI / 180;
+    function P(d, a) { return (hx + d * sc * Math.sin(a * r)).toFixed(1) + ',' + (hy - d * sc * Math.cos(a * r)).toFixed(1); }
+    function arc(d, dash, op, w) {
+      return '<path d="M' + P(d, -45) + ' A' + (d * sc).toFixed(1) + ' ' + (d * sc).toFixed(1) + ' 0 0 1 ' + P(d, 45) + '" fill="none" stroke="#f4efe6" stroke-opacity="' + op + '" stroke-width="' + w + '"' + (dash ? ' stroke-dasharray="5 5"' : '') + '/>';
+    }
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Field from above with the landing zone and five net spots">';
+    s += '<path d="M' + hx + ',' + hy + ' L' + P(f.fence, -45) + ' A' + (f.fence * sc).toFixed(1) + ' ' + (f.fence * sc).toFixed(1) + ' 0 0 1 ' + P(f.fence, 45) + ' Z" fill="#15291f" stroke="#f4efe6" stroke-opacity="0.6" stroke-width="2"/>';
+    if (land) {
+      var ri = land.lo * sc, ro = Math.min(land.hi, f.fence) * sc;
+      s += '<path d="M' + P(land.lo, -45) + ' A' + ri.toFixed(1) + ' ' + ri.toFixed(1) + ' 0 0 1 ' + P(land.lo, 45) + ' L' + P(Math.min(land.hi, f.fence), 45) + ' A' + ro.toFixed(1) + ' ' + ro.toFixed(1) + ' 0 0 0 ' + P(Math.min(land.hi, f.fence), -45) + ' Z" fill="#C8862E" opacity="0.85"/>';
+    }
+    s += arc(f.ifDepth, true, 0.45, 1.5) + arc(f.ofDepth, true, 0.45, 1.5);
+    [[-30, f.ifDepth], [-10, f.ifDepth], [10, f.ifDepth], [30, f.ifDepth], [-27, f.ofDepth], [0, f.ofDepth], [27, f.ofDepth]].forEach(function (q) {
+      var c = P(q[1], q[0]).split(',');
+      s += '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="4" fill="#f4efe6"/>';
+    });
+    if (land) {
+      var m = (land.lo + Math.min(land.hi, f.fence)) / 2;
+      [-40, -22, 0, 22, 40].forEach(function (a) {
+        var c = P(m, a).split(',');
+        s += '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="9" fill="#0a1610" stroke="#f4efe6" stroke-width="3"/>';
+      });
+      var a = P(land.lo, -45).split(','), b = P(Math.min(land.hi, f.fence), -45).split(',');
+      s += '<text x="' + (a[0] - 8) + '" y="' + (+a[1] + 12) + '" text-anchor="end" font-family="Inter,sans-serif" font-size="15" font-weight="700" fill="#e2a85a">' + land.lo + ' ft</text>';
+      s += '<text x="' + (b[0] - 8) + '" y="' + (+b[1] + 6) + '" text-anchor="end" font-family="Inter,sans-serif" font-size="15" font-weight="700" fill="#e2a85a">' + land.hi + ' ft</text>';
+    }
+    s += '<text x="' + hx + '" y="' + (hy + 15) + '" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#f4efe6">Home</text>';
+    return s + '</svg>';
+  }
+
+  function rangeText(list) {
+    return list.map(function (r) {
+      if (r.lo <= -10) return 'below ' + Math.round(r.hi + 0.25) + '\u00B0';
+      if (r.hi >= 60) return 'above ' + Math.round(r.lo - 0.25) + '\u00B0';
+      return Math.round(r.lo) + '\u00B0 to ' + Math.round(r.hi) + '\u00B0';
+    }).join(', ');
+  }
+
+  function update() {
+    var f = field();
+    $('ev-out').textContent = Math.round(f.ev);
+    var rg = ranges(sweep(f));
+    var wins = hitWindows(rg);
+    var win = wins[0] || null;
+    var linerRg = rg.filter(function (r) { return r.zone === 'liner'; })[0] || null;
+    var band = win || linerRg;
+
+    if (win) {
+      $('win-num').innerHTML = Math.ceil(win.lo) + '&#176; to ' + Math.floor(win.hi) + '&#176;<small>launch angle</small>';
+      var line = 'At ' + Math.round(f.ev) + ' mph on this field, balls launched in this range clear the infield and land in front of the outfielders.';
+      if (wins[1]) line += ' A second window opens from ' + Math.ceil(wins[1].lo) + '&#176; to ' + Math.floor(wins[1].hi) + '&#176;, over the outfielders and short of the fence.';
+      $('win-line').innerHTML = line;
+    } else if (linerRg) {
+      $('win-num').innerHTML = Math.ceil(linerRg.lo) + '&#176; to ' + Math.floor(linerRg.hi) + '&#176;<small>low liners</small>';
+      $('win-line').textContent = 'With this setup the model finds no clean window over the infield. The low liner band is the target. Check the field setup.';
+    } else {
+      $('win-num').textContent = 'No window';
+      $('win-line').textContent = 'The model finds no window with this setup. Check the field setup numbers.';
+    }
+
+    $('strip').innerHTML = stripSVG(rg, win);
+    var zl = '';
+    ORDER.forEach(function (z) {
+      var list = rg.filter(function (r) { return r.zone === z; });
+      if (!list.length) return;
+      zl += '<li' + (z === 'hit' ? ' class="is-hit"' : '') + '><span class="sw" style="background:' + COL[z] + '"></span><span>' + NAME[z] + '</span><span class="rg">' + rangeText(list) + '</span></li>';
+    });
+    $('zones').innerHTML = zl;
+    $('traj').innerHTML = trajSVG(f);
+
+    var dist = num('dist', 15), cw = num('cw', 12), ch = num('ch', 12);
+    var rows = '', midBand = null, midLiner = null;
+    if (band) {
+      var lo = Math.ceil(band.lo), hi = Math.floor(band.hi);
+      midBand = targetBand(f, lo, hi, dist);
+      if (win && linerRg) midLiner = targetBand(f, linerRg.lo, linerRg.hi, dist);
+      [['Up the middle', 0], ['The gaps', 22], ['Down the lines', 40]].forEach(function (a) {
+        var pl = sprayPlace(dist, cw, a[1]);
+        var tb = targetBand(f, lo, hi, pl.path);
+        var where;
+        if (a[1] === 0) where = '<b>Centered</b> on the target line, ' + Math.round(dist) + ' ft from the tee.';
+        else if (pl.where === 'plane') where = '<b>' + ftin(pl.lateral) + ' left and right</b> of center, ' + Math.round(dist) + ' ft from the tee.';
+        else where = '<b>On each side net</b>, ' + ftin(pl.down) + ' down the cage from the tee.';
+        var ht;
+        if (tb.lo === null || tb.hi === null) ht = 'Too far';
+        else if (tb.lo >= ch) ht = 'Above the roof';
+        else ht = ftin(tb.lo) + '<br>to ' + ftin(Math.min(ch, tb.hi));
+        var note = (tb.hi !== null && tb.hi > ch && tb.lo < ch) ? '<br><span style="font-size:0.8rem;color:var(--ink-faint)">Top of the window is above the roof. Move the target closer to see all of it.</span>' : '';
+        rows += '<tr><td><b>' + a[0] + '</b></td><td>' + where + note + '</td><td class="ht">' + ht + '</td></tr>';
+      });
+    }
+    var land = null;
+    if (band) {
+      var k0 = dragK(f.ball);
+      var la = simulate(f.ev, Math.ceil(band.lo), f.h0, k0).L, lb = simulate(f.ev, Math.floor(band.hi), f.h0, k0).L;
+      land = { lo: Math.round(Math.min(la, lb)), hi: Math.round(Math.max(la, lb)) };
+    }
+    state = { f: f, rg: rg, cage: { dist: dist, cw: cw, ch: ch }, land: land, mode: mode };
+    if (land) {
+      $('fd-num').innerHTML = land.lo + ' to ' + land.hi + '<small>ft from home</small>';
+      $('fd-line').textContent = 'About ' + Math.round(land.lo / 3) + ' to ' + Math.round(land.hi / 3) + ' big steps. Balls in the hit window first touch down here. Set a net in each lane, anywhere in the gold.';
+      var mid = Math.round((land.lo + land.hi) / 2), st = Math.round(mid / 3);
+      $('fd-list').innerHTML = [['Up the middle', 'Straight over second base'], ['Left-center and right-center gaps', 'Halfway between second base and each foul line'], ['Left and right field lines', 'A few steps inside each foul line']].map(function (r) {
+        return '<li class="is-hit"><span class="sw" style="background:' + COL.hit + '"></span><span><b style="color:var(--ink)">' + r[0] + '.</b> ' + r[1] + '.</span><span class="rg">' + mid + ' ft · ' + st + ' steps</span></li>';
+      }).join('');
+    } else {
+      $('fd-num').textContent = 'No window'; $('fd-line').textContent = 'Check the field setup numbers.'; $('fd-list').innerHTML = '';
+    }
+    $('fieldmap').innerHTML = fieldSVG(f, land);
+    $('cage-rows').innerHTML = rows;
+    $('cage').innerHTML = cageSVG(cw, ch, midBand, midLiner);
+  }
+
+  ['ev', 'ifd', 'ofd', 'fence', 'run', 'reach', 'h0', 'dist', 'cw', 'ch'].forEach(function (id) {
+    $(id).addEventListener('input', update);
+  });
+  Array.prototype.forEach.call($('mode-row').children, function (b) {
+    b.addEventListener('click', function () {
+      mode = b.getAttribute('data-mode');
+      Array.prototype.forEach.call($('mode-row').children, function (c) { c.classList.toggle('active', c === b); });
+      $('mode-cage').hidden = mode !== 'cage'; $('mode-field').hidden = mode !== 'field';
+      $('see-cage').hidden = mode !== 'cage'; $('see-field').hidden = mode !== 'field';
+      update();
+    });
+  });
+  applyPreset(PRESETS[1]);
+
+  /* ---------- phone sight ---------- */
+  var sight = { on: false, az0: null, el: 0, az: 0, got: false, stream: null, raf: 0 };
+  var ZT = { hit: 'HIT WINDOW', liner: 'LOW LINER', ground: 'GROUND BALL', caught: 'CAUGHT IN THE AIR', over: 'OVER THE FENCE', foul: 'FOUL GROUND' };
+  function onOrient(e) {
+    if (e.alpha === null || e.beta === null) return;
+    var v = camVec(e.alpha, e.beta, e.gamma || 0);
+    if (!sight.got) { sight.el = v.el; sight.az = v.az; sight.got = true; return; }
+    sight.el += (v.el - sight.el) * 0.25;
+    sight.az = wrapDeg(sight.az + wrapDeg(v.az - sight.az) * 0.25);
+  }
+  function dirName(s) {
+    var a = Math.abs(s);
+    if (a < 8) return 'Up the middle';
+    if (a < 30) return s > 0 ? 'Left-center gap' : 'Right-center gap';
+    return s > 0 ? 'Left field line' : 'Right field line';
+  }
+  function buildGauge() {
+    var g = $('sight-gauge'), a0 = -5, a1 = 50, h = '';
+    (state.rg || []).forEach(function (r) {
+      var lo = Math.max(a0, r.lo - 0.25), hi = Math.min(a1, r.hi + 0.25);
+      if (hi <= lo) return;
+      h += '<i style="bottom:' + ((lo - a0) / (a1 - a0) * 100).toFixed(1) + '%;height:' + ((hi - lo) / (a1 - a0) * 100).toFixed(1) + '%;background:' + COL[r.zone] + '"></i>';
+    });
+    g.innerHTML = h + '<b id="sight-mark" style="bottom:0%"></b>';
+  }
+  function sightFrame() {
+    if (!sight.on) return;
+    sight.raf = requestAnimationFrame(sightFrame);
+    if (!sight.got || !state.f) return;
+    var ring = $('sight-ring'), zt = $('sight-zone');
+    if (sight.az0 === null) {
+      zt.textContent = state.mode === 'field' ? 'AIM AT SECOND BASE' : 'AIM DOWN THE CAGE'; zt.className = 'sight-zone';
+      $('sight-sub').textContent = 'Then tap Set middle'; $('sight-sub2').textContent = '';
+      ring.className = 'sight-ring';
+      return;
+    }
+    if (state.mode === 'field') {
+      var sp = wrapDeg(sight.az - sight.az0), on = false;
+      [-40, -22, 0, 22, 40].forEach(function (c) { if (Math.abs(sp - c) <= 3) on = true; });
+      if (Math.abs(sp) > 45) { zt.textContent = ZT.foul; zt.className = 'sight-zone'; ring.className = 'sight-ring'; $('sight-sub').textContent = 'Turn back toward second base'; $('sight-sub2').textContent = ''; return; }
+      zt.textContent = on ? dirName(sp).toUpperCase() : 'KEEP TURNING';
+      zt.className = 'sight-zone' + (on ? ' is-hit' : '');
+      ring.className = 'sight-ring' + (on ? ' is-hit' : '');
+      $('sight-sub').textContent = on ? 'Net goes on this line' : 'Next lane: ' + dirName(sp);
+      $('sight-sub2').textContent = state.land ? 'Walk out ' + state.land.lo + ' to ' + state.land.hi + ' ft. About ' + Math.round(state.land.lo / 3) + ' to ' + Math.round(state.land.hi / 3) + ' big steps.' : '';
+      return;
+    }
+    var o = sightRead(state.f, state.cage, sight.el, wrapDeg(sight.az - sight.az0));
+    zt.textContent = ZT[o.zone];
+    zt.className = 'sight-zone' + (o.zone === 'hit' ? ' is-hit' : '');
+    ring.className = 'sight-ring' + (o.zone === 'hit' ? ' is-hit' : (o.zone === 'liner' ? ' is-liner' : ''));
+    if (o.zone === 'foul') { $('sight-sub').textContent = 'Turn back toward the middle'; $('sight-sub2').textContent = ''; return; }
+    $('sight-sub').textContent = dirName(o.spray) + ' · ' + Math.round(o.launch) + '° launch';
+    var where = o.surf === 'back' ? 'Back net, ' + ftin(o.y) + ' up'
+      : o.surf === 'side' ? (o.spray > 0 ? 'Left' : 'Right') + ' side net, ' + ftin(o.y) + ' up'
+      : o.surf === 'roof' ? 'Roof net, ' + ftin(o.p) + ' out from the tee'
+      : 'Floor, ' + ftin(o.p) + ' out from the tee';
+    $('sight-sub2').textContent = (o.zone === 'hit' ? 'Hang a net here. ' : '') + where;
+    var m = $('sight-mark');
+    if (m) m.style.bottom = ((Math.max(-5, Math.min(50, o.launch)) + 5) / 55 * 100).toFixed(1) + '%';
+  }
+  function openSight() {
+    function go() {
+      $('sight').classList.add('open');
+      sight.on = true; sight.az0 = null; sight.got = false;
+      $('sight-warn').textContent = '';
+      buildGauge();
+      $('sight-gauge').hidden = state.mode === 'field';
+      window.addEventListener('deviceorientation', onOrient);
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false }).then(function (st) {
+          if (!sight.on) { st.getTracks().forEach(function (t) { t.stop(); }); return; }
+          sight.stream = st;
+          var v = $('sight-video'); v.srcObject = st;
+          var pl = v.play(); if (pl && pl.catch) pl.catch(function () {});
+        }).catch(function () {
+          if (sight.on) $('sight-warn').textContent = 'Camera is blocked. The sight still works without the picture.';
+        });
+      } else {
+        $('sight-warn').textContent = 'No camera here. The sight still works without the picture.';
+      }
+      setTimeout(function () {
+        if (sight.on && !sight.got) $('sight-warn').textContent = 'No tilt sensor found. Open this page on a phone.';
+      }, 2000);
+      sightFrame();
+    }
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission().then(go, go);
+    } else { go(); }
+  }
+  function closeSight() {
+    sight.on = false;
+    cancelAnimationFrame(sight.raf);
+    window.removeEventListener('deviceorientation', onOrient);
+    if (sight.stream) { sight.stream.getTracks().forEach(function (t) { t.stop(); }); sight.stream = null; }
+    $('sight-video').srcObject = null;
+    $('sight').classList.remove('open');
+  }
+  $('sight-open').addEventListener('click', openSight);
+  $('sight-close').addEventListener('click', closeSight);
+  $('sight-set').addEventListener('click', function () { if (sight.got) sight.az0 = sight.az; });
+
+  /* ---------- the game ---------- */
+  var KEY = 'dl_hitwindow_v1', ROUND = 10;
+  var NETS = [['ll', 'Left line'], ['lg', 'Left gap'], ['mid', 'Middle'], ['rg', 'Right gap'], ['rl', 'Right line']];
+  var G = { coin: 'Joy Coin', players: [{ name: 'Hitter 1', last: null, best: 0, coins: 0 }], cur: 0 };
+  try {
+    var raw = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (raw && raw.players && raw.players.length) G = raw;
+  } catch (e) {}
+  if (!(G.cur >= 0 && G.cur < G.players.length)) G.cur = 0;
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(G)); } catch (e) {} }
+  var shots = [], done = false;
+  function me() { return G.players[G.cur]; }
+  function netCount() { return shots.filter(function (x) { return x !== 'miss'; }).length; }
+  function drawGame() {
+    var pl = $('players'); pl.innerHTML = '';
+    G.players.forEach(function (p, i) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'wz-opt' + (i === G.cur ? ' active' : '');
+      b.textContent = p.name + (p.coins ? ' · ' + p.coins : '');
+      b.addEventListener('click', function () { G.cur = i; shots = []; done = false; save(); drawGame(); });
+      pl.appendChild(b);
+    });
+    var p = me();
+    $('g-nets').textContent = netCount();
+    $('g-last').textContent = p.last === null ? '--' : p.last;
+    $('g-coins').textContent = p.coins;
+    $('g-coin-lab').textContent = G.coin || 'Coin';
+    var d = '';
+    for (var i = 0; i < ROUND; i++) d += '<span class="' + (shots[i] ? (shots[i] === 'miss' ? 'miss' : 'net') : '') + '"></span>';
+    $('g-dots').innerHTML = d;
+    var fan = $('g-fan'); fan.innerHTML = '';
+    NETS.forEach(function (n) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'net-btn';
+      var c = document.createElement('b'); c.textContent = shots.filter(function (x) { return x === n[0]; }).length;
+      b.appendChild(c); b.appendChild(document.createTextNode(n[1]));
+      b.addEventListener('click', function () { shot(n[0]); });
+      fan.appendChild(b);
+    });
+    $('g-play').hidden = done;
+    $('g-result').hidden = !done;
+  }
+  function shot(k) {
+    if (done) return;
+    shots.push(k);
+    if (shots.length >= ROUND) finish(); else drawGame();
+  }
+  function finish() {
+    var p = me(), n = netCount(), prev = p.last, coin = '';
+    var small;
+    if (prev === null) small = 'That is your number to beat.';
+    else if (n > prev) { p.coins += 1; coin = '+1 ' + (G.coin || 'Coin'); small = 'Last round: ' + prev + '. You beat your own number.'; }
+    else if (n === prev) small = 'Tied your number. Run it back.';
+    else small = 'Last round: ' + prev + '. New number to beat: ' + n + '.';
+    p.last = n; if (n > p.best) p.best = n;
+    done = true; save();
+    $('g-big').textContent = n + ' of ' + ROUND + ' in the nets';
+    $('g-coin').textContent = coin;
+    $('g-small').textContent = small;
+    drawGame();
+  }
+  $('g-miss').addEventListener('click', function () { shot('miss'); });
+  $('g-undo').addEventListener('click', function () { if (!done) { shots.pop(); drawGame(); } });
+  $('g-again').addEventListener('click', function () { shots = []; done = false; drawGame(); });
+  $('coin-name').value = G.coin;
+  $('coin-name').addEventListener('input', function () { G.coin = this.value.trim(); save(); $('g-coin-lab').textContent = G.coin || 'Coin'; });
+  function addPlayer() {
+    var v = $('p-add').value.trim(); if (!v) return;
+    if (G.players.length === 1 && G.players[0].name === 'Hitter 1' && G.players[0].last === null) G.players = [];
+    G.players.push({ name: v, last: null, best: 0, coins: 0 });
+    G.cur = G.players.length - 1; $('p-add').value = '';
+    shots = []; done = false; save(); drawGame();
+  }
+  $('p-add-btn').addEventListener('click', addPlayer);
+  $('p-add').addEventListener('keydown', function (e) { if (e.key === 'Enter') addPlayer(); });
+  drawGame();
+})();
+</script>
+<script src="js/site.js"></script>
+</body>
+</html>
