@@ -44,32 +44,11 @@ details.setup .field-grid { margin-top: 0.9rem; }
 .cage-table td { padding: 0.75rem 0.5rem 0.75rem 0; border-top: 1px solid var(--rule); color: var(--ink-soft); vertical-align: top; line-height: 1.45; }
 .cage-table td.ht { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; color: var(--gold-light); white-space: nowrap; }
 .cage-table td b { color: var(--ink); font-weight: 600; }
-.game-list { list-style: none; display: grid; gap: 0.6rem; }
-.game-list li { border-left: 3px solid var(--gold); padding: 0.2rem 0 0.2rem 0.9rem; color: var(--ink-soft); font-size: 0.98rem; line-height: 1.55; }
-.game-list li b { color: var(--ink); }
 .built-list { margin: 0 0 0 1.2rem; color: var(--ink-soft); font-size: 0.95rem; line-height: 1.7; }
 .src-list { margin: 0.6rem 0 0 1.2rem; color: var(--ink-soft); font-size: 0.9rem; line-height: 1.65; }
 .src-list li { margin-bottom: 0.5rem; }
 .src-list strong { color: var(--ink); }
 .model-flag { display: inline-block; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-light); border: 1px solid rgba(200,134,46,0.4); border-radius: 999px; padding: 0.25rem 0.7rem; margin-bottom: 0.9rem; }
-.score-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin: 1.2rem 0 0.9rem; }
-.score-box { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: var(--radius); padding: 0.8rem 0.6rem; text-align: center; }
-.score-lab { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.3rem; }
-.score-num { font-family: var(--serif); font-size: 2.4rem; font-weight: 600; color: var(--gold); line-height: 1; }
-.score-num.dim { color: var(--ink-soft); }
-.dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 0.9rem; }
-.dots span { width: 100%; max-width: 34px; height: 8px; border-radius: 4px; background: var(--rule); }
-.dots span.net { background: var(--gold); }
-.dots span.miss { background: #55685d; }
-.net-fan { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
-.net-btn { background: var(--forest-deep); border: 2px solid var(--gold); color: var(--ink); border-radius: 12px 12px 40px 40px; padding: 0.9rem 0.2rem 1.1rem; font-family: var(--sans); font-size: 0.74rem; font-weight: 600; line-height: 1.2; min-height: 92px; }
-.net-btn b { display: block; font-family: var(--serif); font-size: 1.7rem; color: var(--gold); line-height: 1; margin-bottom: 0.3rem; }
-.net-btn:active { background: var(--gold); color: var(--forest-deep); }
-.net-btn:active b { color: var(--forest-deep); }
-.g-result { background: var(--forest-deep); border: 2px solid var(--gold); border-radius: var(--radius-lg); padding: 1.4rem 1.2rem; text-align: center; margin-top: 0.9rem; }
-.g-result .g-big { font-family: var(--serif); font-size: 1.7rem; font-weight: 600; color: var(--ink); line-height: 1.2; }
-.g-result .g-coin { font-family: var(--serif); font-size: 1.5rem; font-weight: 700; color: var(--gold); margin-top: 0.5rem; }
-.g-result .g-small { color: var(--ink-soft); font-size: 0.95rem; margin: 0.5rem 0 1rem; }
 .sight { position: fixed; inset: 0; z-index: 2000; background: #050b08; display: none; color: #f4efe6; }
 .sight.open { display: block; }
 .sight video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -87,6 +66,31 @@ details.setup .field-grid { margin-top: 0.9rem; }
 .sight-gauge { position: absolute; right: 14px; top: 24%; bottom: 24%; width: 18px; border-radius: 9px; background: rgba(5,11,8,0.6); border: 1px solid rgba(244,239,230,0.5); }
 .sight-gauge i { position: absolute; left: 0; right: 0; }
 .sight-gauge b { position: absolute; left: -10px; right: -10px; height: 4px; margin-bottom: -2px; background: #f4efe6; border-radius: 2px; box-shadow: 0 0 0 1px #000; }
+#cv canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: manipulation; }
+#cv .sight-top, #cv .sight-bot { pointer-events: none; }
+#cv .sight-btns .btn { pointer-events: auto; }
+.sight [hidden] { display: none !important; }
+.cv-mini { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 8px); left: 8px; right: 8px; display: flex; justify-content: space-between; pointer-events: none; z-index: 2; }
+.cv-mini button { pointer-events: auto; background: rgba(5,11,8,0.75); color: #f4efe6; border: 1.5px solid rgba(244,239,230,0.5); border-radius: 999px; padding: 0.4rem 0.8rem; font-family: var(--sans); font-size: 0.8rem; font-weight: 600; }
+#cv.lining .sight-bot, #cv:not(.lining) .cv-mini { display: none; }
+#cv.lining .sight-top { padding-top: calc(env(safe-area-inset-top, 0px) + 48px); }
+.sight-zone.cv-small { font-size: 1.45rem; }
+.sight-eb { font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.2em; color: #e2a85a; margin-bottom: 0.3rem; }
+.sight-ar { position: absolute; left: 50%; top: 50%; width: 0; height: 0; border: 20px solid transparent; filter: drop-shadow(0 0 3px #000); }
+.sight-ar.l { margin: -20px 0 0 -130px; border-right-color: #e2a85a; border-left-width: 0; }
+.sight-ar.r { margin: -20px 0 0 110px; border-left-color: #e2a85a; border-right-width: 0; }
+.sight-ar.u { margin: -130px 0 0 -20px; border-bottom-color: #e2a85a; border-top-width: 0; }
+.sight-ar.d { margin: 110px 0 0 -20px; border-top-color: #e2a85a; border-bottom-width: 0; }
+.sight-pin { position: absolute; left: 0; top: 0; width: 56px; height: 56px; margin: -28px 0 0 -28px; border: 4px solid #C8862E; border-radius: 50%; background: rgba(200,134,46,0.28); box-shadow: 0 0 0 2px rgba(0,0,0,0.5); }
+.sight-pin span { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 0.74rem; font-weight: 700; background: rgba(5,11,8,0.8); padding: 2px 8px; border-radius: 6px; }
+.sight-chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 12px; -webkit-overflow-scrolling: touch; }
+.sight-chip { flex: 0 0 auto; border: 2px solid rgba(244,239,230,0.55); background: rgba(5,11,8,0.65); color: #f4efe6; border-radius: 999px; padding: 0.5rem 0.9rem; font-family: var(--sans); font-size: 0.85rem; font-weight: 600; }
+.sight-chip.cur { border-color: #e2a85a; color: #e2a85a; }
+.sight-chip.locked { background: #C8862E; border-color: #C8862E; color: #0a1610; }
+.sight .btn[disabled] { opacity: 0.4; }
+.lock-list { list-style: none; display: grid; gap: 0.45rem; margin-top: 1rem; }
+.lock-list li { background: var(--forest-deep); border: 1px solid var(--gold); border-radius: 8px; padding: 0.6rem 0.8rem; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.45; }
+.lock-list li b { color: var(--ink); display: block; }
 .sight-bot { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 16px calc(env(safe-area-inset-bottom, 0px) + 18px); background: linear-gradient(rgba(5,11,8,0), rgba(5,11,8,0.92)); text-align: center; }
 .sight-warn { font-size: 0.9rem; color: #e2a85a; min-height: 1.3em; margin-bottom: 0.7rem; }
 .sight-btns { display: flex; gap: 10px; justify-content: center; }
@@ -147,6 +151,12 @@ details.setup .field-grid { margin-top: 0.9rem; }
       </div>
       <div class="tool-note">Exit velocity is the speed of the ball off the bat. A measured number beats a guess. The presets are rough ranges from coaching sites, not studies.</div>
 
+      <div class="field-grid" style="grid-template-columns:1fr 1fr;margin-top:1.2rem">
+        <div class="field"><label for="age">Hitter age</label><input type="number" id="age" min="6" max="18" step="1" value="12"></div>
+        <div class="field"><label for="h0">Contact height, in</label><input type="number" id="h0" min="10" max="48" step="1" value="23"></div>
+      </div>
+      <div class="tool-note" id="h0-note"></div>
+
       <details class="setup">
         <summary>Field setup (our starting guesses, change them to match your field)</summary>
         <div class="field-grid">
@@ -155,7 +165,6 @@ details.setup .field-grid { margin-top: 0.9rem; }
           <div class="field"><label for="fence">Fence, ft</label><input type="number" id="fence" min="100" max="420" step="1"></div>
           <div class="field"><label for="reach">Infielder reach, ft</label><input type="number" id="reach" min="4" max="10" step="0.5"></div>
           <div class="field"><label for="run">Fielder speed, ft/sec</label><input type="number" id="run" min="6" max="30" step="1"></div>
-          <div class="field"><label for="h0">Contact height, ft</label><input type="number" id="h0" min="1" max="4" step="0.25" value="2.5"></div>
         </div>
       </details>
     </div>
@@ -185,11 +194,11 @@ details.setup .field-grid { margin-top: 0.9rem; }
       <div id="mode-cage">
       <div class="tool-h">Measure three things. Hang the nets.</div>
       <div class="field-grid">
-        <div class="field"><label for="dist">Tee to target, ft</label><input type="number" id="dist" min="5" max="70" step="1" value="15"></div>
+        <div class="field"><label for="dist">Tee to back net, ft</label><input type="number" id="dist" min="5" max="70" step="1" value="15"></div>
         <div class="field"><label for="cw">Cage width, ft</label><input type="number" id="cw" min="8" max="20" step="1" value="12"></div>
         <div class="field"><label for="ch">Cage height, ft</label><input type="number" id="ch" min="7" max="16" step="1" value="12"></div>
       </div>
-      <div class="tool-note">Tee to target is measured straight down the cage, with the tee centered between the side nets.</div>
+      <div class="tool-note">Tee to back net is measured straight down the cage, with the tee centered between the side nets.</div>
 
       <div class="cage-split">
         <div>
@@ -222,54 +231,31 @@ details.setup .field-grid { margin-top: 0.9rem; }
       <ol class="built-list" id="see-cage">
         <li>Stand at the tee. Hold the phone where the ball sits.</li>
         <li>Aim straight down the cage. Tap <b style="color:var(--ink)">Set middle</b>.</li>
-        <li>Sweep across the net. When the ring turns gold, hang a net there.</li>
+        <li>Follow the arrows to each spot. Ring turns gold, tap <b style="color:var(--ink)">Lock</b>. Five spots, one session.</li>
       </ol>
       <ol class="built-list" id="see-field" hidden>
         <li>Stand on home plate. Aim at second base. Tap <b style="color:var(--ink)">Set middle</b>.</li>
-        <li>Turn slowly. The ring turns gold on each of the five lanes.</li>
-        <li>Send a helper down that line. Count the steps. Drop the net.</li>
+        <li>Follow the arrows to each lane. Ring turns gold, tap <b style="color:var(--ink)">Lock</b>.</li>
+        <li>Send a helper down each locked line. Count the steps. Drop the net.</li>
       </ol>
       <button type="button" class="btn btn-primary btn-lg" id="sight-open" style="margin-top:1.1rem">Open the camera</button>
-      <div class="tool-note">Phone only. It uses the camera and the tilt sensor. Nothing is recorded and nothing leaves your phone.</div>
+      <div class="tool-note">Phone only. Stay on one spot while you lock. Pins hold while you turn and drift if you walk. Nothing is recorded and nothing leaves your phone.</div>
+      <ul class="lock-list" id="lock-list"></ul>
     </div>
 
     <!-- STEP 5 -->
     <div class="tool-card">
-      <div class="tool-step">Step 05 &middot; Play</div>
-      <div class="tool-h">Ten balls. Fill the nets. Beat your own number.</div>
-      <div class="field-grid" style="grid-template-columns:1fr 1fr">
-        <div class="field"><label for="coin-name">Name your coin</label><input type="text" id="coin-name" maxlength="24"></div>
-        <div class="field"><label for="p-add">Add a hitter</label>
-          <div style="display:flex;gap:0.4rem"><input type="text" id="p-add" maxlength="16" placeholder="Name"><button type="button" class="btn btn-forest btn-sm" id="p-add-btn">Add</button></div>
-        </div>
-      </div>
-      <div class="preset-row" id="players" style="margin:1rem 0 0"></div>
-      <div class="score-row">
-        <div class="score-box"><div class="score-lab">In the nets</div><div class="score-num" id="g-nets">0</div></div>
-        <div class="score-box"><div class="score-lab">Number to beat</div><div class="score-num dim" id="g-last">--</div></div>
-        <div class="score-box"><div class="score-lab" id="g-coin-lab">Joy Coin</div><div class="score-num" id="g-coins">0</div></div>
-      </div>
-      <div class="dots" id="g-dots"></div>
-      <div id="g-play">
-        <div class="tool-note" style="margin:0 0 0.5rem;text-align:center">Tap the net that caught it.</div>
-        <div class="net-fan" id="g-fan"></div>
-        <div style="display:flex;gap:0.5rem;margin-top:0.6rem">
-          <button type="button" class="btn btn-outline btn-full" id="g-miss">No net</button>
-          <button type="button" class="btn btn-forest" id="g-undo">Undo</button>
-        </div>
-      </div>
-      <div class="g-result" id="g-result" hidden>
-        <div class="g-big" id="g-big"></div>
-        <div class="g-coin" id="g-coin"></div>
-        <div class="g-small" id="g-small"></div>
-        <button type="button" class="btn btn-primary btn-lg" id="g-again">Play again</button>
-      </div>
-      <ul class="game-list" style="margin-top:1.4rem">
-        <li><b>Call it.</b> The hitter names the net before the swing.</li>
-        <li><b>One cue.</b> The net. Nothing about the body.</li>
-        <li><b>Your own number.</b> The coin is for beating your last round. Never for beating a teammate.</li>
-      </ul>
-      <div class="tool-note">Names and scores stay on this phone.</div>
+      <div class="tool-step">Step 05 &middot; Place targets and call hits</div>
+      <div class="tool-h">Line up once. Targets stick to the cage.</div>
+      <ol class="built-list">
+        <li>Stand anywhere you can see the back net and the tee. Tap six spots: the four back-net corners, the ball on the tee, and the floor under the tee.</li>
+        <li>The five hit-window targets appear on the cage. Tap the net to add more. Tap a target to remove it.</li>
+        <li>Moved? Tap <b style="color:var(--ink)">Line up again</b> from the new spot. Every target stays put.</li>
+        <li>Switch to <b style="color:var(--ink)">Call hits</b>. After each swing, tap where the ball hit the net.</li>
+      </ol>
+      <button type="button" class="btn btn-primary btn-lg" id="cv-open" style="margin-top:1.1rem">Open the camera</button>
+      <div class="tool-note">Cage only. Turn the phone freely after you line up. Walk to a new spot and you line up again. You tap where the ball hit; the phone does not track it by itself. Calls assume fielders in standard spots. Nothing is recorded or saved.</div>
+      <ul class="lock-list" id="cv-list"></ul>
     </div>
 
     <!-- HOW BUILT -->
@@ -291,8 +277,10 @@ details.setup .field-grid { margin-top: 0.9rem; }
         <li><strong>Nathan, A. M.</strong> Trajectory Calculator, University of Illinois. The full model includes lift from backspin. Ours leaves spin out, so real fly balls carry farther than shown, most of all on hard-hit balls.</li>
         <li><strong>FanGraphs Community, Evaluating Statcast Hit-Type Boundaries.</strong> In MLB data, balls at 20 to 25 degrees act like fly balls unless they are hit softly. Blog analysis, not peer reviewed.</li>
         <li><strong>Exit velocity presets.</strong> Rough ranges published by coaching and training sites. We found no peer-reviewed youth dataset. Blast Motion states that no trustworthy softball chart by age exists. Flagged uncertain. Measure your own hitters.</li>
-        <li><strong>Deci, E. L., Koestner, R., and Ryan, R. M. (1999).</strong> A meta-analytic review of experiments examining the effects of extrinsic rewards on intrinsic motivation. <em>Psychological Bulletin.</em> Across 128 experiments, tangible rewards tied to performance lowered free-choice motivation, and the effect was stronger in children. Praise did not. The coin in this game is a performance reward, even when the only opponent is your own last round. Youth fit in a cage game is untested. Flagged uncertain. Watch whether kids still want to hit when no coin is on the line.</li>
-        <li><strong>Phone sight.</strong> Reads the tilt sensor in your phone. Sensor accuracy varies by phone. Check one spot against the table and a tape measure before you trust it. On a field the phone gives the direction only. Tilt is too rough to judge distance past the infield, so distance is paced off.</li>
+        <li><strong>CDC 2000 growth charts, stature for age.</strong> Median height by age, boys and girls, read at the half-year. Baseball levels use the boys chart and softball levels use the girls chart. It is an average. Your hitter may be well above or below it.</li>
+        <li><strong>MLB automated ball-strike zone.</strong> Bottom of the zone at 27 percent of batter height and top at 53.5 percent, so the middle sits at about 40 percent. This is the major league definition. Youth rulebooks describe the zone by body landmarks, such as armpits to the top of the knees, and that zone is taller. Youth fit is uncertain, so the contact height can be typed in by hand.</li>
+        <li><strong>Catcher's view.</strong> Six taps place the camera against the cage size you entered. A tap on the screen becomes a point on the net, then a launch angle and direction from the tee. Accuracy depends on your taps, your cage numbers, and a phone that stays still. The call uses DugoutLab assumptions: infielders near 14 and 33 degrees off center on each side, each covering about 7 degrees. Not measured.</li>
+        <li><strong>Phone sight.</strong> Reads the tilt sensor in your phone. Sensor accuracy varies by phone. Check one spot against the table and a tape measure before you trust it. Locked pins are drawn with an assumed camera angle, so they are exact at the center of the screen and approximate near the edges. On a field the phone gives the direction only. Tilt is too rough to judge distance past the infield, so distance is paced off.</li>
         <li><strong>Fielder depth, speed, reach, and reaction time.</strong> DugoutLab assumptions. Not measured. Open the field setup and change them.</li>
       </ul>
       <p style="font-size:0.9rem;color:var(--ink-soft);margin-top:1rem;line-height:1.65"><em>Note on certainty: this is a physics model, not a record of real youth games. It treats every ball as hit straight at a fielder, so it misses the gaps, and it ignores spin, wind, bad hops, and errors. In youth games a ground ball often becomes a baserunner. The model does not count that. We hold the window as a starting point for a target, not a rule for a swing.</em></p>
@@ -301,17 +289,49 @@ details.setup .field-grid { margin-top: 0.9rem; }
   </div>
 </section>
 
-<div class="sight" id="sight" aria-live="polite">
-  <video id="sight-video" playsinline muted autoplay></video>
+<div class="sight" id="cv">
+  <video id="cv-video" playsinline muted autoplay></video>
+  <canvas id="cv-canvas"></canvas>
+  <div class="cv-mini"><button type="button" id="cv-undo2">Undo tap</button><button type="button" id="cv-x">Close</button></div>
   <div class="sight-top">
+    <div class="sight-eb" id="cv-eb"></div>
+    <div class="sight-zone" id="cv-title"></div>
+    <div class="sight-sub2" id="cv-sub" style="margin-top:0.4rem"></div>
+  </div>
+  <div class="sight-bot">
+    <div class="sight-warn" id="cv-warn"></div>
+    <div class="sight-sub" id="cv-tally" style="margin-bottom:0.7rem"></div>
+    <div class="sight-chips" id="cv-modes" style="justify-content:center;pointer-events:auto" hidden>
+      <button type="button" class="sight-chip cur" data-m="place">Place targets</button>
+      <button type="button" class="sight-chip" data-m="call">Call hits</button>
+      <button type="button" class="sight-chip" data-m="five">+ 5 hit-window spots</button>
+    </div>
+    <div class="sight-btns">
+      <button type="button" class="btn btn-forest" id="cv-redo">Line up again</button>
+      <button type="button" class="btn btn-forest" id="cv-undo">Undo</button>
+      <button type="button" class="btn btn-secondary" id="cv-close">Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="sight" id="sight">
+  <video id="sight-video" playsinline muted autoplay></video>
+  <div id="sight-pins"></div>
+  <div class="sight-top">
+    <div class="sight-eb" id="sight-eb"></div>
     <div class="sight-zone" id="sight-zone">AIM DOWN THE CAGE</div>
     <div class="sight-sub" id="sight-sub">Then tap Set middle</div>
     <div class="sight-sub2" id="sight-sub2"></div>
   </div>
   <div class="sight-ring" id="sight-ring"></div>
+  <div class="sight-ar l" id="ar-l" hidden></div>
+  <div class="sight-ar r" id="ar-r" hidden></div>
+  <div class="sight-ar u" id="ar-u" hidden></div>
+  <div class="sight-ar d" id="ar-d" hidden></div>
   <div class="sight-gauge" id="sight-gauge"></div>
   <div class="sight-bot">
     <div class="sight-warn" id="sight-warn"></div>
+    <div class="sight-chips" id="sight-chips"></div>
     <div class="sight-btns">
       <button type="button" class="btn btn-primary btn-lg" id="sight-set">Set middle</button>
       <button type="button" class="btn btn-secondary btn-lg" id="sight-close">Done</button>
@@ -489,17 +509,140 @@ function sightRead(f, cage, el, spray) {
   o.zone = classify(simulate(f.ev, o.launch, f.h0, k), f);
   return o;
 }
+function rodrigues(r) {
+  var th = Math.sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
+  if (th < 1e-9) return [1, 0, 0, 0, 1, 0, 0, 0, 1];
+  var x = r[0] / th, y = r[1] / th, z = r[2] / th, c = Math.cos(th), s = Math.sin(th), C = 1 - c;
+  return [c + x * x * C, x * y * C - z * s, x * z * C + y * s, y * x * C + z * s, c + y * y * C, y * z * C - x * s, z * x * C - y * s, z * y * C + x * s, c + z * z * C];
+}
+function camProject(p, P) {
+  var R = rodrigues([p[1], p[2], p[3]]);
+  var X = R[0] * P[0] + R[1] * P[1] + R[2] * P[2] + p[4], Y = R[3] * P[0] + R[4] * P[1] + R[5] * P[2] + p[5], Z = R[6] * P[0] + R[7] * P[1] + R[8] * P[2] + p[6];
+  if (Z < 0.05) Z = 0.05;
+  return [p[0] * X / Z, -p[0] * Y / Z];
+}
+function camCenter(p) {
+  var R = rodrigues([p[1], p[2], p[3]]);
+  return [-(R[0] * p[4] + R[3] * p[5] + R[6] * p[6]), -(R[1] * p[4] + R[4] * p[5] + R[7] * p[6]), -(R[2] * p[4] + R[5] * p[5] + R[8] * p[6])];
+}
+function camRayDir(p, u, v) {
+  var R = rodrigues([p[1], p[2], p[3]]), d = [u / p[0], -v / p[0], 1];
+  return [R[0] * d[0] + R[3] * d[1] + R[6] * d[2], R[1] * d[0] + R[4] * d[1] + R[7] * d[2], R[2] * d[0] + R[5] * d[1] + R[8] * d[2]];
+}
+function poseCost(p, W, I) {
+  var r = [], c = 0;
+  for (var i = 0; i < W.length; i++) { var q = camProject(p, W[i]); r.push(q[0] - I[i][0], q[1] - I[i][1]); }
+  for (var j = 0; j < r.length; j++) c += r[j] * r[j];
+  return { r: r, c: c };
+}
+function solveLin(A, b) {
+  var n = b.length, i, j, k;
+  for (i = 0; i < n; i++) {
+    var m = i;
+    for (j = i + 1; j < n; j++) if (Math.abs(A[j][i]) > Math.abs(A[m][i])) m = j;
+    var t = A[i]; A[i] = A[m]; A[m] = t; var tb = b[i]; b[i] = b[m]; b[m] = tb;
+    if (Math.abs(A[i][i]) < 1e-14) return null;
+    for (j = i + 1; j < n; j++) { var f = A[j][i] / A[i][i]; for (k = i; k < n; k++) A[j][k] -= f * A[i][k]; b[j] -= f * b[i]; }
+  }
+  var x = new Array(n);
+  for (i = n - 1; i >= 0; i--) { var s = b[i]; for (k = i + 1; k < n; k++) s -= A[i][k] * x[k]; x[i] = s / A[i][i]; }
+  return x;
+}
+function solvePose(W, I, Hpx) {
+  var STEP = [0.5, 1e-5, 1e-5, 1e-5, 1e-4, 1e-4, 1e-4], best = null;
+  [0.55, 0.8, 1.2].forEach(function (fm) {
+    [8, 20].forEach(function (z0) {
+      var p = [fm * Hpx, 0, 0, 0, 0, -4, z0], lam = 1e-3, cur = poseCost(p, W, I);
+      for (var it = 0; it < 120; it++) {
+        var J = [], a, b2, i;
+        for (a = 0; a < 7; a++) { var q = p.slice(); q[a] += STEP[a]; var rq = poseCost(q, W, I).r; J.push(rq.map(function (v, k) { return (v - cur.r[k]) / STEP[a]; })); }
+        var A = [], g = [];
+        for (a = 0; a < 7; a++) { A.push([]); var gs = 0; for (i = 0; i < cur.r.length; i++) gs += J[a][i] * cur.r[i]; g.push(-gs); for (b2 = 0; b2 < 7; b2++) { var sm = 0; for (i = 0; i < cur.r.length; i++) sm += J[a][i] * J[b2][i]; A[a].push(sm); } }
+        var ok = false;
+        for (var tr = 0; tr < 8 && !ok; tr++) {
+          var A2 = A.map(function (row, ri) { var c2 = row.slice(); c2[ri] += lam * row[ri] + 1e-9; return c2; });
+          var d = solveLin(A2, g.slice());
+          if (d) { var pn = p.map(function (v, k) { return v + d[k]; }); if (pn[0] > 20) { var nx = poseCost(pn, W, I); if (nx.c < cur.c) { p = pn; ok = cur.c - nx.c < 1e-10; cur = nx; lam = Math.max(lam * 0.3, 1e-9); if (!ok) { ok = true; } else { it = 999; } continue; } } }
+          lam *= 5;
+        }
+        if (!ok) break;
+      }
+      if (!best || cur.c < best.c) best = { p: p, c: cur.c };
+    });
+  });
+  if (!best) return null;
+  best.rms = Math.sqrt(best.c / (2 * W.length));
+  return best;
+}
+function m3(A, B) { var C = []; for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) C.push(A[i * 3] * B[j] + A[i * 3 + 1] * B[3 + j] + A[i * 3 + 2] * B[6 + j]); return C; }
+function m3t(A) { return [A[0], A[3], A[6], A[1], A[4], A[7], A[2], A[5], A[8]]; }
+function m3v(A, v) { return [A[0] * v[0] + A[1] * v[1] + A[2] * v[2], A[3] * v[0] + A[4] * v[1] + A[5] * v[2], A[6] * v[0] + A[7] * v[1] + A[8] * v[2]]; }
+function camFromEarth(alpha, beta, gamma) {
+  var r = Math.PI / 180, ca = Math.cos(alpha * r), sa = Math.sin(alpha * r), cb = Math.cos(beta * r), sb = Math.sin(beta * r), cg = Math.cos(gamma * r), sg = Math.sin(gamma * r);
+  var M = m3(m3([ca, -sa, 0, sa, ca, 0, 0, 0, 1], [1, 0, 0, 0, cb, -sb, 0, sb, cb]), [cg, 0, sg, 0, 1, 0, -sg, 0, cg]);
+  var Mt = m3t(M);
+  return [Mt[0], Mt[1], Mt[2], Mt[3], Mt[4], Mt[5], -Mt[6], -Mt[7], -Mt[8]];
+}
+function projR(R, C, f, P) {
+  var q = m3v(R, [P[0] - C[0], P[1] - C[1], P[2] - C[2]]);
+  if (q[2] < 0.2) return null;
+  return [f * q[0] / q[2], -f * q[1] / q[2]];
+}
+function rayR(R, f, u, v) { return m3v(m3t(R), [u / f, -v / f, 1]); }
+function laneTargets(f, cage, aim) {
+  var out = [];
+  [[0, 'Middle'], [22, 'Left gap'], [-22, 'Right gap'], [40, 'Left line'], [-40, 'Right line']].forEach(function (L) {
+    var pl = sprayPlace(cage.dist, cage.cw, Math.abs(L[0])), tb = targetBand(f, aim.lo, aim.hi, pl.path);
+    if (tb.lo === null || tb.hi === null) return;
+    var lo = Math.min(tb.lo, cage.ch), hi = Math.min(tb.hi, cage.ch), y = (lo + hi) / 2, h = Math.max(0.8, hi - lo);
+    var r = L[0] * Math.PI / 180, T;
+    if (pl.where === 'plane') T = { x: -cage.dist * Math.tan(r), y: y, z: cage.dist, surf: 'back' };
+    else T = { x: L[0] > 0 ? -cage.cw / 2 : cage.cw / 2, y: y, z: (cage.cw / 2) / Math.tan(Math.abs(r)), surf: 'side' };
+    T.h = h; T.w = 1.5; T.name = L[1];
+    out.push(T);
+  });
+  return out;
+}
+function cageHit(C, d, cage) {
+  var w = cage.cw / 2, e = 0.02, best = null;
+  function tryT(t, surf) {
+    if (!(t > 1e-6)) return;
+    var P = { x: C[0] + t * d[0], y: C[1] + t * d[1], z: C[2] + t * d[2], surf: surf };
+    if (Math.abs(P.x) > w + e || P.y < -e || P.y > cage.ch + e || P.z > cage.dist + e) return;
+    if (!best || t < best.t) { P.t = t; best = P; }
+  }
+  if (d[2] > 1e-9) tryT((cage.dist - C[2]) / d[2], 'back');
+  if (Math.abs(d[0]) > 1e-9) { tryT((w - C[0]) / d[0], 'side'); tryT((-w - C[0]) / d[0], 'side'); }
+  if (Math.abs(d[1]) > 1e-9) { tryT((cage.ch - C[1]) / d[1], 'roof'); tryT((0 - C[1]) / d[1], 'floor'); }
+  return best;
+}
+function callHit(f, launch, s) {
+  var sim = simulate(f.ev, launch, f.h0, dragK(f.ball)), a = Math.abs(s);
+  if (a > 45) return { kind: 'foul', zone: 'foul', title: 'Foul ball', L: sim.L };
+  var z = classify(sim, f), IF = [['third', 33], ['short', 14], ['second', -14], ['first', -33]], fi = IF[0];
+  IF.forEach(function (q) { if (Math.abs(s - q[1]) < Math.abs(s - fi[1])) fi = q; });
+  var near = Math.abs(s - fi[1]) <= 7;
+  var of = a < 10 ? 'center' : (s > 0 ? 'left' : 'right') + (a < 27 ? '-center' : '');
+  var hole = a < 7 ? 'up the middle' : (a > 40 ? 'down the ' + (s > 0 ? 'left' : 'right') + ' line' : 'through the ' + (s > 0 ? 'left' : 'right') + ' side');
+  var t, kind = 'hit';
+  if (z === 'over') t = 'Home run to ' + of;
+  else if (z === 'ground') { if (near) { t = 'Ground out to ' + fi[0]; kind = 'out'; } else t = 'Ground ball ' + hole + ', base hit'; }
+  else if (z === 'liner') { if (near) { t = 'Line out to ' + fi[0]; kind = 'out'; } else t = 'Line drive base hit to ' + of; }
+  else if (z === 'hit') t = (sim.L > f.ofDepth ? 'Extra bases to ' : 'Base hit to ') + of;
+  else { kind = 'out'; t = sim.L < (f.ifDepth + f.ofDepth) / 2 ? 'Pop out to ' + fi[0] : 'Fly out to ' + of; }
+  return { kind: kind, zone: z, title: t, L: sim.L };
+}
 /*MODEL-END*/
 
 (function () {
   var PRESETS = [
-    { id: 'bb10', label: 'Baseball 9-10',  ball: 'baseball', ev: 50, ifd: 75,  ofd: 130, fence: 200, run: 13, reach: 6 },
-    { id: 'bb12', label: 'Baseball 11-12', ball: 'baseball', ev: 58, ifd: 80,  ofd: 150, fence: 200, run: 15, reach: 6.5 },
-    { id: 'bb14', label: 'Baseball 13-14', ball: 'baseball', ev: 68, ifd: 125, ofd: 230, fence: 300, run: 18, reach: 7.5 },
-    { id: 'bbhs', label: 'Baseball HS',    ball: 'baseball', ev: 80, ifd: 135, ofd: 260, fence: 330, run: 21, reach: 8 },
-    { id: 'sb10', label: 'Softball 10U',   ball: 'soft11',   ev: 42, ifd: 70,  ofd: 115, fence: 175, run: 13, reach: 6 },
-    { id: 'sb12', label: 'Softball 12U',   ball: 'soft12',   ev: 50, ifd: 75,  ofd: 135, fence: 200, run: 15, reach: 6.5 },
-    { id: 'sb14', label: 'Softball 14U+',  ball: 'soft12',   ev: 58, ifd: 80,  ofd: 155, fence: 200, run: 17, reach: 7.5 }
+    { id: 'bb10', label: 'Baseball 9-10',  ball: 'baseball', age: 10, ev: 50, ifd: 75,  ofd: 130, fence: 200, run: 13, reach: 6 },
+    { id: 'bb12', label: 'Baseball 11-12', ball: 'baseball', age: 12, ev: 58, ifd: 80,  ofd: 150, fence: 200, run: 15, reach: 6.5 },
+    { id: 'bb14', label: 'Baseball 13-14', ball: 'baseball', age: 14, ev: 68, ifd: 125, ofd: 230, fence: 300, run: 18, reach: 7.5 },
+    { id: 'bbhs', label: 'Baseball HS',    ball: 'baseball', age: 16, ev: 80, ifd: 135, ofd: 260, fence: 330, run: 21, reach: 8 },
+    { id: 'sb10', label: 'Softball 10U',   ball: 'soft11',   age: 10, ev: 42, ifd: 70,  ofd: 115, fence: 175, run: 13, reach: 6 },
+    { id: 'sb12', label: 'Softball 12U',   ball: 'soft12',   age: 12, ev: 50, ifd: 75,  ofd: 135, fence: 200, run: 15, reach: 6.5 },
+    { id: 'sb14', label: 'Softball 14U+',  ball: 'soft12',   age: 14, ev: 58, ifd: 80,  ofd: 155, fence: 200, run: 17, reach: 7.5 }
   ];
   var COL = { ground: '#55685d', liner: '#7ad6a8', hit: '#C8862E', caught: '#8d9690', over: '#9dc5e0' };
   var NAME = {
@@ -510,6 +653,12 @@ function sightRead(f, cage, el, spray) {
     over:   'Over the fence.'
   };
   var ORDER = ['ground', 'liner', 'hit', 'caught', 'over'];
+  /* CDC 2000 growth charts, median stature in cm at age + 0.5 years, ages 6 to 18 */
+  var STATURE = {
+    boys:  [118.6, 124.9, 130.8, 136.1, 141.1, 146.1, 152.4, 160.0, 167.2, 172.0, 174.6, 175.8, 176.4],
+    girls: [118.2, 124.6, 130.3, 135.4, 140.8, 147.5, 154.5, 159.1, 161.3, 162.3, 162.8, 163.0, 163.2]
+  };
+  var ZONE_MID = (0.27 + 0.535) / 2;
   var ball = 'baseball';
   var state = {}, mode = 'cage';
   function $(id) { return document.getElementById(id); }
@@ -530,15 +679,22 @@ function sightRead(f, cage, el, spray) {
     ball = p.ball;
     $('ev').value = p.ev; $('ifd').value = p.ifd; $('ofd').value = p.ofd;
     $('fence').value = p.fence; $('run').value = p.run; $('reach').value = p.reach;
+    $('age').value = p.age; setContact();
     Array.prototype.forEach.call(pr.children, function (c) {
       c.classList.toggle('active', c.getAttribute('data-id') === p.id);
     });
     update();
   }
 
+  function setContact() {
+    var a = Math.max(6, Math.min(18, Math.round(num('age', 12))));
+    var soft = ball !== 'baseball', cm = STATURE[soft ? 'girls' : 'boys'][a - 6], inch = cm / 2.54;
+    $('h0').value = Math.round(inch * ZONE_MID);
+    $('h0-note').textContent = 'Set to the middle of the strike zone for an average-height ' + a + '-year-old ' + (soft ? 'girl' : 'boy') + ' (' + Math.floor(inch / 12) + ' ft ' + Math.round(inch % 12) + ' in tall). Type a different number to fit your hitter.';
+  }
   function field() {
     return {
-      ball: ball, ev: num('ev', 58), h0: num('h0', 2.5),
+      ball: ball, ev: num('ev', 58), h0: num('h0', 23) / 12,
       ifDepth: num('ifd', 80), ofDepth: num('ofd', 150), fence: num('fence', 200),
       run: num('run', 15), reach: num('reach', 6.5)
     };
@@ -717,7 +873,7 @@ function sightRead(f, cage, el, spray) {
       var la = simulate(f.ev, Math.ceil(band.lo), f.h0, k0).L, lb = simulate(f.ev, Math.floor(band.hi), f.h0, k0).L;
       land = { lo: Math.round(Math.min(la, lb)), hi: Math.round(Math.max(la, lb)) };
     }
-    state = { f: f, rg: rg, cage: { dist: dist, cw: cw, ch: ch }, land: land, mode: mode };
+    state = { f: f, rg: rg, cage: { dist: dist, cw: cw, ch: ch }, land: land, mode: mode, aim: band ? { lo: Math.ceil(band.lo), hi: Math.floor(band.hi), liner: !win } : null };
     if (land) {
       $('fd-num').innerHTML = land.lo + ' to ' + land.hi + '<small>ft from home</small>';
       $('fd-line').textContent = 'About ' + Math.round(land.lo / 3) + ' to ' + Math.round(land.hi / 3) + ' big steps. Balls in the hit window first touch down here. Set a net in each lane, anywhere in the gold.';
@@ -745,11 +901,21 @@ function sightRead(f, cage, el, spray) {
       update();
     });
   });
+  $('age').addEventListener('input', function () { setContact(); update(); });
   applyPreset(PRESETS[1]);
 
   /* ---------- phone sight ---------- */
-  var sight = { on: false, az0: null, el: 0, az: 0, got: false, stream: null, raf: 0 };
+  var sight = { on: false, az0: null, el: 0, az: 0, got: false, stream: null, raf: 0, cur: 'mid', locks: {}, onT: false, last: null };
   var ZT = { hit: 'HIT WINDOW', liner: 'LOW LINER', ground: 'GROUND BALL', caught: 'CAUGHT IN THE AIR', over: 'OVER THE FENCE', foul: 'FOUL GROUND' };
+  var LANES = [
+    { id: 'll', c: 40, chip: 'Left line', name: 'DOWN THE LEFT LINE' },
+    { id: 'lg', c: 22, chip: 'Left gap', name: 'TO LEFT-CENTER' },
+    { id: 'mid', c: 0, chip: 'Middle', name: 'UP THE MIDDLE' },
+    { id: 'rg', c: -22, chip: 'Right gap', name: 'TO RIGHT-CENTER' },
+    { id: 'rl', c: -40, chip: 'Right line', name: 'DOWN THE RIGHT LINE' }
+  ];
+  var ORDER_L = ['mid', 'lg', 'rg', 'll', 'rl'];
+  function laneOf(id) { for (var i = 0; i < LANES.length; i++) if (LANES[i].id === id) return LANES[i]; return null; }
   function onOrient(e) {
     if (e.alpha === null || e.beta === null) return;
     var v = camVec(e.alpha, e.beta, e.gamma || 0);
@@ -763,6 +929,15 @@ function sightRead(f, cage, el, spray) {
     if (a < 30) return s > 0 ? 'Left-center gap' : 'Right-center gap';
     return s > 0 ? 'Left field line' : 'Right field line';
   }
+  function whereText(o) {
+    if (o.surf === 'back') return 'Back net, ' + ftin(o.y) + ' up';
+    if (o.surf === 'side') return (o.spray > 0 ? 'Left' : 'Right') + ' side net, ' + ftin((state.cage.cw / 2) / Math.tan(Math.abs(o.spray) * Math.PI / 180)) + ' from the tee, ' + ftin(o.y) + ' up';
+    if (o.surf === 'roof') return 'Roof net, ' + ftin(o.p) + ' out from the tee';
+    return 'Floor, ' + ftin(o.p) + ' out from the tee';
+  }
+  function walkText() {
+    return state.land ? 'Walk out ' + state.land.lo + ' to ' + state.land.hi + ' ft. About ' + Math.round(state.land.lo / 3) + ' to ' + Math.round(state.land.hi / 3) + ' big steps.' : '';
+  }
   function buildGauge() {
     var g = $('sight-gauge'), a0 = -5, a1 = 50, h = '';
     (state.rg || []).forEach(function (r) {
@@ -772,48 +947,116 @@ function sightRead(f, cage, el, spray) {
     });
     g.innerHTML = h + '<b id="sight-mark" style="bottom:0%"></b>';
   }
+  function drawChips() {
+    var box = $('sight-chips'); box.innerHTML = '';
+    LANES.concat([{ id: 'free', chip: 'Free look' }]).forEach(function (l) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'sight-chip' + (sight.locks[l.id] ? ' locked' : '') + (sight.cur === l.id ? ' cur' : '');
+      b.textContent = l.chip;
+      b.addEventListener('click', function () {
+        if (sight.az0 === null) return;
+        if (sight.locks[l.id]) delete sight.locks[l.id];
+        sight.cur = l.id; drawChips(); drawLockList();
+      });
+      box.appendChild(b);
+    });
+    var pins = $('sight-pins'); pins.innerHTML = '';
+    LANES.forEach(function (l) {
+      if (!sight.locks[l.id]) return;
+      var d = document.createElement('div'); d.className = 'sight-pin'; d.setAttribute('data-id', l.id);
+      var t = document.createElement('span'); t.textContent = l.chip; d.appendChild(t);
+      pins.appendChild(d);
+    });
+  }
+  function drawLockList() {
+    var h = '';
+    LANES.forEach(function (l) {
+      var k = sight.locks[l.id]; if (!k) return;
+      h += '<li><b>' + (k.field ? 'Net lane ' : 'Line drive ') + l.name.toLowerCase() + '</b>' + k.where + '</li>';
+    });
+    $('lock-list').innerHTML = h;
+  }
+  function movePins() {
+    var W = window.innerWidth, H = window.innerHeight, r = Math.PI / 180;
+    var tv = Math.tan(32 * r), th = tv * W / H;
+    Array.prototype.forEach.call($('sight-pins').children, function (d) {
+      var k = sight.locks[d.getAttribute('data-id')]; if (!k) return;
+      var da = wrapDeg(k.az - sight.az), de = k.el - sight.el;
+      if (Math.abs(da) > 70 || Math.abs(de) > 70) { d.hidden = true; return; }
+      d.hidden = false;
+      d.style.transform = 'translate(' + (W / 2 - Math.tan(da * r) / th * W / 2).toFixed(1) + 'px,' + (H / 2 - Math.tan(de * r) / tv * H / 2).toFixed(1) + 'px)';
+    });
+  }
+  function arrows(l, rt, u, d) { $('ar-l').hidden = !l; $('ar-r').hidden = !rt; $('ar-u').hidden = !u; $('ar-d').hidden = !d; }
   function sightFrame() {
     if (!sight.on) return;
     sight.raf = requestAnimationFrame(sightFrame);
     if (!sight.got || !state.f) return;
-    var ring = $('sight-ring'), zt = $('sight-zone');
+    var ring = $('sight-ring'), zt = $('sight-zone'), eb = $('sight-eb'), sub = $('sight-sub'), sub2 = $('sight-sub2'), btn = $('sight-set');
+    var field = state.mode === 'field';
+    sight.onT = false;
     if (sight.az0 === null) {
-      zt.textContent = state.mode === 'field' ? 'AIM AT SECOND BASE' : 'AIM DOWN THE CAGE'; zt.className = 'sight-zone';
-      $('sight-sub').textContent = 'Then tap Set middle'; $('sight-sub2').textContent = '';
-      ring.className = 'sight-ring';
+      eb.textContent = 'FIRST'; zt.textContent = field ? 'AIM AT SECOND BASE' : 'AIM DOWN THE CAGE'; zt.className = 'sight-zone';
+      sub.textContent = 'Then tap Set middle'; sub2.textContent = '';
+      ring.className = 'sight-ring'; arrows(0, 0, 0, 0); btn.textContent = 'Set middle'; btn.disabled = false;
       return;
     }
-    if (state.mode === 'field') {
-      var sp = wrapDeg(sight.az - sight.az0), on = false;
-      [-40, -22, 0, 22, 40].forEach(function (c) { if (Math.abs(sp - c) <= 3) on = true; });
-      if (Math.abs(sp) > 45) { zt.textContent = ZT.foul; zt.className = 'sight-zone'; ring.className = 'sight-ring'; $('sight-sub').textContent = 'Turn back toward second base'; $('sight-sub2').textContent = ''; return; }
-      zt.textContent = on ? dirName(sp).toUpperCase() : 'KEEP TURNING';
-      zt.className = 'sight-zone' + (on ? ' is-hit' : '');
-      ring.className = 'sight-ring' + (on ? ' is-hit' : '');
-      $('sight-sub').textContent = on ? 'Net goes on this line' : 'Next lane: ' + dirName(sp);
-      $('sight-sub2').textContent = state.land ? 'Walk out ' + state.land.lo + ' to ' + state.land.hi + ' ft. About ' + Math.round(state.land.lo / 3) + ' to ' + Math.round(state.land.hi / 3) + ' big steps.' : '';
-      return;
-    }
-    var o = sightRead(state.f, state.cage, sight.el, wrapDeg(sight.az - sight.az0));
-    zt.textContent = ZT[o.zone];
-    zt.className = 'sight-zone' + (o.zone === 'hit' ? ' is-hit' : '');
-    ring.className = 'sight-ring' + (o.zone === 'hit' ? ' is-hit' : (o.zone === 'liner' ? ' is-liner' : ''));
-    if (o.zone === 'foul') { $('sight-sub').textContent = 'Turn back toward the middle'; $('sight-sub2').textContent = ''; return; }
-    $('sight-sub').textContent = dirName(o.spray) + ' · ' + Math.round(o.launch) + '° launch';
-    var where = o.surf === 'back' ? 'Back net, ' + ftin(o.y) + ' up'
-      : o.surf === 'side' ? (o.spray > 0 ? 'Left' : 'Right') + ' side net, ' + ftin(o.y) + ' up'
-      : o.surf === 'roof' ? 'Roof net, ' + ftin(o.p) + ' out from the tee'
-      : 'Floor, ' + ftin(o.p) + ' out from the tee';
-    $('sight-sub2').textContent = (o.zone === 'hit' ? 'Hang a net here. ' : '') + where;
+    movePins();
+    btn.textContent = 'Lock';
+    var sp = wrapDeg(sight.az - sight.az0);
+    var o = (!field && Math.abs(sp) <= 45) ? sightRead(state.f, state.cage, sight.el, sp) : null;
+    sight.last = { sp: sp, o: o };
     var m = $('sight-mark');
-    if (m) m.style.bottom = ((Math.max(-5, Math.min(50, o.launch)) + 5) / 55 * 100).toFixed(1) + '%';
+    if (m && o) m.style.bottom = ((Math.max(-5, Math.min(50, o.launch)) + 5) / 55 * 100).toFixed(1) + '%';
+
+    if (sight.cur === 'done') {
+      eb.textContent = 'DONE'; zt.textContent = 'ALL 5 LOCKED'; zt.className = 'sight-zone is-hit';
+      sub.textContent = 'Tap Done. Your spots are saved on the page.'; sub2.textContent = 'Tap a gold chip to redo one.';
+      ring.className = 'sight-ring'; arrows(0, 0, 0, 0); btn.disabled = true;
+      return;
+    }
+    if (sight.cur === 'free') {
+      eb.textContent = 'FREE LOOK'; arrows(0, 0, 0, 0); btn.disabled = true;
+      if (Math.abs(sp) > 45) { zt.textContent = ZT.foul; zt.className = 'sight-zone'; ring.className = 'sight-ring'; sub.textContent = 'Turn back toward the middle'; sub2.textContent = ''; return; }
+      if (field) { zt.textContent = dirName(sp).toUpperCase(); zt.className = 'sight-zone'; ring.className = 'sight-ring'; sub.textContent = Math.round(Math.abs(sp)) + '° ' + (sp > 0 ? 'left' : 'right') + ' of second base'; sub2.textContent = walkText(); return; }
+      zt.textContent = ZT[o.zone]; zt.className = 'sight-zone' + (o.zone === 'hit' ? ' is-hit' : '');
+      ring.className = 'sight-ring' + (o.zone === 'hit' ? ' is-hit' : (o.zone === 'liner' ? ' is-liner' : ''));
+      sub.textContent = dirName(sp) + ' · ' + Math.round(o.launch) + '° launch'; sub2.textContent = whereText(o);
+      return;
+    }
+    var lane = laneOf(sight.cur), eh = lane.c - sp, hOK = Math.abs(eh) <= 2.5, up = false, down = false;
+    if (!field && state.aim && o) { up = o.launch < state.aim.lo; down = o.launch > state.aim.hi; }
+    var vOK = field || (!!o && !!state.aim && !up && !down);
+    sight.onT = hOK && vOK;
+    eb.textContent = field ? 'NET LANE' : (state.aim && state.aim.liner ? 'LOW LINER' : 'LINE DRIVE');
+    zt.textContent = lane.name; zt.className = 'sight-zone' + (sight.onT ? ' is-hit' : '');
+    ring.className = 'sight-ring' + (sight.onT ? ' is-hit' : '');
+    btn.disabled = !sight.onT;
+    if (sight.onT) { sub.textContent = 'On it. Tap Lock.'; arrows(0, 0, 0, 0); }
+    else {
+      var parts = [];
+      if (!hOK) parts.push('Turn ' + (eh > 0 ? 'left' : 'right') + ' ' + Math.round(Math.abs(eh)) + '°');
+      if (up) parts.push('Tilt up'); if (down) parts.push('Tilt down');
+      sub.textContent = parts.join(' · ');
+      arrows(!hOK && eh > 0, !hOK && eh < 0, up, down);
+    }
+    sub2.textContent = field ? walkText() : (o ? whereText(o) : '');
+  }
+  function lockNow() {
+    if (!sight.onT || !sight.last) return;
+    var field = state.mode === 'field';
+    sight.locks[sight.cur] = { az: sight.az, el: sight.el, field: field, where: field ? walkText() : whereText(sight.last.o) + '. Launch ' + Math.round(sight.last.o.launch) + '°.' };
+    var next = 'done';
+    for (var i = 0; i < ORDER_L.length; i++) if (!sight.locks[ORDER_L[i]]) { next = ORDER_L[i]; break; }
+    sight.cur = next; drawChips(); drawLockList();
   }
   function openSight() {
     function go() {
       $('sight').classList.add('open');
-      sight.on = true; sight.az0 = null; sight.got = false;
+      sight.on = true; sight.az0 = null; sight.got = false; sight.cur = 'mid'; sight.locks = {};
       $('sight-warn').textContent = '';
-      buildGauge();
+      buildGauge(); drawChips(); drawLockList();
       $('sight-gauge').hidden = state.mode === 'field';
       window.addEventListener('deviceorientation', onOrient);
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -847,84 +1090,207 @@ function sightRead(f, cage, el, spray) {
   }
   $('sight-open').addEventListener('click', openSight);
   $('sight-close').addEventListener('click', closeSight);
-  $('sight-set').addEventListener('click', function () { if (sight.got) sight.az0 = sight.az; });
+  $('sight-set').addEventListener('click', function () {
+    if (!sight.got) return;
+    if (sight.az0 === null) { sight.az0 = sight.az; sight.cur = 'mid'; drawChips(); return; }
+    lockNow();
+  });
 
-  /* ---------- the game ---------- */
-  var KEY = 'dl_hitwindow_v1', ROUND = 10;
-  var NETS = [['ll', 'Left line'], ['lg', 'Left gap'], ['mid', 'Middle'], ['rg', 'Right gap'], ['rl', 'Right line']];
-  var G = { coin: 'Joy Coin', players: [{ name: 'Hitter 1', last: null, best: 0, coins: 0 }], cur: 0 };
-  try {
-    var raw = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (raw && raw.players && raw.players.length) G = raw;
-  } catch (e) {}
-  if (!(G.cur >= 0 && G.cur < G.players.length)) G.cur = 0;
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(G)); } catch (e) {} }
-  var shots = [], done = false;
-  function me() { return G.players[G.cur]; }
-  function netCount() { return shots.filter(function (x) { return x !== 'miss'; }).length; }
-  function drawGame() {
-    var pl = $('players'); pl.innerHTML = '';
-    G.players.forEach(function (p, i) {
-      var b = document.createElement('button');
-      b.type = 'button'; b.className = 'wz-opt' + (i === G.cur ? ' active' : '');
-      b.textContent = p.name + (p.coins ? ' · ' + p.coins : '');
-      b.addEventListener('click', function () { G.cur = i; shots = []; done = false; save(); drawGame(); });
-      pl.appendChild(b);
+  /* ---------- catcher's view ---------- */
+  var CAL = ['Tap the TOP LEFT corner of the back net', 'Tap the TOP RIGHT corner of the back net', 'Tap the BOTTOM RIGHT corner of the back net', 'Tap the BOTTOM LEFT corner of the back net', 'Tap the BALL on the tee', 'Tap the FLOOR right under the tee'];
+  var cv = { on: false, stream: null, taps: [], pose: null, calls: [], msg: '' };
+  function cvWorld() {
+    var c = state.cage, h = state.f.h0;
+    return [[-c.cw / 2, c.ch, c.dist], [c.cw / 2, c.ch, c.dist], [c.cw / 2, 0, c.dist], [-c.cw / 2, 0, c.dist], [0, h, 0], [0, 0, 0]];
+  }
+  function cvSize() { var c = $('cv-canvas'); return { w: c.clientWidth, h: c.clientHeight }; }
+  cv.targets = []; cv.mode = 'place'; cv.ori = null; cv.raf = 0;
+  function cvOrient(e) { if (e.alpha !== null && e.beta !== null) cv.ori = [e.alpha, e.beta, e.gamma || 0]; }
+  function cvCam() {
+    if (!cv.pose) return null;
+    var R = cv.Rcal;
+    if (cv.ori && cv.E0) R = m3(camFromEarth(cv.ori[0], cv.ori[1], cv.ori[2]), cv.E0);
+    return { R: R, C: cv.C, f: cv.pose[0] };
+  }
+  function tLabel(T) {
+    var c = state.cage, side = T.x < 0 ? 'left' : 'right';
+    if (T.surf === 'back') return 'Back net, ' + ftin(T.y) + ' up, ' + (Math.abs(T.x) < 0.25 ? 'centered' : ftin(Math.abs(T.x)) + ' ' + side + ' of center');
+    if (T.surf === 'side') return (side === 'left' ? 'Left' : 'Right') + ' side net, ' + ftin(T.z) + ' from the tee, ' + ftin(T.y) + ' up';
+    if (T.surf === 'roof') return 'Roof net, ' + ftin(T.z) + ' from the tee, ' + (Math.abs(T.x) < 0.25 ? 'centered' : ftin(Math.abs(T.x)) + ' ' + side);
+    return 'Floor, ' + ftin(T.z) + ' from the tee';
+  }
+  function callAt(P) {
+    var spray = Math.atan2(-P.x, P.z) * 180 / Math.PI;
+    if (P.z < 0.5) return { kind: 'foul', title: 'Foul ball', L: 0, spray: spray };
+    var launch = solveLaunch(state.f.ev, state.f.h0, dragK(state.f.ball), Math.sqrt(P.x * P.x + P.z * P.z), P.y);
+    var c = callHit(state.f, launch, spray); c.launch = launch; c.spray = spray; return c;
+  }
+  function addFive() {
+    if (!state.aim) return;
+    laneTargets(state.f, state.cage, state.aim).forEach(function (T) { var c = callAt(T); T.title = c.title; T.kind = c.kind; cv.targets.push(T); });
+  }
+  function tCorners(T) {
+    var w = T.w / 2, h = T.h / 2;
+    if (T.surf === 'side') return [[T.x, T.y - h, T.z - w], [T.x, T.y - h, T.z + w], [T.x, T.y + h, T.z + w], [T.x, T.y + h, T.z - w]];
+    if (T.surf === 'roof' || T.surf === 'floor') return [[T.x - w, T.y, T.z - w], [T.x + w, T.y, T.z - w], [T.x + w, T.y, T.z + w], [T.x - w, T.y, T.z + w]];
+    return [[T.x - w, T.y - h, T.z], [T.x + w, T.y - h, T.z], [T.x + w, T.y + h, T.z], [T.x - w, T.y + h, T.z]];
+  }
+  function cvDraw() {
+    var c = $('cv-canvas'), z = cvSize(), dpr = window.devicePixelRatio || 1;
+    if (c.width !== Math.round(z.w * dpr) || c.height !== Math.round(z.h * dpr)) { c.width = Math.round(z.w * dpr); c.height = Math.round(z.h * dpr); }
+    var g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, z.w, z.h);
+    var cam = cvCam();
+    if (!cam) {
+      cv.taps.forEach(function (q, i) {
+        var X = q[0] + z.w / 2, Y = q[1] + z.h / 2;
+        g.beginPath(); g.arc(X, Y, 13, 0, 6.2832); g.fillStyle = '#C8862E'; g.fill(); g.lineWidth = 2; g.strokeStyle = '#f4efe6'; g.stroke();
+        g.fillStyle = '#0a1610'; g.font = '700 14px Inter, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(String(i + 1), X, Y + 1);
+      });
+      return;
+    }
+    function S(P) { var q = projR(cam.R, cam.C, cam.f, P); return q ? [q[0] + z.w / 2, q[1] + z.h / 2] : null; }
+    function line(a, b) { var A = S(a), B = S(b); if (!A || !B) return; g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0], B[1]); g.stroke(); }
+    var k = state.cage, w = k.cw / 2;
+    g.lineWidth = 2; g.strokeStyle = 'rgba(244,239,230,0.8)';
+    [[-w, 0], [w, 0], [w, k.ch], [-w, k.ch]].forEach(function (q, i, arr) {
+      var n = arr[(i + 1) % 4];
+      line([q[0], q[1], k.dist], [n[0], n[1], k.dist]); line([q[0], q[1], 0.5], [q[0], q[1], k.dist]);
     });
-    var p = me();
-    $('g-nets').textContent = netCount();
-    $('g-last').textContent = p.last === null ? '--' : p.last;
-    $('g-coins').textContent = p.coins;
-    $('g-coin-lab').textContent = G.coin || 'Coin';
-    var d = '';
-    for (var i = 0; i < ROUND; i++) d += '<span class="' + (shots[i] ? (shots[i] === 'miss' ? 'miss' : 'net') : '') + '"></span>';
-    $('g-dots').innerHTML = d;
-    var fan = $('g-fan'); fan.innerHTML = '';
-    NETS.forEach(function (n) {
-      var b = document.createElement('button');
-      b.type = 'button'; b.className = 'net-btn';
-      var c = document.createElement('b'); c.textContent = shots.filter(function (x) { return x === n[0]; }).length;
-      b.appendChild(c); b.appendChild(document.createTextNode(n[1]));
-      b.addEventListener('click', function () { shot(n[0]); });
-      fan.appendChild(b);
+    cv.targets.forEach(function (T) {
+      var P = tCorners(T).map(S); if (P.some(function (q) { return !q; })) return;
+      g.beginPath(); g.moveTo(P[0][0], P[0][1]); P.slice(1).forEach(function (q) { g.lineTo(q[0], q[1]); }); g.closePath();
+      g.fillStyle = 'rgba(200,134,46,0.45)'; g.fill(); g.lineWidth = 3; g.strokeStyle = '#C8862E'; g.stroke();
+      var m = S([T.x, T.y, T.z]); if (m) m = [m[0], Math.max.apply(null, P.map(function (q) { return q[1]; })) + 14];
+      if (m && T.name) { g.font = '700 13px Inter, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; var tw = g.measureText(T.name).width + 12; g.fillStyle = 'rgba(5,11,8,0.8)'; g.fillRect(m[0] - tw / 2, m[1] - 10, tw, 20); g.fillStyle = '#f4efe6'; g.fillText(T.name, m[0], m[1] + 1); }
     });
-    $('g-play').hidden = done;
-    $('g-result').hidden = !done;
+    cv.calls.forEach(function (q, i) {
+      var m = S([q.P.x, q.P.y, q.P.z]); if (!m) return;
+      var last = i === cv.calls.length - 1;
+      g.beginPath(); g.arc(m[0], m[1], last ? 12 : 7, 0, 6.2832);
+      g.fillStyle = q.kind === 'hit' ? '#e2a85a' : (q.kind === 'out' ? '#8d9690' : '#55685d'); g.fill();
+      g.lineWidth = last ? 3 : 1.5; g.strokeStyle = '#f4efe6'; g.stroke();
+    });
   }
-  function shot(k) {
-    if (done) return;
-    shots.push(k);
-    if (shots.length >= ROUND) finish(); else drawGame();
+  function cvText() {
+    var eb = $('cv-eb'), t = $('cv-title'), sub = $('cv-sub'), tally = $('cv-tally');
+    $('cv-modes').hidden = !cv.pose;
+    $('cv').classList.toggle('lining', !cv.pose);
+    Array.prototype.forEach.call($('cv-modes').children, function (b) {
+      var m = b.getAttribute('data-m'); b.classList.toggle('cur', m === cv.mode);
+      if (m === 'five') b.hidden = cv.mode !== 'place';
+    });
+    tally.textContent = '';
+    if (!cv.pose) {
+      eb.textContent = 'LINE IT UP · ' + (cv.taps.length + 1) + ' OF 6' + (cv.targets.length ? ' · ' + cv.targets.length + ' TARGETS SAVED' : '');
+      t.textContent = CAL[cv.taps.length]; t.className = 'sight-zone cv-small';
+      sub.textContent = cv.msg;
+    } else if (cv.mode === 'place') {
+      var lt = cv.lastT;
+      eb.textContent = 'PLACE TARGETS · ' + cv.targets.length;
+      if (lt) { t.textContent = lt.title.toUpperCase(); t.className = 'sight-zone cv-small' + (lt.kind === 'hit' ? ' is-hit' : ''); sub.textContent = tLabel(lt); }
+      else { t.textContent = 'TAP THE NET TO ADD A TARGET'; t.className = 'sight-zone cv-small'; sub.textContent = 'Tap a target to remove it. Moved? Line up again. Targets stay.'; }
+    } else if (!cv.calls.length) {
+      eb.textContent = 'CALL HITS'; t.textContent = 'TAP WHERE IT HIT'; t.className = 'sight-zone';
+      sub.textContent = 'Gold boxes are your targets.';
+    } else {
+      var q = cv.calls[cv.calls.length - 1];
+      eb.textContent = 'BALL ' + cv.calls.length + (q.onTarget ? ' · ON TARGET' : '');
+      t.textContent = q.title.toUpperCase(); t.className = 'sight-zone' + (q.kind === 'hit' ? ' is-hit' : '');
+      sub.textContent = q.detail;
+      var n = { hit: 0, out: 0, foul: 0 }, on = 0; cv.calls.forEach(function (x) { n[x.kind]++; if (x.onTarget) on++; });
+      tally.textContent = cv.calls.length + (cv.calls.length === 1 ? ' ball' : ' balls') + ' · ' + n.hit + (n.hit === 1 ? ' hit' : ' hits') + ' · ' + n.out + (n.out === 1 ? ' out' : ' outs') + (cv.targets.length ? ' · ' + on + ' on target' : '');
+    }
+    $('cv-undo').disabled = cv.pose ? (cv.mode === 'place' ? !cv.targets.length : !cv.calls.length) : !cv.taps.length;
   }
-  function finish() {
-    var p = me(), n = netCount(), prev = p.last, coin = '';
-    var small;
-    if (prev === null) small = 'That is your number to beat.';
-    else if (n > prev) { p.coins += 1; coin = '+1 ' + (G.coin || 'Coin'); small = 'Last round: ' + prev + '. You beat your own number.'; }
-    else if (n === prev) small = 'Tied your number. Run it back.';
-    else small = 'Last round: ' + prev + '. New number to beat: ' + n + '.';
-    p.last = n; if (n > p.best) p.best = n;
-    done = true; save();
-    $('g-big').textContent = n + ' of ' + ROUND + ' in the nets';
-    $('g-coin').textContent = coin;
-    $('g-small').textContent = small;
-    drawGame();
+  function cvList() {
+    var h = '';
+    if (cv.targets.length) h += '<li><b>Targets</b>' + cv.targets.map(function (T, i) { return (i + 1) + '. ' + (T.name ? T.name + ': ' : '') + T.title + '. ' + tLabel(T) + '.'; }).join('<br>') + '</li>';
+    h += cv.calls.map(function (q, i) { return '<li><b>Ball ' + (i + 1) + '. ' + q.title + (q.onTarget ? ' (on target)' : '') + '</b>' + q.detail + '</li>'; }).join('');
+    $('cv-list').innerHTML = h;
   }
-  $('g-miss').addEventListener('click', function () { shot('miss'); });
-  $('g-undo').addEventListener('click', function () { if (!done) { shots.pop(); drawGame(); } });
-  $('g-again').addEventListener('click', function () { shots = []; done = false; drawGame(); });
-  $('coin-name').value = G.coin;
-  $('coin-name').addEventListener('input', function () { G.coin = this.value.trim(); save(); $('g-coin-lab').textContent = G.coin || 'Coin'; });
-  function addPlayer() {
-    var v = $('p-add').value.trim(); if (!v) return;
-    if (G.players.length === 1 && G.players[0].name === 'Hitter 1' && G.players[0].last === null) G.players = [];
-    G.players.push({ name: v, last: null, best: 0, coins: 0 });
-    G.cur = G.players.length - 1; $('p-add').value = '';
-    shots = []; done = false; save(); drawGame();
+  function onTargetCheck(P) {
+    return cv.targets.some(function (T) {
+      if (P.surf !== T.surf) return false;
+      if (T.surf === 'side' && (P.x < 0) !== (T.x < 0)) return false;
+      var dw = T.surf === 'side' ? Math.abs(P.z - T.z) : Math.abs(P.x - T.x);
+      var dh = (T.surf === 'roof' || T.surf === 'floor') ? Math.abs(P.z - T.z) : Math.abs(P.y - T.y);
+      return dw <= T.w / 2 + 0.25 && dh <= T.h / 2 + 0.25;
+    });
   }
-  $('p-add-btn').addEventListener('click', addPlayer);
-  $('p-add').addEventListener('keydown', function (e) { if (e.key === 'Enter') addPlayer(); });
-  drawGame();
+  function cvTap(e) {
+    if (!cv.on || !state.f) return;
+    var z = cvSize(), r = $('cv-canvas').getBoundingClientRect();
+    var sx = e.clientX - r.left, sy = e.clientY - r.top, u = sx - z.w / 2, v = sy - z.h / 2;
+    if (!cv.pose) {
+      cv.msg = ''; cv.taps.push([u, v]);
+      if (cv.taps.length === 6) {
+        var res = solvePose(cvWorld(), cv.taps, z.h), cc = res ? camCenter(res.p) : null;
+        if (!res || res.rms > Math.max(14, z.h * 0.025)) { cv.taps = []; cv.msg = 'That line-up did not fit the cage numbers. Check Step 3, then tap the six spots again.'; }
+        else {
+          cv.pose = res.p; cv.C = cc; cv.Rcal = rodrigues([res.p[1], res.p[2], res.p[3]]);
+          cv.E0 = cv.ori ? m3(m3t(camFromEarth(cv.ori[0], cv.ori[1], cv.ori[2])), cv.Rcal) : null;
+          cv.lastT = null;
+          if (!cv.targets.length) addFive();
+        }
+      }
+    } else {
+      var cam = cvCam(), h = cageHit(cam.C, rayR(cam.R, cam.f, u, v), state.cage);
+      if (!h) return;
+      if (cv.mode === 'place') {
+        var hitI = -1;
+        cv.targets.forEach(function (T, i) { var m = projR(cam.R, cam.C, cam.f, [T.x, T.y, T.z]); if (m && Math.hypot(m[0] - u, m[1] - v) < 34) hitI = i; });
+        if (hitI >= 0) { cv.targets.splice(hitI, 1); cv.lastT = null; }
+        else { var c0 = callAt(h); var T = { x: h.x, y: h.y, z: h.z, surf: h.surf, w: 1.5, h: 1.5, title: c0.title, kind: c0.kind, name: '' }; cv.targets.push(T); cv.lastT = T; }
+      } else {
+        var call = callAt(h);
+        call.detail = call.kind === 'foul' ? 'Off the ' + (h.x < 0 ? 'left' : 'right') + ' side.' : 'Launch ' + Math.round(call.launch) + '°, ' + (Math.abs(call.spray) < 3 ? 'dead center' : Math.round(Math.abs(call.spray)) + '° ' + (call.spray > 0 ? 'left' : 'right')) + '. Lands about ' + Math.round(call.L) + ' ft out.';
+        call.P = h; call.onTarget = onTargetCheck(h); cv.calls.push(call);
+      }
+    }
+    cvText(); cvList();
+  }
+  function cvLoop() { if (!cv.on) return; cv.raf = requestAnimationFrame(cvLoop); cvDraw(); }
+  function cvOpen() {
+    function go() {
+      $('cv').classList.add('open'); cv.on = true; cv.taps = []; cv.pose = null; cv.msg = ''; cv.mode = 'place'; cv.lastT = null;
+      $('cv-warn').textContent = '';
+      window.addEventListener('deviceorientation', cvOrient);
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false }).then(function (st) {
+          if (!cv.on) { st.getTracks().forEach(function (t) { t.stop(); }); return; }
+          cv.stream = st; var v = $('cv-video'); v.srcObject = st;
+          var pl = v.play(); if (pl && pl.catch) pl.catch(function () {});
+        }).catch(function () { if (cv.on) $('cv-warn').textContent = 'Camera is blocked. Allow the camera for this site and reopen.'; });
+      } else { $('cv-warn').textContent = 'No camera found on this device.'; }
+      cvText(); cvList(); cvLoop();
+    }
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') DeviceOrientationEvent.requestPermission().then(go, go);
+    else go();
+  }
+  function cvClose() {
+    cv.on = false; cancelAnimationFrame(cv.raf); window.removeEventListener('deviceorientation', cvOrient);
+    if (cv.stream) { cv.stream.getTracks().forEach(function (t) { t.stop(); }); cv.stream = null; }
+    $('cv-video').srcObject = null; $('cv').classList.remove('open'); cvList();
+  }
+  $('cv-open').addEventListener('click', cvOpen);
+  $('cv-close').addEventListener('click', cvClose);
+  $('cv-x').addEventListener('click', cvClose);
+  $('cv-undo2').addEventListener('click', function () { cv.taps.pop(); cvText(); });
+  $('cv-canvas').addEventListener('click', cvTap);
+  $('cv-redo').addEventListener('click', function () { cv.taps = []; cv.pose = null; cv.msg = cv.targets.length ? 'Your ' + cv.targets.length + ' targets are saved. Line up from where you stand now.' : ''; cvText(); });
+  $('cv-undo').addEventListener('click', function () {
+    if (!cv.pose) cv.taps.pop(); else if (cv.mode === 'place') { cv.targets.pop(); cv.lastT = null; } else cv.calls.pop();
+    cvText(); cvList();
+  });
+  Array.prototype.forEach.call($('cv-modes').children, function (b) {
+    b.addEventListener('click', function () {
+      var m = b.getAttribute('data-m');
+      if (!cv.pose) return;
+      if (m === 'five') addFive(); else cv.mode = m;
+      cv.lastT = null; cvText(); cvList();
+    });
+  });
+  window.addEventListener('resize', function () { if (cv.on && (cv.pose || cv.taps.length)) { cv.taps = []; cv.pose = null; cv.msg = 'The screen changed. Line it up again. Targets stay.'; cvText(); } });
 })();
 </script>
 <script src="js/site.js"></script>
