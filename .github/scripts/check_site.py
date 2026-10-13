@@ -13,6 +13,7 @@ FOOTER = '''<footer class="footer">
     <div class="footer-brand">
       <div class="logo">Dugout<span>Lab</span></div>
       <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+      <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
     </div>
     <div class="footer-links">
       <h4>Tools</h4>
@@ -44,7 +45,7 @@ BANNED = [
     ('always-free promise',     r'(?i)free,\s*(always|forever)|always\s+free|free\s+forever|always\.\s*no paywall|always will be|made free'),
     ('GamedayHelpers mention',  r'(?i)gameday\s*helpers'),
     ('sponsor block',           r'(?i)footer-sponsor|sponsor-line|our sponsor|sponsored by'),
-    ('AI disclosure',           r'(?i)AI assistance|AI-assisted|compiled with AI|footer-disclosure|notes for claude'),
+    ('internal notes',           r'(?i)notes for claude'),
     ('dead builder.html link',  r'href="(\.\./)?builder\.html"'),
     ('old tool name',           r'(?i)practice builder'),
     ('emoji',                   '[\U0001F000-\U0001FAFF]'),
