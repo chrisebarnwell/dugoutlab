@@ -522,6 +522,15 @@ select option { background: var(--forest-deep); color: var(--ink); }
   .lineup-actions { display: none; }
   .nav, .page-hero, .wizard-wrap > *:not(.lineup-output) { display: none; }
 }
+.mode-switch { max-width: 1040px; margin: 1.5rem auto 0; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.mode-tab { display: block; border: 1.5px solid var(--rule); border-radius: 12px; padding: 1rem 1.15rem; text-decoration: none; color: var(--ink); background: var(--forest2); }
+.mode-tab:hover { border-color: var(--gold); text-decoration: none; color: var(--ink); }
+.mode-tab.active { border-color: var(--gold); background: rgba(200,134,46,0.1); }
+.mode-tab .mt-k { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+.mode-tab .mt-t { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; margin: 0.2rem 0; }
+.mode-tab .mt-d { font-size: 0.84rem; color: var(--ink-soft); line-height: 1.45; }
+@media (max-width: 768px) { .mode-switch { grid-template-columns: 1fr; } }
+@media print { .mode-switch { display: none !important; } }
 </style>
 </head>
 <body>
@@ -557,6 +566,19 @@ select option { background: var(--forest-deep); color: var(--ink); }
     <h1>Build Your <em style="color:var(--gold);font-style:italic">Lineup Matrix</em></h1>
     <p>Answer 8 questions. Get a complete position-by-inning lineup, with pitching, catching, EH slots, and development priorities all handled. Runs entirely in your browser. No accounts. No API keys. No costs.</p>
   </div>
+</div>
+
+<div class="mode-switch">
+  <a href="pods.html" class="mode-tab">
+    <div class="mt-k">Mode A &middot; Development</div>
+    <div class="mt-t">Pod Rotation</div>
+    <div class="mt-d">Rec and younger teams. Everybody plays everywhere over the season. You set who pitches and catches.</div>
+  </a>
+  <a href="lineup.html" class="mode-tab active">
+    <div class="mt-k">Mode B &middot; Competitive</div>
+    <div class="mt-t">Strike-Thrower Builder</div>
+    <div class="mt-d">All-Stars and travel. Tiers, a deeper pitching staff, and win / balanced / development priorities.</div>
+  </a>
 </div>
 
 <div class="wizard-wrap">

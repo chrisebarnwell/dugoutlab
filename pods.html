@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pod Rotation Builder | DugoutLab</title>
+<meta name="description" content="Free two-pod lineup rotation for youth baseball and softball. Every kid plays a new spot each inning, nobody sits twice in a row, and pods switch sides every game.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+.mode-switch { max-width: 1040px; margin: 1.5rem auto 0; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.mode-tab { display: block; border: 1.5px solid var(--rule); border-radius: 12px; padding: 1rem 1.15rem; text-decoration: none; color: var(--ink); background: var(--forest2); }
+.mode-tab:hover { border-color: var(--gold); text-decoration: none; color: var(--ink); }
+.mode-tab.active { border-color: var(--gold); background: rgba(200,134,46,0.1); }
+.mode-tab .mt-k { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+.mode-tab .mt-t { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; margin: 0.2rem 0; }
+.mode-tab .mt-d { font-size: 0.84rem; color: var(--ink-soft); line-height: 1.45; }
+.pb-wrap { max-width: 1040px; margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
+.pb-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.25rem; }
+.pb-card h2 { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; margin-bottom: 0.35rem; }
+.pb-card .hint { font-size: 0.86rem; color: var(--ink-soft); margin-bottom: 1rem; }
+.pb-row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.45rem; flex-wrap: wrap; }
+.pb-row input[type=text], .pb-row input[type=number], .pb-row select, textarea, .pb-in { background: var(--forest-deep); border: 1px solid var(--rule); color: var(--ink); border-radius: 8px; padding: 0.55rem 0.7rem; font: inherit; font-size: 0.92rem; }
+.pb-row input[type=number] { width: 70px; }
+textarea { width: 100%; min-height: 150px; }
+.pod-pill { border: 1.5px solid var(--rule); background: transparent; color: var(--ink-soft); border-radius: 999px; padding: 0.4rem 0.8rem; font-size: 0.82rem; font-weight: 600; }
+.pod-pill.right { border-color: #6E9476; color: #a9cdb2; }
+.pod-pill.left { border-color: var(--gold); color: var(--gold-light); }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; overflow: hidden; }
+.seg button { background: transparent; border: 0; color: var(--ink-soft); padding: 0.5rem 1rem; font-weight: 600; font-size: 0.85rem; }
+.seg button.active { background: var(--gold); color: var(--forest); }
+.x-btn { background: none; border: 1px solid var(--rule); color: var(--ink-faint); border-radius: 6px; width: 30px; height: 30px; }
+.add-btn { background: none; border: 1px dashed var(--rule); color: var(--gold); border-radius: 8px; padding: 0.45rem 0.9rem; font-weight: 600; font-size: 0.85rem; margin-top: 0.3rem; }
+.grid-2c { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.flags { background: rgba(200,134,46,0.1); border: 1px solid rgba(200,134,46,0.35); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.86rem; color: var(--gold-light); margin-top: 1rem; }
+/* output card (prints black on white) */
+.lc { background: #fff; color: #111; border-radius: 10px; padding: 1.25rem; font-family: Helvetica, Arial, sans-serif; overflow-x: auto; }
+.lc h3 { font-size: 1.05rem; letter-spacing: 0.04em; margin-bottom: 0.2rem; }
+.lc .sub { font-size: 0.78rem; color: #444; margin-bottom: 0.6rem; }
+.lc .plan { font-size: 0.8rem; margin-bottom: 0.15rem; }
+.lc table { border-collapse: collapse; width: 100%; margin-top: 0.6rem; min-width: 520px; }
+.lc th, .lc td { border: 1px solid #999; padding: 5px 6px; text-align: center; font-size: 0.86rem; }
+.lc td.nm { text-align: left; font-weight: 700; white-space: nowrap; }
+.lc tr.podh td { background: #f1f1f1; text-align: left; font-weight: 700; font-size: 0.74rem; letter-spacing: 0.08em; }
+.lc td.pc { border: 2.5px solid #000; font-weight: 700; }
+.lc td.sit { color: #888; }
+.lc td.warm { color: #555; font-style: italic; }
+.lc td.cap { min-width: 60px; }
+.ascii { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-soft); white-space: pre; overflow-x: auto; line-height: 1.35; }
+@media (max-width: 768px) { .mode-switch, .grid-2c { grid-template-columns: 1fr; } }
+@media print {
+  .nav, .mobile-menu, .page-hero, .mode-switch, .pb-card, .footer, .no-print { display: none !important; }
+  body { background: #fff; }
+  .pb-wrap { padding: 0; }
+  .lc { padding: 0; border-radius: 0; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="framework.html">Practice Framework</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="training.html">Training</a></li>
+    <li><a href="coach-dad.html">Coach Dad</a></li>
+    <li><a href="lineup.html" class="active">Lineup Builder</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="stages.html">The 4 Stages</a>
+  <a href="framework.html">Practice Framework</a>
+  <a href="articles.html">Articles</a>
+  <a href="training.html">Training</a>
+  <a href="coach-dad.html">Coach Dad</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="eyebrow">Lineup Builder &middot; Pod Rotation</div>
+    <h1>Two pods. <em style="color:var(--gold);font-style:italic">Every kid, every spot.</em></h1>
+    <p>Split the field in two. Kids rotate inside their pod, sit once at most in a row, and switch sides next game. Runs in your browser. Nothing leaves your device.</p>
+  </div>
+</div>
+
+<div class="mode-switch">
+  <a href="pods.html" class="mode-tab active">
+    <div class="mt-k">Mode A &middot; Development</div>
+    <div class="mt-t">Pod Rotation</div>
+    <div class="mt-d">Rec and younger teams. Everybody plays everywhere over the season. You set who pitches and catches.</div>
+  </a>
+  <a href="lineup.html" class="mode-tab">
+    <div class="mt-k">Mode B &middot; Competitive</div>
+    <div class="mt-t">Strike-Thrower Builder</div>
+    <div class="mt-d">All-Stars and travel. Tiers, a deeper pitching staff, and win / balanced / development priorities.</div>
+  </a>
+</div>
+
+<div class="pb-wrap">
+
+  <div class="pb-card">
+    <h2>How pods work</h2>
+<div class="ascii">+-------------------------------+   +--------------------------+
+| RIGHT POD   1B  2B  RF  CF    |   | LEFT POD    3B  SS  LF   |
+| about 4/7 of the roster       |   | about 3/7 of the roster  |
++---------------+---------------+   +------------+-------------+
+                |      P / C step out for their turn  |
+                +-----------> return to same pod <----+
+
+ EACH INNING   new spot (only P and C may repeat)
+               pitcher-up-next sits to get loose
+               nobody sits back-to-back
+ NEXT GAME     every kid switches sides</div>
+  </div>
+
+  <div class="pb-card">
+    <h2>1. Roster</h2>
+    <p class="hint">Paste names, one per line. Tap a pod tag to flip a kid's side. Saved on this device.</p>
+    <div class="grid-2c">
+      <div>
+        <input class="pb-in" id="team" type="text" placeholder="Team name" style="width:100%;margin-bottom:0.6rem">
+        <textarea id="names" placeholder="Adrian&#10;Colin&#10;Matty J"></textarea>
+        <div class="pb-row" style="margin-top:0.6rem">
+          <button class="btn btn-sm btn-forest" onclick="loadNames()">Load names</button>
+          <button class="btn btn-sm btn-forest" onclick="resplit()">Auto-split pods</button>
+        </div>
+      </div>
+      <div id="podlist"></div>
+    </div>
+  </div>
+
+  <div class="pb-card">
+    <h2>2. Game</h2>
+    <div class="pb-row">
+      <span style="font-size:0.9rem">Innings</span>
+      <input type="number" id="innings" value="6" min="1" max="9">
+      <span style="font-size:0.9rem;margin-left:1rem">Which game</span>
+      <div class="seg" id="gameSeg">
+        <button class="active" onclick="setGame(1,this)">Game 1</button>
+        <button onclick="setGame(2,this)">Game 2 (switch sides)</button>
+      </div>
+      <input class="pb-in" id="opp" type="text" placeholder="Opponent (optional)">
+    </div>
+  </div>
+
+  <div class="pb-card">
+    <h2>3. Pitchers and catchers</h2>
+    <p class="hint">Rows are an order, not a clock. If someone hits a cap early, the next row slides up. Pitch caps follow your league's rules.</p>
+    <div class="grid-2c">
+      <div><div class="section-label">Pitchers</div><div id="pList"></div><button class="add-btn" onclick="addPlan('p')">+ Pitcher</button></div>
+      <div><div class="section-label">Catchers</div><div id="cList"></div><button class="add-btn" onclick="addPlan('c')">+ Catcher</button></div>
+    </div>
+  </div>
+
+  <div class="pb-row no-print" style="margin-bottom:1.25rem">
+    <button class="btn btn-primary btn-lg" onclick="generate()">Build the card &#8594;</button>
+    <button class="btn btn-outline" onclick="generate()">Reshuffle</button>
+    <button class="btn btn-outline" onclick="window.print()">Print</button>
+  </div>
+
+  <div id="out"></div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Evidence-based coaching for Little League and rec ball coaches.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="pods.html">Pod Rotation</a></li>
+        <li><a href="training.html">Training</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-sponsor">
+    <div class="sponsor-label">Our Sponsor</div>
+    <div class="sponsor-line">
+      Sponsored by <a href="https://gamedayhelpers.com" target="_blank" rel="noopener">GamedayHelpers.com</a>
+      <span class="sponsor-tag">Let coaches coach. Let parents enjoy the game.</span>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+<script src="js/pods.js"></script>
+<script>
+var KEY = 'dugout_pods_v1';
+var S = { team: '', names: [], pods: {}, innings: 6, game: 1, opp: '', p: [], c: [] };
+
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function load() {
+  try { var d = JSON.parse(localStorage.getItem(KEY) || 'null'); if (d) S = Object.assign(S, d); } catch (e) {}
+}
+function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+function loadNames() {
+  var list = document.getElementById('names').value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+  var seen = {}; list = list.filter(function (n) { if (seen[n]) return false; seen[n] = 1; return true; });
+  var fresh = autoSplit(list);
+  list.forEach(function (n) { if (!S.pods[n]) S.pods[n] = fresh[n]; });
+  S.names = list; save(); renderAll();
+}
+function resplit() { S.pods = autoSplit(S.names); save(); renderPods(); }
+function flip(i) { var n = S.names[i]; S.pods[n] = S.pods[n] === 'right' ? 'left' : 'right'; save(); renderPods(); }
+
+function renderPods() {
+  var r = S.names.filter(function (n) { return S.pods[n] === 'right'; }).length;
+  var html = '<div class="section-label">Game 1 pods &middot; Right ' + r + ' / Left ' + (S.names.length - r) + '</div>';
+  S.names.forEach(function (n, i) {
+    var p = S.pods[n];
+    html += '<div class="pb-row"><span style="min-width:110px">' + esc(n) + '</span><button class="pod-pill ' + p + '" onclick="flip(' + i + ')">' + (p === 'right' ? 'Right pod' : 'Left pod') + '</button></div>';
+  });
+  if (!S.names.length) html += '<p class="hint">Load names to see pods.</p>';
+  document.getElementById('podlist').innerHTML = html;
+}
+
+function opts(sel) {
+  return '<option value="">Pick</option>' + S.names.map(function (n) { return '<option' + (n === sel ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join('');
+}
+function renderPlans() {
+  ['p', 'c'].forEach(function (k) {
+    var h = '';
+    S[k].forEach(function (row, i) {
+      h += '<div class="pb-row"><select onchange="setPlan(\'' + k + '\',' + i + ',\'name\',this.value)">' + opts(row.name) + '</select>'
+        + '<input type="number" min="1" max="9" value="' + (row.innings || 1) + '" onchange="setPlan(\'' + k + '\',' + i + ',\'innings\',this.value)" title="Innings">'
+        + '<span style="font-size:0.8rem;color:var(--ink-faint)">inn</span>'
+        + (k === 'p' ? '<input class="pb-in" type="text" style="width:90px" placeholder="Cap" value="' + esc(row.cap || '') + '" onchange="setPlan(\'p\',' + i + ',\'cap\',this.value)">' : '')
+        + '<button class="x-btn" onclick="delPlan(\'' + k + '\',' + i + ')" aria-label="Remove">&#215;</button></div>';
+    });
+    document.getElementById(k + 'List').innerHTML = h;
+  });
+}
+function addPlan(k) { S[k].push({ name: '', innings: 1, cap: '' }); save(); renderPlans(); }
+function delPlan(k, i) { S[k].splice(i, 1); save(); renderPlans(); }
+function setPlan(k, i, f, v) { S[k][i][f] = v; save(); }
+function setGame(g, b) {
+  S.game = g; save();
+  document.querySelectorAll('#gameSeg button').forEach(function (x) { x.classList.remove('active'); });
+  b.classList.add('active');
+}
+
+function generate() {
+  S.team = document.getElementById('team').value;
+  S.opp = document.getElementById('opp').value;
+  S.innings = Math.max(1, Math.min(9, parseInt(document.getElementById('innings').value, 10) || 6));
+  save();
+  var out = document.getElementById('out');
+  if (S.names.length < 9) { out.innerHTML = '<div class="flags">FLAG: Pods need at least 9 players. You have ' + S.names.length + '.</div>'; return; }
+  var inn = S.innings;
+  var P = expandPlan(S.p.filter(function (r) { return r.name; }), inn);
+  var C = expandPlan(S.c.filter(function (r) { return r.name; }), inn);
+  var res = buildPods({ players: S.names, pods: S.pods, innings: inn, pitchers: P, catchers: C, swap: S.game === 2 });
+  var flags = auditPods(res, S.names, inn);
+  if (P.indexOf(null) !== -1) flags.push('Pitching plan covers fewer innings than the game.');
+  if (C.indexOf(null) !== -1) flags.push('Catching plan covers fewer innings than the game.');
+  if (res.moved && res.moved.length) flags.push('Moved to balance pods after the switch: ' + res.moved.join(', ') + '.');
+
+  var caps = {}; S.p.forEach(function (r) { if (r.name && r.cap) caps[r.name] = r.cap; });
+  function planLine(arr) {
+    var parts = [], i = 0;
+    while (i < arr.length) { var j = i; while (j + 1 < arr.length && arr[j + 1] === arr[i]) j++; if (arr[i]) parts.push(esc(arr[i]) + ' ' + (i + 1) + (j > i ? '-' + (j + 1) : '')); i = j + 1; }
+    return parts.join(' &middot; ');
+  }
+  var h = '<div class="lc"><h3>' + esc(S.team || 'Lineup Card') + ' / Game ' + S.game + (S.opp ? ' vs ' + esc(S.opp) : '') + '</h3>'
+    + '<div class="sub">Bold box = pitcher or catcher &middot; warm = getting loose to pitch next' + (S.game === 2 ? ' &middot; Every kid switched sides' : '') + '</div>'
+    + '<div class="plan"><b>Pitchers</b> ' + planLine(P) + '</div><div class="plan"><b>Catchers</b> ' + planLine(C) + '</div>'
+    + '<table><tr><th style="text-align:left">Player</th>';
+  for (var i = 1; i <= inn; i++) h += '<th>' + i + '</th>';
+  h += '<th>Pitch cap</th></tr>';
+  [['right', 'RIGHT POD &nbsp;1B / 2B / RF / CF'], ['left', 'LEFT POD &nbsp;3B / SS / LF']].forEach(function (pd) {
+    h += '<tr class="podh"><td colspan="' + (inn + 2) + '">' + pd[1] + '</td></tr>';
+    S.names.filter(function (n) { return res.pod[n] === pd[0]; }).forEach(function (n) {
+      h += '<tr><td class="nm">' + esc(n) + '</td>';
+      res.grid[n].forEach(function (v) {
+        var cls = v === 'P' || v === 'C' ? 'pc' : (v === 'sit' ? 'sit' : (v === 'warm' ? 'warm' : ''));
+        h += '<td class="' + cls + '">' + v + '</td>';
+      });
+      h += '<td class="cap">' + esc(caps[n] || '') + '</td></tr>';
+    });
+  });
+  h += '</table></div>';
+  if (flags.length) h += '<div class="flags no-print">' + flags.map(esc).join('<br>') + '</div>';
+  out.innerHTML = h;
+  out.scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderAll() {
+  document.getElementById('team').value = S.team || '';
+  document.getElementById('opp').value = S.opp || '';
+  document.getElementById('innings').value = S.innings;
+  document.getElementById('names').value = S.names.join('\n');
+  var gb = document.querySelectorAll('#gameSeg button');
+  gb.forEach(function (x, i) { x.classList.toggle('active', i === S.game - 1); });
+  renderPods(); renderPlans();
+}
+
+load();
+if (!S.p.length) S.p = [{ name: '', innings: 2, cap: '' }];
+if (!S.c.length) S.c = [{ name: '', innings: 2 }];
+renderAll();
+</script>
+</body>
+</html>
