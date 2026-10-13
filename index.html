@@ -15,320 +15,145 @@
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
     <ul class="nav-links">
-    <li><a href="stages.html">The 4 Stages</a></li>
-    <li><a href="framework.html">Practice Framework</a></li>
-    <li><a href="articles.html">Articles</a></li>
-    <li><a href="training.html">Training</a></li>
-    <li><a href="coach-dad.html">Coach Dad</a></li>
-    <li><a href="lineup.html">Lineup Builder</a></li>
-    <li><a href="about.html">About</a></li>
+    <li><a href="ages.html">My Age Group</a></li>
+    <li><a href="tools.html">Tools</a></li>
+    <li><a href="articles.html">Field Notes</a></li>
+    <li><a href="how-kids-learn.html">Why It Works</a></li>
   </ul>
   <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
 <div class="mobile-menu" id="mobile-menu">
-  <a href="stages.html">The 4 Stages</a>
-  <a href="framework.html">Practice Framework</a>
-  <a href="articles.html">Articles</a>
-  <a href="training.html">Training</a>
-  <a href="coach-dad.html">Coach Dad</a>
-  <a href="lineup.html">Lineup Builder</a>
-  <a href="about.html">About</a>
+  <a href="ages.html">My Age Group</a>
+  <a href="tools.html">Tools</a>
+  <a href="articles.html">Field Notes</a>
+  <a href="how-kids-learn.html">Why It Works</a>
 </div>
 
-<!-- ═══════════ HERO SLIDER ═══════════ -->
-<section class="hero-slider" id="hero-slider" aria-roledescription="carousel" aria-label="DugoutLab feature highlights">
-  <div class="hero-slider-inner">
-
-    <!-- Slide 1: The Week Before (Featured Reflection) -->
-    <div class="hero-slide active" data-slide="0">
-      <div class="slide-headline">
-        <div class="eyebrow">New &middot; Stories From the Dugout</div>
-        <h2>The week before <span class="accent">the big one.</span></h2>
-        <p class="deck">A thrown-together All-Star team is two wins from state. The instinct is to get serious. That instinct is the trap. Why staying loose under rising stakes is the harder, better call.</p>
-        <div class="cta-row">
-          <a href="articles/the-week-before.html" class="btn btn-primary btn-lg">Read the reflection &#8594;</a>
-          <a href="articles.html" class="btn btn-outline btn-lg">All articles</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Slide 2: Headline -->
-    <div class="hero-slide" data-slide="1">
-      <div class="slide-headline">
-        <div class="eyebrow">Evidence-checked · Ages 4 to 18</div>
-        <h2>How kids actually <span class="accent">learn the game.</span></h2>
-        <p class="deck">For the coach who wants to do their best but doesn't have time. Games first, drills where they help. We tell you what the research supports and what it doesn't. One job: make them want to come back tomorrow.</p>
-        <div class="cta-row">
-          <a href="how-kids-learn.html" class="btn btn-primary btn-lg">Start here: How kids learn &#8594;</a>
-          <a href="framework.html" class="btn btn-outline btn-lg">The practice framework</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Slide 3: Practice Evolution Chart -->
-    <div class="hero-slide" data-slide="2">
-      <div class="slide-split">
-        <div class="copy">
-          <div class="eyebrow">The Framework &middot; The Evolution of Practice</div>
-          <h2>Coach the age, <span class="accent">not the calendar.</span></h2>
-          <p>How we shift the balance of practice as kids grow: lots of play early, more focused work later. Our planning rule of thumb, not a research finding.</p>
-          <a href="stages.html" class="arrow-link">See the full framework <span class="arrow">&#8594;</span></a>
-        </div>
-        <div class="slide-visual">
-          <div class="evo-chart" aria-label="Stacked area chart showing practice-type balance across four development stages">
-            <svg viewBox="0 0 520 300" preserveAspectRatio="xMidYMid meet" role="img">
-              <!-- defs -->
-              <defs>
-                <pattern id="drillHatch" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)">
-                  <rect width="7" height="7" fill="#C8862E" opacity="0.92"></rect>
-                  <line x1="0" y1="0" x2="0" y2="7" stroke="#a06e1f" stroke-width="2" opacity="0.5"></line>
-                </pattern>
-              </defs>
-              <!-- x positions: 40, 190, 340, 480 ; y plot area 30..250 -->
-              <!-- ECOLOGICAL (bottom band): 70,47,22,10 -->
-              <path d="M40,250 L190,250 L340,250 L480,250 L480,228 L340,202 L190,147 L40,96 Z" fill="#6E9476"></path>
-              <!-- VARIABLE (middle band): 26,44,60,62 -->
-              <path d="M40,96 L190,147 L340,202 L480,228 L480,91 L340,70 L190,50 L40,39 Z" fill="#3E6B4E"></path>
-              <!-- ISOLATED DRILLING (top band): 4,9,18,28 -->
-              <path d="M40,39 L190,50 L340,70 L480,91 L480,30 L340,30 L190,30 L40,30 Z" fill="url(#drillHatch)"></path>
-              <!-- pro zone label -->
-              <text x="472" y="44" text-anchor="end" font-family="Inter,sans-serif" font-size="8" fill="#f4efe6" opacity="0.55">Elite refinement zone</text>
-              <text x="472" y="54" text-anchor="end" font-family="Inter,sans-serif" font-size="8" fill="#f4efe6" opacity="0.4">Pro coaches work here</text>
-              <!-- ecological % labels -->
-              <text x="36" y="178" text-anchor="end" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#f4efe6">70%</text>
-              <text x="190" y="205" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#f4efe6">47%</text>
-              <text x="340" y="232" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#f4efe6">22%</text>
-              <text x="484" y="246" text-anchor="start" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#f4efe6">10%</text>
-              <!-- variable % labels -->
-              <text x="36" y="72" text-anchor="end" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#f4efe6">26%</text>
-              <text x="265" y="115" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#f4efe6">60%</text>
-              <text x="484" y="165" text-anchor="start" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#f4efe6">62%</text>
-              <!-- drilling % labels -->
-              <text x="40" y="26" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#C8862E">4%</text>
-              <text x="265" y="48" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#e2a85a">18%</text>
-              <text x="484" y="74" text-anchor="start" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#e2a85a">28%</text>
-              <!-- x axis stage labels -->
-              <text x="40" y="270" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" font-weight="700" fill="#f4efe6">Ages 4-6</text>
-              <text x="190" y="270" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" font-weight="700" fill="#f4efe6">Sampling</text>
-              <text x="190" y="282" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#f4efe6" opacity="0.5">AGES 7-12</text>
-              <text x="340" y="270" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" font-weight="700" fill="#f4efe6">Specializing</text>
-              <text x="340" y="282" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#f4efe6" opacity="0.5">AGES 13-15</text>
-              <text x="480" y="270" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" font-weight="700" fill="#f4efe6">Investment</text>
-              <text x="480" y="282" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#f4efe6" opacity="0.5">AGES 16+</text>
-            </svg>
-          </div>
-          <div class="mini-chart-legend evo-legend">
-            <span><span class="swatch" style="background:#6E9476"></span>Ecological / Play-Based</span>
-            <span><span class="swatch" style="background:#3E6B4E"></span>Variable / Game-Realistic</span>
-            <span><span class="swatch" style="background:#C8862E"></span>Isolated Drilling</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Controls -->
-  <div class="hero-slider-controls">
-    <div class="hero-slider-dots" role="tablist">
-      <button class="hero-slider-dot active" data-target="0" aria-label="Go to slide 1"></button>
-      <button class="hero-slider-dot" data-target="1" aria-label="Go to slide 2"></button>
-      <button class="hero-slider-dot" data-target="2" aria-label="Go to slide 3"></button>
-    </div>
-    <div class="hero-slider-meta">
-      <span class="hero-slider-counter" id="slider-counter">01 / 03</span>
-      <div class="hero-slider-arrows">
-        <button class="hero-slider-arrow" id="slider-prev" aria-label="Previous slide">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button class="hero-slider-arrow" id="slider-next" aria-label="Next slide">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </div>
+<section class="page-hero" style="padding:4rem 1.25rem 3rem">
+  <div class="page-hero-inner" style="text-align:center">
+    <div class="eyebrow">For volunteer baseball and softball coaches</div>
+    <h1>Your job is to make them want to come back tomorrow.</h1>
+    <p style="margin:0.75rem auto 0;max-width:640px;font-size:1.05rem;color:rgba(255,255,255,0.75)">What the pros and the research know, turned into ideas you can use tonight. Trying to get it right is getting it right.</p>
   </div>
 </section>
 
-<!-- ═══════════ PHILOSOPHY BAR ═══════════ -->
-<div class="philosophy-bar">
-  <div class="philosophy-bar-inner">
-    <div class="quote">"Your job is to make them want to come back tomorrow."</div>
-    <a href="articles/one-job.html" class="quote-link">Read the philosophy &#8594;</a>
-  </div>
-</div>
-
-<!-- ═══════════ FEATURED ARTICLE + FOR PARENTS ═══════════ -->
-<section class="section section-white" style="padding-bottom:2.25rem">
-  <div class="container">
-
-    <!-- FEATURED -->
-    <div style="background:var(--forest-deep);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:2rem 2.25rem;margin-bottom:2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.25rem">
-      <div>
-        <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:var(--gold);margin-bottom:0.6rem">Featured &middot; New</div>
-        <div style="font-family:var(--serif);font-size:1.55rem;font-weight:600;color:var(--ink);margin-bottom:0.45rem;letter-spacing:-0.015em">The Week Before</div>
-        <p style="font-size:0.95rem;color:var(--ink-soft);margin:0;max-width:580px;line-height:1.55">A coach&#39;s reflection on the week before a high-stakes tournament. Why staying loose under rising stakes is the harder, better call, and the research we lean on.</p>
-      </div>
-      <a href="articles/the-week-before.html" class="btn btn-primary" style="white-space:nowrap">Read the article &#8594;</a>
-    </div>
-
-    <!-- FOR THE PARENTS -->
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
-      <div>
-        <div class="section-label">For the parents</div>
-        <div class="section-title">The other side of the fence</div>
-      </div>
-      <a href="articles.html" class="btn btn-sm" style="background:#fbf8f1;border:1px solid #d8d0bf;color:var(--cream-ink)">All Articles</a>
-    </div>
-    <div class="grid-3">
-      <a href="articles/parent-sideline.html" class="card card-link article-card" style="text-decoration:none">
-        <div class="card-eyebrow">For Moms &amp; Dads</div>
-        <div class="card-title">The Sideline That Helps</div>
-        <div class="card-summary">Six words help more than any tip you could shout. What to say from the stands so your kid is free to play.</div>
-      </a>
-      <a href="articles/kid-in-the-dugout.html" class="card card-link article-card" style="text-decoration:none">
-        <div class="card-eyebrow">For Coaches Who Feel It</div>
-        <div class="card-title" style="font-style:italic">The Kid in the Dugout Isn't My Son</div>
-        <div class="card-summary">Why your chest gets tight before a game you know isn't life or death, and what to do with it. For moms and dads both.</div>
-      </a>
-      <a href="articles/player-cries.html" class="card card-link article-card" style="text-decoration:none">
-        <div class="card-eyebrow">Emotional Coaching</div>
-        <div class="card-title">What to Say When a Player Cries</div>
-        <div class="card-summary">Specific language for after an error, a strikeout, and a loss. Name it, give it a minute, then get back in the game.</div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════ ARTICLES PREVIEW ═══════════ -->
 <section class="section section-cream">
   <div class="container">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem">
-      <div>
-        <div class="section-label">Evidence-Based Coaching</div>
-        <div class="section-title">What the research says, and how sure it is</div>
-      </div>
-      <a href="articles.html" class="btn btn-sm" style="background:#fbf8f1;border:1px solid #d8d0bf;color:var(--cream-ink)">All Articles</a>
-    </div>
-    <div class="grid-3">
-      <a href="articles/one-cue.html" class="card card-link article-card" style="text-decoration:none">
-        <div class="card-eyebrow">Coaching Cues</div>
-        <div class="card-title">The One Cue Rule: Say Less, Say It Clearly</div>
-        <div class="card-summary">Kids can hold one idea at a time. How to pick the one cue that matters and aim it at the target.</div>
-        <div class="card-meta">4 min read</div>
-      </a>
-      <a href="articles/why-kids-quit.html" class="card card-link article-card" style="text-decoration:none">
-        <div class="card-eyebrow">Player Development</div>
-        <div class="card-title">Why Kids Quit Baseball, and What You Can Control</div>
-        <div class="card-summary">The top reason kids give isn't losing. It's that it stopped being fun. What a rec coach can control.</div>
-        <div class="card-meta">5 min read</div>
-      </a>
-      <a href="articles/blocked-vs-random.html" class="card card-link article-card" style="text-decoration:none">
-        <div class="card-eyebrow">Practice Design</div>
-        <div class="card-title">When to Mix Up Your Practice Reps</div>
-        <div class="card-summary">Straight reps help a new skill start. Mixed reps look messier but look more like the game. When to use each.</div>
-        <div class="card-meta">5 min read</div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════ AGE GROUP PICKER ═══════════ -->
-<section class="section section-cream" style="padding-top:2.5rem;border-top:1px solid #d8d0bf">
-  <div class="container">
     <div class="center mb-3">
-      <div class="section-label">I coach ages...</div>
-      <div class="section-title">Start with your age group</div>
+      <div class="section-label">Start here</div>
+      <div class="section-title">Who are you coaching?</div>
     </div>
-    <div class="grid-4" style="margin-bottom:2rem">
-      <a href="framework.html" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none">
-        <div style="font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--cream-ink);margin-bottom:0.3rem;letter-spacing:-0.01em">Ages 4-6</div>
-        <div style="font-size:0.78rem;color:var(--cream-ink-soft)">First-time players</div>
-        <div style="font-size:0.74rem;color:var(--gold-dark);font-weight:600;margin-top:0.7rem">Get the blueprint &rarr;</div>
+    <div class="grid-4">
+      <a href="ages.html#ages-4-6" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none">
+        <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;margin-bottom:0.3rem">Ages 4-6</div>
+        <div style="font-size:0.8rem;opacity:0.75">First years</div>
       </a>
-      <a href="framework.html" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none;border-color:var(--gold)">
-        <div style="font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--cream-ink);margin-bottom:0.3rem;letter-spacing:-0.01em">Ages 7-12</div>
-        <div style="font-size:0.78rem;color:var(--cream-ink-soft)">Most rec teams</div>
-        <div style="font-size:0.74rem;color:var(--gold-dark);font-weight:600;margin-top:0.7rem">Get the blueprint &rarr;</div>
+      <a href="ages.html#ages-7-12" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none">
+        <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;margin-bottom:0.3rem">Ages 7-12</div>
+        <div style="font-size:0.8rem;opacity:0.75">Most rec teams</div>
       </a>
-      <a href="framework.html" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none">
-        <div style="font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--cream-ink);margin-bottom:0.3rem;letter-spacing:-0.01em">Ages 13-15</div>
-        <div style="font-size:0.78rem;color:var(--cream-ink-soft)">Competitive play</div>
-        <div style="font-size:0.74rem;color:var(--gold-dark);font-weight:600;margin-top:0.7rem">Get the blueprint &rarr;</div>
+      <a href="ages.html#ages-13-15" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none">
+        <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;margin-bottom:0.3rem">Ages 13-15</div>
+        <div style="font-size:0.8rem;opacity:0.75">Travel, freshman ball</div>
       </a>
-      <a href="framework.html" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none">
-        <div style="font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--cream-ink);margin-bottom:0.3rem;letter-spacing:-0.01em">Ages 16+</div>
-        <div style="font-size:0.78rem;color:var(--cream-ink-soft)">High school and beyond</div>
-        <div style="font-size:0.74rem;color:var(--gold-dark);font-weight:600;margin-top:0.7rem">Get the blueprint &rarr;</div>
+      <a href="ages.html#ages-16" class="card card-link" style="text-align:center;padding:1.5rem 1rem;text-decoration:none">
+        <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;margin-bottom:0.3rem">Ages 16+</div>
+        <div style="font-size:0.8rem;opacity:0.75">Varsity and beyond</div>
       </a>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ WHAT THIS SITE IS ═══════════ -->
 <section class="section section-white">
   <div class="container">
     <div class="center mb-3">
-      <div class="section-label">How to use DugoutLab</div>
-      <div class="section-title">Think first. Then structure. Then play.</div>
+      <div class="section-label">Right now</div>
+      <div class="section-title">Something just happened?</div>
     </div>
-    <div class="grid-3">
-      <div class="card" style="border-top:3px solid var(--gold)">
-        <div style="font-family:var(--mono);font-size:0.7rem;font-weight:500;letter-spacing:0.18em;color:var(--gold);margin-bottom:0.7rem;text-transform:uppercase">Step 01 &middot; Understand</div>
-        <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--ink);margin-bottom:0.5rem;letter-spacing:-0.015em">How Kids Learn</div>
-        <p style="font-size:0.92rem;color:var(--ink-soft);line-height:1.65;margin-bottom:1.2rem">Ten minutes on how kids learn to play, games versus drills, and how strong the evidence is. The why behind everything else here.</p>
-        <a href="how-kids-learn.html" class="btn btn-primary btn-sm">Start Here</a>
-      </div>
-      <div class="card" style="border-top:3px solid var(--gold-light)">
-        <div style="font-family:var(--mono);font-size:0.7rem;font-weight:500;letter-spacing:0.18em;color:var(--gold-light);margin-bottom:0.7rem;text-transform:uppercase">Step 02 &middot; Structure</div>
-        <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--ink);margin-bottom:0.5rem;letter-spacing:-0.015em">The Practice Framework</div>
-        <p style="font-size:0.92rem;color:var(--ink-soft);line-height:1.65;margin-bottom:1.2rem">Answer four questions. Get the shape of your practice by age, skill, and sport. You bring the activities, games and drills both.</p>
-        <a href="framework.html" class="btn btn-primary btn-sm">Build the Blueprint</a>
-      </div>
-      <div class="card" style="border-top:3px solid #7ad6a8">
-        <div style="font-family:var(--mono);font-size:0.7rem;font-weight:500;letter-spacing:0.18em;color:#7ad6a8;margin-bottom:0.7rem;text-transform:uppercase">Step 03 &middot; Read</div>
-        <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--ink);margin-bottom:0.5rem;letter-spacing:-0.015em">Coaching Articles</div>
-        <p style="font-size:0.92rem;color:var(--ink-soft);line-height:1.65;margin-bottom:1.2rem">Short reads on practice design, why kids quit, the drillers-vs-play debate, and how strong the evidence really is.</p>
-        <a href="articles.html" class="btn btn-outline btn-sm">Read Articles</a>
-      </div>
-    </div>
-
-    <!-- HOW KIDS LEARN FEATURE BANNER -->
-    <div style="background:linear-gradient(135deg,var(--forest-deep) 0%,var(--forest3) 100%);border:1px solid var(--gold);border-radius:var(--radius-lg);padding:2rem 2.25rem;margin-top:1.5rem">
-      <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:var(--gold);margin-bottom:0.5rem">For the man coaching from the box and the dinner table</div>
-      <div style="font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--ink);margin-bottom:0.4rem;letter-spacing:-0.015em">Coach Dad: <em style="font-style:italic;color:var(--gold)">a daily reflection.</em></div>
-      <p style="font-size:0.92rem;color:var(--ink-soft);margin:0 0 1.25rem;max-width:560px;line-height:1.55">The hardest player you coach lives in your house. Six weeks, one card a day, at your own pace, on the words you use with the kids who watch you closest. Free, no sign-up.</p>
-      <a href="coach-dad.html" class="btn btn-primary" style="white-space:nowrap">See Coach Dad &rarr;</a>
+    <div class="grid-4">
+      <a href="articles/player-cries.html" class="card card-link article-card" style="text-decoration:none">
+        <div class="card-title">A player is crying</div>
+        <div class="card-summary">What to say after an error, a strikeout, or a loss.</div>
+      </a>
+      <a href="articles/parent-sideline.html" class="card card-link article-card" style="text-decoration:none">
+        <div class="card-title">A parent is yelling</div>
+        <div class="card-summary">Six words that help more than any tip.</div>
+      </a>
+      <a href="articles/why-kids-quit.html" class="card card-link article-card" style="text-decoration:none">
+        <div class="card-title">A kid wants to quit</div>
+        <div class="card-summary">The top reason, and what you can control.</div>
+      </a>
+      <a href="articles/the-week-before.html" class="card card-link article-card" style="text-decoration:none">
+        <div class="card-title">The big game is coming</div>
+        <div class="card-summary">Why the nerves are ours, not theirs.</div>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ WHY TRUST US ═══════════ -->
+<section class="section section-cream">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
+      <div><div class="section-label">The night before practice</div><div class="section-title">Tools</div></div>
+      <a href="tools.html" class="btn btn-sm btn-outline">All tools</a>
+    </div>
+    <div class="grid-3">
+      <a href="framework.html" class="card card-link article-card" style="text-decoration:none">
+        <div class="card-title">Practice Framework</div>
+        <div class="card-summary">Answer four questions. Get the shape of your practice by age and skill.</div>
+      </a>
+      <a href="lineup.html" class="card card-link article-card" style="text-decoration:none">
+        <div class="card-title">Lineup Builder</div>
+        <div class="card-summary">Fair playing time and positions, done in minutes.</div>
+      </a>
+      <a href="games.html" class="card card-link article-card" style="text-decoration:none">
+        <div class="card-title">Games Library</div>
+        <div class="card-summary">Small-sided games that teach the skill for you.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-white">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
+      <div><div class="section-label">Testing ideas out loud</div><div class="section-title">Field Notes</div></div>
+      <a href="articles.html" class="btn btn-sm btn-outline">All Field Notes</a>
+    </div>
+    <div class="grid-3">
+      <a href="articles/the-week-before.html" class="card card-link article-card" style="text-decoration:none">
+        <div class="card-eyebrow">Stories From the Dugout</div>
+        <div class="card-title">The Week Before</div>
+        <div class="card-summary">A coach&#39;s reflection on the week before a high-stakes tournament. Why staying loose under rising stakes is the harder, better call.</div>
+      </a>
+      <a href="articles/constraints-led.html" class="card card-link article-card" style="text-decoration:none">
+        <div class="card-eyebrow">Practice Design · Constraints-Led</div>
+        <div class="card-title">Let the Game Teach the Game</div>
+        <div class="card-summary">Change the game so it teaches the skill. What the evidence supports, and where drills still fit.</div>
+      </a>
+      <a href="articles/drillers-vs-play.html" class="card card-link article-card" style="text-decoration:none">
+        <div class="card-eyebrow">The Big Debate</div>
+        <div class="card-title">Drillers Make Killers vs. Let Them Play</div>
+        <div class="card-summary">The fight that splits every youth complex. Where each side is right, what the evidence says, and when to shift so kids keep loving the game.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
 <section class="section section-cream">
   <div class="container">
     <div class="center mb-3">
-      <div class="section-label">Why DugoutLab</div>
-      <div class="section-title">Not another coaching opinion site</div>
+      <div class="section-label">Why trust it</div>
+      <div class="section-title">Ideas, not perfect answers</div>
     </div>
-    <div class="grid-4" style="text-align:center">
-      <div>
-        <div style="font-size:2.4rem;font-weight:600;color:var(--cream-ink);font-family:var(--serif);letter-spacing:-0.02em">Why</div>
-        <div style="font-size:0.85rem;color:var(--cream-ink-soft);margin-top:0.3rem">Games first, drills where they help</div>
-      </div>
-      <div>
-        <div style="font-size:2.4rem;font-weight:600;color:var(--cream-ink);font-family:var(--serif);letter-spacing:-0.02em">Sourced</div>
-        <div style="font-size:0.85rem;color:var(--cream-ink-soft);margin-top:0.3rem">Every article shows its sources</div>
-      </div>
-      <div>
-        <div style="font-size:2.4rem;font-weight:600;color:var(--cream-ink);font-family:var(--serif);letter-spacing:-0.02em">Free</div>
-        <div style="font-size:0.85rem;color:var(--cream-ink-soft);margin-top:0.3rem">Core coaching content. No ads.</div>
-      </div>
-      <div>
-        <div style="font-size:2.4rem;font-weight:600;color:var(--cream-ink);font-family:var(--serif);letter-spacing:-0.02em">Plain</div>
-        <div style="font-size:0.85rem;color:var(--cream-ink-soft);margin-top:0.3rem">No jargon. Coach-first language.</div>
-      </div>
+    <div class="grid-3" style="text-align:center">
+      <div><div class="section-title">Sourced</div><p>Every claim is named or flagged uncertain.</p></div>
+      <div><div class="section-title">Usable</div><p>Big-league thinking, sized for a rec practice.</p></div>
+      <div><div class="section-title">Honest</div><p>We say what the research supports and what it doesn&#39;t.</p></div>
     </div>
+    <div class="center" style="margin-top:1.5rem"><a href="how-kids-learn.html" class="btn btn-primary">How kids actually learn &rarr;</a></div>
   </div>
 </section>
 
@@ -350,7 +175,7 @@
     <div class="footer-links">
       <h4>Learn</h4>
       <ul>
-        <li><a href="articles.html">All Articles</a></li>
+        <li><a href="articles.html">Field Notes</a></li>
         <li><a href="stages.html">The 4 Stages</a></li>
         <li><a href="progression.html">Season Plan</a></li>
         <li><a href="about.html">About</a></li>
@@ -414,80 +239,6 @@
   </div>
 </div>
 
-<!-- ═══════════ HERO SLIDER SCRIPT ═══════════ -->
-<script>
-(function() {
-  var slides = document.querySelectorAll('.hero-slide');
-  var dots = document.querySelectorAll('.hero-slider-dot');
-  var counter = document.getElementById('slider-counter');
-  var prev = document.getElementById('slider-prev');
-  var next = document.getElementById('slider-next');
-  var slider = document.getElementById('hero-slider');
-  var active = 0;
-  var paused = false;
-  var rotateMs = 6500;
-  var timer = null;
-
-  function go(i) {
-    active = ((i % slides.length) + slides.length) % slides.length;
-    slides.forEach(function(s, idx) {
-      s.classList.toggle('active', idx === active);
-    });
-    dots.forEach(function(d, idx) {
-      d.classList.toggle('active', idx === active);
-    });
-    if (counter) counter.textContent =
-      String(active + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
-  }
-
-  function nextSlide() { go(active + 1); }
-  function prevSlide() { go(active - 1); }
-
-  function startRotate() {
-    if (timer) clearInterval(timer);
-    timer = setInterval(function() {
-      if (!paused) nextSlide();
-    }, rotateMs);
-  }
-
-  dots.forEach(function(d, idx) {
-    d.addEventListener('click', function() { go(idx); startRotate(); });
-  });
-  if (next) next.addEventListener('click', function() { nextSlide(); startRotate(); });
-  if (prev) prev.addEventListener('click', function() { prevSlide(); startRotate(); });
-
-  if (slider) {
-    slider.addEventListener('mouseenter', function() { paused = true; });
-    slider.addEventListener('mouseleave', function() { paused = false; });
-  }
-
-  // Touch swipe
-  var touchX = null;
-  if (slider) {
-    slider.addEventListener('touchstart', function(e) {
-      touchX = e.touches[0].clientX;
-    }, { passive: true });
-    slider.addEventListener('touchend', function(e) {
-      if (touchX == null) return;
-      var dx = e.changedTouches[0].clientX - touchX;
-      if (Math.abs(dx) > 50) {
-        if (dx < 0) nextSlide();
-        else prevSlide();
-        startRotate();
-      }
-      touchX = null;
-    });
-  }
-
-  // Keyboard
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowRight') { nextSlide(); startRotate(); }
-    if (e.key === 'ArrowLeft')  { prevSlide(); startRotate(); }
-  });
-
-  startRotate();
-})();
-</script>
 <script src="js/site.js"></script>
 </body>
 </html>

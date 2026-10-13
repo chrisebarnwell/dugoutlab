@@ -26,7 +26,7 @@ FOOTER = '''<footer class="footer">
     <div class="footer-links">
       <h4>Learn</h4>
       <ul>
-        <li><a href="{p}articles.html">All Articles</a></li>
+        <li><a href="{p}articles.html">Field Notes</a></li>
         <li><a href="{p}stages.html">The 4 Stages</a></li>
         <li><a href="{p}progression.html">Season Plan</a></li>
         <li><a href="{p}about.html">About</a></li>
