@@ -82,6 +82,21 @@ details.setup .field-grid { margin-top: 0.9rem; }
 .sight-ar.u { margin: -130px 0 0 -20px; border-bottom-color: #e2a85a; border-top-width: 0; }
 .sight-ar.d { margin: 110px 0 0 -20px; border-top-color: #e2a85a; border-bottom-width: 0; }
 .sight-pin { position: absolute; left: 0; top: 0; width: 56px; height: 56px; margin: -28px 0 0 -28px; border: 4px solid #C8862E; border-radius: 50%; background: rgba(200,134,46,0.28); box-shadow: 0 0 0 2px rgba(0,0,0,0.5); }
+.sight-pin.edge { width: 0; height: 0; border-radius: 0; background: none; border: 14px solid transparent; box-shadow: none; margin: -14px 0 0 -14px; }
+.sight-pin.edge.l { border-right-color: #C8862E; border-left-width: 0; }
+.sight-pin.edge.r { border-left-color: #C8862E; border-right-width: 0; }
+.sight-pin.edge.u { border-bottom-color: #C8862E; border-top-width: 0; }
+.sight-pin.edge.d { border-top-color: #C8862E; border-bottom-width: 0; }
+.sight-pin.edge.l span { top: -10px; left: 24px; transform: none; }
+.sight-pin.edge.r span { top: -10px; left: auto; right: 24px; transform: none; }
+.sight-pin.edge.u span { top: 20px; }
+.sight-pin.edge.d span { top: auto; bottom: 20px; }
+.sight-locked { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 0.55rem; }
+.sight-locked span { font-size: 0.74rem; font-weight: 700; color: #0a1610; background: #C8862E; padding: 3px 9px; border-radius: 999px; }
+.sight-h { display: flex; justify-content: center; gap: 1.2rem; margin-top: 0.45rem; font-size: 0.95rem; }
+.sight-h b { display: block; font-family: var(--serif); font-size: 1.5rem; line-height: 1; color: #f4efe6; }
+.sight-h i { font-style: normal; font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,239,230,0.7); }
+.sight-h b.ok { color: #e2a85a; }
 .sight-pin span { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 0.74rem; font-weight: 700; background: rgba(5,11,8,0.8); padding: 2px 8px; border-radius: 6px; }
 .sight-chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 12px; -webkit-overflow-scrolling: touch; }
 .sight-chip { flex: 0 0 auto; border: 2px solid rgba(244,239,230,0.55); background: rgba(5,11,8,0.65); color: #f4efe6; border-radius: 999px; padding: 0.5rem 0.9rem; font-family: var(--sans); font-size: 0.85rem; font-weight: 600; }
@@ -106,20 +121,26 @@ details.setup .field-grid { margin-top: 0.9rem; }
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
   <ul class="nav-links">
-    <li><a href="ages.html">My Age Group</a></li>
-    <li><a href="tools.html">Tools</a></li>
-    <li><a href="articles.html">Field Notes</a></li>
-    <li><a href="how-kids-learn.html">Why It Works</a></li>
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="framework.html">Practice Framework</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="training.html">Training</a></li>
+    <li><a href="coach-dad.html">Coach Dad</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="about.html">About</a></li>
   </ul>
   <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
 <div class="mobile-menu" id="mobile-menu">
-  <a href="ages.html">My Age Group</a>
-  <a href="tools.html">Tools</a>
-  <a href="articles.html">Field Notes</a>
-  <a href="how-kids-learn.html">Why It Works</a>
+  <a href="stages.html">The 4 Stages</a>
+  <a href="framework.html">Practice Framework</a>
+  <a href="articles.html">Articles</a>
+  <a href="training.html">Training</a>
+  <a href="coach-dad.html">Coach Dad</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="about.html">About</a>
 </div>
 
 <div class="page-hero">
@@ -316,6 +337,8 @@ details.setup .field-grid { margin-top: 0.9rem; }
     <div class="sight-zone" id="sight-zone">AIM DOWN THE CAGE</div>
     <div class="sight-sub" id="sight-sub">Then tap Set middle</div>
     <div class="sight-sub2" id="sight-sub2"></div>
+    <div class="sight-h" id="sight-h" hidden><div><i>Here</i><b id="h-here">--</b></div><div><i>Need</i><b id="h-need">--</b></div></div>
+    <div class="sight-locked" id="sight-locked"></div>
   </div>
   <div class="sight-ring" id="sight-ring"></div>
   <div class="sight-ar l" id="ar-l" hidden></div>
@@ -337,25 +360,32 @@ details.setup .field-grid { margin-top: 0.9rem; }
   <div class="footer-inner">
     <div class="footer-brand">
       <div class="logo">Dugout<span>Lab</span></div>
-      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+      <p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p>
       <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
     </div>
     <div class="footer-links">
       <h4>Tools</h4>
       <ul>
-        <li><a href="framework.html">Practice Framework</a></li>
         <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="cage-targets.html">Cage Targets</a></li>
         <li><a href="training.html">Training</a></li>
       </ul>
     </div>
     <div class="footer-links">
       <h4>Learn</h4>
       <ul>
-        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="articles.html">All Articles</a></li>
         <li><a href="stages.html">The 4 Stages</a></li>
         <li><a href="progression.html">Season Plan</a></li>
         <li><a href="about.html">About</a></li>
       </ul>
+    </div>
+  </div>
+  <div class="footer-sponsor">
+    <div class="sponsor-label">Our Sponsor</div>
+    <div class="sponsor-line">
+      DugoutLab is made free thanks to <a href="https://gamedayhelpers.com" target="_blank" rel="noopener">GamedayHelpers.com</a>
+      <span class="sponsor-tag">Let coaches coach. Let parents enjoy the game.</span>
     </div>
   </div>
   <div class="footer-bottom">
@@ -944,7 +974,7 @@ function callHit(f, launch, s) {
       b.addEventListener('click', function () {
         if (sight.az0 === null) return;
         if (sight.locks[l.id]) delete sight.locks[l.id];
-        sight.cur = l.id; drawChips(); drawLockList();
+        sight.cur = l.id; drawChips(); drawLockList(); lockedStrip();
       });
       box.appendChild(b);
     });
@@ -966,14 +996,40 @@ function callHit(f, launch, s) {
   }
   function movePins() {
     var W = window.innerWidth, H = window.innerHeight, r = Math.PI / 180;
-    var tv = Math.tan(32 * r), th = tv * W / H;
+    var tv = Math.tan(32 * r), th = tv * W / H, M = 30;
     Array.prototype.forEach.call($('sight-pins').children, function (d) {
       var k = sight.locks[d.getAttribute('data-id')]; if (!k) return;
       var da = wrapDeg(k.az - sight.az), de = k.el - sight.el;
-      if (Math.abs(da) > 70 || Math.abs(de) > 70) { d.hidden = true; return; }
-      d.hidden = false;
-      d.style.transform = 'translate(' + (W / 2 - Math.tan(da * r) / th * W / 2).toFixed(1) + 'px,' + (H / 2 - Math.tan(de * r) / tv * H / 2).toFixed(1) + 'px)';
+      var x = Math.abs(da) > 80 ? (da > 0 ? -1e9 : 1e9) : W / 2 - Math.tan(da * r) / th * W / 2;
+      var y = Math.abs(de) > 80 ? (de > 0 ? -1e9 : 1e9) : H / 2 - Math.tan(de * r) / tv * H / 2;
+      var cls = 'sight-pin', ex = x, ey = y;
+      if (x < M || x > W - M || y < M || y > H - M) {
+        var dx = x - W / 2, dy = y - H / 2, sx = Math.abs(dx) / (W / 2 - M), sy = Math.abs(dy) / (H / 2 - M), sc = Math.max(sx, sy) || 1;
+        ex = W / 2 + dx / sc; ey = H / 2 + dy / sc;
+        cls += ' edge ' + (sx >= sy ? (dx < 0 ? 'l' : 'r') : (dy < 0 ? 'u' : 'd'));
+      }
+      d.hidden = false; d.className = cls;
+      d.style.transform = 'translate(' + ex.toFixed(1) + 'px,' + ey.toFixed(1) + 'px)';
     });
+  }
+  function lockedStrip() {
+    var h = '';
+    LANES.forEach(function (l) { var k = sight.locks[l.id]; if (k) h += '<span>' + l.chip + (k.short ? ' · ' + k.short : '') + '</span>'; });
+    $('sight-locked').innerHTML = h;
+  }
+  function heightBox(field, o, lane) {
+    var box = $('sight-h');
+    if (field || !o || !state.aim) { box.hidden = true; return; }
+    box.hidden = false;
+    var pl = lane ? sprayPlace(state.cage.dist, state.cage.cw, Math.abs(lane.c)) : null;
+    var path = pl ? pl.path : (o.p || state.cage.dist);
+    var tb = targetBand(state.f, state.aim.lo, state.aim.hi, path);
+    var here = $('h-here'), need = $('h-need');
+    here.textContent = o.surf === 'roof' ? 'roof' : o.surf === 'floor' ? 'floor' : ftin(o.y);
+    if (tb.lo === null || tb.hi === null) { need.textContent = '--'; here.className = ''; return; }
+    var lo = Math.min(tb.lo, state.cage.ch), hi = Math.min(tb.hi, state.cage.ch);
+    need.textContent = ftin(lo) + ' to ' + ftin(hi);
+    here.className = (o.surf === 'back' || o.surf === 'side') && o.y >= lo - 0.1 && o.y <= hi + 0.1 ? 'ok' : '';
   }
   function arrows(l, rt, u, d) { $('ar-l').hidden = !l; $('ar-r').hidden = !rt; $('ar-u').hidden = !u; $('ar-d').hidden = !d; }
   function sightFrame() {
@@ -985,7 +1041,7 @@ function callHit(f, launch, s) {
     sight.onT = false;
     if (sight.az0 === null) {
       eb.textContent = 'FIRST'; zt.textContent = field ? 'AIM AT SECOND BASE' : 'AIM DOWN THE CAGE'; zt.className = 'sight-zone';
-      sub.textContent = 'Then tap Set middle'; sub2.textContent = '';
+      sub.textContent = 'Then tap Set middle'; sub2.textContent = ''; $('sight-h').hidden = true;
       ring.className = 'sight-ring'; arrows(0, 0, 0, 0); btn.textContent = 'Set middle'; btn.disabled = false;
       return;
     }
@@ -998,13 +1054,14 @@ function callHit(f, launch, s) {
     if (m && o) m.style.bottom = ((Math.max(-5, Math.min(50, o.launch)) + 5) / 55 * 100).toFixed(1) + '%';
 
     if (sight.cur === 'done') {
+      $('sight-h').hidden = true;
       eb.textContent = 'DONE'; zt.textContent = 'ALL 5 LOCKED'; zt.className = 'sight-zone is-hit';
       sub.textContent = 'Tap Done. Your spots are saved on the page.'; sub2.textContent = 'Tap a gold chip to redo one.';
       ring.className = 'sight-ring'; arrows(0, 0, 0, 0); btn.disabled = true;
       return;
     }
     if (sight.cur === 'free') {
-      eb.textContent = 'FREE LOOK'; arrows(0, 0, 0, 0); btn.disabled = true;
+      eb.textContent = 'FREE LOOK'; arrows(0, 0, 0, 0); btn.disabled = true; heightBox(field, o, null);
       if (Math.abs(sp) > 45) { zt.textContent = ZT.foul; zt.className = 'sight-zone'; ring.className = 'sight-ring'; sub.textContent = 'Turn back toward the middle'; sub2.textContent = ''; return; }
       if (field) { zt.textContent = dirName(sp).toUpperCase(); zt.className = 'sight-zone'; ring.className = 'sight-ring'; sub.textContent = Math.round(Math.abs(sp)) + '° ' + (sp > 0 ? 'left' : 'right') + ' of second base'; sub2.textContent = walkText(); return; }
       zt.textContent = ZT[o.zone]; zt.className = 'sight-zone' + (o.zone === 'hit' ? ' is-hit' : '');
@@ -1013,6 +1070,7 @@ function callHit(f, launch, s) {
       return;
     }
     var lane = laneOf(sight.cur), eh = lane.c - sp, hOK = Math.abs(eh) <= 2.5, up = false, down = false;
+    heightBox(field, o, lane);
     if (!field && state.aim && o) { up = o.launch < state.aim.lo; down = o.launch > state.aim.hi; }
     var vOK = field || (!!o && !!state.aim && !up && !down);
     sight.onT = hOK && vOK;
@@ -1025,6 +1083,7 @@ function callHit(f, launch, s) {
       var parts = [];
       if (!hOK) parts.push('Turn ' + (eh > 0 ? 'left' : 'right') + ' ' + Math.round(Math.abs(eh)) + '°');
       if (up) parts.push('Tilt up'); if (down) parts.push('Tilt down');
+      if (!parts.length) parts.push('Almost. Hold it.');
       sub.textContent = parts.join(' · ');
       arrows(!hOK && eh > 0, !hOK && eh < 0, up, down);
     }
@@ -1033,17 +1092,17 @@ function callHit(f, launch, s) {
   function lockNow() {
     if (!sight.onT || !sight.last) return;
     var field = state.mode === 'field';
-    sight.locks[sight.cur] = { az: sight.az, el: sight.el, field: field, where: field ? walkText() : whereText(sight.last.o) + '. Launch ' + Math.round(sight.last.o.launch) + '°.' };
+    sight.locks[sight.cur] = { az: sight.az, el: sight.el, field: field, short: field ? '' : ftin(sight.last.o.y) + ' up', where: field ? walkText() : whereText(sight.last.o) + '. Launch ' + Math.round(sight.last.o.launch) + '°.' };
     var next = 'done';
     for (var i = 0; i < ORDER_L.length; i++) if (!sight.locks[ORDER_L[i]]) { next = ORDER_L[i]; break; }
-    sight.cur = next; drawChips(); drawLockList();
+    sight.cur = next; drawChips(); drawLockList(); lockedStrip();
   }
   function openSight() {
     function go() {
       $('sight').classList.add('open');
       sight.on = true; sight.az0 = null; sight.got = false; sight.cur = 'mid'; sight.locks = {};
       $('sight-warn').textContent = '';
-      buildGauge(); drawChips(); drawLockList();
+      buildGauge(); drawChips(); drawLockList(); lockedStrip();
       $('sight-gauge').hidden = state.mode === 'field';
       window.addEventListener('deviceorientation', onOrient);
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
