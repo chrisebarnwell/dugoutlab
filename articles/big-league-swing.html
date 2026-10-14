@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Big League Swing | DugoutLab</title>
+<meta name="description" content="Why the big leagues traded contact for damage, and why Little League is a different game with different math.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/main.css">
+<style>
+  .bars{margin:1.5rem 0 2rem;padding:1.25rem;border:1px solid rgba(0,0,0,0.12);border-radius:8px}
+  .bars-title{font-family:'JetBrains Mono',monospace;font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:1rem;opacity:0.75}
+  .bar-row{display:grid;grid-template-columns:7.5rem 1fr 2.5rem;align-items:center;gap:0.6rem;margin:0.45rem 0;font-size:0.9rem}
+  .bar-track{height:14px;background:rgba(0,0,0,0.06);border-radius:3px;overflow:hidden}
+  .bar-fill{height:100%;background:#C8862E}
+  .bar-fill.muted{background:#7d8a83}
+  .bar-val{font-family:'JetBrains Mono',monospace;font-size:0.85rem;text-align:right}
+  .bars-note{font-size:0.8rem;opacity:0.7;margin-top:0.75rem}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="/ages.html">My Age Group</a></li>
+    <li><a href="/tools.html">Tools</a></li>
+    <li><a href="/articles.html">Field Notes</a></li>
+    <li><a href="/how-kids-learn.html">Why It Works</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/ages.html">My Age Group</a>
+  <a href="/tools.html">Tools</a>
+  <a href="/articles.html">Field Notes</a>
+  <a href="/how-kids-learn.html">Why It Works</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="/articles.html">&#8592; Articles</a></div>
+    <div class="eyebrow">Field Notes &middot; Part 2 of 2: The MVP Machine</div>
+    <h1>The Big League Swing</h1>
+    <p style="margin-top:0.5rem;font-size:0.95rem;color:rgba(255,255,255,0.65);font-style:italic">Same game. Different math.</p>
+    <p style="margin-top:0.5rem;font-size:0.85rem;color:rgba(255,255,255,0.5)">5 min read</p>
+  </div>
+</div>
+
+<div class="article-body">
+
+  <p>In <a href="/articles/pressure-vs-power.html">Part 1</a> I tried to prove that putting the ball in play beats swinging for power. I lost. Getting on base still wins in the big leagues, but power ties it, and the pressure I believed in did not show up in the numbers.</p>
+
+  <p>One thing kept bugging me. In that same data, strikeouts had almost no link to runs scored. Turn on any big league game and you see why that matters. Big swings. Lots of strikeouts. Lots of pop ups. It looks wrong to anyone raised on &ldquo;just put it in play.&rdquo;</p>
+
+  <p>It is not wrong. It is just built for a different game than the one our kids play.</p>
+
+  <h2>From Moneyball to the MVP Machine</h2>
+
+  <p>Moneyball was about finding skills the market undervalued, like getting on base. Find them cheap, win with them.</p>
+
+  <p>The next wave flipped that. In <em>The MVP Machine</em>, Ben Lindbergh and Travis Sawchik describe teams and players who stopped hunting for hidden skills and started building them. High-speed cameras. Bat sensors. Pitch tracking. Measure everything, then train the parts that produce damage.</p>
+
+  <div class="bars">
+    <div class="bars-title">Moneyball vs. the MVP Machine</div>
+    <div class="bar-row" style="grid-template-columns:7.5rem 1fr"><span><strong>Moneyball</strong></span><span>Find skills nobody is paying for. Get on base.</span></div>
+    <div class="bar-row" style="grid-template-columns:7.5rem 1fr"><span><strong>MVP Machine</strong></span><span>Build skills on purpose. Bat speed, launch angle, spin.</span></div>
+    <div class="bar-row" style="grid-template-columns:7.5rem 1fr"><span><strong>Little League</strong></span><span>A different game. More on that below.</span></div>
+  </div>
+
+  <h2>Why the pros accept the strikeout</h2>
+
+  <p>Analysts put a run value on every outcome. These are rough, but the shape is what matters.</p>
+
+  <div class="bars">
+    <div class="bars-title">About how many runs each outcome is worth (MLB)</div>
+    <div class="bar-row"><span>Home run</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-val">+1.4</span></div>
+    <div class="bar-row"><span>Double</span><div class="bar-track"><div class="bar-fill" style="width:55%"></div></div><span class="bar-val">+0.8</span></div>
+    <div class="bar-row"><span>Single</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-val">+0.5</span></div>
+    <div class="bar-row"><span>Out in play</span><div class="bar-track"><div class="bar-fill muted" style="width:18%"></div></div><span class="bar-val">-0.25</span></div>
+    <div class="bar-row"><span>Strikeout</span><div class="bar-track"><div class="bar-fill muted" style="width:19%"></div></div><span class="bar-val">-0.27</span></div>
+    <div class="bars-note">Approximate linear weights. Gray bars are costs, shown by size.</div>
+  </div>
+
+  <p>Look at the bottom two. In the big leagues, a strikeout costs only a hair more than a weak ground ball. Both are outs. Major league fielders turn most balls in play into outs, and modern positioning puts them right where weak contact tends to go.</p>
+
+  <p>Meanwhile the pitching keeps getting nastier. More velocity. More movement. A soft contact swing does not buy much against that.</p>
+
+  <p>So the math says swing to do damage. Accept the strikeouts. A homer is worth almost three singles. For a grown man facing the best pitchers on earth, in front of the best fielders on earth, that trade can make sense.</p>
+
+  <h2>Little League is not the big leagues</h2>
+
+  <p>Every number in that chart assumes major league defense. Our kids do not play against major league defense. They play against nine-year-olds.</p>
+
+  <p>From what I see from the dugout, a ball in play at this age is not close to an automatic out. Grounders get booted. Throws sail. Somebody forgets the cutoff. Nobody has published the 10U version of that chart, and I will not pretend to know the exact numbers. But I would bet the gap between a strikeout and a ball in play is much bigger for us than it is for them.</p>
+
+  <p>And winning is not even our main job.</p>
+
+  <div class="article-callout">
+    A strikeout is a play where nobody touches the ball. A ball in play gives nine kids something to do. For us, contact is not only a strategy. It is the activity.
+  </div>
+
+  <p>Getting playing time and being involved show up again and again when young athletes describe what makes sport fun (Visek). Contact puts more of the team in the game.</p>
+
+  <h2>Not either-or</h2>
+
+  <p>This is not a case against swinging hard. Bat speed is a real skill, and young hitters should feel what a full, aggressive swing is like. Intent matters.</p>
+
+  <p>The point is the target. The pros aim their swings at a run value chart built for elite defense. We aim ours at the game in front of us. At 10U the best target is usually simple and close: barrel on the ball, hard, somewhere the defense has to make a play.</p>
+
+  <h2>What we are taking from both parts</h2>
+
+  <ul>
+    <li><strong>Moneyball still holds.</strong> Getting on base is the engine.</li>
+    <li><strong>The MVP Machine is real, for its level.</strong> Damage beats contact against elite pitching and defense.</li>
+    <li><strong>Little League runs on different math.</strong> Weaker defense makes balls in play worth more.</li>
+    <li><strong>And on a different goal.</strong> Contact means action, and action is what brings them back tomorrow.</li>
+    <li><strong>Copy the curiosity, not the swing.</strong> The pros measured their own game. We can measure ours.</li>
+  </ul>
+
+  <p>That last one is the plan. We are counting balls in play and errors, for us and for the other team. If the 10U chart looks as different as I think it will, you will see it here.</p>
+
+  <h2>Guidelines &amp; sources this field note follows</h2>
+
+  <ul>
+    <li><strong>Lindbergh, B., and Sawchik, T. (2019).</strong> <em>The MVP Machine: How Baseball&#39;s New Nonconformists Are Using Data to Build Better Players.</em> Basic Books.</li>
+    <li><strong>Lewis, M. (2003).</strong> <em>Moneyball: The Art of Winning an Unfair Game.</em> W. W. Norton.</li>
+    <li><strong>Tango, T., Lichtman, M., and Dolphin, A. (2007).</strong> <em>The Book: Playing the Percentages in Baseball.</em> Source of the linear-weights approach; values shown are rounded approximations and shift slightly by season.</li>
+    <li><strong>Visek, A. J., et al. (2015).</strong> The fun integration theory. <em>Journal of Physical Activity and Health,</em> 12(3), 424-433. Youth athletes&#39; own descriptions of what makes sport fun.</li>
+    <li><strong>Part 1 data.</strong> Baseball-Reference and StatMuse MLB team data, 2024 to 2026. See <a href="/articles/pressure-vs-power.html">Part 1</a>.</li>
+  </ul>
+
+  <p style="font-size:0.9rem;color:var(--ink-soft)"><em>Note on certainty: the run values are MLB estimates and do not transfer to youth ball. The claim that balls in play are worth more at 10U is a coach&#39;s observation and a hypothesis, not a finding. We plan to test it and will report what we find, even if it proves us wrong again.</em></p>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+      <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="../framework.html">Practice Framework</a></li>
+        <li><a href="../lineup.html">Lineup Builder</a></li>
+        <li><a href="../training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="../articles.html">Field Notes</a></li>
+        <li><a href="../stages.html">The 4 Stages</a></li>
+        <li><a href="../progression.html">Season Plan</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+<script src="/js/site.js"></script>
+</body>
+</html>

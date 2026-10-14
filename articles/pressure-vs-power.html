@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I Tried to Prove Pressure Beats Power | DugoutLab</title>
+<meta name="description" content="A coach tests his own hunch against three MLB seasons. Pressure did not beat power. What survived, and why it matters more for fun than for winning at 10U.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/main.css">
+<style>
+  .bars{margin:1.5rem 0 2rem;padding:1.25rem;border:1px solid rgba(0,0,0,0.12);border-radius:8px}
+  .bars-title{font-family:'JetBrains Mono',monospace;font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:1rem;opacity:0.75}
+  .bar-row{display:grid;grid-template-columns:7.5rem 1fr 2.5rem;align-items:center;gap:0.6rem;margin:0.45rem 0;font-size:0.9rem}
+  .bar-track{height:14px;background:rgba(0,0,0,0.06);border-radius:3px;overflow:hidden}
+  .bar-fill{height:100%;background:#C8862E}
+  .bar-fill.muted{background:#7d8a83}
+  .bar-val{font-family:'JetBrains Mono',monospace;font-size:0.85rem;text-align:right}
+  .bars-note{font-size:0.8rem;opacity:0.7;margin-top:0.75rem}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="/ages.html">My Age Group</a></li>
+    <li><a href="/tools.html">Tools</a></li>
+    <li><a href="/articles.html">Field Notes</a></li>
+    <li><a href="/how-kids-learn.html">Why It Works</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/ages.html">My Age Group</a>
+  <a href="/tools.html">Tools</a>
+  <a href="/articles.html">Field Notes</a>
+  <a href="/how-kids-learn.html">Why It Works</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="/articles.html">&#8592; Articles</a></div>
+    <div class="eyebrow">Field Notes &middot; Part 1 of 2: Moneyball</div>
+    <h1>I Tried to Prove Pressure Beats Power</h1>
+    <p style="margin-top:0.5rem;font-size:0.95rem;color:rgba(255,255,255,0.65);font-style:italic">I found Moneyball instead.</p>
+    <p style="margin-top:0.5rem;font-size:0.85rem;color:rgba(255,255,255,0.5)">5 min read</p>
+  </div>
+</div>
+
+<div class="article-body">
+
+  <p>I have carried a hunch for years. Swing and miss is a waste. Put the ball in play and you create pressure. Pressure makes the other team crack. Nobody talks about it because you cannot measure it.</p>
+
+  <p>So I tried to measure it. I lost the argument. That turned out to be the useful part.</p>
+
+  <h2>The test</h2>
+
+  <p>Three full MLB seasons, 2024 through 2026. Twenty-five teams with complete data, 75 team-seasons in all. I defined pressure as things a team can mostly control:</p>
+
+  <ul>
+    <li><strong>Traffic.</strong> Runners the defense has to deal with. Hits that are not homers, plus walks, hit by pitch, and reached on error, per plate appearance.</li>
+    <li><strong>Fast traffic.</strong> Stolen bases.</li>
+    <li><strong>Aggressive traffic.</strong> Taking the extra base. First to third, second to home.</li>
+  </ul>
+
+  <p>Then I lined each one up against runs and wins, and against plain power: home runs.</p>
+
+  <h2>What survived: traffic</h2>
+
+  <div class="bars">
+    <div class="bars-title">Link to runs scored (0 = none, 1 = perfect)</div>
+    <div class="bar-row"><span>Traffic</span><div class="bar-track"><div class="bar-fill" style="width:68%"></div></div><span class="bar-val">.68</span></div>
+    <div class="bar-row"><span>Power</span><div class="bar-track"><div class="bar-fill muted" style="width:62%"></div></div><span class="bar-val">.62</span></div>
+    <div class="bar-row"><span>Steals</span><div class="bar-track"><div class="bar-fill muted" style="width:23%"></div></div><span class="bar-val">.23</span></div>
+    <div class="bar-row"><span>Extra base</span><div class="bar-track"><div class="bar-fill muted" style="width:5%"></div></div><span class="bar-val">.05</span></div>
+    <div class="bars-note">75 MLB team-seasons, 2024 to 2026. Correlation, ranked within each season.</div>
+  </div>
+
+  <p>Runners on base drive runs. Not fast runners. Not aggressive runners. Just runners.</p>
+
+  <p>Put in plain numbers, a team that steals about 35 more bases a year gains roughly 7 runs. Less than one win. A team that climbs a similar step in traffic gains roughly 39 runs. About four wins. That conversion uses the common rule of thumb that about 10 runs equals one win, so treat it as a ballpark, not a measurement.</p>
+
+  <h2>What did not survive</h2>
+
+  <p><strong>Pressure does not beat power.</strong> Once I accounted for pitching, traffic and power tied. Both matter. They are also unrelated to each other, which means they are two different ways to win, not one thing measured twice.</p>
+
+  <p><strong>Pressure does not make big league defenses crack.</strong> If it did, aggressive teams would reach on errors more often. They do not. A team&#39;s error rate barely repeats from one year to the next, which looks like luck, not skill. At this level it happens about once every five games. The fielders are just too good.</p>
+
+  <p>One honest caveat. Errors are a scorer&#39;s judgment. Some pressure may hide inside plays scored as hits. This data cannot see that.</p>
+
+  <h2>So I rebuilt Moneyball</h2>
+
+  <p>Get on base. Do not give away outs. Stolen bases are worth less than they look. That is the core of what the 2002 Oakland A&#39;s figured out, written up by Michael Lewis twenty years ago. Economists later checked it and found the market really had underpaid on-base skill at the time (Hakes and Sauer).</p>
+
+  <p>So I found nothing new about the big leagues. The newer bit is that it still held after the 2023 rule changes, with bigger bases and a pitch clock. Running did not become the answer.</p>
+
+  <h2>Why it still matters at 10U</h2>
+
+  <p>Here is the turn. I am not trying to win a pennant with nine-year-olds. Our job is to make them want to come back tomorrow.</p>
+
+  <div class="article-callout">
+    A strikeout is the most boring play in youth baseball. Nine kids stand still. Nobody touches the ball. A ball in play is the opposite. Fielders move. Runners run. Somebody has to make a decision.
+  </div>
+
+  <p>At this age, putting the ball in play is not mainly a winning strategy. It is an action strategy. More balls in play means more touches, more reads, more chances to do something and see it matter. That is the stuff that keeps a kid in the game.</p>
+
+  <p>And here is the part I still believe but cannot prove. Youth defenses are not big league defenses. If balls in play force mistakes anywhere, it is at 10U. Nobody has tested that. So we will. Next game, we count balls in play and errors, for us and for them. I will report back.</p>
+
+  <h2>What we are taking from this</h2>
+
+  <ul>
+    <li><strong>Get on, stay on.</strong> Traffic is the engine.</li>
+    <li><strong>Swing to put it in play.</strong> At 10U it buys action, and action buys fun.</li>
+    <li><strong>Run hard, but do not overrate it.</strong> Speed on the bases is a garnish, not the meal.</li>
+    <li><strong>Test your own hunches.</strong> Losing an argument to the data is still a win.</li>
+  </ul>
+
+  <div class="article-callout">
+    <strong>Part 2:</strong> If strikeouts barely hurt, why did the big leagues go all in on the swing-hard, strike-out-more approach? And should our kids copy it? <a href="/articles/big-league-swing.html">Read Part 2: The MVP Machine &#8594;</a>
+  </div>
+
+  <h2>Guidelines &amp; sources this field note follows</h2>
+
+  <ul>
+    <li><strong>Baseball-Reference.</strong> MLB team baserunning and misc batting (reached on error, extra bases taken) and team pitching (runs allowed), 2024, 2025, 2026.</li>
+    <li><strong>StatMuse.</strong> MLB team batting totals (games, wins, runs, hits, home runs, walks, hit by pitch, strikeouts, steals, plate appearances), 2024, 2025, 2026.</li>
+    <li><strong>Lewis, M. (2003).</strong> <em>Moneyball: The Art of Winning an Unfair Game.</em> W. W. Norton.</li>
+    <li><strong>Hakes, J. K., and Sauer, R. D. (2006).</strong> An economic evaluation of the Moneyball hypothesis. <em>Journal of Economic Perspectives,</em> 20(3), 173-186.</li>
+    <li><strong>Runs per win.</strong> The roughly 10 runs per win figure is a widely used sabermetric rule of thumb, not an exact law.</li>
+  </ul>
+
+  <p style="font-size:0.9rem;color:var(--ink-soft)"><em>Note on certainty: this is a coach&#39;s test, not a peer-reviewed study. Five of 30 teams were missing complete data. Results are correlations within each season; the pitching control strengthens the traffic finding but does not prove cause. The youth-ball claims are hypotheses we plan to test, not findings.</em></p>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+      <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="../framework.html">Practice Framework</a></li>
+        <li><a href="../lineup.html">Lineup Builder</a></li>
+        <li><a href="../training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="../articles.html">Field Notes</a></li>
+        <li><a href="../stages.html">The 4 Stages</a></li>
+        <li><a href="../progression.html">Season Plan</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+<script src="/js/site.js"></script>
+</body>
+</html>
