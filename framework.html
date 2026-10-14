@@ -103,7 +103,7 @@
       <div class="card">
         <div class="card-eyebrow" style="color:#5fa382">Block 2 &middot; Varied skill</div>
         <div class="card-title">Skill Stations</div>
-        <p style="font-size:0.92rem;color:var(--ink-soft);line-height:1.6;margin:0">Small groups, changing conditions. The same skill under different speeds, angles, and decisions once kids can do it. Mixed reps look messier and look more like the game. The research on mixing is weaker for kids than it once seemed, so use it where it fits. Keep groups tiny so touches stay high.</p>
+        <p style="font-size:0.92rem;color:var(--ink-soft);line-height:1.6;margin:0">Small groups, changing conditions. The same skill under different speeds, angles, and decisions once kids can do it. Mixed reps look messier and look more like the game. The research on mixing is weaker for kids than it once seemed (Czyz 2024), so through age 12 this block stays at or below the games block. Keep groups tiny so touches stay high.</p>
       </div>
       <div class="card">
         <div class="card-eyebrow" style="color:#c8862e">Block 3 &middot; Technique</div>
@@ -113,7 +113,7 @@
       <div class="card">
         <div class="card-eyebrow" style="color:#3a8a5e">Block 4 &middot; Play</div>
         <div class="card-title">Small-Sided &amp; Live</div>
-        <p style="font-size:0.92rem;color:var(--ink-soft);line-height:1.6;margin:0">The heart of the practice. Read-and-react reps inside a game with a score, a constraint, or a consequence. Seeing the ball and moving to it happen together here, the way they do in a real game.</p>
+        <p style="font-size:0.92rem;color:var(--ink-soft);line-height:1.6;margin:0">The heart of the practice, and the biggest block for most groups through age 12. Read-and-react reps inside a game with a score, a constraint, or a consequence. Seeing the ball and moving to it happen together here, the way they do in a real game. Game-based work matched drills on technique and edged them on decisions in the studies we have (Bromilow 2025), so this is where the minutes go.</p>
       </div>
       <div class="card">
         <div class="card-eyebrow" style="color:#7a9480">Block 5 &middot; Play</div>
@@ -180,17 +180,20 @@
 <script src="js/site.js"></script>
 <script>
 (function(){
+  // Share of practice (percent) per block at "Developing" level.
+  // Play = arrival + small-sided + closer. Varied = stations. Technique = focused fix.
+  // Totals match the 4 Stages chart. Our judgment, not research numbers.
   var BASE = {
-    a46:   { label:'Ages 4-6',   eco:70, vary:26, iso:4  },
-    a79:   { label:'Ages 7-9',   eco:55, vary:38, iso:7  },
-    a1012: { label:'Ages 10-12', eco:40, vary:50, iso:10 },
-    a1315: { label:'Ages 13-15', eco:22, vary:60, iso:18 },
-    a16:   { label:'Ages 16+',   eco:10, vary:62, iso:28 }
+    a46:   { label:'Ages 4-6',   arr:15, sta:26, fix:4,  ssg:45, clo:10 },
+    a79:   { label:'Ages 7-9',   arr:12, sta:32, fix:8,  ssg:40, clo:8  },
+    a1012: { label:'Ages 10-12', arr:10, sta:35, fix:10, ssg:38, clo:7  },
+    a1315: { label:'Ages 13-15', arr:8,  sta:45, fix:15, ssg:25, clo:7  },
+    a16:   { label:'Ages 16+',   arr:7,  sta:45, fix:25, ssg:18, clo:5  }
   };
   var SKILL = {
-    first: { label:'First season', eco:+8, vary:-2, iso:-6 },
-    dev:   { label:'Developing',   eco:0,  vary:0,  iso:0  },
-    adv:   { label:'Advanced',     eco:-6, vary:+2, iso:+4 }
+    first: { label:'First season', sta:-2, fix:-6, ssg:+8 },
+    dev:   { label:'Developing',   sta:0,  fix:0,  ssg:0  },
+    adv:   { label:'Advanced',     sta:0,  fix:+4, ssg:-4 }
   };
   var SPORT = {
     baseball: { label:'Baseball', note:'Standard bases and overhand throwing progressions.' },
@@ -211,34 +214,29 @@
     render();
   };
 
-  function pct(){
-    var b=BASE[state.age], a=SKILL[state.skill];
-    var raw={eco:b.eco+a.eco, vary:b.vary+a.vary, iso:Math.max(0,b.iso+a.iso)};
-    var t=raw.eco+raw.vary+raw.iso;
-    var pe=Math.round(raw.eco/t*100), pv=Math.round(raw.vary/t*100);
-    return {eco:pe, vary:pv, iso:100-pe-pv};
+  function blocks(){
+    var b=BASE[state.age], k=SKILL[state.skill], L=parseInt(state.len,10);
+    var fixP=b.fix+k.fix, ssgP=b.ssg+k.ssg;
+    if(fixP<0){ssgP+=fixP;fixP=0;}
+    function r5(p){return Math.round(p*L/100/5)*5;}
+    var arr=Math.max(5,r5(b.arr)), clo=Math.max(5,r5(b.clo)), sta=r5(b.sta+k.sta), fix=r5(fixP);
+    var ssg=L-arr-clo-sta-fix; // small-sided absorbs rounding
+    var out=[
+      {tag:'Play', key:'eco', color:'#3a8a5e', name:'Arrival &amp; Free Play', min:arr, desc:'A movement game in motion before the first whistle. No lines, no waiting.'},
+      {tag:'Varied skill', key:'vary', color:'#5fa382', name:'Skill Stations', min:sta, desc:'Small groups, changing conditions. Same skill, different speeds and angles.'},
+      {tag:'Technique', key:'iso', color:'#c8862e', name:'One Focused Fix', min:fix, desc:'Pick one thing. Clean reps to install it, then back into play.'},
+      {tag:'Play', key:'eco', color:'#3a8a5e', name:'Small-Sided &amp; Live', min:ssg, desc:'The heart of practice. Read-and-react reps inside a game with a score or a constraint.'},
+      {tag:'Play', key:'eco', color:'#7a9480', name:'The Closer', min:clo, desc:'End on a compete or a win they will talk about in the car.'}
+    ];
+    return out.filter(function(x){return x.min>0;});
   }
 
-  function blocks(){
-    var p=pct(), L=parseInt(state.len,10);
-    var playMin=Math.round(p.eco*L/100);
-    var variedMin=Math.round(p.vary*L/100);
-    var techMin=L-playMin-variedMin;
-    if(techMin<0){variedMin+=techMin;techMin=0;}
-    // subdivide play
-    var closer=5;
-    var warmup=Math.max(5, Math.round(playMin*0.35/5)*5);
-    var live=playMin-warmup-closer;
-    if(live<0){warmup+=live;live=0;}
-    if(warmup<0)warmup=0;
-    var out=[
-      {tag:'Play', color:'#3a8a5e', name:'Arrival &amp; Free Play', min:warmup, desc:'A movement game in motion before the first whistle. No lines, no waiting.'},
-      {tag:'Varied skill', color:'#5fa382', name:'Skill Stations', min:variedMin, desc:'Small groups, changing conditions. Same skill, different speeds and angles.'},
-      {tag:'Technique', color:'#c8862e', name:'One Focused Fix', min:techMin, desc:'Pick one thing. Clean reps to install it, then back into play.'},
-      {tag:'Play', color:'#3a8a5e', name:'Small-Sided &amp; Live', min:live, desc:'Read-and-react reps inside a game with a score or a constraint.'},
-      {tag:'Play', color:'#7a9480', name:'The Closer', min:closer, desc:'End on a compete or a win they will talk about in the car.'}
-    ];
-    return out.filter(function(b){return b.min>0;});
+  // Mix bar is built from the block minutes, so the bar and the blocks always agree
+  function pct(){
+    var bl=blocks(), L=parseInt(state.len,10), t={eco:0,vary:0,iso:0};
+    bl.forEach(function(x){t[x.key]+=x.min;});
+    var pe=Math.round(t.eco/L*100), pv=Math.round(t.vary/L*100);
+    return {eco:pe, vary:pv, iso:100-pe-pv};
   }
 
   function render(){
