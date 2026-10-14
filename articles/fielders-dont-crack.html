@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Fielders Don&#39;t Crack | DugoutLab</title>
+<meta name="description" content="I pulled every play from two MLB seasons to see whether aggressive teams make defenses crack. They don't. But something else leaks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/main.css">
+<style>
+  .bars{margin:1.5rem 0 2rem;padding:1.25rem;border:1px solid rgba(0,0,0,0.12);border-radius:8px}
+  .bars-title{font-family:'JetBrains Mono',monospace;font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:1rem;opacity:0.75}
+  .bar-row{display:grid;grid-template-columns:7.5rem 1fr 2.5rem;align-items:center;gap:0.6rem;margin:0.45rem 0;font-size:0.9rem}
+  .bar-track{height:14px;background:rgba(0,0,0,0.06);border-radius:3px;overflow:hidden}
+  .bar-fill{height:100%;background:#C8862E}
+  .bar-fill.muted{background:#7d8a83}
+  .bar-val{font-family:'JetBrains Mono',monospace;font-size:0.85rem;text-align:right}
+  .bars-note{font-size:0.8rem;opacity:0.7;margin-top:0.75rem}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="/ages.html">My Age Group</a></li>
+    <li><a href="/tools.html">Tools</a></li>
+    <li><a href="/articles.html">Field Notes</a></li>
+    <li><a href="/how-kids-learn.html">Why It Works</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/ages.html">My Age Group</a>
+  <a href="/tools.html">Tools</a>
+  <a href="/articles.html">Field Notes</a>
+  <a href="/how-kids-learn.html">Why It Works</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="/articles.html">&#8592; Articles</a></div>
+    <div class="eyebrow">Field Notes &middot; Pressure, Part 3</div>
+    <h1>The Fielders Don&#39;t Crack</h1>
+    <p style="margin-top:0.5rem;font-size:0.95rem;color:rgba(255,255,255,0.65);font-style:italic">I went looking for hidden pressure in every play of two seasons. Here is what leaked, and what didn&#39;t.</p>
+    <p style="margin-top:0.5rem;font-size:0.85rem;color:rgba(255,255,255,0.5)">6 min read</p>
+  </div>
+</div>
+
+<div class="article-body">
+
+  <p>In <a href="/articles/pressure-vs-power.html">Part 1</a> I tested whether pressure beats power and lost. Getting on base wins, but speed and aggression barely moved the needle, and reaching on error looked like luck.</p>
+
+  <p>I could not let it go. My gut says pressure piles up. Play a team that runs on everything and the whole defense knows it. The pitcher hurries. The catcher cheats. The infielders think about the throw before they have the ball. Over a game, over a season, that has to leak out somewhere.</p>
+
+  <p>The standard stats could not see it. Reached on error only counts the batter. A rushed throw that is still caught, a wild pitch, a balk, an error that moves a runner already on base, none of that shows up in the number I tested. So I went to the plays themselves.</p>
+
+  <h2>The test</h2>
+
+  <p>Retrosheet publishes every play of every big league game. I took all of 2024 and 2025, about 378,000 plays, and asked one question of each defense:</p>
+
+  <div class="article-callout">
+    When this same defense faces an aggressive team, does it make more mistakes than it makes against everybody else?
+  </div>
+
+  <p>Aggressive means stolen base attempts per plate appearance, because that is the only hustle a scorebook records. Comparing each defense only against itself removes the quality of the defense. Milwaukee&#39;s opponents are not being compared to Colorado&#39;s. Each team is compared to its own normal.</p>
+
+  <p>Then I counted every kind of mistake: fielding and throwing errors on batted balls, throws that sailed on steal and pickoff attempts, wild pitches, passed balls, and balks. I split them by whether the bases were empty or runners were on.</p>
+
+  <h2>What I found</h2>
+
+  <div class="bars">
+    <div class="bars-title">Change in mistake rate against aggressive opponents (per one step up in aggression)</div>
+    <div class="bar-row"><span>Throws on steals and pickoffs</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-val">+13%</span></div>
+    <div class="bar-row"><span>Wild pitch, passed ball, balk</span><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div><span class="bar-val">+4%</span></div>
+    <div class="bar-row"><span>Errors on batted balls</span><div class="bar-track"><div class="bar-fill muted" style="width:3%"></div></div><span class="bar-val">0%</span></div>
+    <div class="bar-row"><span>Walks, runner on first</span><div class="bar-track"><div class="bar-fill muted" style="width:30%"></div></div><span class="bar-val">-4%</span></div>
+    <div class="bars-note">1,740 defense-versus-opponent matchups, 2024 and 2025 regular seasons. One step is one standard deviation in steal attempts per plate appearance.</div>
+  </div>
+
+  <h3>The fielders don&#39;t crack</h3>
+
+  <p>This was the one I expected to find, and it is not there. Against the most aggressive teams in baseball, infielders and outfielders booted and threw away batted balls at exactly their normal rate. Not with runners on base. Not with the bases empty, which is where a reputation would show up if reputation alone rattled anybody. Big league fielders make the routine play no matter who is running.</p>
+
+  <h3>The battery leaks</h3>
+
+  <p>Pitchers and catchers are a different story. Against aggressive teams, throws on steal and pickoff attempts sailed 13 percent more often. Wild pitches, passed balls and balks went up about 4 percent with runners on. Part of that is simple arithmetic: more attempts means more throws that can go wrong. But it is the one place in the data where the running game produces free bases the other team did not earn with a bat.</p>
+
+  <h3>The pitchers fight back</h3>
+
+  <p>This one surprised me. With a runner on first, aggressive teams drew about 4 percent fewer walks than other teams did against the same pitchers. Bases empty, no difference. Either the pitcher throws more strikes to give his catcher a chance, or the hitter swings to protect the runner, or both. Whichever it is, it cuts against my thesis. The pressure runs both ways.</p>
+
+  <h2>How big is it?</h2>
+
+  <p>Add it up for a team that runs like the Brewers and you get roughly five extra free bases a season. Call it two runs. About a fifth of a win.</p>
+
+  <p>So my gut was half right. There is something hidden under the standard stats, and the standard stats really could not see it. But it is small, and it lives in the pitcher and catcher, not in the fielders&#39; heads.</p>
+
+  <h2>Why this matters more at 10U than in the majors</h2>
+
+  <p>Here is the part I find most useful. The leak showed up in the two spots where the big leaguers are weakest: the throw to second and the pitch in the dirt with a runner moving. At 9 and 10 years old, those are the two weakest spots on the whole field.</p>
+
+  <p>One PONY league coach who tracked his games found that catchers at that age could almost never throw a runner out at second (Golton). Pitchers who throw strikes are rare, and a runner on first is one more thing for a nine-year-old on the mound to think about. If the running game leaks two runs a season against the best battery in the world, it is reasonable to think it leaks far more against a ten-year-old one. I cannot prove that from this data. It is the obvious next thing to count.</p>
+
+  <h2>What we take from it</h2>
+
+  <ul>
+    <li><strong>Big league fielders do not crack.</strong> Reputation does not rattle them, and runners do not either.</li>
+    <li><strong>The battery is where pressure lands.</strong> Steal throws, wild pitches, passed balls, balks. Small at the top, likely much bigger at 10U.</li>
+    <li><strong>Pressure runs both ways.</strong> Pitchers attack aggressive teams with a runner on.</li>
+    <li><strong>Get on base first.</strong> None of this matters without a runner. Part 1 still stands: traffic is the engine, aggression is a garnish.</li>
+    <li><strong>Trust the gut, then count.</strong> The hunch was worth testing. The number was smaller than the hunch. Both facts are useful.</li>
+  </ul>
+
+  <h2>Guidelines &amp; sources this field note follows</h2>
+
+  <ul>
+    <li><strong>Retrosheet.</strong> Play-by-play event files, 2024 and 2025 regular seasons. The information used here was obtained free of charge from and is copyrighted by Retrosheet. retrosheet.org</li>
+    <li><strong>Chadwick Bureau.</strong> Chadwick tools (cwevent) used to parse the event files. github.com/chadwickbureau/chadwick</li>
+    <li><strong>Method.</strong> For each defense and season, mistake rates were compared across opponents after removing that defense&#39;s own average (defense fixed effects), weighted by plays, with 95 percent bootstrap intervals. Aggression is the opponent&#39;s season steal attempts per plate appearance, standardized within season. Effects reported as significant had intervals that excluded zero; the batted-ball error effects did not.</li>
+    <li><strong>Golton, J. (2015).</strong> Youth Baseball Stats, Part 3. filterjoe.com. Catchers rarely throwing out runners at second, ages 9 and 10.</li>
+    <li><strong>Beilock, S. L., and Carr, T. H. (2001).</strong> Choking under pressure. The lab finding that pressure pulls skilled performers&#39; attention onto mechanics. Motivated the test; the test did not find it in fielders.</li>
+  </ul>
+
+  <p style="font-size:0.9rem;color:var(--ink-soft)"><em>Note on certainty: this is a coach&#39;s analysis, not peer-reviewed research. Aggression is measured by steal attempts because effort itself is not recorded. The throw-error effect is partly mechanical, since more attempts mean more throws. Two seasons is a decent sample for this question, but these are correlations within matchups, not a controlled experiment. The 10U claim is a hypothesis.</em></p>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+      <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="../framework.html">Practice Framework</a></li>
+        <li><a href="../lineup.html">Lineup Builder</a></li>
+        <li><a href="../training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="../articles.html">Field Notes</a></li>
+        <li><a href="../stages.html">The 4 Stages</a></li>
+        <li><a href="../progression.html">Season Plan</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+<script src="/js/site.js"></script>
+</body>
+</html>
