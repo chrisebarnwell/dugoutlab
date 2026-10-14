@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ten Times the Chances | DugoutLab</title>
+<meta name="description" content="One PONY league coach tracked his games for years. What wins at 7, 9, and 11 changes, and errors are a big part of why.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/main.css">
+<style>
+  .bars{margin:1.5rem 0 2rem;padding:1.25rem;border:1px solid rgba(0,0,0,0.12);border-radius:8px}
+  .bars-title{font-family:'JetBrains Mono',monospace;font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:1rem;opacity:0.75}
+  .bar-row{display:grid;grid-template-columns:7.5rem 1fr 2.5rem;align-items:center;gap:0.6rem;margin:0.45rem 0;font-size:0.9rem}
+  .bar-track{height:14px;background:rgba(0,0,0,0.06);border-radius:3px;overflow:hidden}
+  .bar-fill{height:100%;background:#C8862E}
+  .bar-fill.muted{background:#7d8a83}
+  .bar-val{font-family:'JetBrains Mono',monospace;font-size:0.85rem;text-align:right}
+  .bars-note{font-size:0.8rem;opacity:0.7;margin-top:0.75rem}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="/ages.html">My Age Group</a></li>
+    <li><a href="/tools.html">Tools</a></li>
+    <li><a href="/articles.html">Field Notes</a></li>
+    <li><a href="/how-kids-learn.html">Why It Works</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/ages.html">My Age Group</a>
+  <a href="/tools.html">Tools</a>
+  <a href="/articles.html">Field Notes</a>
+  <a href="/how-kids-learn.html">Why It Works</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="/articles.html">&#8592; Articles</a></div>
+    <div class="eyebrow">Field Notes &middot; Youth Data</div>
+    <h1>Ten Times the Chances</h1>
+    <p style="margin-top:0.5rem;font-size:0.95rem;color:rgba(255,255,255,0.65);font-style:italic">What one coach&#39;s spreadsheet says about how kids&#39; games are really won.</p>
+    <p style="margin-top:0.5rem;font-size:0.85rem;color:rgba(255,255,255,0.5)">5 min read</p>
+  </div>
+</div>
+
+<div class="article-body">
+
+  <p>In <a href="/articles/big-league-swing.html">The Big League Swing</a> I argued that Little League runs on different math than the majors. A ball in play is worth more when the defense is nine years old.</p>
+
+  <p>It turns out somebody already counted.</p>
+
+  <h2>The coach who kept score</h2>
+
+  <p>Joe Golton coached his son through a PONY league in California and tracked everything. Walks. Errors. Easy outs made and missed. Strike percentage for every pitcher. Then he published it. It is the most detailed public record of real youth game data I have found.</p>
+
+  <p>It is one coach, one league, a few seasons. Not a study. But it is real games, counted carefully, and it lines up with what most of us see from the dugout.</p>
+
+  <h2>The headline number</h2>
+
+  <div class="bars">
+    <div class="bars-title">Batter reaches base on an error, per plate appearance</div>
+    <div class="bar-row"><span>MLB</span><div class="bar-track"><div class="bar-fill muted" style="width:10%"></div></div><span class="bar-val">1 in 170</span></div>
+    <div class="bar-row"><span>PONY 9-10</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-val">1 in 17</span></div>
+    <div class="bars-note">MLB: Baseball-Reference team totals, 2024 to 2026. PONY: one rec team, one season (Golton).</div>
+  </div>
+
+  <p>Roughly ten times the chances. In the big leagues, a ground ball is close to a sure out. At 9 and 10, putting the ball in play is a real shot at getting on.</p>
+
+  <h2>What wins changes with age</h2>
+
+  <p>The most useful part of his data is not any single number. It is how the answer to &ldquo;what wins?&rdquo; shifts as kids grow.</p>
+
+  <div class="bars">
+    <div class="bars-title">What decided games in one PONY league</div>
+    <div class="bar-row" style="grid-template-columns:5.5rem 1fr"><span><strong>Ages 7-8</strong></span><span>Catch the ball. Fewest runs allowed was the best predictor of playoff success across eight seasons.</span></div>
+    <div class="bar-row" style="grid-template-columns:5.5rem 1fr"><span><strong>Ages 9-10</strong></span><span>Throw strikes. The team that walked fewer batters won 15 of 19 games one season and all 20 the next (two were tied on walks).</span></div>
+    <div class="bar-row" style="grid-template-columns:5.5rem 1fr"><span><strong>Ages 11-12</strong></span><span>Real baseball starts. On the bigger field, most easy plays get made, and walks decide fewer games.</span></div>
+  </div>
+
+  <h3>Ages 7-8: the easy out is not easy</h3>
+
+  <p>He tracked &ldquo;easy outs,&rdquo; the routine plays a big leaguer makes without thinking. Across the league, teams converted about 45 to 50 percent of them. His own team started near 20 percent. The undefeated team converted about 85 to 90 percent, with average hitting.</p>
+
+  <p>Read that again. At 7 and 8, a routine ground ball is about a coin flip. Every ball in play is a chance for something to happen.</p>
+
+  <h3>Ages 9-10: free bases everywhere</h3>
+
+  <p>Kid pitch arrives, and so do the walks. A typical game had each team issuing about 10 walks and committing about 3 errors that put a batter on base. His team&#39;s on-base picture looked nothing like the majors:</p>
+
+  <div class="bars">
+    <div class="bars-title">How his 9-10 rec team got on base</div>
+    <div class="bar-row"><span>Walks + HBP</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-val">.278</span></div>
+    <div class="bar-row"><span>Hits</span><div class="bar-track"><div class="bar-fill muted" style="width:51%"></div></div><span class="bar-val">.142</span></div>
+    <div class="bar-row"><span>Errors</span><div class="bar-track"><div class="bar-fill muted" style="width:21%"></div></div><span class="bar-val">.059</span></div>
+    <div class="bars-note">Share of plate appearances. Total on base: .482. MLB on-base is about .315.</div>
+  </div>
+
+  <p>Nearly half of all trips to the plate ended with the batter on base. Hits were the smallest slice of the real offense. Walks were the biggest, and errors added a meaningful chunk on top.</p>
+
+  <h3>Ages 11-12: the field grows up</h3>
+
+  <p>When his kids moved to 70-foot bases, a lot changed. Strikeouts dropped. Most easy plays started getting made, so the harder plays decided games. Walks still mattered, but the team that walked more batters won 35 percent of the time, up from 10 percent at 9 and 10. Some hitters who looked great at 10 saw their numbers fall on the bigger field.</p>
+
+  <h2>What we take from this</h2>
+
+  <ul>
+    <li><strong>Little League is not the big leagues.</strong> At 9 and 10, reaching on an error is roughly ten times as common.</li>
+    <li><strong>Balls in play are worth the most when kids are youngest.</strong> At 7 and 8, the routine play is a coin flip.</li>
+    <li><strong>Strikes win at 9-10.</strong> The pitching staff that throws strikes takes away the other team&#39;s biggest source of offense.</li>
+    <li><strong>The advantage shrinks as they grow.</strong> By 11 and 12 the defense catches up. Teaching kids to rely on errors does not age well. Teaching them to make contact does.</li>
+    <li><strong>A walk is still a quiet play.</strong> It gets you on base, but nobody touches the ball. For fun and for reps, contact wins.</li>
+  </ul>
+
+  <div class="article-callout">
+    The pros optimize for elite defense. Our kids play against each other. At this age, the ball in play is not only a strategy. It is where the game happens.
+  </div>
+
+  <h2>Guidelines &amp; sources this field note follows</h2>
+
+  <ul>
+    <li><strong>Golton, J. (2015).</strong> Youth Baseball Stats, Part 2: Pinto (coach pitch). filterjoe.com. Easy out conversion, runs allowed and playoff success, ages 7 and 8.</li>
+    <li><strong>Golton, J. (2015).</strong> Youth Baseball Stats, Part 3: Mustang (kid pitch begins). filterjoe.com. Walks, reached on error, on-base breakdown, ages 9 and 10.</li>
+    <li><strong>Golton, J. (2016).</strong> Youth Baseball Stats, Part 4: Moving to a bigger field changes everything. filterjoe.com. Ages 11 and 12 on 70-foot bases.</li>
+    <li><strong>Baseball-Reference.</strong> MLB team reached-on-error and plate appearance totals, 2024 to 2026. Used for the MLB comparison.</li>
+  </ul>
+
+  <p style="font-size:0.9rem;color:var(--ink-soft)"><em>Note on certainty: this is one coach&#39;s tracking in one PONY league in California, mostly from his own team. Samples are small, and scoring an error is a judgment call that varies by scorekeeper. Your league may look different. Treat these numbers as a well-kept field notebook, not research.</em></p>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+      <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="../framework.html">Practice Framework</a></li>
+        <li><a href="../lineup.html">Lineup Builder</a></li>
+        <li><a href="../training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="../articles.html">Field Notes</a></li>
+        <li><a href="../stages.html">The 4 Stages</a></li>
+        <li><a href="../progression.html">Season Plan</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+<script src="/js/site.js"></script>
+</body>
+</html>
