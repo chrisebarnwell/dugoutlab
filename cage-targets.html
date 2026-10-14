@@ -82,15 +82,15 @@ details.setup .field-grid { margin-top: 0.9rem; }
 .sight-ar.u { margin: -130px 0 0 -20px; border-bottom-color: #e2a85a; border-top-width: 0; }
 .sight-ar.d { margin: 110px 0 0 -20px; border-top-color: #e2a85a; border-bottom-width: 0; }
 .sight-pin { position: absolute; left: 0; top: 0; width: 56px; height: 56px; margin: -28px 0 0 -28px; border: 4px solid #C8862E; border-radius: 50%; background: rgba(200,134,46,0.28); box-shadow: 0 0 0 2px rgba(0,0,0,0.5); }
-.sight-pin.edge { width: 0; height: 0; border-radius: 0; background: none; border: 14px solid transparent; box-shadow: none; margin: -14px 0 0 -14px; }
+.sight-pin.edge { width: 0; height: 0; border-radius: 0; background: none; border: 22px solid transparent; box-shadow: none; margin: -22px 0 0 -22px; filter: drop-shadow(0 0 3px #000); }
 .sight-pin.edge.l { border-right-color: #C8862E; border-left-width: 0; }
 .sight-pin.edge.r { border-left-color: #C8862E; border-right-width: 0; }
 .sight-pin.edge.u { border-bottom-color: #C8862E; border-top-width: 0; }
 .sight-pin.edge.d { border-top-color: #C8862E; border-bottom-width: 0; }
-.sight-pin.edge.l span { top: -10px; left: 24px; transform: none; }
-.sight-pin.edge.r span { top: -10px; left: auto; right: 24px; transform: none; }
-.sight-pin.edge.u span { top: 20px; }
-.sight-pin.edge.d span { top: auto; bottom: 20px; }
+.sight-pin.edge.l span { top: -12px; left: 30px; transform: none; font-size: 0.85rem; }
+.sight-pin.edge.r span { top: -12px; left: auto; right: 30px; transform: none; font-size: 0.85rem; }
+.sight-pin.edge.u span { top: 26px; font-size: 0.85rem; }
+.sight-pin.edge.d span { top: auto; bottom: 26px; font-size: 0.85rem; }
 .sight-locked { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 0.55rem; }
 .sight-locked span { font-size: 0.74rem; font-weight: 700; color: #0a1610; background: #C8862E; padding: 3px 9px; border-radius: 999px; }
 .sight-h { display: flex; justify-content: center; gap: 1.2rem; margin-top: 0.45rem; font-size: 0.95rem; }
@@ -246,7 +246,7 @@ details.setup .field-grid { margin-top: 0.9rem; }
       <ol class="built-list" id="see-cage">
         <li>Stand at the tee. Hold the phone where the ball sits.</li>
         <li>Aim straight down the cage. Tap <b style="color:var(--ink)">Set middle</b>.</li>
-        <li>Follow the arrows to each spot. Ring turns gold, tap <b style="color:var(--ink)">Lock</b>. Five spots, one session.</li>
+        <li>Follow the arrows to each spot. Ring turns gold, tap <b style="color:var(--ink)">Lock</b>. Five spots, one session. Tap a gold chip to redo that spot.</li>
       </ol>
       <ol class="built-list" id="see-field" hidden>
         <li>Stand on home plate. Aim at second base. Tap <b style="color:var(--ink)">Set middle</b>.</li>
@@ -959,15 +959,16 @@ function callHit(f, launch, s) {
   }
   function drawChips() {
     var box = $('sight-chips'); box.innerHTML = '';
-    LANES.concat([{ id: 'free', chip: 'Free look' }]).forEach(function (l) {
+    LANES.concat([{ id: 'free', chip: 'Free look' }, { id: 'clear', chip: 'Clear all' }]).forEach(function (l) {
       var b = document.createElement('button');
       b.type = 'button';
       b.className = 'sight-chip' + (sight.locks[l.id] ? ' locked' : '') + (sight.cur === l.id ? ' cur' : '');
-      b.textContent = l.chip;
+      b.textContent = l.chip + (sight.locks[l.id] ? ' \u2713' : '');
       b.addEventListener('click', function () {
         if (sight.az0 === null) return;
-        if (sight.locks[l.id]) delete sight.locks[l.id];
-        sight.cur = l.id; drawChips(); drawLockList(); lockedStrip();
+        if (l.id === 'clear') { sight.locks = {}; sight.cur = 'mid'; }
+        else sight.cur = l.id;
+        drawChips(); drawLockList(); lockedStrip();
       });
       box.appendChild(b);
     });
@@ -1040,6 +1041,12 @@ function callHit(f, launch, s) {
     }
     movePins();
     btn.textContent = 'Lock';
+    if (sight.flash && Date.now() < sight.flash) {
+      eb.textContent = 'LOCKED'; zt.textContent = laneOf(sight.lastLocked).name + ' \u2713'; zt.className = 'sight-zone is-hit';
+      sub.textContent = 'Pin set. Next: ' + (sight.cur === 'done' ? 'all done' : laneOf(sight.cur) ? laneOf(sight.cur).chip : ''); sub2.textContent = '';
+      ring.className = 'sight-ring is-hit'; arrows(0, 0, 0, 0); btn.disabled = true; $('sight-h').hidden = true;
+      return;
+    }
     var sp = wrapDeg(sight.az - sight.az0);
     var o = (!field && Math.abs(sp) <= 45) ? sightRead(state.f, state.cage, sight.el, sp) : null;
     sight.last = { sp: sp, o: o };
@@ -1085,10 +1092,12 @@ function callHit(f, launch, s) {
   function lockNow() {
     if (!sight.onT || !sight.last) return;
     var field = state.mode === 'field';
+    sight.lastLocked = sight.cur;
     sight.locks[sight.cur] = { az: sight.az, el: sight.el, field: field, short: field ? '' : ftin(sight.last.o.y) + ' up', where: field ? walkText() : whereText(sight.last.o) + '. Launch ' + Math.round(sight.last.o.launch) + '°.' };
     var next = 'done';
     for (var i = 0; i < ORDER_L.length; i++) if (!sight.locks[ORDER_L[i]]) { next = ORDER_L[i]; break; }
     sight.cur = next; drawChips(); drawLockList(); lockedStrip();
+    sight.flash = Date.now() + 1100; sight.flashName = laneOf(Object.keys(sight.locks).filter(function (k) { return k !== next; }).length ? sight.lastLocked : 'mid').name;
   }
   function openSight() {
     function go() {
