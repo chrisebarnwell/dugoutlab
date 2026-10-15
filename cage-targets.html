@@ -246,11 +246,11 @@ details.setup .field-grid { margin-top: 0.9rem; }
       <ol class="built-list" id="see-cage">
         <li>Stand at the tee. Hold the phone where the ball sits.</li>
         <li>Aim straight down the cage. Tap <b style="color:var(--ink)">Set middle</b>.</li>
-        <li>Follow the arrows to each spot. Ring turns gold, tap <b style="color:var(--ink)">Lock</b>. Five spots, one session. Tap a gold chip to redo that spot.</li>
+        <li>All five spots appear on screen. Follow the arrows to each one, hang the net where the ring sits, tap <b style="color:var(--ink)">Hung</b>.</li>
       </ol>
       <ol class="built-list" id="see-field" hidden>
         <li>Stand on home plate. Aim at second base. Tap <b style="color:var(--ink)">Set middle</b>.</li>
-        <li>Follow the arrows to each lane. Ring turns gold, tap <b style="color:var(--ink)">Lock</b>.</li>
+        <li>All five lanes appear on screen. Follow the arrows to each one, tap <b style="color:var(--ink)">Hung</b> once the net is out there.</li>
         <li>Send a helper down each locked line. Count the steps. Drop the net.</li>
       </ol>
       <button type="button" class="btn btn-primary btn-lg" id="sight-open" style="margin-top:1.1rem">Open the camera</button>
@@ -962,11 +962,12 @@ function callHit(f, launch, s) {
     LANES.concat([{ id: 'free', chip: 'Free look' }, { id: 'clear', chip: 'Clear all' }]).forEach(function (l) {
       var b = document.createElement('button');
       b.type = 'button';
-      b.className = 'sight-chip' + (sight.locks[l.id] ? ' locked' : '') + (sight.cur === l.id ? ' cur' : '');
-      b.textContent = l.chip + (sight.locks[l.id] ? ' \u2713' : '');
+      var hung = sight.locks[l.id] && sight.locks[l.id].hung;
+      b.className = 'sight-chip' + (hung ? ' locked' : '') + (sight.cur === l.id ? ' cur' : '');
+      b.textContent = l.chip + (hung ? ' \u2713' : '');
       b.addEventListener('click', function () {
         if (sight.az0 === null) return;
-        if (l.id === 'clear') { sight.locks = {}; sight.cur = 'mid'; }
+        if (l.id === 'clear') { placeAll(); sight.cur = 'mid'; }
         else sight.cur = l.id;
         drawChips(); drawLockList(); lockedStrip();
       });
@@ -984,7 +985,7 @@ function callHit(f, launch, s) {
     var h = '';
     LANES.forEach(function (l) {
       var k = sight.locks[l.id]; if (!k) return;
-      h += '<li><b>' + (k.field ? 'Net lane ' : 'Line drive ') + l.name.toLowerCase() + '</b>' + k.where + '</li>';
+      h += '<li><b>' + (k.hung ? '\u2713 ' : '') + (k.field ? 'Net lane ' : 'Line drive ') + l.name.toLowerCase() + '</b>' + k.where + '</li>';
     });
     $('lock-list').innerHTML = h;
   }
@@ -1008,7 +1009,7 @@ function callHit(f, launch, s) {
   }
   function lockedStrip() {
     var h = '';
-    LANES.forEach(function (l) { var k = sight.locks[l.id]; if (k) h += '<span>' + l.chip + (k.short ? ' · ' + k.short : '') + '</span>'; });
+    LANES.forEach(function (l) { var k = sight.locks[l.id]; if (k && k.hung) h += '<span>' + l.chip + ' \u2713' + (k.short ? ' \u00B7 ' + k.short : '') + '</span>'; });
     $('sight-locked').innerHTML = h;
   }
   function heightBox(field, o, lane) {
@@ -1034,18 +1035,18 @@ function callHit(f, launch, s) {
     var field = state.mode === 'field';
     sight.onT = false;
     if (sight.az0 === null) {
-      $('sight-dbg').textContent = 'v15 sensor ' + (sight.got ? 'ok' : 'none') + ' az ' + sight.az.toFixed(1) + ' el ' + sight.el.toFixed(1);
+      $('sight-dbg').textContent = 'v16 sensor ' + (sight.got ? 'ok' : 'none') + ' az ' + sight.az.toFixed(1) + ' el ' + sight.el.toFixed(1);
       eb.textContent = 'FIRST'; zt.textContent = field ? 'AIM AT SECOND BASE' : 'AIM DOWN THE CAGE'; zt.className = 'sight-zone';
       sub.textContent = 'Then tap Set middle'; sub2.textContent = ''; $('sight-h').hidden = true;
       ring.className = 'sight-ring'; arrows(0, 0, 0, 0); btn.textContent = 'Set middle'; btn.disabled = false;
       return;
     }
     movePins();
-    btn.textContent = 'Lock';
-    $('sight-dbg').textContent = 'v15 az ' + sight.az.toFixed(1) + ' el ' + sight.el.toFixed(1) + ' sp ' + wrapDeg(sight.az - sight.az0).toFixed(1) + ' cur ' + sight.cur + ' locks ' + Object.keys(sight.locks).join(',') + ' pins ' + $('sight-pins').children.length;
+    btn.textContent = 'Hung';
+    $('sight-dbg').textContent = 'v16 az ' + sight.az.toFixed(1) + ' el ' + sight.el.toFixed(1) + ' sp ' + wrapDeg(sight.az - sight.az0).toFixed(1) + ' cur ' + sight.cur + ' locks ' + Object.keys(sight.locks).join(',') + ' pins ' + $('sight-pins').children.length;
     if (sight.flash && Date.now() < sight.flash) {
-      eb.textContent = 'LOCKED'; zt.textContent = laneOf(sight.lastLocked).name + ' \u2713'; zt.className = 'sight-zone is-hit';
-      sub.textContent = 'Pin set. Next: ' + (sight.cur === 'done' ? 'all done' : laneOf(sight.cur) ? laneOf(sight.cur).chip : ''); sub2.textContent = '';
+      eb.textContent = 'HUNG'; zt.textContent = laneOf(sight.lastLocked).name + ' \u2713'; zt.className = 'sight-zone is-hit';
+      sub.textContent = 'Net up. Next: ' + (sight.cur === 'done' ? 'all done' : laneOf(sight.cur) ? laneOf(sight.cur).chip : ''); sub2.textContent = '';
       ring.className = 'sight-ring is-hit'; arrows(0, 0, 0, 0); btn.disabled = true; $('sight-h').hidden = true;
       return;
     }
@@ -1057,8 +1058,8 @@ function callHit(f, launch, s) {
 
     if (sight.cur === 'done') {
       $('sight-h').hidden = true;
-      eb.textContent = 'DONE'; zt.textContent = 'ALL 5 LOCKED'; zt.className = 'sight-zone is-hit';
-      sub.textContent = 'Tap Done. Your spots are saved on the page.'; sub2.textContent = 'Tap a gold chip to redo one.';
+      eb.textContent = 'DONE'; zt.textContent = 'ALL 5 NETS UP'; zt.className = 'sight-zone is-hit';
+      sub.textContent = 'Tap Done. Your spots are saved on the page.'; sub2.textContent = 'Tap any chip to go back to it.';
       ring.className = 'sight-ring'; arrows(0, 0, 0, 0); btn.disabled = true;
       return;
     }
@@ -1071,16 +1072,17 @@ function callHit(f, launch, s) {
       sub.textContent = dirName(sp) + ' · ' + Math.round(o.launch) + '° launch'; sub2.textContent = whereText(o);
       return;
     }
-    var lane = laneOf(sight.cur), eh = lane.c - sp, hOK = Math.abs(eh) <= 2.5, up = false, down = false;
+    var lane = laneOf(sight.cur), eh = lane.c - sp, hOK = Math.abs(eh) <= 4, up = false, down = false, pin = sight.locks[sight.cur];
     heightBox(field, o, lane);
-    if (!field && state.aim && o) { up = o.launch < state.aim.lo; down = o.launch > state.aim.hi; }
-    var vOK = field || (!!o && !!state.aim && !up && !down);
+    var ev = pin ? pin.el - sight.el : 0;
+    if (!field) { up = ev > 4; down = ev < -4; }
+    var vOK = field || !up && !down;
     sight.onT = hOK && vOK;
     eb.textContent = field ? 'NET LANE' : (state.aim && state.aim.liner ? 'LOW LINER' : 'LINE DRIVE');
     zt.textContent = lane.name; zt.className = 'sight-zone' + (sight.onT ? ' is-hit' : '');
     ring.className = 'sight-ring' + (sight.onT ? ' is-hit' : '');
     btn.disabled = !sight.onT;
-    if (sight.onT) { sub.textContent = 'On it. Tap Lock.'; arrows(0, 0, 0, 0); }
+    if (sight.onT) { sub.textContent = 'Hang the net here. Tap Hung when it is up.'; arrows(0, 0, 0, 0); }
     else {
       var parts = [];
       if (!hOK) parts.push('Turn ' + (eh > 0 ? 'left' : 'right') + ' ' + Math.round(Math.abs(eh)) + '°');
@@ -1091,15 +1093,31 @@ function callHit(f, launch, s) {
     }
     sub2.textContent = field ? walkText() : (o ? whereText(o) : '');
   }
+  function placeAll() {
+    sight.locks = {};
+    var field = state.mode === 'field', r = Math.PI / 180;
+    LANES.forEach(function (L) {
+      var k = { az: wrapDeg(sight.az0 + L.c), el: 0, field: field, hung: false, short: '', where: '' };
+      if (field) { k.where = walkText(); k.el = sight.el; }
+      else if (state.aim) {
+        var pl = sprayPlace(state.cage.dist, state.cage.cw, Math.abs(L.c)), tb = targetBand(state.f, state.aim.lo, state.aim.hi, pl.path);
+        if (tb.lo === null || tb.hi === null) return;
+        var y = (Math.min(tb.lo, state.cage.ch) + Math.min(tb.hi, state.cage.ch)) / 2;
+        k.el = Math.atan2(y - state.f.h0, pl.path) / r;
+        k.y = y; k.short = ftin(y) + ' up';
+        k.where = (pl.where === 'plane' ? 'Back net, ' : (L.c > 0 ? 'Left' : 'Right') + ' side net, ' + ftin(pl.down) + ' from the tee, ') + ftin(y) + ' up.';
+      }
+      sight.locks[L.id] = k;
+    });
+    drawChips(); drawLockList(); lockedStrip();
+  }
   function lockNow() {
-    if (!sight.onT || !sight.last) return;
-    var field = state.mode === 'field';
-    sight.lastLocked = sight.cur;
-    sight.locks[sight.cur] = { az: sight.az, el: sight.el, field: field, short: field ? '' : ftin(sight.last.o.y) + ' up', where: field ? walkText() : whereText(sight.last.o) + '. Launch ' + Math.round(sight.last.o.launch) + '°.' };
+    if (!sight.onT || !sight.locks[sight.cur]) return;
+    sight.locks[sight.cur].hung = true; sight.lastLocked = sight.cur;
     var next = 'done';
-    for (var i = 0; i < ORDER_L.length; i++) if (!sight.locks[ORDER_L[i]]) { next = ORDER_L[i]; break; }
+    for (var i = 0; i < ORDER_L.length; i++) if (sight.locks[ORDER_L[i]] && !sight.locks[ORDER_L[i]].hung) { next = ORDER_L[i]; break; }
     sight.cur = next; drawChips(); drawLockList(); lockedStrip();
-    sight.flash = Date.now() + 1100; sight.flashName = laneOf(Object.keys(sight.locks).filter(function (k) { return k !== next; }).length ? sight.lastLocked : 'mid').name;
+    sight.flash = Date.now() + 1100;
   }
   function openSight() {
     function go() {
@@ -1142,7 +1160,7 @@ function callHit(f, launch, s) {
   $('sight-close').addEventListener('click', closeSight);
   $('sight-set').addEventListener('click', function () {
     if (!sight.got) return;
-    if (sight.az0 === null) { sight.az0 = sight.az; sight.cur = 'mid'; drawChips(); return; }
+    if (sight.az0 === null) { sight.az0 = sight.az; sight.cur = 'mid'; placeAll(); return; }
     lockNow();
   });
 
