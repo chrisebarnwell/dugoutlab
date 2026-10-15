@@ -296,6 +296,7 @@ details.setup .field-grid { margin-top: 0.9rem; }
         <li><strong>MLB automated ball-strike zone.</strong> Bottom of the zone at 27 percent of batter height and top at 53.5 percent, so the middle sits at about 40 percent. This is the major league definition. Youth rulebooks describe the zone by body landmarks, such as armpits to the top of the knees, and that zone is taller. Youth fit is uncertain, so the contact height can be typed in by hand.</li>
         <li><strong>Catcher's view.</strong> Six taps place the camera against the cage size you entered. A tap on the screen becomes a point on the net, then a launch angle and direction from the tee. Accuracy depends on your taps, your cage numbers, and a phone that stays still. The call uses DugoutLab assumptions: infielders near 14 and 33 degrees off center on each side, each covering about 7 degrees. Not measured.</li>
         <li><strong>Phone sight.</strong> Reads the tilt sensor in your phone. Sensor accuracy varies by phone. Check one spot against the table and a tape measure before you trust it. Locked pins are drawn with an assumed camera angle, so they are exact at the center of the screen and approximate near the edges. On a field the phone gives the direction only. Tilt is too rough to judge distance past the infield, so distance is paced off.</li>
+        <li><strong>Line drive cap.</strong> Whatever the field model says, the nets only mark 10 to 22 degree launch angles. For small fields and low exit velocities the model can favor fly balls, since it assumes every fielder makes every reachable play. Youth fielders do not, and a target that teaches lift is the wrong lesson. DugoutLab decision, not a measured result.</li>
         <li><strong>Fielder depth, speed, reach, and reaction time.</strong> DugoutLab assumptions. Not measured. Open the field setup and change them.</li>
       </ul>
       <p style="font-size:0.9rem;color:var(--ink-soft);margin-top:1rem;line-height:1.65"><em>Note on certainty: this is a physics model, not a record of real youth games. It treats every ball as hit straight at a fielder, so it misses the gaps, and it ignores spin, wind, bad hops, and errors. In youth games a ground ball often becomes a baserunner. The model does not count that. We hold the window as a starting point for a target, not a rule for a swing.</em></p>
@@ -832,11 +833,25 @@ function callHit(f, launch, s) {
     var win = wins[0] || null;
     var linerRg = rg.filter(function (r) { return r.zone === 'liner'; })[0] || null;
     var band = win || linerRg;
+    /* Target cap: nets only ever mark line drives, 10 to 22 degrees, inside the zones the model calls a hit or a low liner */
+    var CAP_LO = 10, CAP_HI = 22, capped = null;
+    rg.forEach(function (r) {
+      if (r.zone !== 'hit' && r.zone !== 'liner') return;
+      var lo = Math.max(CAP_LO, r.lo), hi = Math.min(CAP_HI, r.hi);
+      if (hi - lo < 2) return;
+      var score = (hi - lo) + (r.zone === 'hit' ? 10 : 0);
+      if (!capped || score > capped.score) capped = { lo: lo, hi: hi, score: score };
+    });
+    if (!capped) capped = { lo: 12, hi: 20 };
+    if (capped.hi - capped.lo < 4) capped.lo = Math.max(CAP_LO, capped.hi - 4);
+    var wasCut = !band || Math.ceil(band.lo) !== Math.ceil(capped.lo) || Math.floor(band.hi) !== Math.floor(capped.hi);
+    band = capped;
 
     if (win) {
       $('win-num').innerHTML = Math.ceil(win.lo) + '&#176; to ' + Math.floor(win.hi) + '&#176;<small>launch angle</small>';
       var line = 'At ' + Math.round(f.ev) + ' mph on this field, balls launched in this range clear the infield and land in front of the outfielders.';
       if (wins[1]) line += ' A second window opens from ' + Math.ceil(wins[1].lo) + '&#176; to ' + Math.floor(wins[1].hi) + '&#176;, over the outfielders and short of the fence.';
+      if (wasCut) line += ' Nets are capped to line drives, ' + Math.ceil(band.lo) + '&#176; to ' + Math.floor(band.hi) + '&#176;, so the game never asks a kid to lift the ball.';
       $('win-line').innerHTML = line;
     } else if (linerRg) {
       $('win-num').innerHTML = Math.ceil(linerRg.lo) + '&#176; to ' + Math.floor(linerRg.hi) + '&#176;<small>low liners</small>';
@@ -883,7 +898,7 @@ function callHit(f, launch, s) {
       var la = simulate(f.ev, Math.ceil(band.lo), f.h0, k0).L, lb = simulate(f.ev, Math.floor(band.hi), f.h0, k0).L;
       land = { lo: Math.round(Math.min(la, lb)), hi: Math.round(Math.max(la, lb)) };
     }
-    state = { f: f, rg: rg, cage: { dist: dist, cw: cw, ch: ch }, land: land, mode: mode, aim: band ? { lo: Math.ceil(band.lo), hi: Math.floor(band.hi), liner: !win } : null };
+    state = { f: f, rg: rg, cage: { dist: dist, cw: cw, ch: ch }, land: land, mode: mode, aim: { lo: Math.ceil(band.lo), hi: Math.floor(band.hi), liner: false } };
     if (land) {
       $('fd-num').innerHTML = land.lo + ' to ' + land.hi + '<small>ft from home</small>';
       $('fd-line').textContent = 'About ' + Math.round(land.lo / 3) + ' to ' + Math.round(land.hi / 3) + ' big steps. Balls in the hit window first touch down here. Set a net in each lane, anywhere in the gold.';
@@ -1035,7 +1050,7 @@ function callHit(f, launch, s) {
     var field = state.mode === 'field';
     sight.onT = false;
     if (sight.az0 === null) {
-      $('sight-dbg').textContent = 'v16 sensor ' + (sight.got ? 'ok' : 'none') + ' az ' + sight.az.toFixed(1) + ' el ' + sight.el.toFixed(1);
+      $('sight-dbg').textContent = 'v17 sensor ' + (sight.got ? 'ok' : 'none') + ' az ' + sight.az.toFixed(1) + ' el ' + sight.el.toFixed(1);
       eb.textContent = 'FIRST'; zt.textContent = field ? 'AIM AT SECOND BASE' : 'AIM DOWN THE CAGE'; zt.className = 'sight-zone';
       sub.textContent = 'Then tap Set middle'; sub2.textContent = ''; $('sight-h').hidden = true;
       ring.className = 'sight-ring'; arrows(0, 0, 0, 0); btn.textContent = 'Set middle'; btn.disabled = false;
@@ -1043,7 +1058,7 @@ function callHit(f, launch, s) {
     }
     movePins();
     btn.textContent = 'Hung';
-    $('sight-dbg').textContent = 'v16 az ' + sight.az.toFixed(1) + ' el ' + sight.el.toFixed(1) + ' sp ' + wrapDeg(sight.az - sight.az0).toFixed(1) + ' cur ' + sight.cur + ' locks ' + Object.keys(sight.locks).join(',') + ' pins ' + $('sight-pins').children.length;
+    $('sight-dbg').textContent = 'v17 az ' + sight.az.toFixed(1) + ' el ' + sight.el.toFixed(1) + ' sp ' + wrapDeg(sight.az - sight.az0).toFixed(1) + ' cur ' + sight.cur + ' locks ' + Object.keys(sight.locks).join(',') + ' pins ' + $('sight-pins').children.length;
     if (sight.flash && Date.now() < sight.flash) {
       eb.textContent = 'HUNG'; zt.textContent = laneOf(sight.lastLocked).name + ' \u2713'; zt.className = 'sight-zone is-hit';
       sub.textContent = 'Net up. Next: ' + (sight.cur === 'done' ? 'all done' : laneOf(sight.cur) ? laneOf(sight.cur).chip : ''); sub2.textContent = '';
