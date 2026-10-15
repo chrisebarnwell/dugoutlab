@@ -348,6 +348,7 @@ details.setup .field-grid { margin-top: 0.9rem; }
   <div class="sight-gauge" id="sight-gauge"></div>
   <div class="sight-bot">
     <div class="sight-warn" id="sight-warn"></div>
+    <div id="sight-dbg" style="font-family:var(--mono);font-size:0.62rem;color:rgba(244,239,230,0.6);margin-bottom:0.4rem;white-space:pre"></div>
     <div class="sight-chips" id="sight-chips"></div>
     <div class="sight-btns">
       <button type="button" class="btn btn-primary btn-lg" id="sight-set">Set middle</button>
@@ -1033,6 +1034,7 @@ function callHit(f, launch, s) {
     var field = state.mode === 'field';
     sight.onT = false;
     if (sight.az0 === null) {
+      $('sight-dbg').textContent = 'v15 sensor ' + (sight.got ? 'ok' : 'none') + ' az ' + sight.az.toFixed(1) + ' el ' + sight.el.toFixed(1);
       eb.textContent = 'FIRST'; zt.textContent = field ? 'AIM AT SECOND BASE' : 'AIM DOWN THE CAGE'; zt.className = 'sight-zone';
       sub.textContent = 'Then tap Set middle'; sub2.textContent = ''; $('sight-h').hidden = true;
       ring.className = 'sight-ring'; arrows(0, 0, 0, 0); btn.textContent = 'Set middle'; btn.disabled = false;
@@ -1040,6 +1042,7 @@ function callHit(f, launch, s) {
     }
     movePins();
     btn.textContent = 'Lock';
+    $('sight-dbg').textContent = 'v15 az ' + sight.az.toFixed(1) + ' el ' + sight.el.toFixed(1) + ' sp ' + wrapDeg(sight.az - sight.az0).toFixed(1) + ' cur ' + sight.cur + ' locks ' + Object.keys(sight.locks).join(',') + ' pins ' + $('sight-pins').children.length;
     if (sight.flash && Date.now() < sight.flash) {
       eb.textContent = 'LOCKED'; zt.textContent = laneOf(sight.lastLocked).name + ' \u2713'; zt.className = 'sight-zone is-hit';
       sub.textContent = 'Pin set. Next: ' + (sight.cur === 'done' ? 'all done' : laneOf(sight.cur) ? laneOf(sight.cur).chip : ''); sub2.textContent = '';
