@@ -4,6 +4,8 @@
   python3 .github/scripts/check_site.py         check only, exit 1 on any drift
   python3 .github/scripts/check_site.py --fix   rewrite every standard footer to the canonical one, then check
 
+The AI note lives on about.html only. Anywhere else it fails the check.
+
 Rules live here, in one place. Change the rule here, run --fix, commit.
 """
 import glob, re, sys
@@ -13,7 +15,6 @@ FOOTER = '''<footer class="footer">
     <div class="footer-brand">
       <div class="logo">Dugout<span>Lab</span></div>
       <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
-      <div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div>
     </div>
     <div class="footer-links">
       <h4>Tools</h4>
@@ -49,7 +50,10 @@ BANNED = [
     ('dead builder.html link',  r'href="(\.\./)?builder\.html"'),
     ('old tool name',           r'(?i)practice builder'),
     ('emoji',                   '[\U0001F000-\U0001FAFF]'),
+    ('AI note outside about.html', r'(?i)footer-disclosure|\bAI[ -]assist'),
 ]
+# rules that do not apply to specific files
+EXEMPT = {'AI note outside about.html': {'about.html'}}
 FOOTER_RE = re.compile(r'<footer class="footer">.*?</footer>', re.S)
 
 def main():
@@ -68,6 +72,8 @@ def main():
                 else:
                     problems.append(f'{f}: footer differs from the canonical footer (run --fix)')
         for label, pat in BANNED:
+            if f in EXEMPT.get(label, ()):
+                continue
             for m in re.finditer(pat, s):
                 line = s.count('\n', 0, m.start()) + 1
                 problems.append(f'{f}:{line}: {label}: "{m.group(0)}"')
