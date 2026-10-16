@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Hit Window Game | DugoutLab</title>
+<meta name="description" content="Ten balls. Call your shot. Hit the net. Play solo, challenge a friend, or run coach head-to-head. Free with an email.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+.g-wrap { max-width: 640px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+.g-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.4rem 1.2rem; margin-bottom: 1rem; }
+.g-eb { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+.g-h { font-family: var(--serif); font-size: 1.5rem; font-weight: 600; color: var(--ink); line-height: 1.15; letter-spacing: -0.015em; margin-bottom: 0.6rem; }
+.g-p { color: var(--ink-soft); font-size: 0.95rem; line-height: 1.55; }
+.g-note { color: var(--ink-faint); font-size: 0.8rem; line-height: 1.5; margin-top: 0.7rem; }
+.g-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.g-row .btn { flex: 1; justify-content: center; }
+.field { margin-bottom: 0.9rem; }
+.field label { display: block; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); margin-bottom: 0.35rem; }
+.field input, .field select { width: 100%; background: var(--forest-deep); border: 1px solid var(--rule); color: var(--ink); border-radius: 8px; padding: 0.7rem 0.8rem; font-family: var(--sans); font-size: 1rem; }
+.field input:focus, .field select:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+.err { color: #e2a85a; font-size: 0.88rem; min-height: 1.2em; margin-top: 0.4rem; }
+.menu { display: grid; gap: 0.6rem; }
+.menu button { text-align: left; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: var(--radius); padding: 1rem 1.1rem; color: var(--ink); font-family: var(--sans); display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.menu button:hover { border-color: var(--gold); }
+.menu button b { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; display: block; }
+.menu button span { color: var(--ink-faint); font-size: 0.82rem; }
+.menu button i { font-style: normal; color: var(--gold); font-size: 1.3rem; }
+.menu button.locked { opacity: 0.55; }
+.stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 1rem; }
+.stat { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.7rem 0.4rem; text-align: center; }
+.stat b { display: block; font-family: var(--serif); font-size: 1.6rem; color: var(--gold); line-height: 1; }
+.stat i { font-style: normal; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+/* round */
+.scoreboard { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.8rem; }
+.scoreboard .who { font-family: var(--serif); font-size: 1.3rem; color: var(--ink); font-weight: 600; }
+.scoreboard .who small { display: block; font-family: var(--sans); font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+.scoreboard .pts { font-family: var(--serif); font-size: 3rem; color: var(--gold); line-height: 1; font-weight: 600; }
+.dots { display: flex; gap: 5px; margin: 0.6rem 0 1rem; }
+.dots span { flex: 1; height: 9px; border-radius: 5px; background: var(--rule); }
+.dots span.hit { background: var(--gold); } .dots span.miss { background: #55685d; } .dots span.now { outline: 2px solid var(--ink); outline-offset: 1px; }
+.call-bar { display: flex; align-items: center; justify-content: space-between; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.6rem 0.8rem; margin-bottom: 0.8rem; font-size: 0.9rem; color: var(--ink-soft); }
+.call-bar b { color: var(--gold-light); }
+.net { position: relative; background: var(--forest-deep); border: 2px dashed rgba(244,239,230,0.35); border-radius: 12px; padding: 0.6rem; }
+.net-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+.zone { border: 2px solid var(--gold); background: rgba(200,134,46,0.14); color: var(--ink); border-radius: 12px; padding: 1rem 0.3rem 0.9rem; font-family: var(--sans); font-weight: 700; font-size: 0.82rem; line-height: 1.2; min-height: 84px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.25rem; }
+.zone b { font-family: var(--serif); font-size: 1.5rem; color: var(--gold); line-height: 1; }
+.zone.called { background: var(--gold); color: var(--forest-deep); } .zone.called b { color: var(--forest-deep); }
+.zone:active { transform: scale(0.97); }
+.zone.line { min-height: 118px; }
+.miss-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem; }
+.miss { background: transparent; border: 1.5px solid var(--rule); color: var(--ink-soft); border-radius: 10px; padding: 0.7rem 0.3rem; font-family: var(--sans); font-size: 0.78rem; font-weight: 600; }
+.pop { position: fixed; left: 50%; top: 45%; transform: translate(-50%, -50%) scale(0.8); font-family: var(--serif); font-size: clamp(2.2rem, 11vw, 4rem); font-weight: 700; color: var(--gold); text-shadow: 0 2px 20px rgba(0,0,0,0.6); pointer-events: none; opacity: 0; transition: opacity 0.15s, transform 0.15s; z-index: 50; text-align: center; line-height: 1; }
+.pop.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.pop small { display: block; font-family: var(--sans); font-size: 1rem; color: var(--ink); font-weight: 600; letter-spacing: 0.1em; margin-top: 0.4rem; }
+.result-big { font-family: var(--serif); font-size: 4.2rem; color: var(--gold); line-height: 1; font-weight: 700; text-align: center; }
+.result-sub { text-align: center; color: var(--ink-soft); margin: 0.5rem 0 1rem; font-size: 1rem; }
+.lb { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.lb td { padding: 0.55rem 0.4rem; border-top: 1px solid var(--rule); color: var(--ink-soft); }
+.lb td.n { color: var(--ink-faint); width: 2.2rem; font-family: var(--mono); font-size: 0.8rem; }
+.lb td.s { text-align: right; font-family: var(--serif); font-size: 1.15rem; color: var(--gold); font-weight: 600; }
+.lb tr.me td { color: var(--ink); background: rgba(200,134,46,0.08); }
+.pill-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+.vs { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.6rem; text-align: center; margin: 0.6rem 0 1rem; }
+.vs .side { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.8rem 0.5rem; }
+.vs .side.turn { border-color: var(--gold); }
+.vs .side b { display: block; font-family: var(--serif); font-size: 1.1rem; color: var(--ink); }
+.vs .side i { font-style: normal; font-family: var(--serif); font-size: 1.8rem; color: var(--gold); display: block; line-height: 1.1; }
+.vs .x { font-family: var(--mono); color: var(--ink-faint); font-size: 0.8rem; }
+.list { list-style: none; display: grid; gap: 0.45rem; }
+.list li { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.7rem 0.9rem; font-size: 0.9rem; color: var(--ink-soft); display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; }
+.list li b { color: var(--ink); }
+.list li .btn { flex: 0 0 auto; }
+.hidden { display: none !important; }
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-size: 0.85rem; color: var(--ink-faint); }
+.topbar b { color: var(--ink); }
+.topbar button { background: none; border: 1px solid var(--rule); color: var(--ink-soft); border-radius: 999px; padding: 0.3rem 0.8rem; font-size: 0.78rem; font-family: var(--sans); }
+@media (max-width: 480px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="framework.html">Practice Framework</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="training.html">Training</a></li>
+    <li><a href="coach-dad.html">Coach Dad</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="stages.html">The 4 Stages</a><a href="framework.html">Practice Framework</a><a href="articles.html">Articles</a><a href="training.html">Training</a><a href="coach-dad.html">Coach Dad</a><a href="lineup.html">Lineup Builder</a><a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="cage-targets.html">&#8592; The Hit Window</a></div>
+    <div class="eyebrow">Game</div>
+    <h1>Ten balls. Call your shot. Hit the net.</h1>
+    <p>Hang the nets with <a href="cage-targets.html">The Hit Window</a>, then play. Points for every net you hit, double for calling it first. Challenge anyone. Coaches run head-to-head.</p>
+  </div>
+</div>
+
+<div class="pop" id="pop"></div>
+
+<section class="section section-white" style="padding-top:1.5rem">
+<div class="g-wrap">
+
+  <!-- SIGN IN -->
+  <div class="g-card" id="s-signin">
+    <div class="g-eb">Play free</div>
+    <div class="g-h">Who's hitting?</div>
+    <p class="g-p">Your rounds, your rank, your challenges, all saved to your email. No password, no card.</p>
+    <div style="margin-top:1rem">
+      <div class="field"><label for="in-name">Name on the board</label><input type="text" id="in-name" maxlength="40" autocomplete="name" placeholder="First name or nickname"></div>
+      <div class="field"><label for="in-email">Email</label><input type="email" id="in-email" maxlength="120" autocomplete="email" inputmode="email" placeholder="you@email.com"></div>
+      <div class="g-row" style="gap:0.6rem">
+        <div class="field" style="flex:1"><label for="in-sport">Sport</label><select id="in-sport"><option value="bb">Baseball</option><option value="sb">Softball</option></select></div>
+        <div class="field" style="flex:1"><label for="in-group">Plays in</label><select id="in-group"></select></div>
+        <div class="field" style="flex:0.7"><label for="in-age">Age</label><input type="number" id="in-age" min="5" max="99" inputmode="numeric" placeholder="12"></div>
+      </div>
+      <div class="field"><label for="in-role">I am a</label><select id="in-role"><option value="player">Player (free)</option><option value="coach">Coach (head-to-head mode)</option></select></div>
+      <div class="err" id="in-err"></div>
+      <button type="button" class="btn btn-primary btn-lg btn-full" id="in-go">Let's hit</button>
+      <div class="g-note">Returning? Same email signs you right back in. We use your email to save your scores and nothing else.</div>
+      <button type="button" class="btn btn-outline btn-full" id="in-lb" style="margin-top:0.8rem">Just show me the leaderboard</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="s-home" class="hidden">
+    <div class="topbar"><span>Hitting as <b id="h-name"></b> <span id="h-level"></span></span><button type="button" id="h-out">Switch</button></div>
+    <div class="g-card">
+      <div class="menu">
+        <button type="button" id="m-solo"><div><b>Play a round</b><span>10 balls. Beat your best.</span></div><i>&#8594;</i></button>
+        <button type="button" id="m-chal"><div><b>Challenge</b><span>Send a challenge link, or pick a player. Both play 10. Best score wins.</span></div><i>&#8594;</i></button>
+        <button type="button" id="m-h2h"><div><b>Head-to-head</b><span id="m-h2h-sub">Coach mode. Two hitters alternate, live on one phone.</span></div><i>&#8594;</i></button>
+        <button type="button" id="m-lb"><div><b>Leaderboard</b><span>This week and all time, by level.</span></div><i>&#8594;</i></button>
+        <button type="button" id="m-invite"><div><b>Invite to play</b><span>Send the game to a teammate.</span></div><i>&#8599;</i></button>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b id="st-best">0</b><i>Best</i></div>
+        <div class="stat"><b id="st-avg">0</b><i>Average</i></div>
+        <div class="stat"><b id="st-rounds">0</b><i>Rounds</i></div>
+        <div class="stat"><b id="st-ld">0%</b><i>Line drives</i></div>
+      </div>
+    </div>
+    <div class="g-card" id="open-card">
+      <div class="g-eb">Open challenges</div>
+      <ul class="list" id="open-list"></ul>
+    </div>
+    <div class="g-card">
+      <div class="g-eb">Scoring</div>
+      <p class="g-p"><b style="color:var(--ink)">Middle 30 &middot; Gaps 20 &middot; Lines 10.</b> Call the net before the swing and hit it: double. Three line drives in a row: +10 each from the third on. A miss is a miss. Ten balls, then the board.</p>
+    </div>
+  </div>
+
+  <!-- PICK OPPONENT (challenge) -->
+  <div id="s-chal" class="hidden">
+    <div class="g-card">
+      <div class="g-eb">Challenge</div>
+      <div class="g-h">Who are you calling out?</div>
+      <button type="button" class="btn btn-primary btn-full" id="ch-link" style="margin-bottom:1rem">Send a challenge link</button>
+      <div class="err" id="ch-link-msg" style="color:var(--ink-soft)"></div>
+      <div class="field"><label for="ch-q">Search by name, or type their exact email</label><input type="text" id="ch-q" maxlength="120" placeholder="Start typing"></div>
+      <ul class="list" id="ch-list"></ul>
+      <div class="err" id="ch-err"></div>
+      <div class="g-note">They get the challenge the next time they open the game. You play your 10 now or later. Highest score wins.</div>
+      <button type="button" class="btn btn-outline" id="ch-back" style="margin-top:0.8rem">Back</button>
+    </div>
+  </div>
+
+  <!-- H2H SETUP (coach) -->
+  <div id="s-h2h" class="hidden">
+    <div class="g-card">
+      <div class="g-eb">Coach &middot; Head-to-head</div>
+      <div class="g-h">Pick two hitters.</div>
+      <p class="g-p">They alternate ball for ball on this phone. Any player with an account can be picked.</p>
+      <div class="field" style="margin-top:0.8rem"><label for="hh-q">Search roster</label><input type="text" id="hh-q" maxlength="60" placeholder="Name"></div>
+      <ul class="list" id="hh-list"></ul>
+      <div class="vs" id="hh-vs"><div class="side" id="hh-a"><b>Hitter A</b><span style="color:var(--ink-faint);font-size:0.8rem">tap a name</span></div><div class="x">VS</div><div class="side" id="hh-b"><b>Hitter B</b><span style="color:var(--ink-faint);font-size:0.8rem">tap a name</span></div></div>
+      <div class="err" id="hh-err"></div>
+      <div class="g-row"><button type="button" class="btn btn-outline" id="hh-back">Back</button><button type="button" class="btn btn-primary" id="hh-go" disabled>Start</button></div>
+    </div>
+  </div>
+
+  <!-- ROUND -->
+  <div id="s-round" class="hidden">
+    <div class="g-card">
+      <div class="vs hidden" id="r-vs"><div class="side" id="r-va"><b></b><i>0</i></div><div class="x">VS</div><div class="side" id="r-vb"><b></b><i>0</i></div></div>
+      <div class="scoreboard"><div class="who"><small id="r-mode">Solo round</small><span id="r-who"></span></div><div class="pts" id="r-pts">0</div></div>
+      <div class="dots" id="r-dots"></div>
+      <div class="call-bar"><span id="r-call-txt">Call your shot for <b>double</b>, or just hit.</span><span id="r-ball">Ball 1 of 10</span></div>
+      <div class="pill-row" id="r-calls" style="margin-bottom:0.6rem"><button type="button" class="wz-opt" data-c="ll">Call left line</button><button type="button" class="wz-opt" data-c="lg">Call left gap</button><button type="button" class="wz-opt" data-c="mid">Call middle</button><button type="button" class="wz-opt" data-c="rg">Call right gap</button><button type="button" class="wz-opt" data-c="rl">Call right line</button></div>
+      <div class="net">
+        <div class="net-grid">
+          <button type="button" class="zone line" data-z="ll"><b>10</b>Left line</button>
+          <div style="display:grid;gap:0.5rem"><button type="button" class="zone" data-z="lg"><b>20</b>Left gap</button><button type="button" class="zone" data-z="mid"><b>30</b>Middle</button></div>
+          <button type="button" class="zone line" data-z="rl"><b>10</b>Right line</button>
+        </div>
+        <div class="net-grid" style="margin-top:0.5rem"><div></div><button type="button" class="zone" data-z="rg"><b>20</b>Right gap</button><div></div></div>
+        <div class="miss-row"><button type="button" class="miss" data-z="miss">Miss</button><button type="button" class="miss" id="r-undo">Undo</button><button type="button" class="miss" id="r-quit">Quit</button></div>
+      </div>
+      <div class="g-note">Tap the net the ball hit. Miss means it hit nothing. Call a net first and hit it for double points.</div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="s-result" class="hidden">
+    <div class="g-card">
+      <div class="g-eb" id="res-eb">Round over</div>
+      <div class="result-big" id="res-score">0</div>
+      <div class="result-sub" id="res-sub"></div>
+      <div class="stat-row" style="margin-top:0">
+        <div class="stat"><b id="res-ld">0</b><i>Line drives</i></div>
+        <div class="stat"><b id="res-called">0</b><i>Called shots</i></div>
+        <div class="stat"><b id="res-streak">0</b><i>Best streak</i></div>
+        <div class="stat"><b id="res-rank">--</b><i>Rank, level</i></div>
+      </div>
+      <div class="vs hidden" id="res-vs" style="margin-top:1rem"><div class="side" id="res-va"><b></b><i>0</i></div><div class="x">VS</div><div class="side" id="res-vb"><b></b><i>0</i></div></div>
+      <div class="g-row" style="margin-top:1rem"><button type="button" class="btn btn-primary btn-lg" id="res-again">Play again</button><button type="button" class="btn btn-secondary btn-lg" id="res-share">Share</button><button type="button" class="btn btn-outline btn-lg" id="res-home">Home</button></div>
+      <div class="err" id="res-msg" style="color:var(--ink-soft)"></div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div id="s-lb" class="hidden">
+    <div class="g-card">
+      <div class="g-eb">Leaderboard</div>
+      <div class="pill-row" id="lb-range"><button type="button" class="wz-opt active" data-r="week">This week</button><button type="button" class="wz-opt" data-r="all">All time</button></div>
+      <div class="pill-row" id="lb-sport"><button type="button" class="wz-opt active" data-s="bb">Baseball</button><button type="button" class="wz-opt" data-s="sb">Softball</button></div>
+      <div class="pill-row" id="lb-level"></div>
+      <table class="lb"><tbody id="lb-body"></tbody></table>
+      <div class="g-note" id="lb-note"></div>
+      <button type="button" class="btn btn-outline" id="lb-back" style="margin-top:0.8rem">Back</button>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand"><div class="logo">Dugout<span>Lab</span></div><p>Evidence-based coaching for Little League and rec ball coaches. Free, always.</p><div class="footer-disclosure">Compiled with AI assistance &middot; Reviewed by humans</div></div>
+    <div class="footer-links"><h4>Tools</h4><ul><li><a href="lineup.html">Lineup Builder</a></li><li><a href="cage-targets.html">The Hit Window</a></li><li><a href="game.html">Hit Window Game</a></li><li><a href="training.html">Training</a></li></ul></div>
+    <div class="footer-links"><h4>Learn</h4><ul><li><a href="articles.html">All Articles</a></li><li><a href="stages.html">The 4 Stages</a></li><li><a href="progression.html">Season Plan</a></li><li><a href="about.html">About</a></li></ul></div>
+  </div>
+  <div class="footer-sponsor"><div class="sponsor-label">Our Sponsor</div><div class="sponsor-line">DugoutLab is made free thanks to <a href="https://gamedayhelpers.com" target="_blank" rel="noopener">GamedayHelpers.com</a><span class="sponsor-tag">Let coaches coach. Let parents enjoy the game.</span></div></div>
+  <div class="footer-bottom"><span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span><span>dugoutlab.com</span></div>
+</footer>
+
+<script>
+(function () {
+  var API = '/api/';
+  var GROUPS = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+  function lvName(l) { var m = /^(bb|sb)(\d+)u$/.exec(l || ''); return m ? m[2] + 'U ' + (m[1] === 'bb' ? 'Baseball' : 'Softball') : ''; }
+  var SHARE_URL = location.origin + location.pathname;
+  var ZN = { mid: 'Middle', lg: 'Left gap', rg: 'Right gap', ll: 'Left line', rl: 'Right line', miss: 'Miss' };
+  var PTS = { mid: 30, lg: 20, rg: 20, ll: 10, rl: 10, miss: 0 };
+  var S = { token: null, player: null, screen: 'signin' };
+  function $(id) { return document.getElementById(id); }
+  function show(id) {
+    ['s-signin', 's-home', 's-chal', 's-h2h', 's-round', 's-result', 's-lb'].forEach(function (s) { $(s).classList.toggle('hidden', s !== id); });
+    window.scrollTo(0, 0);
+  }
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function api(path, body) {
+    var opt = body ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(Object.assign({ token: S.token }, body)) } : {};
+    var u = API + path + (body ? '' : (path.indexOf('?') > -1 ? '&' : '?') + 'token=' + encodeURIComponent(S.token || ''));
+    return fetch(u, opt).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Something broke'); return j; }); });
+  }
+  function save() { try { localStorage.setItem('dl_game', JSON.stringify({ token: S.token, player: S.player })); } catch (e) {} }
+  function load() { try { var j = JSON.parse(localStorage.getItem('dl_game') || 'null'); if (j && j.token) { S.token = j.token; S.player = j.player; } } catch (e) {} }
+
+  /* ---------- sign in ---------- */
+  $('in-group').innerHTML = GROUPS.map(function (g) { return '<option value="' + g + '"' + (g === 12 ? ' selected' : '') + '>' + g + 'U</option>'; }).join('');
+  $('in-age').addEventListener('input', function () { var a = parseInt(this.value, 10); if (a >= 6 && a <= 18) $('in-group').value = a; });
+  $('in-lb').addEventListener('click', function () { LB.level = LB.level || 'bb12u'; showLB(true); });
+  function share(title, text, url) {
+    var payload = { title: title, text: text, url: url };
+    if (navigator.share) return navigator.share(payload).then(function () { return 'sent'; }).catch(function () { return null; });
+    var full = text + ' ' + url;
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(full).then(function () { return 'copied'; }).catch(function () { return 'show'; });
+    return Promise.resolve('show');
+  }
+  function shareMsg(el, r, url) { el.textContent = r === 'sent' ? 'Sent.' : r === 'copied' ? 'Link copied. Paste it anywhere.' : r === 'show' ? url : ''; }
+  $('in-go').addEventListener('click', function () {
+    var b = $('in-go'); b.disabled = true; $('in-err').textContent = '';
+    api('signup', { name: $('in-name').value, email: $('in-email').value, level: $('in-sport').value + $('in-group').value + 'u', age: $('in-age').value, role: $('in-role').value }).then(function (j) {
+      S.token = j.token; S.player = j.player; save(); afterSignIn();
+    }).catch(function (e) { $('in-err').textContent = e.message; }).then(function () { b.disabled = false; });
+  });
+  $('h-out').addEventListener('click', function () { S.token = null; S.player = null; save(); show('s-signin'); });
+
+  /* ---------- home ---------- */
+  function afterSignIn() {
+    var m = /[?&]c=([a-z0-9]+)/i.exec(location.search);
+    if (!m) return home();
+    history.replaceState(null, '', location.pathname);
+    api('join', { match_id: m[1] }).then(function (j) {
+      if (j.mine) return home();
+      startRound({ mode: 'challenge', match_id: j.match.id, label: 'Challenge vs ' + j.match.a_name });
+    }).catch(function (e) { home(); $('open-list').innerHTML = '<li><span>' + esc(e.message) + '</span></li>'; });
+  }
+  function home() {
+    show('s-home');
+    $('h-name').textContent = S.player.name; $('h-level').textContent = '· ' + lvName(S.player.level);
+    var coach = S.player.role === 'coach';
+    $('m-h2h').classList.toggle('locked', !coach);
+    $('m-h2h-sub').textContent = coach ? 'Two hitters alternate, live on one phone.' : 'Coach mode. Sign up as a coach to run it.';
+    api('me').then(function (j) {
+      var st = j.stats || {};
+      $('st-best').textContent = st.best || 0; $('st-avg').textContent = st.avg ? Math.round(st.avg) : 0; $('st-rounds').textContent = st.rounds || 0;
+      $('st-ld').textContent = st.rounds ? Math.round(100 * (st.liners || 0) / (st.rounds * 10)) + '%' : '0%';
+      var open = j.open || [], h = '';
+      open.forEach(function (m) {
+        var mine = m.a_player === S.player.id ? 'a' : 'b', other = (mine === 'a' ? m.b_name : m.a_name) || 'whoever opens your link';
+        var played = m[mine + '_score'] !== null, theirs = m[(mine === 'a' ? 'b' : 'a') + '_score'];
+        var open = !m.b_player;
+        h += '<li><div><b>' + (m.type === 'h2h' ? 'Head-to-head' : 'vs ' + esc(other)) + '</b><br><span style="font-size:0.8rem">' + (played ? 'You: ' + m[mine + '_score'] + '. Waiting on ' + esc(other) + '.' : (theirs !== null ? esc(other) + ' put up ' + theirs + '. Your turn.' : 'Nobody has hit yet.')) + '</span></div>' +
+          (open ? '<button type="button" class="btn btn-forest btn-sm" data-share="' + esc(m.id) + '">Share link</button>' : '') +
+          (played || m.type === 'h2h' ? '' : '<button type="button" class="btn btn-primary btn-sm" data-m="' + esc(m.id) + '" data-o="' + esc(other) + '">Play</button>') + '</li>';
+      });
+      (j.recent || []).slice(0, 3).forEach(function (m) {
+        var mine = m.a_player === S.player.id ? 'a' : 'b', other = mine === 'a' ? m.b_name : m.a_name;
+        var res = m.winner === 'tie' ? 'Tie' : (m.winner === S.player.id ? 'You won' : esc(other) + ' won');
+        h += '<li style="opacity:0.7"><div><b>' + res + '</b> vs ' + esc(other) + ' <span style="font-size:0.8rem">' + m[mine + '_score'] + ' to ' + m[(mine === 'a' ? 'b' : 'a') + '_score'] + '</span></div></li>';
+      });
+      $('open-list').innerHTML = h || '<li><span>No challenges yet. Call someone out.</span></li>';
+      Array.prototype.forEach.call($('open-list').querySelectorAll('button[data-m]'), function (b) {
+        b.addEventListener('click', function () { startRound({ mode: 'challenge', match_id: b.getAttribute('data-m'), label: 'Challenge vs ' + b.getAttribute('data-o') }); });
+      });
+      Array.prototype.forEach.call($('open-list').querySelectorAll('button[data-share]'), function (b) {
+        b.addEventListener('click', function () {
+          var url = SHARE_URL + '?c=' + b.getAttribute('data-share');
+          share('Hit Window challenge', S.player.name + ' is calling you out. 10 balls, hit the nets, beat the score.', url).then(function (r) { b.textContent = r === 'sent' ? 'Sent' : r === 'copied' ? 'Copied' : 'Share link'; if (r === 'show') $('open-list').insertAdjacentHTML('beforeend', '<li><span style="word-break:break-all">' + esc(url) + '</span></li>'); });
+        });
+      });
+    }).catch(function (e) { $('open-list').innerHTML = '<li><span>' + esc(e.message) + '</span></li>'; });
+  }
+  $('m-solo').addEventListener('click', function () { startRound({ mode: 'solo', label: 'Solo round' }); });
+  $('m-lb').addEventListener('click', function () { showLB(false); });
+  $('m-invite').addEventListener('click', function () {
+    var b = $('m-invite').querySelector('span');
+    share('Hit Window Game', 'Come hit with me. Ten balls, call your shot, hit the net. Free.', SHARE_URL).then(function (r) { b.textContent = r === 'sent' ? 'Sent.' : r === 'copied' ? 'Link copied. Paste it anywhere.' : 'Send the game to a teammate.'; });
+  });
+  $('m-chal').addEventListener('click', function () { show('s-chal'); $('ch-q').value = ''; $('ch-list').innerHTML = ''; $('ch-err').textContent = ''; });
+  $('ch-back').addEventListener('click', home);
+  $('ch-link').addEventListener('click', function () {
+    var b = $('ch-link'); b.disabled = true; $('ch-err').textContent = '';
+    api('challenge', {}).then(function (j) {
+      var url = SHARE_URL + '?c=' + j.match.id;
+      return share('Hit Window challenge', S.player.name + ' is calling you out. 10 balls, hit the nets, beat the score.', url).then(function (r) {
+        shareMsg($('ch-link-msg'), r, url);
+        $('ch-link-msg').textContent += ' Play your 10 now, or later from Home.';
+        setTimeout(function () { startRound({ mode: 'challenge', match_id: j.match.id, label: 'Challenge (open link)' }); }, r === 'show' ? 4000 : 1200);
+      });
+    }).catch(function (e) { $('ch-err').textContent = e.message; }).then(function () { b.disabled = false; });
+  });
+  $('m-h2h').addEventListener('click', function () {
+    if (S.player.role !== 'coach') { S.token = null; save(); show('s-signin'); $('in-role').value = 'coach'; $('in-err').textContent = 'Sign up as a coach to run head-to-head.'; return; }
+    H.a = null; H.b = null; drawH(); $('hh-q').value = ''; $('hh-list').innerHTML = ''; $('hh-err').textContent = ''; show('s-h2h');
+  });
+
+  /* ---------- challenge ---------- */
+  var chT = null;
+  $('ch-q').addEventListener('input', function () {
+    clearTimeout(chT); var q = this.value.trim();
+    chT = setTimeout(function () {
+      if (q.length < 2) { $('ch-list').innerHTML = ''; return; }
+      api('players?q=' + encodeURIComponent(q)).then(function (j) {
+        var rows = j.rows || [];
+        if (!rows.length && q.indexOf('@') > 0) rows = [{ id: q, name: q, level: '' }];
+        $('ch-list').innerHTML = rows.map(function (p) { return '<li><div><b>' + esc(p.name) + '</b> <span style="font-size:0.8rem">' + esc(lvName(p.level)) + (p.age ? ', ' + p.age : '') + '</span></div><button type="button" class="btn btn-primary btn-sm" data-id="' + esc(p.id) + '" data-n="' + esc(p.name) + '">Challenge</button></li>'; }).join('') || '<li><span>No one by that name yet. Try their exact email.</span></li>';
+        Array.prototype.forEach.call($('ch-list').querySelectorAll('button'), function (b) {
+          b.addEventListener('click', function () {
+            b.disabled = true;
+            api('challenge', { to: b.getAttribute('data-id') }).then(function (j) {
+              startRound({ mode: 'challenge', match_id: j.match.id, label: 'Challenge vs ' + j.match.b_name });
+            }).catch(function (e) { $('ch-err').textContent = e.message; b.disabled = false; });
+          });
+        });
+      }).catch(function (e) { $('ch-err').textContent = e.message; });
+    }, 250);
+  });
+
+  /* ---------- h2h setup ---------- */
+  var H = { a: null, b: null };
+  function drawH() {
+    $('hh-a').innerHTML = '<b>' + (H.a ? esc(H.a.name) : 'Hitter A') + '</b><span style="color:var(--ink-faint);font-size:0.8rem">' + (H.a ? esc(lvName(H.a.level)) : 'tap a name') + '</span>';
+    $('hh-b').innerHTML = '<b>' + (H.b ? esc(H.b.name) : 'Hitter B') + '</b><span style="color:var(--ink-faint);font-size:0.8rem">' + (H.b ? esc(lvName(H.b.level)) : 'tap a name') + '</span>';
+    $('hh-go').disabled = !(H.a && H.b);
+  }
+  var hhT = null;
+  $('hh-q').addEventListener('input', function () {
+    clearTimeout(hhT); var q = this.value.trim();
+    hhT = setTimeout(function () {
+      if (q.length < 2) { $('hh-list').innerHTML = ''; return; }
+      api('players?q=' + encodeURIComponent(q)).then(function (j) {
+        $('hh-list').innerHTML = (j.rows || []).map(function (p) { return '<li><div><b>' + esc(p.name) + '</b></div><button type="button" class="btn btn-forest btn-sm" data-id="' + esc(p.id) + '" data-n="' + esc(p.name) + '" data-l="' + esc(p.level) + '">Pick</button></li>'; }).join('') || '<li><span>No match. Players sign up on this page first.</span></li>';
+        Array.prototype.forEach.call($('hh-list').querySelectorAll('button'), function (b) {
+          b.addEventListener('click', function () {
+            var p = { id: b.getAttribute('data-id'), name: b.getAttribute('data-n'), level: b.getAttribute('data-l') };
+            if (!H.a) H.a = p; else if (!H.b && p.id !== H.a.id) H.b = p; else H.a = p;
+            drawH();
+          });
+        });
+      });
+    }, 250);
+  });
+  $('hh-a').addEventListener('click', function () { H.a = null; drawH(); });
+  $('hh-b').addEventListener('click', function () { H.b = null; drawH(); });
+  $('hh-back').addEventListener('click', home);
+  $('hh-go').addEventListener('click', function () {
+    $('hh-go').disabled = true;
+    api('h2h', { a: H.a.id, b: H.b.id }).then(function (j) {
+      startRound({ mode: 'h2h', match_id: j.match.id, label: 'Head-to-head', a: H.a, b: H.b });
+    }).catch(function (e) { $('hh-err').textContent = e.message; $('hh-go').disabled = false; });
+  });
+
+  /* ---------- round ---------- */
+  var R = null;
+  function fresh() { return { balls: [], call: null, score: 0, streak: 0 }; }
+  function startRound(o) {
+    R = { mode: o.mode, match_id: o.match_id || null, label: o.label, h2h: o.mode === 'h2h', a: o.a, b: o.b, turn: 'a', A: fresh(), B: fresh() };
+    show('s-round'); $('r-mode').textContent = R.label;
+    setTimeout(function () { $('s-round').scrollIntoView({ block: 'start' }); window.scrollBy(0, -8); }, 30);
+    $('r-vs').classList.toggle('hidden', !R.h2h);
+    if (R.h2h) { $('r-va').querySelector('b').textContent = R.a.name; $('r-vb').querySelector('b').textContent = R.b.name; }
+    drawRound();
+  }
+  function cur() { return R.h2h ? (R.turn === 'a' ? R.A : R.B) : R.A; }
+  function curName() { return R.h2h ? (R.turn === 'a' ? R.a.name : R.b.name) : S.player.name; }
+  function drawRound() {
+    var c = cur();
+    $('r-who').textContent = curName(); $('r-pts').textContent = c.score;
+    var d = ''; for (var i = 0; i < 10; i++) d += '<span class="' + (c.balls[i] ? (c.balls[i].zone === 'miss' ? 'miss' : 'hit') : (i === c.balls.length ? 'now' : '')) + '"></span>';
+    $('r-dots').innerHTML = d;
+    $('r-ball').textContent = 'Ball ' + Math.min(10, c.balls.length + 1) + ' of 10';
+    $('r-call-txt').innerHTML = c.call ? 'Called <b>' + ZN[c.call] + '</b>. Hit it for double.' : 'Call your shot for <b>double</b>, or just hit.';
+    Array.prototype.forEach.call(document.querySelectorAll('.zone'), function (z) { z.classList.toggle('called', z.getAttribute('data-z') === c.call); });
+    Array.prototype.forEach.call($('r-calls').querySelectorAll('button'), function (b) { b.classList.toggle('active', b.getAttribute('data-c') === c.call); });
+    if (R.h2h) {
+      $('r-va').querySelector('i').textContent = R.A.score; $('r-vb').querySelector('i').textContent = R.B.score;
+      $('r-va').classList.toggle('turn', R.turn === 'a'); $('r-vb').classList.toggle('turn', R.turn === 'b');
+    }
+  }
+  function pop(big, small) {
+    var p = $('pop'); p.innerHTML = esc(big) + (small ? '<small>' + esc(small) + '</small>' : ''); p.classList.add('show');
+    clearTimeout(pop.t); pop.t = setTimeout(function () { p.classList.remove('show'); }, 900);
+  }
+  function record(zone) {
+    var c = cur();
+    if (c.balls.length >= 10) return;
+    var call = c.call; c.call = null;
+    var pts = PTS[zone], tag = ZN[zone];
+    var hitCall = call && call === zone;
+    if (hitCall) { pts *= 2; tag = 'CALLED IT'; }
+    if (zone !== 'miss') { c.streak++; if (c.streak >= 3) { pts += 10; tag += ' \u00B7 streak ' + c.streak; } } else c.streak = 0;
+    c.score += pts;
+    c.balls.push({ zone: zone, call: call });
+    pop(zone === 'miss' ? 'MISS' : '+' + pts, tag);
+    if (R.h2h) {
+      if (R.A.balls.length >= 10 && R.B.balls.length >= 10) { drawRound(); return finish(); }
+      R.turn = (R.turn === 'a' && R.B.balls.length < 10) ? 'b' : (R.A.balls.length < 10 ? 'a' : 'b');
+    } else if (c.balls.length >= 10) { drawRound(); return finish(); }
+    drawRound();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.zone'), function (z) {
+    z.addEventListener('click', function () { record(z.getAttribute('data-z')); });
+  });
+  Array.prototype.forEach.call($('r-calls').querySelectorAll('button'), function (b) {
+    b.addEventListener('click', function () { var c = cur(), z = b.getAttribute('data-c'); c.call = c.call === z ? null : z; drawRound(); if (c.call) pop(ZN[z].toUpperCase(), 'called'); });
+  });
+  document.querySelector('.miss[data-z=miss]').addEventListener('click', function () { record('miss'); });
+  $('r-undo').addEventListener('click', function () {
+    var c = cur();
+    if (c.call) { c.call = null; drawRound(); return; }
+    if (R.h2h) { R.turn = R.turn === 'a' ? 'b' : 'a'; c = cur(); }
+    if (!c.balls.length) { drawRound(); return; }
+    c.balls.pop();
+    var s = 0, st = 0, i, b; c.score = 0; c.streak = 0;
+    for (i = 0; i < c.balls.length; i++) { b = c.balls[i]; var p = PTS[b.zone]; if (b.call === b.zone && b.zone !== 'miss') p *= 2; if (b.zone !== 'miss') { st++; if (st >= 3) p += 10; } else st = 0; s += p; }
+    c.score = s; c.streak = st; drawRound();
+  });
+  $('r-quit').addEventListener('click', function () { R = null; home(); });
+
+  function finish() {
+    show('s-result');
+    $('res-eb').textContent = R.label;
+    $('res-vs').classList.toggle('hidden', !R.h2h);
+    var posts = [];
+    if (R.h2h) {
+      posts.push(api('round', { mode: 'h2h', balls: R.A.balls, match_id: R.match_id, for_player: R.a.id, level: R.a.level }));
+      posts.push(api('round', { mode: 'h2h', balls: R.B.balls, match_id: R.match_id, for_player: R.b.id, level: R.b.level }));
+    } else posts.push(api('round', { mode: R.mode, balls: R.A.balls, match_id: R.match_id, level: S.player.level }));
+    $('res-score').textContent = R.h2h ? (R.A.score > R.B.score ? R.a.name : R.B.score > R.A.score ? R.b.name : 'Tie') : R.A.score;
+    $('res-sub').textContent = 'Saving\u2026';
+    var c = R.h2h ? (R.A.score >= R.B.score ? R.A : R.B) : R.A, ld = 0, cl = 0, st = 0, best = 0;
+    c.balls.forEach(function (b) { if (b.zone !== 'miss') { ld++; st++; if (st > best) best = st; } else st = 0; if (b.call && b.call === b.zone) cl++; });
+    $('res-ld').textContent = ld + '/10'; $('res-called').textContent = cl; $('res-streak').textContent = best; $('res-rank').textContent = '--';
+    if (R.h2h) { $('res-va').innerHTML = '<b>' + esc(R.a.name) + '</b><i>' + R.A.score + '</i>'; $('res-vb').innerHTML = '<b>' + esc(R.b.name) + '</b><i>' + R.B.score + '</i>'; }
+    Promise.all(posts).then(function (rs) {
+      var j = rs[0];
+      if (R.h2h) { $('res-sub').textContent = 'Saved to both hitters.'; $('res-rank').textContent = '#' + j.rank; return; }
+      $('res-rank').textContent = '#' + j.rank;
+      var msg = 'Rank ' + j.rank + ' of ' + j.of + ' rounds at your level.';
+      if (j.match) {
+        var mine = j.match.a_player === S.player.id ? 'a' : 'b', other = mine === 'a' ? j.match.b_name : j.match.a_name, th = j.match[(mine === 'a' ? 'b' : 'a') + '_score'];
+        if (j.match.status === 'done') msg = (j.match.winner === 'tie' ? 'Tie with ' : j.match.winner === S.player.id ? 'You beat ' : 'You lost to ') + other + ', ' + j.round.score + ' to ' + th + '.';
+        else msg = 'Your ' + j.round.score + ' is in. Waiting on ' + other + '.';
+      }
+      $('res-sub').textContent = msg;
+    }).catch(function (e) { $('res-sub').textContent = 'Could not save: ' + e.message; });
+  }
+  $('res-again').addEventListener('click', function () { if (R && R.h2h) startRound({ mode: 'h2h', match_id: null, label: 'Head-to-head', a: R.a, b: R.b }); else startRound({ mode: 'solo', label: 'Solo round' }); });
+  $('res-home').addEventListener('click', home);
+  $('res-share').addEventListener('click', function () {
+    var sc = R && R.h2h ? R.a.name + ' ' + R.A.score + ', ' + R.b.name + ' ' + R.B.score : (R ? R.A.score : 0);
+    share('Hit Window Game', (R && R.h2h ? 'Head-to-head: ' + sc + '.' : S.player.name + ' just put up ' + sc + ' in the Hit Window.') + ' Think you can beat it?', SHARE_URL)
+      .then(function (r) { shareMsg($('res-msg'), r, SHARE_URL); });
+  });
+
+  /* ---------- leaderboard ---------- */
+  var LB = { range: 'week', level: null, guest: false };
+  function showLB(guest) {
+    LB.guest = !!guest;
+    LB.level = LB.level || (S.player ? S.player.level : 'bb12u');
+    var sport = LB.level.slice(0, 2);
+    show('s-lb');
+    Array.prototype.forEach.call($('lb-sport').querySelectorAll('button'), function (b) { b.classList.toggle('active', b.getAttribute('data-s') === sport); });
+    $('lb-level').innerHTML = GROUPS.map(function (g) { var k = sport + g + 'u'; return '<button type="button" class="wz-opt' + (k === LB.level ? ' active' : '') + '" data-l="' + k + '">' + g + 'U</button>'; }).join('');
+    Array.prototype.forEach.call($('lb-level').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { LB.level = b.getAttribute('data-l'); showLB(LB.guest); }); });
+    Array.prototype.forEach.call($('lb-range').querySelectorAll('button'), function (b) { b.classList.toggle('active', b.getAttribute('data-r') === LB.range); });
+    $('lb-body').innerHTML = '<tr><td>Loading\u2026</td></tr>';
+    api('leaderboard?range=' + LB.range + '&level=' + LB.level).then(function (j) {
+      var rows = j.rows || [];
+      $('lb-body').innerHTML = rows.map(function (r, i) { return '<tr' + (S.player && r.player_id === S.player.id ? ' class="me"' : '') + '><td class="n">' + (i + 1) + '</td><td>' + esc(r.name) + (r.age ? ' <span style="color:var(--ink-faint)">' + r.age + '</span>' : '') + '<br><span style="font-size:0.75rem;color:var(--ink-faint)">' + esc(lvName(r.level)) + ' \u00B7 ' + r.liners + ' line drives \u00B7 ' + r.called + ' called</span></td><td class="s">' + r.score + '</td></tr>'; }).join('') || '<tr><td>No rounds yet at this level. Be first.</td></tr>';
+      $('lb-note').textContent = LB.range === 'week' ? 'Resets every 7 days.' : 'Every round ever played at this level.';
+    }).catch(function (e) { $('lb-body').innerHTML = '<tr><td>' + esc(e.message) + '</td></tr>'; });
+  }
+  Array.prototype.forEach.call($('lb-range').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { LB.range = b.getAttribute('data-r'); showLB(LB.guest); }); });
+  Array.prototype.forEach.call($('lb-sport').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { LB.level = b.getAttribute('data-s') + (LB.level.replace(/^(bb|sb)/, '')); showLB(LB.guest); }); });
+  $('lb-back').addEventListener('click', function () { if (LB.guest || !S.player) show('s-signin'); else home(); });
+
+  load();
+  if (S.token && S.player) afterSignIn(); else show('s-signin');
+})();
+</script>
+<script src="js/site.js"></script>
+</body>
+</html>

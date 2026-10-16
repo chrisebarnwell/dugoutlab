@@ -273,20 +273,17 @@ details.setup .field-grid { margin-top: 0.9rem; }
       <ul class="lock-list" id="cv-list"></ul>
     </div>
 
-    <!-- HOW BUILT -->
-    <div class="tool-card">
-      <div class="tool-step">How this was built</div>
-      <div class="tool-h">We worked backward from the field.</div>
-      <ol class="built-list">
-        <li>Launch a ball at every angle from 10 degrees down to 60 degrees up, at the exit velocity you set.</li>
-        <li>Fly it through the air with gravity and drag until it lands.</li>
-        <li>Ask one question about each ball. Does it land where a fielder can get to it?</li>
-        <li>The angles that clear the infield and land before an outfielder arrives are the hit window.</li>
-        <li>Trace those same angles from the tee to your net. That is where the target hangs.</li>
-      </ol>
+    <!-- PLAY -->
+    <div class="tool-card" style="border-color:var(--gold)">
+      <div class="tool-step">Now play</div>
+      <div class="tool-h">Nets are up. Keep score.</div>
+      <p class="big-line" style="margin-bottom:1rem">Ten balls. Call your shot. Middle 30, gaps 20, lines 10. Challenge a teammate or run head-to-head. Free with an email.</p>
+      <a href="game.html" class="btn btn-primary btn-lg">Open the game</a>
+    </div>
 
-      <h2 style="font-family:var(--serif);font-size:1.25rem;font-weight:600;color:var(--ink);margin:1.8rem 0 0.2rem;letter-spacing:-0.01em">Guidelines &amp; sources this tool follows</h2>
-      <ul class="src-list">
+    <details class="setup" style="border-top:none;margin-top:0.5rem">
+      <summary style="font-size:0.8rem;color:var(--ink-faint)">Sources and assumptions</summary>
+      <ul class="src-list" style="margin-top:0.8rem">
         <li><strong>MLB Statcast glossary, Launch Angle.</strong> Ground ball below 10 degrees, line drive 10 to 25, fly ball 25 to 50, pop up above 50. Measured on major league hitters. Used here as a cross-check, not as the youth answer.</li>
         <li><strong>Kagan, D., and Nathan, A. M. (2014).</strong> Simplified models for the drag coefficient of a pitched baseball. <em>The Physics Teacher.</em> Drag coefficient of roughly 0.31 to 0.35 from pitch tracking. We use 0.35 for every ball and speed. That is a simplification.</li>
         <li><strong>Nathan, A. M.</strong> Trajectory Calculator, University of Illinois. The full model includes lift from backspin. Ours leaves spin out, so real fly balls carry farther than shown, most of all on hard-hit balls.</li>
@@ -299,8 +296,7 @@ details.setup .field-grid { margin-top: 0.9rem; }
         <li><strong>Line drive cap.</strong> Whatever the field model says, the nets only mark 10 to 22 degree launch angles. For small fields and low exit velocities the model can favor fly balls, since it assumes every fielder makes every reachable play. Youth fielders do not, and a target that teaches lift is the wrong lesson. DugoutLab decision, not a measured result.</li>
         <li><strong>Fielder depth, speed, reach, and reaction time.</strong> DugoutLab assumptions. Not measured. Open the field setup and change them.</li>
       </ul>
-      <p style="font-size:0.9rem;color:var(--ink-soft);margin-top:1rem;line-height:1.65"><em>Note on certainty: this is a physics model, not a record of real youth games. It treats every ball as hit straight at a fielder, so it misses the gaps, and it ignores spin, wind, bad hops, and errors. In youth games a ground ball often becomes a baserunner. The model does not count that. We hold the window as a starting point for a target, not a rule for a swing.</em></p>
-    </div>
+    </details>
 
   </div>
 </section>
