@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Hit Window Game | DugoutLab</title>
-<meta name="description" content="Ten balls. Call your shot. Hit the net. Play solo, challenge a friend, or run coach head-to-head. Free with an email.">
+<meta name="description" content="Ten balls. Call your shot. Hit the net. Play solo, challenge a friend, or run coach head-to-head. Free. Parents register their players.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
@@ -75,6 +75,8 @@
 .list li b { color: var(--ink); }
 .list li .btn { flex: 0 0 auto; }
 .hidden { display: none !important; }
+.chk { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.45; margin: 0.2rem 0 0.4rem; cursor: pointer; }
+.chk input { width: 22px; height: 22px; flex: 0 0 22px; accent-color: var(--gold); margin-top: 1px; }
 .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-size: 0.85rem; color: var(--ink-faint); }
 .topbar b { color: var(--ink); }
 .topbar button { background: none; border: 1px solid var(--rule); color: var(--ink-soft); border-radius: 999px; padding: 0.3rem 0.8rem; font-size: 0.78rem; font-family: var(--sans); }
@@ -117,27 +119,43 @@
   <!-- SIGN IN -->
   <div class="g-card" id="s-signin">
     <div class="g-eb">Play free</div>
-    <div class="g-h">Who's hitting?</div>
-    <p class="g-p">Your rounds, your rank, your challenges, all saved to your email. No password, no card.</p>
+    <div class="g-h">Parents sign up. Kids hit.</div>
+    <p class="g-p">A parent or guardian registers the player. Kids never type an email. Add every kid in the family under one account. No password, no card.</p>
     <div style="margin-top:1rem">
-      <div class="field"><label for="in-name">Name on the board</label><input type="text" id="in-name" maxlength="40" autocomplete="name" placeholder="First name or nickname"></div>
-      <div class="field"><label for="in-email">Email</label><input type="email" id="in-email" maxlength="120" autocomplete="email" inputmode="email" placeholder="you@email.com"></div>
-      <div class="g-row" style="gap:0.6rem">
-        <div class="field" style="flex:1"><label for="in-sport">Sport</label><select id="in-sport"><option value="bb">Baseball</option><option value="sb">Softball</option></select></div>
-        <div class="field" style="flex:1"><label for="in-group">Plays in</label><select id="in-group"></select></div>
-        <div class="field" style="flex:0.7"><label for="in-age">Age</label><input type="number" id="in-age" min="5" max="99" inputmode="numeric" placeholder="12"></div>
-      </div>
-      <div class="field"><label for="in-role">I am a</label><select id="in-role"><option value="player">Player (free)</option><option value="coach">Coach (head-to-head mode)</option></select></div>
+      <div class="field"><label for="in-role">I am a</label><select id="in-role"><option value="parent">Parent or guardian (free)</option><option value="coach">Coach (head-to-head mode)</option></select></div>
+      <div class="field"><label for="in-name">Your name</label><input type="text" id="in-name" maxlength="40" autocomplete="name" placeholder="Your first name"></div>
+      <div class="field"><label for="in-email">Your email</label><input type="email" id="in-email" maxlength="120" autocomplete="email" inputmode="email" placeholder="you@email.com"></div>
+      <label class="chk" for="in-adult"><input type="checkbox" id="in-adult"> <span id="in-adult-txt">I'm 18 or older and the parent or legal guardian of every player I add.</span></label>
       <div class="err" id="in-err"></div>
-      <button type="button" class="btn btn-primary btn-lg btn-full" id="in-go">Let's hit</button>
-      <div class="g-note">Returning? Same email signs you right back in. We use your email to save your scores and nothing else.</div>
+      <button type="button" class="btn btn-primary btn-lg btn-full" id="in-go">Sign up</button>
+      <div class="g-note">Returning? Same email signs you right back in. Kids show on the board by nickname and age group only. We use your email to save scores and send occasional DugoutLab updates. Never sold.</div>
       <button type="button" class="btn btn-outline btn-full" id="in-lb" style="margin-top:0.8rem">Just show me the leaderboard</button>
+    </div>
+  </div>
+
+  <!-- PICK / ADD HITTER -->
+  <div id="s-kids" class="hidden">
+    <div class="topbar"><span>Signed in as <b id="k-acct"></b></span><button type="button" id="k-out">Sign out</button></div>
+    <div class="g-card">
+      <div class="g-eb">Who's hitting?</div>
+      <ul class="list" id="k-list"></ul>
+      <div id="k-add" style="margin-top:1rem">
+        <div class="g-h" style="font-size:1.2rem" id="k-add-h">Add a hitter</div>
+        <div class="field"><label for="k-nick">Nickname on the board</label><input type="text" id="k-nick" maxlength="24" placeholder="First name or nickname"></div>
+        <div class="g-row" style="gap:0.6rem">
+          <div class="field" style="flex:1"><label for="k-sport">Sport</label><select id="k-sport"><option value="bb">Baseball</option><option value="sb">Softball</option></select></div>
+          <div class="field" style="flex:1"><label for="k-group">Age group</label><select id="k-group"></select></div>
+        </div>
+        <div class="err" id="k-err"></div>
+        <button type="button" class="btn btn-primary btn-full" id="k-go">Add hitter</button>
+        <div class="g-note">No last names. The nickname and age group are all that show publicly.</div>
+      </div>
     </div>
   </div>
 
   <!-- HOME -->
   <div id="s-home" class="hidden">
-    <div class="topbar"><span>Hitting as <b id="h-name"></b> <span id="h-level"></span></span><button type="button" id="h-out">Switch</button></div>
+    <div class="topbar"><span>Hitting as <b id="h-name"></b> <span id="h-level"></span></span><button type="button" id="h-out">Switch hitter</button></div>
     <div class="g-card">
       <div class="menu">
         <button type="button" id="m-solo"><div><b>Play a round</b><span>10 balls. Beat your best.</span></div><i>&#8594;</i></button>
@@ -170,7 +188,7 @@
       <div class="g-h">Who are you calling out?</div>
       <button type="button" class="btn btn-primary btn-full" id="ch-link" style="margin-bottom:1rem">Send a challenge link</button>
       <div class="err" id="ch-link-msg" style="color:var(--ink-soft)"></div>
-      <div class="field"><label for="ch-q">Search by name, or type their exact email</label><input type="text" id="ch-q" maxlength="120" placeholder="Start typing"></div>
+      <div class="field"><label for="ch-q">Or search a hitter by nickname</label><input type="text" id="ch-q" maxlength="120" placeholder="Start typing"></div>
       <ul class="list" id="ch-list"></ul>
       <div class="err" id="ch-err"></div>
       <div class="g-note">They get the challenge the next time they open the game. You play your 10 now or later. Highest score wins.</div>
@@ -183,7 +201,7 @@
     <div class="g-card">
       <div class="g-eb">Coach &middot; Head-to-head</div>
       <div class="g-h">Pick two hitters.</div>
-      <p class="g-p">They alternate ball for ball on this phone. Any player with an account can be picked.</p>
+      <p class="g-p">They alternate ball for ball on this phone. Any registered hitter can be picked.</p>
       <div class="field" style="margin-top:0.8rem"><label for="hh-q">Search roster</label><input type="text" id="hh-q" maxlength="60" placeholder="Name"></div>
       <ul class="list" id="hh-list"></ul>
       <div class="vs" id="hh-vs"><div class="side" id="hh-a"><b>Hitter A</b><span style="color:var(--ink-faint);font-size:0.8rem">tap a name</span></div><div class="x">VS</div><div class="side" id="hh-b"><b>Hitter B</b><span style="color:var(--ink-faint);font-size:0.8rem">tap a name</span></div></div>
@@ -265,10 +283,12 @@
   var SHARE_URL = location.origin + location.pathname;
   var ZN = { mid: 'Middle', lg: 'Left gap', rg: 'Right gap', ll: 'Left line', rl: 'Right line', miss: 'Miss' };
   var PTS = { mid: 30, lg: 20, rg: 20, ll: 10, rl: 10, miss: 0 };
-  var S = { token: null, player: null, screen: 'signin' };
+  var S = { token: null, account: null, player: null, hitters: [] };
+  var pendingC = (/[?&]c=([a-z0-9]+)/i.exec(location.search) || [])[1] || null;
+  if (pendingC) history.replaceState(null, '', location.pathname);
   function $(id) { return document.getElementById(id); }
   function show(id) {
-    ['s-signin', 's-home', 's-chal', 's-h2h', 's-round', 's-result', 's-lb'].forEach(function (s) { $(s).classList.toggle('hidden', s !== id); });
+    ['s-signin', 's-kids', 's-home', 's-chal', 's-h2h', 's-round', 's-result', 's-lb'].forEach(function (s) { $(s).classList.toggle('hidden', s !== id); });
     window.scrollTo(0, 0);
   }
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -277,12 +297,14 @@
     var u = API + path + (body ? '' : (path.indexOf('?') > -1 ? '&' : '?') + 'token=' + encodeURIComponent(S.token || ''));
     return fetch(u, opt).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Something broke'); return j; }); });
   }
-  function save() { try { localStorage.setItem('dl_game', JSON.stringify({ token: S.token, player: S.player })); } catch (e) {} }
-  function load() { try { var j = JSON.parse(localStorage.getItem('dl_game') || 'null'); if (j && j.token) { S.token = j.token; S.player = j.player; } } catch (e) {} }
+  function save() { try { localStorage.setItem('dl_game2', JSON.stringify({ token: S.token, account: S.account, player: S.player })); } catch (e) {} }
+  function load() { try { var j = JSON.parse(localStorage.getItem('dl_game2') || 'null'); if (j && j.token) { S.token = j.token; S.account = j.account; S.player = j.player; } } catch (e) {} }
+  function isCoach() { return !!(S.account && S.account.role === 'coach'); }
 
-  /* ---------- sign in ---------- */
-  $('in-group').innerHTML = GROUPS.map(function (g) { return '<option value="' + g + '"' + (g === 12 ? ' selected' : '') + '>' + g + 'U</option>'; }).join('');
-  $('in-age').addEventListener('input', function () { var a = parseInt(this.value, 10); if (a >= 6 && a <= 18) $('in-group').value = a; });
+  /* ---------- sign in (adults only) ---------- */
+  $('k-group').innerHTML = GROUPS.map(function (g) { return '<option value="' + g + '"' + (g === 12 ? ' selected' : '') + '>' + g + 'U</option>'; }).join('');
+  function adultTxt() { $('in-adult-txt').textContent = $('in-role').value === 'coach' ? "I'm 18 or older, and any player I add is my own child or I have their parent's OK." : "I'm 18 or older and the parent or legal guardian of every player I add."; }
+  $('in-role').addEventListener('change', adultTxt);
   $('in-lb').addEventListener('click', function () { LB.level = LB.level || 'bb12u'; showLB(true); });
   function share(title, text, url) {
     var payload = { title: title, text: text, url: url };
@@ -294,43 +316,75 @@
   function shareMsg(el, r, url) { el.textContent = r === 'sent' ? 'Sent.' : r === 'copied' ? 'Link copied. Paste it anywhere.' : r === 'show' ? url : ''; }
   $('in-go').addEventListener('click', function () {
     var b = $('in-go'); b.disabled = true; $('in-err').textContent = '';
-    api('signup', { name: $('in-name').value, email: $('in-email').value, level: $('in-sport').value + $('in-group').value + 'u', age: $('in-age').value, role: $('in-role').value }).then(function (j) {
-      S.token = j.token; S.player = j.player; save(); afterSignIn();
+    if (!$('in-adult').checked) { $('in-err').textContent = 'Check the box to confirm you are the adult signing up.'; b.disabled = false; return; }
+    api('signup', { name: $('in-name').value, email: $('in-email').value, role: $('in-role').value, adult: true }).then(function (j) {
+      S.token = j.token; S.account = j.account; S.player = null; save(); kids();
     }).catch(function (e) { $('in-err').textContent = e.message; }).then(function () { b.disabled = false; });
   });
-  $('h-out').addEventListener('click', function () { S.token = null; S.player = null; save(); show('s-signin'); });
+  $('h-out').addEventListener('click', kids);
+  $('k-out').addEventListener('click', function () { S.token = null; S.account = null; S.player = null; save(); show('s-signin'); });
 
-  /* ---------- home ---------- */
-  function afterSignIn() {
-    var m = /[?&]c=([a-z0-9]+)/i.exec(location.search);
-    if (!m) return home();
-    history.replaceState(null, '', location.pathname);
-    api('join', { match_id: m[1] }).then(function (j) {
+  /* ---------- pick or add a hitter ---------- */
+  function kids() {
+    show('s-kids');
+    $('k-acct').textContent = S.account ? S.account.name : '';
+    $('k-list').innerHTML = '<li><span>Loading…</span></li>';
+    api('me').then(function (j) {
+      S.account = j.account; S.hitters = j.hitters || []; save();
+      $('k-acct').textContent = S.account.name + (isCoach() ? ' (coach)' : '');
+      if (S.hitters.length === 1 && !S.player && !kids.adding) return pick(S.hitters[0]);
+      $('k-list').innerHTML = S.hitters.map(function (h) {
+        return '<li><div><b>' + esc(h.nickname) + '</b> <span style="font-size:0.8rem">' + esc(lvName(h.level)) + '</span></div><button type="button" class="btn btn-primary btn-sm" data-h="' + esc(h.id) + '">Hit</button></li>';
+      }).join('') || '<li><span>No hitters yet. Add your player below.</span></li>';
+      Array.prototype.forEach.call($('k-list').querySelectorAll('button[data-h]'), function (b) {
+        b.addEventListener('click', function () { pick(S.hitters.filter(function (h) { return h.id === b.getAttribute('data-h'); })[0]); });
+      });
+      $('k-add-h').textContent = S.hitters.length ? 'Add another hitter' : 'Add your player';
+      kids.adding = false;
+    }).catch(function (e) {
+      if (/sign in/i.test(e.message)) { S.token = null; save(); return show('s-signin'); }
+      $('k-list').innerHTML = '<li><span>' + esc(e.message) + '</span></li>';
+    });
+  }
+  $('k-go').addEventListener('click', function () {
+    var b = $('k-go'); b.disabled = true; $('k-err').textContent = '';
+    api('hitter', { nickname: $('k-nick').value, level: $('k-sport').value + $('k-group').value + 'u' }).then(function (j) {
+      $('k-nick').value = ''; pick(j.hitter);
+    }).catch(function (e) { $('k-err').textContent = e.message; }).then(function () { b.disabled = false; });
+  });
+  function pick(h) {
+    S.player = { id: h.id, name: h.nickname, level: h.level }; save();
+    if (!pendingC) return home();
+    var c = pendingC; pendingC = null;
+    api('join', { match_id: c, hitter_id: S.player.id }).then(function (j) {
       if (j.mine) return home();
       startRound({ mode: 'challenge', match_id: j.match.id, label: 'Challenge vs ' + j.match.a_name });
-    }).catch(function (e) { home(); $('open-list').innerHTML = '<li><span>' + esc(e.message) + '</span></li>'; });
+    }).catch(function (e) { home(); setTimeout(function () { $('open-list').insertAdjacentHTML('afterbegin', '<li><span>' + esc(e.message) + '</span></li>'); }, 600); });
   }
+
+  /* ---------- home ---------- */
   function home() {
+    if (!S.player) return kids();
     show('s-home');
     $('h-name').textContent = S.player.name; $('h-level').textContent = '· ' + lvName(S.player.level);
-    var coach = S.player.role === 'coach';
+    var coach = isCoach();
     $('m-h2h').classList.toggle('locked', !coach);
     $('m-h2h-sub').textContent = coach ? 'Two hitters alternate, live on one phone.' : 'Coach mode. Sign up as a coach to run it.';
-    api('me').then(function (j) {
+    api('me?hitter=' + encodeURIComponent(S.player.id)).then(function (j) {
       var st = j.stats || {};
       $('st-best').textContent = st.best || 0; $('st-avg').textContent = st.avg ? Math.round(st.avg) : 0; $('st-rounds').textContent = st.rounds || 0;
       $('st-ld').textContent = st.rounds ? Math.round(100 * (st.liners || 0) / (st.rounds * 10)) + '%' : '0%';
       var open = j.open || [], h = '';
       open.forEach(function (m) {
-        var mine = m.a_player === S.player.id ? 'a' : 'b', other = (mine === 'a' ? m.b_name : m.a_name) || 'whoever opens your link';
+        var mine = m.a_hitter === S.player.id ? 'a' : 'b', other = (mine === 'a' ? m.b_name : m.a_name) || 'whoever opens your link';
         var played = m[mine + '_score'] !== null, theirs = m[(mine === 'a' ? 'b' : 'a') + '_score'];
-        var open = !m.b_player;
+        var open = !m.b_hitter;
         h += '<li><div><b>' + (m.type === 'h2h' ? 'Head-to-head' : 'vs ' + esc(other)) + '</b><br><span style="font-size:0.8rem">' + (played ? 'You: ' + m[mine + '_score'] + '. Waiting on ' + esc(other) + '.' : (theirs !== null ? esc(other) + ' put up ' + theirs + '. Your turn.' : 'Nobody has hit yet.')) + '</span></div>' +
           (open ? '<button type="button" class="btn btn-forest btn-sm" data-share="' + esc(m.id) + '">Share link</button>' : '') +
           (played || m.type === 'h2h' ? '' : '<button type="button" class="btn btn-primary btn-sm" data-m="' + esc(m.id) + '" data-o="' + esc(other) + '">Play</button>') + '</li>';
       });
       (j.recent || []).slice(0, 3).forEach(function (m) {
-        var mine = m.a_player === S.player.id ? 'a' : 'b', other = mine === 'a' ? m.b_name : m.a_name;
+        var mine = m.a_hitter === S.player.id ? 'a' : 'b', other = mine === 'a' ? m.b_name : m.a_name;
         var res = m.winner === 'tie' ? 'Tie' : (m.winner === S.player.id ? 'You won' : esc(other) + ' won');
         h += '<li style="opacity:0.7"><div><b>' + res + '</b> vs ' + esc(other) + ' <span style="font-size:0.8rem">' + m[mine + '_score'] + ' to ' + m[(mine === 'a' ? 'b' : 'a') + '_score'] + '</span></div></li>';
       });
@@ -356,7 +410,7 @@
   $('ch-back').addEventListener('click', home);
   $('ch-link').addEventListener('click', function () {
     var b = $('ch-link'); b.disabled = true; $('ch-err').textContent = '';
-    api('challenge', {}).then(function (j) {
+    api('challenge', { hitter_id: S.player.id }).then(function (j) {
       var url = SHARE_URL + '?c=' + j.match.id;
       return share('Hit Window challenge', S.player.name + ' is calling you out. 10 balls, hit the nets, beat the score.', url).then(function (r) {
         shareMsg($('ch-link-msg'), r, url);
@@ -366,7 +420,7 @@
     }).catch(function (e) { $('ch-err').textContent = e.message; }).then(function () { b.disabled = false; });
   });
   $('m-h2h').addEventListener('click', function () {
-    if (S.player.role !== 'coach') { S.token = null; save(); show('s-signin'); $('in-role').value = 'coach'; $('in-err').textContent = 'Sign up as a coach to run head-to-head.'; return; }
+    if (!isCoach()) { S.token = null; S.player = null; save(); show('s-signin'); $('in-role').value = 'coach'; adultTxt(); $('in-err').textContent = 'Enter your email with Coach picked to unlock head-to-head.'; return; }
     H.a = null; H.b = null; drawH(); $('hh-q').value = ''; $('hh-list').innerHTML = ''; $('hh-err').textContent = ''; show('s-h2h');
   });
 
@@ -378,12 +432,11 @@
       if (q.length < 2) { $('ch-list').innerHTML = ''; return; }
       api('players?q=' + encodeURIComponent(q)).then(function (j) {
         var rows = j.rows || [];
-        if (!rows.length && q.indexOf('@') > 0) rows = [{ id: q, name: q, level: '' }];
-        $('ch-list').innerHTML = rows.map(function (p) { return '<li><div><b>' + esc(p.name) + '</b> <span style="font-size:0.8rem">' + esc(lvName(p.level)) + (p.age ? ', ' + p.age : '') + '</span></div><button type="button" class="btn btn-primary btn-sm" data-id="' + esc(p.id) + '" data-n="' + esc(p.name) + '">Challenge</button></li>'; }).join('') || '<li><span>No one by that name yet. Try their exact email.</span></li>';
+        $('ch-list').innerHTML = rows.map(function (p) { return '<li><div><b>' + esc(p.name) + '</b> <span style="font-size:0.8rem">' + esc(lvName(p.level)) + '</span></div><button type="button" class="btn btn-primary btn-sm" data-id="' + esc(p.id) + '" data-n="' + esc(p.name) + '">Challenge</button></li>'; }).join('') || '<li><span>No hitter by that name yet. Send a challenge link instead.</span></li>';
         Array.prototype.forEach.call($('ch-list').querySelectorAll('button'), function (b) {
           b.addEventListener('click', function () {
             b.disabled = true;
-            api('challenge', { to: b.getAttribute('data-id') }).then(function (j) {
+            api('challenge', { to: b.getAttribute('data-id'), hitter_id: S.player.id }).then(function (j) {
               startRound({ mode: 'challenge', match_id: j.match.id, label: 'Challenge vs ' + j.match.b_name });
             }).catch(function (e) { $('ch-err').textContent = e.message; b.disabled = false; });
           });
@@ -405,7 +458,7 @@
     hhT = setTimeout(function () {
       if (q.length < 2) { $('hh-list').innerHTML = ''; return; }
       api('players?q=' + encodeURIComponent(q)).then(function (j) {
-        $('hh-list').innerHTML = (j.rows || []).map(function (p) { return '<li><div><b>' + esc(p.name) + '</b></div><button type="button" class="btn btn-forest btn-sm" data-id="' + esc(p.id) + '" data-n="' + esc(p.name) + '" data-l="' + esc(p.level) + '">Pick</button></li>'; }).join('') || '<li><span>No match. Players sign up on this page first.</span></li>';
+        $('hh-list').innerHTML = (j.rows || []).map(function (p) { return '<li><div><b>' + esc(p.name) + '</b></div><button type="button" class="btn btn-forest btn-sm" data-id="' + esc(p.id) + '" data-n="' + esc(p.name) + '" data-l="' + esc(p.level) + '">Pick</button></li>'; }).join('') || '<li><span>No match. Parents register hitters on this page first.</span></li>';
         Array.prototype.forEach.call($('hh-list').querySelectorAll('button'), function (b) {
           b.addEventListener('click', function () {
             var p = { id: b.getAttribute('data-id'), name: b.getAttribute('data-n'), level: b.getAttribute('data-l') };
@@ -499,9 +552,9 @@
     $('res-vs').classList.toggle('hidden', !R.h2h);
     var posts = [];
     if (R.h2h) {
-      posts.push(api('round', { mode: 'h2h', balls: R.A.balls, match_id: R.match_id, for_player: R.a.id, level: R.a.level }));
-      posts.push(api('round', { mode: 'h2h', balls: R.B.balls, match_id: R.match_id, for_player: R.b.id, level: R.b.level }));
-    } else posts.push(api('round', { mode: R.mode, balls: R.A.balls, match_id: R.match_id, level: S.player.level }));
+      posts.push(api('round', { mode: 'h2h', balls: R.A.balls, match_id: R.match_id, hitter_id: R.a.id }));
+      posts.push(api('round', { mode: 'h2h', balls: R.B.balls, match_id: R.match_id, hitter_id: R.b.id }));
+    } else posts.push(api('round', { mode: R.mode, balls: R.A.balls, match_id: R.match_id, hitter_id: S.player.id }));
     $('res-score').textContent = R.h2h ? (R.A.score > R.B.score ? R.a.name : R.B.score > R.A.score ? R.b.name : 'Tie') : R.A.score;
     $('res-sub').textContent = 'Saving\u2026';
     var c = R.h2h ? (R.A.score >= R.B.score ? R.A : R.B) : R.A, ld = 0, cl = 0, st = 0, best = 0;
@@ -514,7 +567,7 @@
       $('res-rank').textContent = '#' + j.rank;
       var msg = 'Rank ' + j.rank + ' of ' + j.of + ' rounds at your level.';
       if (j.match) {
-        var mine = j.match.a_player === S.player.id ? 'a' : 'b', other = mine === 'a' ? j.match.b_name : j.match.a_name, th = j.match[(mine === 'a' ? 'b' : 'a') + '_score'];
+        var mine = j.match.a_hitter === S.player.id ? 'a' : 'b', other = (mine === 'a' ? j.match.b_name : j.match.a_name) || 'whoever opens your link', th = j.match[(mine === 'a' ? 'b' : 'a') + '_score'];
         if (j.match.status === 'done') msg = (j.match.winner === 'tie' ? 'Tie with ' : j.match.winner === S.player.id ? 'You beat ' : 'You lost to ') + other + ', ' + j.round.score + ' to ' + th + '.';
         else msg = 'Your ' + j.round.score + ' is in. Waiting on ' + other + '.';
       }
@@ -543,7 +596,7 @@
     $('lb-body').innerHTML = '<tr><td>Loading\u2026</td></tr>';
     api('leaderboard?range=' + LB.range + '&level=' + LB.level).then(function (j) {
       var rows = j.rows || [];
-      $('lb-body').innerHTML = rows.map(function (r, i) { return '<tr' + (S.player && r.player_id === S.player.id ? ' class="me"' : '') + '><td class="n">' + (i + 1) + '</td><td>' + esc(r.name) + (r.age ? ' <span style="color:var(--ink-faint)">' + r.age + '</span>' : '') + '<br><span style="font-size:0.75rem;color:var(--ink-faint)">' + esc(lvName(r.level)) + ' \u00B7 ' + r.liners + ' line drives \u00B7 ' + r.called + ' called</span></td><td class="s">' + r.score + '</td></tr>'; }).join('') || '<tr><td>No rounds yet at this level. Be first.</td></tr>';
+      $('lb-body').innerHTML = rows.map(function (r, i) { return '<tr' + (S.player && r.hitter_id === S.player.id ? ' class="me"' : '') + '><td class="n">' + (i + 1) + '</td><td>' + esc(r.name) + '<br><span style="font-size:0.75rem;color:var(--ink-faint)">' + esc(lvName(r.level)) + ' \u00B7 ' + r.liners + ' line drives \u00B7 ' + r.called + ' called</span></td><td class="s">' + r.score + '</td></tr>'; }).join('') || '<tr><td>No rounds yet at this level. Be first.</td></tr>';
       $('lb-note').textContent = LB.range === 'week' ? 'Resets every 7 days.' : 'Every round ever played at this level.';
     }).catch(function (e) { $('lb-body').innerHTML = '<tr><td>' + esc(e.message) + '</td></tr>'; });
   }
@@ -552,7 +605,7 @@
   $('lb-back').addEventListener('click', function () { if (LB.guest || !S.player) show('s-signin'); else home(); });
 
   load();
-  if (S.token && S.player) afterSignIn(); else show('s-signin');
+  if (S.token && S.player && !pendingC) home(); else if (S.token) { if (pendingC) S.player = null; kids(); } else show('s-signin');
 })();
 </script>
 <script src="js/site.js"></script>
