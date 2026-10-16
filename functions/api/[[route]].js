@@ -65,7 +65,7 @@ async function mirrorEmail(env, a) {
   if (!env.EMAIL_HOOK) return;
   try {
     await fetch(env.EMAIL_HOOK, { method: 'POST', headers: { 'content-type': 'text/plain' },
-      body: JSON.stringify({ email: a.email, name: a.name, role: a.role, source: 'dugoutlab-game', created: new Date(a.created).toISOString() }) });
+      body: JSON.stringify({ email: a.email, name: a.name, role: a.role, source: 'game-' + a.role, website: '' }) });
   } catch (e) { /* never block signup on the mirror */ }
 }
 
