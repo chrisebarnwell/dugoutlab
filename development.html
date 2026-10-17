@@ -3,97 +3,150 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Development Playbook | DugoutLab</title>
+<title>The Development Guide | DugoutLab</title>
+<meta name="description" content="A plain-language guide to physical development for youth baseball and softball players, ages 6 to 18. Four stages, three rules, what to protect, and every source linked.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 <style>
-  :root{
-    --p-head:var(--ink); --p-head2:var(--forest-deep); --p-gold:var(--gold); --p-gold-dk:var(--gold-light);
-    --p-bg:var(--forest); --p-card:var(--forest2); --p-green:rgba(244,239,230,0.22); --p-line:var(--rule);
-    --p-ink:var(--ink); --p-sub:var(--ink-soft); --p-shade:var(--forest3); --p-warn:var(--gold-light);
-  }
-  /* hero */
-  .hero{max-width:1080px;margin:0 auto;padding:64px 24px 40px;}
-  .kicker{color:var(--p-gold-dk);font-weight:bold;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;}
-  .hero h1{font-family:var(--serif);font-size:3rem;line-height:1.08;color:var(--p-head);margin:14px 0 18px;max-width:16ch;}
-  .hero p{font-size:1.18rem;color:var(--p-sub);max-width:60ch;}
-  .hero .pill-row{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap;}
-  .pill{background:var(--p-shade);border:1px solid var(--p-green);color:var(--p-gold-dk);
-    font-size:.72rem;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;padding:7px 13px;border-radius:20px;}
+  [id]{scroll-margin-top:84px}
+  .tr-crumb{padding-top:1.5rem;font-size:.85rem}
+  .tr-crumb a{color:var(--ink-faint);text-decoration:none}
+  .tr-crumb a:hover{color:var(--gold)}
+  .tr-hero{padding:2.25rem 0 .5rem}
+  .tr-hero .eyebrow{color:var(--gold);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+  .tr-hero h1{font-family:var(--serif);font-size:clamp(2rem,5vw,3.2rem);font-weight:600;line-height:1.08;margin:.6rem 0 1rem;max-width:20ch;letter-spacing:-.015em;text-wrap:balance}
+  .tr-hero h1 em{color:var(--gold);font-style:italic}
+  .tr-hero p{color:var(--ink-soft);font-size:1.1rem;max-width:60ch}
+  .tr-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:1.4rem}
+  .tr-pill{background:var(--forest3);border:1px solid var(--rule);color:var(--gold-light);font-size:.72rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:7px 13px;border-radius:20px}
+  .tr-jump{display:flex;gap:.5rem;flex-wrap:wrap;margin:1.25rem 0 0}
+  .tr-jump a{font-size:.85rem;font-weight:600;color:var(--ink-soft);background:var(--forest2);border:1px solid var(--rule);border-radius:20px;padding:6px 14px;text-decoration:none}
+  .tr-jump a:hover{color:var(--gold);border-color:var(--gold)}
 
-  /* section wrap */
-  .wrap{max-width:1080px;margin:0 auto;padding:24px;}
-  .section{padding:30px 0;border-top:1px solid var(--p-line);}
-  .section h2{font-family:var(--serif);font-size:1.9rem;color:var(--p-head);margin-bottom:8px;}
-  .section .lead{color:var(--p-sub);font-size:1.05rem;max-width:65ch;margin-bottom:24px;}
-  h3.eyebrow{color:var(--p-gold-dk);font-size:.78rem;letter-spacing:2px;text-transform:uppercase;margin:24px 0 10px;}
+  .tr-section{padding:2.75rem 0 0}
+  .tr-label{color:var(--gold);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;margin-bottom:.5rem}
+  .tr-h2{font-family:var(--serif);font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:600;line-height:1.12;margin-bottom:.6rem;letter-spacing:-.01em;text-wrap:balance}
+  .tr-lead{color:var(--ink-soft);font-size:1.05rem;max-width:62ch;margin-bottom:1.25rem}
+  .tr-lead b,.tr-body b{color:var(--ink)}
+  .tr-body{font-size:1rem;color:var(--ink-soft);max-width:68ch}
+  .tr-body p+p{margin-top:.8rem}
 
-  /* principle cards */
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-  @media(max-width:820px){.grid3{grid-template-columns:1fr;}}
-  .pcard{background:var(--p-card);border:1px solid var(--p-line);border-radius:12px;padding:22px;position:relative;overflow:hidden;}
-  .pcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--p-gold);}
-  .pcard .num{font-family:var(--serif);font-size:2rem;color:var(--p-gold);font-weight:bold;}
-  .pcard h4{color:var(--p-head);font-size:1rem;margin:4px 0 8px;text-transform:uppercase;letter-spacing:.5px;}
-  .pcard p{color:var(--p-sub);font-size:.92rem;}
+  .tr-card{background:var(--forest2);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1.75rem;position:relative;overflow:hidden;color:var(--ink)}
+  .tr-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold)}
+  .tr-card.quiet::before{background:var(--ink-faint)}
+  .tr-card h3{font-family:var(--serif);font-size:1.5rem;font-weight:600;margin-bottom:.5rem;line-height:1.2}
+  .tr-card p{color:var(--ink-soft);font-size:1rem}
+  .tr-card .k{color:var(--gold);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-bottom:.5rem}
+  .tr-card.quiet .k{color:var(--ink-faint)}
+  .tr-card .go{display:inline-block;margin-top:1rem;color:var(--gold);font-weight:600;font-size:1rem;text-decoration:none}
+  .tr-card .go:hover{color:var(--gold-light)}
+  a.tr-card{display:block;text-decoration:none;transition:transform .15s,border-color .15s}
+  a.tr-card:hover{transform:translateY(-3px);border-color:var(--gold);text-decoration:none}
+  .tr-start{display:grid;grid-template-columns:1.4fr 1fr;gap:1.25rem;margin-top:1.25rem}
+  @media(max-width:760px){.tr-start{grid-template-columns:1fr}}
+  .tr-start .big{padding:2rem}
+  .tr-start .big h3{font-size:1.9rem}
+  .tr-start .btn{margin-top:1.25rem}
+  .tr-mini{margin-top:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:var(--forest-deep);border:1px solid var(--rule);border-radius:var(--radius);padding:1rem 1.25rem}
+  .tr-mini .k{color:var(--ink-faint);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-bottom:.2rem}
+  .tr-mini p{color:var(--ink-soft);font-size:1rem}
+  .tr-mini b{color:var(--ink)}
 
-  /* stage map */
-  .stages{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px;}
-  @media(max-width:900px){.stages{grid-template-columns:repeat(2,1fr);}}
-  @media(max-width:520px){.stages{grid-template-columns:1fr;}}
-  .stage{border-radius:11px;padding:18px;cursor:pointer;transition:transform .15s, box-shadow .15s, outline-color .15s;border:none;outline:2px solid transparent;text-align:left;font:inherit;}
-  .stage:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.16);outline-color:#C8892A;}
-  .stage .st-age{font-family:var(--serif);font-size:1.4rem;font-weight:bold;}
-  .stage .st-name{font-size:.74rem;letter-spacing:1px;text-transform:uppercase;margin-top:4px;opacity:.92;}
-  .stage .st-focus{font-size:.82rem;margin-top:8px;opacity:.92;line-height:1.4;}
+  .tr-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.25rem}
+  @media(max-width:820px){.tr-grid3{grid-template-columns:1fr}}
+  .tr-rule{background:var(--forest2);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1.4rem;position:relative;overflow:hidden}
+  .tr-rule::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold)}
+  .tr-rule .num{font-family:var(--serif);font-size:2rem;color:var(--gold);font-weight:700;line-height:1}
+  .tr-rule h4{color:var(--ink);font-size:.95rem;margin:.4rem 0 .5rem;text-transform:uppercase;letter-spacing:.06em}
+  .tr-rule p{color:var(--ink-soft);font-size:1rem}
 
-  /* detail panel */
-  .detail{background:var(--p-card);border:1px solid var(--p-line);border-left:5px solid var(--p-gold);
-    border-radius:12px;padding:26px;margin-top:18px;display:none;}
-  .detail.active{display:block;animation:fade .25s ease;}
-  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
-  .detail h3{font-family:var(--serif);font-size:1.5rem;color:var(--p-head);}
-  .detail .agetag{display:inline-block;background:var(--p-shade);border:1px solid var(--p-green);
-    color:var(--p-gold-dk);font-size:.7rem;font-weight:bold;letter-spacing:1px;padding:4px 10px;border-radius:14px;margin-left:8px;vertical-align:middle;}
-  .detail .two{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:16px;}
-  @media(max-width:720px){.detail .two{grid-template-columns:1fr;}}
-  .detail ul{list-style:none;margin-top:6px;}
-  .detail li{padding:5px 0 5px 18px;position:relative;font-size:.92rem;color:var(--p-ink);}
-  .detail li::before{content:"";position:absolute;left:0;top:12px;width:6px;height:6px;border-radius:50%;background:var(--p-gold);}
-  .detail .avoid li::before{background:var(--p-gold-dk);border-radius:0;transform:rotate(45deg);}
-  .blocklabel{color:var(--p-gold-dk);font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:bold;margin-bottom:2px;}
+  .tr-split{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem}
+  @media(max-width:760px){.tr-split{grid-template-columns:1fr}}
+  .tr-split>div{border-radius:var(--radius-lg);padding:1.4rem;border:1px solid var(--rule)}
+  .tr-split .research{background:var(--forest-deep)}
+  .tr-split .ours{background:rgba(200,134,46,0.10);border-color:var(--gold)}
+  .tr-split .k{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:.5rem}
+  .tr-split .research .k{color:var(--ink-faint)}
+  .tr-split .ours .k{color:var(--gold)}
+  .tr-split p{font-size:1rem;color:var(--ink-soft)}
+  .tr-split p b{color:var(--ink)}
 
-  /* callout */
-  .callout{background:#FBF1E2;border:1px solid var(--p-gold);border-radius:11px;padding:20px 22px;margin:20px 0;}
-  .callout .cl-label{color:var(--p-gold-dk);font-weight:bold;font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
-  .callout p{color:var(--p-ink);font-size:.96rem;}
+  .stages{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:1rem}
+  @media(max-width:900px){.stages{grid-template-columns:repeat(2,1fr)}}
+  .stage{border-radius:11px;padding:16px;cursor:pointer;transition:transform .15s,box-shadow .15s,outline-color .15s;border:none;outline:2px solid transparent;text-align:left;font:inherit}
+  .stage:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.3);outline-color:var(--gold)}
+  .stage.on{outline-color:var(--ink)}
+  .stage .st-age{font-family:var(--serif);font-size:1.35rem;font-weight:700}
+  .stage .st-name{font-size:.74rem;letter-spacing:1px;text-transform:uppercase;margin-top:4px;opacity:.92}
+  .stage .st-focus{font-size:.9rem;margin-top:8px;opacity:.92;line-height:1.4}
+  .detail{background:var(--forest2);border:1px solid var(--rule);border-left:5px solid var(--gold);border-radius:12px;padding:1.6rem;margin-top:1rem;display:none}
+  .detail.active{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .detail h3{font-family:var(--serif);font-size:1.5rem;font-weight:600;display:inline}
+  .detail .agetag{display:inline-block;background:var(--forest3);border:1px solid var(--rule);color:var(--gold-light);font-size:.72rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:14px;margin-left:8px;vertical-align:middle}
+  .detail .goal{font-size:1.05rem;color:var(--ink-soft);margin-top:.8rem}
+  .detail .two{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:1rem}
+  @media(max-width:720px){.detail .two{grid-template-columns:1fr}}
+  .blocklabel{color:var(--gold);font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:.3rem}
+  .tr-list{list-style:none;margin:0;padding:0}
+  .tr-list li{padding:5px 0 5px 18px;position:relative;font-size:1rem;color:var(--ink)}
+  .tr-list li::before{content:"";position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+  .tr-list.avoid li::before{background:var(--gold-light);border-radius:0;transform:rotate(45deg)}
+  .tr-callout{background:rgba(200,134,46,0.10);border:1px solid var(--gold);border-radius:11px;padding:1.1rem 1.3rem;margin:1.25rem 0}
+  .tr-callout .k{color:var(--gold);font-weight:700;font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.35rem}
+  .tr-callout p{color:var(--ink);font-size:1rem}
+  .tr-eyebrow{color:var(--gold);font-size:.78rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin:1.5rem 0 .5rem}
 
-  /* sources */
-  .sources{background:var(--p-head);color:#cfe0d2;border-radius:12px;padding:26px;margin-top:24px;}
-  .sources h3{color:var(--p-gold);font-size:.82rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
-  .sources li{font-size:.84rem;padding:5px 0 5px 16px;position:relative;line-height:1.5;}
-  .sources li::before{content:"";position:absolute;left:0;top:11px;width:5px;height:5px;background:var(--p-gold);border-radius:50%;}
-  .sources b{color:#fff;}
+  details.tr-sources{background:var(--forest-deep);border:1px solid var(--rule);border-radius:var(--radius-lg);margin-top:1.25rem}
+  details.tr-sources summary{cursor:pointer;list-style:none;padding:1.1rem 1.5rem;font-weight:600;color:var(--gold);display:flex;justify-content:space-between;align-items:center;gap:1rem}
+  details.tr-sources summary::-webkit-details-marker{display:none}
+  details.tr-sources summary .tog{font-size:.8rem;color:var(--ink-faint);font-weight:500}
+  details.tr-sources summary .tog .hide{display:none}
+  details.tr-sources[open] summary .tog .hide{display:inline}
+  details.tr-sources[open] summary .tog .show{display:none}
+  details.tr-sources .inner{padding:0 1.5rem 1.4rem}
+  .src{list-style:none;margin:0;padding:0}
+  .src li{padding:8px 0 8px 18px;position:relative;font-size:1rem;color:var(--ink-soft);line-height:1.5;border-top:1px solid var(--rule)}
+  .src li:first-child{border-top:none}
+  .src li::before{content:"";position:absolute;left:0;top:17px;width:5px;height:5px;background:var(--gold);border-radius:50%}
+  .src a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--rule)}
+  .src a:hover{color:var(--gold-light);border-color:var(--gold-light);text-decoration:none}
+  .src .what{display:block;color:var(--ink-soft);margin-top:2px}
+  .src .ours{color:var(--gold-light);font-weight:600}
 
-  /* disclaimer */
-  .disclaimer{border:1px dashed var(--p-green);border-radius:11px;padding:18px 20px;margin-top:20px;background:var(--p-shade);}
-  .disclaimer p{font-size:.86rem;color:var(--p-sub);}
-  .disclaimer b{color:var(--p-head);}
+  .tr-note{border:1px dashed var(--rule);border-radius:var(--radius);padding:1.25rem 1.5rem;margin:2rem 0 3rem}
+  .tr-note p{color:var(--ink-faint);font-size:1rem}
+  .tr-note b{color:var(--ink-soft)}
+  .tr-note a{color:var(--gold)}
 
-  /* site-theme overrides */
-  .sources{background:var(--forest-deep)!important;border:1px solid var(--rule);}
-  .callout,.spurt{background:rgba(200,134,46,0.10)!important;}
-  .opt{background:var(--forest3)!important;color:var(--ink)!important;}
-  .opt.sel{background:var(--gold)!important;border-color:var(--gold)!important;color:var(--forest)!important;}
-  .page-crumb{font-size:.85rem;margin-bottom:1rem;}
-  .page-crumb a{color:var(--ink-faint);}
-  .page-crumb a:hover{color:var(--gold);}
-  @media(max-width:600px){.hero h1,h1.serif{font-size:2.1rem!important;}}
+  .q{margin-bottom:1.4rem}
+  .q:last-child{margin-bottom:0}
+  .q label{display:block;font-weight:600;color:var(--ink);font-size:1.05rem;margin-bottom:.6rem}
+  .q label span{font-weight:400;color:var(--ink-soft);font-size:1rem}
+  .opts{display:flex;gap:10px;flex-wrap:wrap}
+  .opt{border:1.5px solid var(--rule);background:var(--forest3);color:var(--ink);border-radius:10px;padding:11px 16px;font:inherit;font-size:1rem;cursor:pointer;transition:.15s}
+  .opt:hover{border-color:var(--gold)}
+  .opt.sel{background:var(--gold);color:var(--forest);border-color:var(--gold);font-weight:600}
+  .q .hint{color:var(--ink-faint);font-size:1rem;margin-top:.6rem}
+  .result{margin-top:1.4rem;display:none}
+  .result.show{display:block;animation:fade .3s ease}
+  .stage-banner{border-radius:14px 14px 0 0;padding:1.4rem 1.6rem;color:#fff}
+  .stage-banner .sb-name{font-family:var(--serif);font-size:1.7rem;font-weight:600}
+  .stage-banner .sb-sub{font-size:.85rem;letter-spacing:1px;text-transform:uppercase;opacity:.9;margin-top:4px}
+  .result-body{background:var(--forest2);border:1px solid var(--rule);border-top:none;border-radius:0 0 14px 14px;padding:1.6rem}
+  .result-body .goal{font-size:1.05rem;color:var(--ink);margin-bottom:1rem}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+  @media(max-width:680px){.two{grid-template-columns:1fr}}
+  .result-body .more{display:inline-block;margin-top:1.2rem;color:var(--gold);font-weight:600;text-decoration:none}
+  .result-body .more:hover{color:var(--gold-light)}
+  .result-body .girls{font-size:1rem;color:var(--ink-soft);margin-top:1.1rem}
+  @media(max-width:600px){.tr-hero h1{font-size:2.1rem}}
 </style>
 </head>
 <body>
+
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
   <ul class="nav-links">
@@ -113,111 +166,134 @@
   <a href="how-kids-learn.html">Why It Works</a>
 </div>
 
-<section class="hero">
-  <div class="page-crumb"><a href="training.html">&larr; Training</a></div>
-  <div class="kicker">The Development Playbook</div>
-  <h1 class="serif">How to build a baseball or softball athlete, the right way, at every age.</h1>
-  <p>A plain-language guide to physical development from first-ball through the pros. Built on youth-training position statements and research, and honest about where the evidence is strong and where it is thin. This is the thinking behind every DugoutLab training resource.</p>
-  <div class="pill-row">
-    <span class="pill">Baseball &amp; Softball</span>
-    <span class="pill">Ages 6 to Pro</span>
-    <span class="pill">Bodyweight First</span>
-    <span class="pill">Sources Shown</span>
-  </div>
-</section>
+<div class="container">
+  <div class="tr-crumb"><a href="training.html">&larr; Training</a></div>
 
-<div class="wrap">
-
-  <!-- 30 second version -->
-  <div class="section" id="start">
-    <h2 class="serif">The 30-second version</h2>
-    <p class="lead">Train the athlete before the sport. Between roughly ages 7 and 13, focus on building a strong, coordinated, multi-sport mover. Bodyweight strength, jumping, sprinting, throwing, catching, rotating, and playing many sports. The major youth guidelines (NSCA 2009; International Consensus 2014) say resistance training is safe and effective for kids when it is well designed and supervised by a qualified adult. Most volunteer teams do not have that coach, so our rule is bodyweight first, no loaded dynamic lifts before puberty, and no max-effort lifting. What fits: high-quality movement, light rotational work, and an adult who watches how the kid moves.</p>
-    <div class="callout">
-      <div class="cl-label">The one rule that governs everything</div>
-      <p>Readiness beats birthday. Two kids the same age can be two years apart in physical maturity. Train the body in front of you, not the number on the form. Form earns the load, every time.</p>
+  <section class="tr-hero">
+    <div class="eyebrow">The Development Guide</div>
+    <h1>How to build a baseball or softball athlete, the right way, from 6 to 18.</h1>
+    <p>A plain-language guide to physical development for youth baseball and softball. Built on published position statements and research, honest about where the evidence is strong and where it is thin, and clear about which calls are ours.</p>
+    <div class="tr-pills">
+      <span class="tr-pill">Baseball &amp; Softball</span>
+      <span class="tr-pill">Ages 6 to 18</span>
+      <span class="tr-pill">Bodyweight First</span>
+      <span class="tr-pill">Sources Linked</span>
     </div>
-  </div>
+    <div class="tr-jump">
+      <a href="#stages">Stages</a>
+      <a href="#rules">Three rules</a>
+      <a href="#protect">What to protect</a>
+      <a href="#sources">Sources</a>
+    </div>
+  </section>
 
-  <!-- principles -->
-  <div class="section" id="principles">
-    <h2 class="serif">Three rules that govern every age</h2>
-    <p class="lead">These do not change from age 6 to the pros. Only the dose changes.</p>
-    <div class="grid3">
-      <div class="pcard">
+  <section class="tr-section" id="intro">
+    <div class="tr-label">In 30 seconds</div>
+    <div class="tr-body">
+      <p><b>Train the athlete before the sport.</b> From about 6 to 13, build a strong, coordinated, multi-sport mover: bodyweight strength, jumping, sprinting, throwing, catching, rotating, and playing more than one sport. After the growth spurt, load can go up, with form leading and a qualified coach watching. Readiness beats birthday at every step.</p>
+    </div>
+  </section>
+
+  <section class="tr-section" id="stages">
+    <div class="tr-label">Pick a stage</div>
+    <h2 class="tr-h2">Which stage is your player in?</h2>
+    <p class="tr-lead">Four stages from 6 to 18. The stage names come from the Sport for Life LTAD framework (Balyi), a coaching consensus model, not tested science. Ages are guides, not gates, and they run about a year or two earlier for girls. Tap a stage to see what to build and what to avoid.</p>
+    <div class="stages" id="stageBtns"></div>
+    <div class="detail" id="detail"></div>
+    <div class="tr-callout">
+      <div class="k">Where this guide starts and stops</div>
+      <p><b>Under 6:</b> the job is free play and lots of it. Sport for Life calls that stage Active Start. This guide picks up at 6. <b>After 18:</b> college and pro training is individualized, periodized, and coached, and it is outside what we cover.</p>
+    </div>
+  </section>
+
+  <section class="tr-section" id="rules">
+    <div class="tr-label">The three rules</div>
+    <h2 class="tr-h2">Three rules that govern every age</h2>
+    <p class="tr-lead">These do not change from 6 to 18. Only the dose changes.</p>
+    <div class="tr-grid3">
+      <div class="tr-rule">
         <div class="num">01</div>
         <h4>Readiness over age</h4>
         <p>Maturity, not a birthday, sets the program. Progress on what the athlete can control with clean form. Earlier is not better. Ready is better.</p>
       </div>
-      <div class="pcard">
+      <div class="tr-rule">
         <div class="num">02</div>
         <h4>Fun is the engine</h4>
-        <p>In a national survey of kids who quit a sport, &quot;not having fun&quot; was the top reason (Aspen Institute &amp; Utah State, 2019). Variety and play keep them coming back.</p>
+        <p>In a 2019 national survey of youth-sports parents (Aspen Institute and Utah State University), the most common reason given for a child quitting a sport was that it was not fun anymore. Variety and play keep them coming back.</p>
       </div>
-      <div class="pcard">
+      <div class="tr-rule">
         <div class="num">03</div>
         <h4>Move well, then load</h4>
-        <p>Master bodyweight patterns before adding external weight. Squat, hinge, push, pull, brace, land, carry. Clean reps first, load later.</p>
+        <p>Our default for volunteer-led teams. Master bodyweight patterns before adding external weight. Squat, hinge, push, pull, brace, land, carry. Clean reps first, load later.</p>
       </div>
     </div>
-  </div>
-
-  <!-- stages -->
-  <div class="section" id="stages">
-    <h2 class="serif">The development map</h2>
-    <p class="lead">Five stages from first-ball to the pros. The stage names come from the Canadian Sport for Life LTAD framework (Balyi), a coaching consensus model, not tested science. Ages are guides, not gates, and they shift about a year or two earlier for girls. Tap any stage to see what to build and what to avoid.</p>
-    <div class="stages" id="stageBtns"></div>
-    <div class="detail" id="detail"></div>
-  </div>
-
-  <!-- protect -->
-  <div class="section" id="protect">
-    <h2 class="serif">The three things to protect</h2>
-    <p class="lead">A big part of development is keeping the athlete healthy. These three deserve your attention.</p>
-
-    <h3 class="eyebrow">The growth spurt</h3>
-    <p>During the fastest growth phase (Peak Height Velocity), bones can outpace muscles and tendons for a while. Many kids go through a clumsy patch, and overuse complaints at the knee (Osgood-Schlatter) and heel (Sever's) become more common in this window. Signs: a sudden height jump, recent shoe-size change, new complaints of knee or heel pain. Our response: lower the jumping and high-impact (plyometric) volume, lean into mobility and technique, and never push through joint pain. Our conservative rule is that heavier strength work waits until after the spurt. The position statements allow supervised strength training through puberty; we hold back because most volunteer teams lack a qualified strength coach.</p>
-
-    <h3 class="eyebrow">Single-sport specialization</h3>
-    <p>Highly specialized young athletes show higher rates of overuse injury in clinical studies (Jayanthi and colleagues, mostly case-control and retrospective designs), and a 2022 meta-analysis (G&uuml;llich, Macnamara &amp; Hambrick) found that world-class adult athletes typically played more sports and specialized later than near-elite peers. Specialization is one associated risk factor among several, not a proven single cause of burnout. Still, the direction of the evidence, and groups like the AAP (Brenner, 2016) and AOSSM, support sampling through the early teens and delaying year-round single-sport play.</p>
-
-    <h3 class="eyebrow">Energy and recovery (especially for girls)</h3>
-    <p>Female athletes mature earlier and carry a higher ACL injury risk than males in the same sports. Any athlete can be under-fueled during growth (known as RED-S). Neuromuscular warm-up programs that teach soft, aligned landings (PEP, FIFA 11+) cut ACL injury rates by roughly half in meta-analyses (Webster &amp; Hewett, 2018), mostly in soccer, basketball, and handball. We think they are worth making standard from late childhood on. Enough food, enough sleep, and managed load protect both performance and long-term health.</p>
-
-    <div class="callout">
-      <div class="cl-label">A note on throwing</div>
-      <p>This playbook is about athletic development: strength, power, speed, movement. It does not cover throwing or pitching programs. Throwing volume is the highest-risk variable for a young arm and has to be coordinated with the athlete's actual team and game schedule by someone qualified, watching that specific athlete. We keep it separate on purpose.</p>
+  <div class="tr-split">
+    <div class="research">
+      <div class="k">What the research says</div>
+      <p>Youth resistance training is relatively safe and beneficial when the program is properly designed and supervised by <b>qualified adults</b>. The guidance is to begin with relatively light loads, focus on correct technique, and increase resistance gradually (NSCA 2009; International Consensus 2014). It does not say kids must master bodyweight before touching any load.</p>
+    </div>
+    <div class="ours">
+      <div class="k">DugoutLab's default for volunteer-led teams</div>
+      <p>Most volunteer teams do not have a qualified strength coach at practice. So on these pages the default is <b>bodyweight first</b>, no dynamic lifts under load, and no max-effort lifting. External load waits for two things: readiness (maturity and clean form, not a birthday) and a qualified coach watching. That is our conservative call, not a research finding. With a qualified coach, the research supports more.</p>
     </div>
   </div>
+  </section>
 
-  <!-- sources -->
-  <div class="section" id="sources">
-    <h2 class="serif">What this is built on</h2>
-    <p class="lead">Most recommendations here trace to recognized position statements and peer-reviewed research. Where a rule is our own conservative choice, we say so. The full reference list:</p>
-    <div class="sources">
-      <h3>Guidelines and sources this playbook is based on</h3>
-      <ul>
-        <li><b>NSCA Youth Resistance Training Position Statement.</b> Faigenbaum, Kraemer, Blimkie, Jeffreys, Micheli, Nitka &amp; Rowland. Journal of Strength &amp; Conditioning Research, 2009.</li>
-        <li><b>NSCA Position Statement on Long-Term Athletic Development.</b> Lloyd, Cronin, Faigenbaum, Haff, Howard, Kraemer, Micheli, Myer &amp; Oliver, 2016.</li>
-        <li><b>The Youth Physical Development Model.</b> Lloyd &amp; Oliver. Strength &amp; Conditioning Journal, 2012.</li>
-        <li><b>Position Statement on Youth Resistance Training: the 2014 International Consensus.</b> Lloyd et al. British Journal of Sports Medicine, 2014.</li>
-        <li><b>USOPC American Development Model (ADM)</b> and <b>USA Baseball Long-Term Athlete Development Plan</b>: multi-sport participation and readiness-over-age principles. Consensus frameworks.</li>
-        <li><b>Szymanski et al.</b>: medicine-ball and rotational training research in baseball players, including high school players (JSCR, 2007).</li>
-        <li><b>Mandelbaum et al. (PEP program) and the FIFA 11+</b>: neuromuscular ACL-injury-prevention evidence in female athletes. <b>Webster &amp; Hewett (2018)</b>, Journal of Orthopaedic Research: meta-analysis of meta-analyses of ACL injury reduction programs.</li>
-        <li><b>Canadian Sport for Life LTAD framework</b> (Balyi et al.): source of the stage names. A consensus framework, not tested science. Used here as a planning framework only; its "windows of trainability" claims are contested and we do not rely on them.</li>
-        <li><b>Ford, De Ste Croix, Lloyd et al. (2011).</b> The Long-Term Athlete Development model: physiological evidence and application. Journal of Sports Sciences. Critique of the trainability-window claims.</li>
-        <li><b>Aspen Institute Project Play &amp; Utah State University (2019).</b> National youth sports survey: &quot;not having fun&quot; as the top reason kids quit.</li>
-        <li><b>Jayanthi et al.</b>: sports specialization and overuse injury risk in young athletes (multiple clinical studies).</li>
-        <li><b>G&uuml;llich, Macnamara &amp; Hambrick (2022).</b> Meta-analysis of early specialization vs. sampling and adult performance. Perspectives on Psychological Science.</li>
-        <li><b>Brenner / AAP Clinical Report (2016)</b>: sports specialization and intensive training in young athletes. Pediatrics. Also the <b>AOSSM Early Sport Specialization consensus</b> (LaPrade et al., 2016).</li>
-        <li><b>Mountjoy et al. (IOC consensus, 2014/2018)</b>: Relative Energy Deficiency in Sport (RED-S).</li>
-        <li><b>Peak Height Velocity / maturation literature</b>: growth-related conditions (Osgood-Schlatter, Sever&#39;s) and injury-risk patterns around the growth spurt.</li>
+  <section class="tr-section" id="protect">
+    <div class="tr-label">What to protect</div>
+    <h2 class="tr-h2">The three things to protect</h2>
+    <p class="tr-lead">A big part of development is keeping the athlete healthy. These three deserve your attention.</p>
+    <div class="tr-body">
+      <div class="tr-eyebrow">The growth spurt</div>
+      <p>During the fastest growth phase (Peak Height Velocity), bones can outpace muscles and tendons for a while. Many kids go through a clumsy patch, and overuse complaints at the knee (Osgood-Schlatter) and heel (Sever's) become more common in this window (Bergeron et al., 2015). Signs: a sudden height jump, recent shoe-size change, new complaints of knee or heel pain. Our response: lower the jumping and high-impact (plyometric) volume, lean into mobility and clean technique, and never push through joint pain. The position statements allow supervised strength training through puberty; we hold back because most volunteer teams lack a qualified strength coach.</p>
+
+      <div class="tr-eyebrow">Single-sport specialization</div>
+      <p>Highly specialized young athletes show higher rates of overuse injury in clinical studies (Jayanthi and colleagues, mostly case-control and retrospective designs), and a 2022 meta-analysis (G&uuml;llich, Macnamara and Hambrick) found that world-class adult athletes typically played more sports and specialized later than near-elite peers. Specialization is one associated risk factor among several, not a proven single cause of burnout. Still, the direction of the evidence, and groups like the AAP (Brenner, 2016) and AOSSM, support sampling through the early teens and delaying year-round single-sport play.</p>
+
+      <div class="tr-eyebrow">Energy and recovery (especially for girls)</div>
+      <p>Female athletes mature earlier and carry a higher ACL injury risk than males in the same sports. Any athlete can be under-fueled during growth (known as RED-S; Mountjoy et al., 2018). Neuromuscular warm-up programs that teach soft, aligned landings (PEP, FIFA 11+) cut ACL injury rates by roughly half in meta-analyses (Webster and Hewett, 2018), mostly in soccer, basketball, and handball. We think they are worth making standard from late childhood on. Enough food, sleep, and managed load protect both performance and long-term health.</p>
+    </div>
+    <div class="tr-callout">
+      <div class="k">A note on throwing</div>
+      <p>This guide is about athletic development: strength, power, speed, movement. It does not cover throwing or pitching programs. Throwing volume is the highest-risk variable for a young arm and has to be coordinated with the athlete's actual team and game schedule by someone qualified, watching that specific athlete. We keep it separate on purpose.</p>
+    </div>
+  </section>
+
+  <section class="tr-section" id="sources">
+    <div class="tr-label">Sources</div>
+    <h2 class="tr-h2">What this is built on</h2>
+    <p class="tr-lead">Most recommendations here trace to recognized position statements and peer-reviewed research. Where a rule is our own conservative choice, it is labeled as ours. Every title below is a link.</p>
+  <details class="tr-sources" id="sources-list">
+    <summary><span>Sources and evidence</span><span class="tog"><span class="show">Show list</span><span class="hide">Hide list</span></span></summary>
+    <div class="inner">
+      <ul class="src">
+      <li><a href="https://dxpprod.nsca.com/globalassets/about/position-statements/position_stand_youth_resistance_training---2009.pdf" target="_blank" rel="noopener">Faigenbaum et al. (2009). Youth Resistance Training: Updated Position Statement Paper from the National Strength and Conditioning Association. Journal of Strength and Conditioning Research.</a><span class="what">A properly designed and supervised program is relatively safe and beneficial for youth. Begin with relatively light loads, focus on correct technique, and increase resistance gradually. Qualified supervision is required.</span></li>
+      <li><a href="https://dc.etsu.edu/etsu-works/4624" target="_blank" rel="noopener">Lloyd et al. (2014). Position Statement on Youth Resistance Training: the 2014 International Consensus. British Journal of Sports Medicine.</a><span class="what">Resistance training is safe and effective for youth when it is appropriately prescribed and supervised.</span></li>
+      <li><a href="https://www.nsca.com/education/articles/nsca-position-statement-on-long-term-athletic-development" target="_blank" rel="noopener">Lloyd et al. (2016). NSCA Position Statement on Long-Term Athletic Development. Journal of Strength and Conditioning Research.</a><span class="what">Individualized, long-term development. Readiness over age. Movement competency through childhood.</span></li>
+      <li><a href="https://pure.cardiffmet.ac.uk/en/publications/the-youth-physical-development-model-a-new-approach-to-long-term-/" target="_blank" rel="noopener">Lloyd and Oliver (2012). The Youth Physical Development Model. Strength and Conditioning Journal.</a><span class="what">Physical qualities are trainable at every age. The emphasis and dose change with maturity.</span></li>
+      <li><a href="https://bjsm.bmj.com/content/49/13/843" target="_blank" rel="noopener">Bergeron et al. (2015). International Olympic Committee consensus statement on youth athletic development. British Journal of Sports Medicine.</a><span class="what">Growth, maturation, and injury risk around the growth spurt. Multi-sport and load guidance.</span></li>
+      <li><a href="https://profiles.wustl.edu/en/publications/sports-specialization-and-intensive-training-in-young-athletes/" target="_blank" rel="noopener">Brenner and the AAP Council on Sports Medicine and Fitness (2016). Sports Specialization and Intensive Training in Young Athletes. Pediatrics.</a><span class="what">Workload, rest, and multi-sport guidance. Delay single-sport specialization.</span></li>
+      <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4853833" target="_blank" rel="noopener">LaPrade et al. (2016). AOSSM Early Sport Specialization Consensus Statement. Orthopaedic Journal of Sports Medicine.</a><span class="what">Consensus against early single-sport specialization.</span></li>
+      <li><a href="https://journals.sagepub.com/doi/10.1177/0363546514567298" target="_blank" rel="noopener">Jayanthi et al. (2015). Sports-Specialized Intensive Training and the Risk of Injury in Young Athletes. American Journal of Sports Medicine.</a><span class="what">Clinical case-control study. Higher overuse injury rates in highly specialized young athletes.</span></li>
+      <li><a href="https://pubmed.ncbi.nlm.nih.gov/34260336/" target="_blank" rel="noopener">G&uuml;llich, Macnamara and Hambrick (2022). What Makes a Champion? Early Multidisciplinary Practice, Not Early Specialization, Predicts World-Class Performance. Perspectives on Psychological Science.</a><span class="what">Meta-analysis. World-class adult athletes typically played more sports and specialized later than near-elite peers.</span></li>
+      <li><a href="https://projectplay.org/news/2019/9/4/staying-in-the-game-progress-and-challenges-in-youth-sports" target="_blank" rel="noopener">Aspen Institute Project Play and Utah State University (2019). National survey of youth-sports parents.</a><span class="what">Parents most often reported that their child quit a sport because it was not fun anymore.</span></li>
+      <li><a href="https://sportforlife.ca/long-term-development/" target="_blank" rel="noopener">Sport for Life. Long-Term Development framework (Balyi et al.).</a><span class="what">Source of the stage names. A coaching consensus framework, not tested science. We use it for planning only. Its "windows of trainability" claims are contested and we do not rely on them.</span></li>
+      <li><a href="https://pure.cardiffmet.ac.uk/en/publications/the-long-term-athlete-development-model-physiological-evidence-an/" target="_blank" rel="noopener">Ford et al. (2011). The Long-Term Athlete Development model: physiological evidence and application. Journal of Sports Sciences.</a><span class="what">Critique of the trainability-window claims.</span></li>
+      <li><a href="https://usopc.org/ADM" target="_blank" rel="noopener">USOPC American Development Model</a><span class="what">Multi-sport participation and readiness-over-age principles. A consensus framework.</span></li>
+      <li><a href="https://www.usabaseball.com/news/usa-baseball-releases-long-term-athlete-development-plan-255218542" target="_blank" rel="noopener">USA Baseball Long-Term Athlete Development Plan</a><span class="what">Baseball-specific application of the same principles. A consensus framework.</span></li>
+      <li><a href="https://latech.elsevierpure.com/en/publications/effect-of-twelve-weeks-of-medicine-ball-training-on-high-school-b/" target="_blank" rel="noopener">Szymanski et al. (2007). Effect of Twelve Weeks of Medicine Ball Training on High School Baseball Players. Journal of Strength and Conditioning Research.</a><span class="what">Rotational medicine-ball training research in high school baseball players.</span></li>
+      <li><a href="https://pubmed.ncbi.nlm.nih.gov/15888716/" target="_blank" rel="noopener">Mandelbaum et al. (2005). Effectiveness of a neuromuscular and proprioceptive training program (PEP) in preventing ACL injuries in female athletes. American Journal of Sports Medicine.</a><span class="what">Neuromuscular warm-up evidence in female athletes.</span></li>
+      <li><a href="https://mbevidencias.apm.org.br/vufind/Record/openalex-W2807861602/Description?lng=en" target="_blank" rel="noopener">Webster and Hewett (2018). Meta-analysis of meta-analyses of ACL injury reduction training programs. Journal of Orthopaedic Research.</a><span class="what">Neuromuscular programs cut ACL injury rates by roughly half, mostly studied in soccer, basketball, and handball.</span></li>
+      <li><a href="https://bjsm.bmj.com/content/52/11/687" target="_blank" rel="noopener">Mountjoy et al. (2018). IOC consensus statement on Relative Energy Deficiency in Sport (RED-S): 2018 update. British Journal of Sports Medicine.</a><span class="what">Under-fueling during growth and training, in any athlete.</span></li>
       </ul>
     </div>
-    <div class="disclaimer">
-      <p><b>Educational resource only. Not medical advice.</b> This page explains general principles of youth athletic development. It is not a personalized training prescription and does not replace a qualified strength coach, athletic trainer, or physician who can see your athlete. Before starting any program, especially around a growth spurt or any pain, check with a professional. Some evidence here is strong, some is emerging, and some rules are our own conservative calls. We have tried to be honest about the difference.</p>
-    </div>
-  </div>
+  </details>
+    <p class="tr-body" style="margin-top:1rem">A caution we take seriously: the popular "windows of trainability" idea from early LTAD writing is contested in the research (Ford et al., 2011). We treat stages as a planning framework, not a biological law. Anything on these pages without a source behind it gets cut.</p>
+  </section>
 
+  <div class="tr-note">
+    <p><b>Educational resource only. Not medical advice.</b> This guide explains general principles of youth athletic development. They are not a personalized training prescription and do not replace a qualified strength coach, athletic trainer, or physician who can see your athlete. Around a growth spurt or with any pain, check with a professional first.</p>
+  </div>
 </div>
 
 <footer class="footer">
@@ -250,6 +326,7 @@
   </div>
 </footer>
 
+<script src="js/site.js"></script>
 <script>
 const STAGES = [
   {
@@ -261,34 +338,26 @@ const STAGES = [
   },
   {
     age:"8 - 12", name:"Learn to Train", color:"#5C7A62", txt:"#ffffff",
-    focus:"The skill window",
-    goal:"Pre-adolescence is a productive time for learning technique: low body mass, no growth-spurt disruption yet, and years of practice ahead. (Honesty note: LTAD's windows of trainability that open and close are contested in the research (Ford et al., 2011). Skills can be learned at any age. This window is convenient, not magic.) Teach clean movement and real bodyweight strength now and you lay the foundation for everything later.",
+    focus:"Explore and build skills",
+    goal:"Pre-adolescence is a productive time for learning technique: low body mass, no growth-spurt disruption yet, and years of practice ahead. Skills can be learned at any age, and the research does not support fixed windows that open and close (Ford et al., 2011). This stretch is convenient, not magic. Teach clean movement and real bodyweight strength now and you lay the foundation for everything later.",
     build:["Master bodyweight: squats, push-ups, rows, plank","Jumps and landings with soft, silent control","Sprint mechanics, agility and footwork games","Structured rotational med-ball work (skill, light)","Carries (sandbag, suitcase) as the one loaded move"],
     avoid:["Heavy lifting for strength","Early single-sport specialization","Copying high-school or pro programs","Trading clean form for more reps or weight"]
   },
   {
     age:"11 - 16", name:"Train to Train", color:"#C8892A", txt:"#10210f",
     focus:"Through the growth spurt",
-    goal:"Strength and power develop fast here, but injury risk also rises around the growth spurt. Technique earned earlier now gets loaded, slowly, with form leading the way.",
-    build:["Continue bodyweight mastery, add light load when ready","Lower the high-impact jump volume during a growth spurt","Mobility and technique as a priority","Rotational med-ball power across light-to-moderate loads","For girls: ongoing ACL-prevention neuromuscular warm-ups"],
+    goal:"Strength and power develop fast here, but injury risk also rises around the growth spurt. Technique earned earlier now gets loaded, slowly, with form leading the way and a qualified coach watching.",
+    build:["Continue bodyweight mastery, add light load when ready and supervised","Lower the high-impact jump volume during a growth spurt","Mobility and technique as a priority","Rotational med-ball power across light-to-moderate loads","For girls: ongoing ACL-prevention neuromuscular warm-ups"],
     avoid:["1-rep max testing without a qualified strength coach, and ego lifting","Pushing through knee or heel pain","Adult bodybuilding or powerlifting programs","Ignoring a growth spurt and training through it"]
   },
   {
     age:"15 - 18", name:"Train to Compete", color:"#3E5A43", txt:"#ffffff",
     focus:"Build the real engine",
-    goal:"Post-growth-spurt, the body is ready for real, progressive strength and power work. Specialization can begin (around 14 to 15) while ideally still playing a second sport.",
+    goal:"After the growth spurt, the body is ready for real, progressive strength and power work. Specialization can begin (around 14 to 15) while ideally still playing a second sport.",
     build:["Progressive barbell strength with sound technique and a qualified coach","Higher-intensity plyometrics, after the growth spurt","Periodized off-season, pre-season, in-season blocks","Full rotational power program","Testing: jumps, sprints, med-ball throws"],
     avoid:["Maxing without a technique base","Year-round play with no off-season","Skipping recovery, sleep, and nutrition","One-size-fits-all programs"]
-  },
-  {
-    age:"18+", name:"College / Pro", color:"#1C2B1E", txt:"#ffffff",
-    focus:"Peak and sustain",
-    goal:"Maximize power and durability across a very long season. Training is individualized, periodized, and fatigue-managed around the competitive calendar.",
-    build:["Off-season heavy strength and power","In-season maintenance: high intensity, low volume","Year-round plyometric and rotational power","Recovery, sleep, and mobility as priorities","Position-specific conditioning"],
-    avoid:["Heavy high-volume work in-season","Ignoring cumulative fatigue","Neglecting ACL and energy monitoring (women)","Random, non-periodized programming"]
   }
 ];
-
 const btns = document.getElementById('stageBtns');
 const detail = document.getElementById('detail');
 STAGES.forEach((s,i)=>{
@@ -300,28 +369,21 @@ STAGES.forEach((s,i)=>{
   b.onclick=()=>show(i,b);
   btns.appendChild(b);
 });
-
 function show(i,b){
   const s=STAGES[i];
+  [...btns.children].forEach(c=>c.classList.remove('on'));
+  btns.children[i].classList.add('on');
   detail.innerHTML=`
-    <h3>${s.name}<span class="agetag">AGE ${s.age}</span></h3>
-    <p style="color:var(--p-sub);margin-top:8px;">${s.goal}</p>
+    <h3>${s.name}</h3><span class="agetag">AGE ${s.age}</span>
+    <p class="goal">${s.goal}</p>
     <div class="two">
-      <div>
-        <div class="blocklabel">What to build</div>
-        <ul>${s.build.map(x=>`<li>${x}</li>`).join('')}</ul>
-      </div>
-      <div>
-        <div class="blocklabel">What to avoid</div>
-        <ul class="avoid">${s.avoid.map(x=>`<li>${x}</li>`).join('')}</ul>
-      </div>
+      <div><div class="blocklabel">What to build</div><ul class="tr-list">${s.build.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div><div class="blocklabel">What to avoid</div><ul class="tr-list avoid">${s.avoid.map(x=>`<li>${x}</li>`).join('')}</ul></div>
     </div>`;
   detail.classList.add('active');
   if(b) detail.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-// open first by default
 show(0);
 </script>
-<script src="js/site.js"></script>
 </body>
 </html>
