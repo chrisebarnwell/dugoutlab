@@ -42,48 +42,52 @@
   </div>
 </section>
 
-<section class="section" id="example-lineup" style="padding-top:2.5rem">
-  <div class="container-sm">
-    <div class="ex-card">
-      <div class="section-label">Example lineup</div>
-      <h3 class="ex-title">Every kid, a new spot every inning.</h3>
-      <p class="ex-p">This is what the builder hands you: who plays where, inning by inning. Ten kids, four innings. Nobody sits twice in a row. You pick who pitches and catches, and it fills in the rest. Print it, save it as a PDF, or email it to yourself.</p>
-      <div class="ex-wrap">
+<section class="section" id="featured" style="padding-top:2.25rem;padding-bottom:2.25rem">
+  <div class="container">
+    <div class="ft-grid">
+      <a href="cage-targets.html" class="ft-hit">
+        <div class="section-label">New &middot; The Hit Window</div>
+        <div class="ft-h">Turn cage work into a game.</div>
+        <p class="ft-p">Hang targets where real hits land on your field. Then play: ten balls, call your shot, middle 30, gaps 20, lines 10. Challenge a teammate or run head-to-head.</p>
+        <div class="ft-tags"><span>Phone + a net</span><span>Leaderboards</span><span>Free with an email</span></div>
+        <span class="btn btn-primary" style="margin-top:1rem">Try the Hit Window &rarr;</span>
+      </a>
+      <div class="ft-lineup">
+        <div class="section-label">Example lineup</div>
+        <div class="ft-h2">Every kid, a new spot every inning.</div>
         <table class="ex-table">
           <tr><th style="text-align:left">Player</th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
-          <tr class="ex-pod"><td colspan="5">Right pod &middot; 1B / 2B / RF / CF</td></tr>
-          <tr><td class="ex-nm">Maya</td><td class="ex-pc">P</td><td class="ex-pc">P</td><td class="">2B</td><td class="">1B</td></tr>
-          <tr><td class="ex-nm">Theo</td><td class="">RF</td><td class="ex-sit">warm</td><td class="ex-pc">P</td><td class="ex-pc">P</td></tr>
-          <tr><td class="ex-nm">Leo</td><td class="ex-pc">C</td><td class="ex-pc">C</td><td class="">CF</td><td class="">2B</td></tr>
-          <tr><td class="ex-nm">Ruby</td><td class="">CF</td><td class="">1B</td><td class="ex-pc">C</td><td class="ex-pc">C</td></tr>
-          <tr><td class="ex-nm">Sam</td><td class="">2B</td><td class="">CF</td><td class="">1B</td><td class="">RF</td></tr>
-          <tr><td class="ex-nm">Ivy</td><td class="">1B</td><td class="">2B</td><td class="">RF</td><td class="">CF</td></tr>
-          <tr class="ex-pod"><td colspan="5">Left pod &middot; 3B / SS / LF</td></tr>
-          <tr><td class="ex-nm">Jonah</td><td class="">LF</td><td class="">SS</td><td class="">3B</td><td class="ex-sit">sit</td></tr>
-          <tr><td class="ex-nm">Nora</td><td class="">3B</td><td class="">LF</td><td class="ex-sit">sit</td><td class="">SS</td></tr>
-          <tr><td class="ex-nm">Eli</td><td class="ex-sit">sit</td><td class="">3B</td><td class="">SS</td><td class="">LF</td></tr>
-          <tr><td class="ex-nm">Zoe</td><td class="">SS</td><td class="">RF</td><td class="">LF</td><td class="">3B</td></tr>
+          <tr><td class="ex-nm">Maya</td><td class="ex-pc">P</td><td class="ex-pc">P</td><td>2B</td><td>1B</td></tr>
+          <tr><td class="ex-nm">Theo</td><td>RF</td><td class="ex-sit">warm</td><td class="ex-pc">P</td><td class="ex-pc">P</td></tr>
+          <tr><td class="ex-nm">Leo</td><td class="ex-pc">C</td><td class="ex-pc">C</td><td>CF</td><td>2B</td></tr>
+          <tr><td class="ex-nm">Nora</td><td>3B</td><td>LF</td><td class="ex-sit">sit</td><td>SS</td></tr>
         </table>
+        <p class="ex-note">4 of 10 fictional kids. Nobody sits twice in a row. Print it, or email it to yourself.</p>
+        <a href="lineup.html" class="ft-link">Build my free lineup &rarr;</a>
       </div>
-      <p class="ex-note">Fictional players. Built with Pod Rotation mode. <b>P</b> and <b>C</b> are boxed. warm = getting loose to pitch next.</p>
-      <div style="margin-top:1rem"><a href="lineup.html" class="btn btn-primary">Build my free lineup</a></div>
     </div>
   </div>
 </section>
 <style>
-  .ex-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.6rem 1.5rem; }
-  .ex-title { font-family: var(--serif); font-size: 1.4rem; font-weight: 600; letter-spacing: -0.015em; margin-bottom: 0.4rem; }
-  .ex-p { font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6; margin-bottom: 1rem; }
-  .ex-wrap { overflow-x: auto; }
-  .ex-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.88rem; background: var(--forest-deep); border-radius: 8px; }
-  .ex-table th { font-family: var(--mono); font-size: 0.72rem; font-weight: 500; color: var(--gold); padding: 0.45rem 0.4rem; border-bottom: 1px solid var(--rule); text-align: center; }
-  .ex-table td { padding: 0.38rem 0.4rem; text-align: center; border-bottom: 1px solid var(--rule); color: var(--ink); font-weight: 600; }
-  .ex-table td.ex-nm { text-align: left; font-weight: 500; color: var(--ink-soft); }
-  .ex-table td.ex-pc span, .ex-table td.ex-pc { outline: 1.5px solid var(--gold); outline-offset: -4px; border-radius: 4px; color: var(--gold-light); }
-  .ex-table td.ex-sit { color: var(--ink-faint); font-weight: 400; font-style: italic; }
-  .ex-table tr.ex-pod td { text-align: left; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); font-weight: 500; background: var(--forest3); }
+  .ft-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 1rem; align-items: stretch; }
+  .ft-hit { display: block; background: linear-gradient(135deg, var(--forest-deep) 0%, var(--forest3) 100%); border: 1.5px solid var(--gold); border-radius: var(--radius-lg); padding: 1.5rem; color: var(--ink); text-decoration: none; transition: transform 0.15s; }
+  .ft-hit:hover { transform: translateY(-2px); text-decoration: none; color: var(--ink); }
+  .ft-h { font-family: var(--serif); font-size: 1.6rem; font-weight: 600; line-height: 1.15; letter-spacing: -0.015em; margin-bottom: 0.5rem; }
+  .ft-p { font-size: 0.93rem; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .ft-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.85rem; }
+  .ft-tags span { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; color: var(--gold-light); border: 1px solid rgba(200,134,46,0.4); border-radius: 999px; padding: 0.2rem 0.6rem; }
+  .ft-lineup { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.25rem; }
+  .ft-h2 { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; margin-bottom: 0.6rem; }
+  .ft-link { display: inline-block; font-size: 0.88rem; font-weight: 600; margin-top: 0.5rem; }
+  .ex-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.8rem; background: var(--forest-deep); border-radius: 8px; }
   .ex-table th:first-child { width: 30%; }
-  .ex-note { font-size: 0.78rem; color: var(--ink-faint); margin-top: 0.6rem; }
+  .ex-table th { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; color: var(--gold); padding: 0.35rem 0.3rem; border-bottom: 1px solid var(--rule); text-align: center; }
+  .ex-table td { padding: 0.3rem; text-align: center; border-bottom: 1px solid var(--rule); color: var(--ink); font-weight: 600; }
+  .ex-table td.ex-nm { text-align: left; font-weight: 500; color: var(--ink-soft); }
+  .ex-table td.ex-pc { outline: 1.5px solid var(--gold); outline-offset: -3px; border-radius: 4px; color: var(--gold-light); }
+  .ex-table td.ex-sit { color: var(--ink-faint); font-weight: 400; font-style: italic; }
+  .ex-note { font-size: 0.74rem; color: var(--ink-faint); margin: 0.5rem 0 0; }
+  @media (max-width: 768px) { .ft-grid { grid-template-columns: 1fr; } .ft-h { font-size: 1.4rem; } }
 </style>
 
 <section class="section section-cream">
