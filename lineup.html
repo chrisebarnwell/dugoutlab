@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lineup Builder | DugoutLab</title>
-<meta name="description" content="Build a complete 5-inning position lineup matrix for your youth baseball or softball team. Handles tiers, pitching rotations, catching splits, EH slots, and development priorities. Pure JavaScript. No API key, no data ever leaves your device.">
+<meta name="description" content="Build a complete 5-inning position lineup matrix for your youth baseball or softball team. Handles tiers, pitching rotations, catching splits, EH slots, and development priorities. Roster saved in your browser. Free, no account.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
@@ -556,9 +556,9 @@ select option { background: var(--forest-deep); color: var(--ink); }
 
 <div class="page-hero">
   <div class="page-hero-inner">
-    <div class="eyebrow">Lineup Builder &middot; Pure JavaScript, no AI, no data leaves your device</div>
+    <div class="eyebrow">Lineup Builder &middot; Free, no account</div>
     <h1>Build Your <em style="color:var(--gold);font-style:italic">Lineup Matrix</em></h1>
-    <p>Answer 8 questions. Get a complete position-by-inning lineup, with pitching, catching, EH slots, and development priorities all handled. Runs entirely in your browser. No accounts. No API keys. No costs.</p>
+    <p>Answer 8 questions. Get a complete position-by-inning lineup, with pitching, catching, EH slots, and development priorities all handled. Runs in your browser. No account. Your roster is saved in this browser. If you email a lineup, we send that lineup and your email address for delivery.</p>
   </div>
 </div>
 
@@ -607,7 +607,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
       <div id="player-list" class="roster-grid"></div>
       <button class="add-player-btn" onclick="addPlayer()">+ Add Player</button>
       <div id="roster-saved-note" style="display:none;align-items:center;justify-content:space-between;gap:10px;margin-top:0.75rem;padding:0.6rem 0.85rem;background:rgba(110,148,118,0.12);border:1px solid var(--rule);border-radius:8px;font-size:0.82rem;color:var(--ink-soft);">
-        <span>&#10003; Roster saved on this device. It will be here next time you open the builder.</span>
+        <span>&#10003; Roster saved in this browser. It will be here next time you open the builder.</span>
         <button onclick="clearRoster()" style="background:none;border:1px solid var(--rule);color:var(--ink-soft);border-radius:6px;padding:4px 10px;font-size:0.78rem;cursor:pointer;white-space:nowrap;">Clear roster</button>
       </div>
     </div>
@@ -812,6 +812,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
       <div class="lineup-actions">
         <button class="btn-print" onclick="window.print()">Print</button>
         <button class="btn-pdf" onclick="downloadPDF()">Download PDF</button>
+        <button class="btn-print" onclick="goEmail()">Email</button>
         <button class="btn-print" onclick="resetWizard()">New Lineup</button>
       </div>
     </div>
@@ -821,6 +822,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
         <tbody id="lineup-tbody"></tbody>
       </table>
     </div>
+    <div id="email-slot"></div>
   </div>
 
 </div><!-- /wizard-wrap -->
@@ -856,6 +858,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 </footer>
 
 <script src="js/site.js"></script>
+<script src="js/lineup-email.js"></script>
 <script>
 // ── STATE ──────────────────────────────────────────────────────────
 var state = {
@@ -1638,7 +1641,7 @@ function renderLineup(data) {
   players.forEach(function(player, rowIdx) {
     var tr = document.createElement('tr');
     var batNum = rowIdx + 1;
-    var td = '<td class="player-name">' + batNum + '. ' + player.name + '</td>';
+    var td = '<td class="player-name">' + batNum + '. ' + escHtml(player.name) + '</td>';
     (player.positions || []).forEach(function(pos) {
       td += '<td>' + positionBadge(pos) + '</td>';
     });
@@ -1649,7 +1652,8 @@ function renderLineup(data) {
   // Flags
   if (data.flags && data.flags.length > 0) {
     var flagRow = document.createElement('tr');
-    flagRow.innerHTML = '<td colspan="' + (inn + 1) + '" style="padding:0.6rem 0.75rem;font-size:0.78rem;color:var(--text-light);font-style:italic">⚠ ' + data.flags.join(' | ') + '</td>';
+    flagRow.className = 'flag-row';
+    flagRow.innerHTML = '<td colspan="' + (inn + 1) + '" style="padding:0.6rem 0.75rem;font-size:0.78rem;color:var(--text-light);font-style:italic">' + escHtml(data.flags.join(' | ')) + '</td>';
     tbody.appendChild(flagRow);
   }
 
@@ -1657,6 +1661,32 @@ function renderLineup(data) {
   document.getElementById('lineup-title').textContent = state.teamName + ': ' + inn + '-Inning Lineup';
 
   document.getElementById('lineup-output').classList.add('show');
+  LineupEmail.mount(document.getElementById('email-slot'), lineupForEmail);
+}
+
+function escHtml(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+// The lineup exactly as shown: batting order, names, positions. No tiers, no notes.
+function lineupForEmail() {
+  var data = state.lineup || {}, inn = state.innings, cols = [];
+  for (var i = 1; i <= inn; i++) cols.push('Inning ' + i);
+  return {
+    title: document.getElementById('lineup-title').textContent,
+    mode: 'Strike-Thrower Builder',
+    details: [inn + ' innings. Batting order is top to bottom.'],
+    firstCol: 'Batting order',
+    columns: cols,
+    rows: (data.lineup || []).map(function (p, idx) {
+      return { name: (idx + 1) + '. ' + p.name, cells: (p.positions || []).map(function (x) { return x || 'EH'; }) };
+    }),
+    legend: 'EH = extra hitter: bats in the order, off the field that inning.'
+  };
+}
+
+function goEmail() {
+  var slot = document.getElementById('email-slot');
+  slot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  var f = slot.querySelector('.le-email'); if (f && !f.disabled) setTimeout(function () { f.focus(); }, 400);
 }
 
 function positionBadge(pos) {

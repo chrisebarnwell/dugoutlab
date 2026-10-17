@@ -33,71 +33,58 @@
 
 <section class="page-hero" style="padding:4rem 1.25rem 3rem">
   <div class="page-hero-inner" style="text-align:center">
-    <div class="eyebrow">Free practice plans for volunteer baseball and softball coaches</div>
+    <div class="eyebrow">For volunteer baseball and softball coaches</div>
     <h1>Your job is to make them want to come back tomorrow.</h1>
-    <p style="margin:0.75rem auto 0;max-width:640px;font-size:1.05rem;color:rgba(255,255,255,0.75)"><strong style="color:var(--gold)">Play first.</strong> The pros forget how much they played. The research remembers. For you, coach, trying to get it right <em>is</em> getting it right.</p>
-    <div style="margin-top:1.6rem"><a href="#free-plan" class="btn btn-primary btn-lg">Get the free practice plan</a></div>
+    <p style="margin:0.75rem auto 0;max-width:640px;font-size:1.05rem;color:rgba(255,255,255,0.75)">Free tools for youth baseball and softball coaches. Plan positions and playing time before you get to the field.</p>
+    <div style="margin-top:1.6rem"><a href="lineup.html" class="btn btn-primary btn-lg">Build my free lineup</a></div>
+    <p style="margin:0.9rem auto 0;font-size:0.85rem;color:var(--ink-faint)">Rec team? <a href="pods.html">Pod Rotation</a> &middot; All-Stars or travel? <a href="lineup.html">Strike-Thrower Builder</a></p>
+    <p style="margin:1.4rem auto 0;max-width:560px;font-family:var(--serif);font-style:italic;font-size:1rem;color:var(--ink-soft)">For you, coach, trying to get it right <em>is</em> getting it right.</p>
   </div>
 </section>
 
-<section class="section" id="free-plan" style="padding-top:2.5rem">
+<section class="section" id="example-lineup" style="padding-top:2.5rem">
   <div class="container-sm">
-    <div class="email-capture" style="text-align:left">
-      <div class="section-label">Free practice plan &middot; Ages 7-9</div>
-      <h3 style="font-size:1.45rem;margin-bottom:0.5rem">Tomorrow&#39;s practice, already planned.</h3>
-      <p style="margin-bottom:1.1rem">The 60-minute practice we actually ran with our 8 and 9-year-olds. Five games, a setup diagram for each, how to score it, and an easier and harder version of each. Printable, one PDF.</p>
-      <div class="plan-peek" aria-label="What is in the plan">
-        <div><span>10</span>Dodgeball Warmup</div>
-        <div><span>10</span>Back-Up Catch</div>
-        <div><span>15</span>2-2 Relay Race</div>
-        <div><span>15</span>Tennis Ball Fly Game</div>
-        <div><span>10</span>Hat Tag</div>
+    <div class="ex-card">
+      <div class="section-label">Example lineup</div>
+      <h3 class="ex-title">Every kid, a new spot every inning.</h3>
+      <p class="ex-p">This is what the builder hands you: who plays where, inning by inning. Ten kids, four innings. Nobody sits twice in a row. You pick who pitches and catches, and it fills in the rest. Print it, save it as a PDF, or email it to yourself.</p>
+      <div class="ex-wrap">
+        <table class="ex-table">
+          <tr><th style="text-align:left">Player</th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
+          <tr class="ex-pod"><td colspan="5">Right pod &middot; 1B / 2B / RF / CF</td></tr>
+          <tr><td class="ex-nm">Maya</td><td class="ex-pc">P</td><td class="ex-pc">P</td><td class="">2B</td><td class="">1B</td></tr>
+          <tr><td class="ex-nm">Theo</td><td class="">RF</td><td class="ex-sit">warm</td><td class="ex-pc">P</td><td class="ex-pc">P</td></tr>
+          <tr><td class="ex-nm">Leo</td><td class="ex-pc">C</td><td class="ex-pc">C</td><td class="">CF</td><td class="">2B</td></tr>
+          <tr><td class="ex-nm">Ruby</td><td class="">CF</td><td class="">1B</td><td class="ex-pc">C</td><td class="ex-pc">C</td></tr>
+          <tr><td class="ex-nm">Sam</td><td class="">2B</td><td class="">CF</td><td class="">1B</td><td class="">RF</td></tr>
+          <tr><td class="ex-nm">Ivy</td><td class="">1B</td><td class="">2B</td><td class="">RF</td><td class="">CF</td></tr>
+          <tr class="ex-pod"><td colspan="5">Left pod &middot; 3B / SS / LF</td></tr>
+          <tr><td class="ex-nm">Jonah</td><td class="">LF</td><td class="">SS</td><td class="">3B</td><td class="ex-sit">sit</td></tr>
+          <tr><td class="ex-nm">Nora</td><td class="">3B</td><td class="">LF</td><td class="ex-sit">sit</td><td class="">SS</td></tr>
+          <tr><td class="ex-nm">Eli</td><td class="ex-sit">sit</td><td class="">3B</td><td class="">SS</td><td class="">LF</td></tr>
+          <tr><td class="ex-nm">Zoe</td><td class="">SS</td><td class="">RF</td><td class="">LF</td><td class="">3B</td></tr>
+        </table>
       </div>
-      <form id="plan-form" class="email-row" style="margin:1.25rem 0 0;max-width:none" onsubmit="return planSignup(event)">
-        <input type="email" id="plan-email" required maxlength="120" autocomplete="email" inputmode="email" placeholder="you@email.com" aria-label="Your email">
-        <input type="text" name="website" id="plan-hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-        <button type="submit" class="btn btn-primary" id="plan-btn">Send me the plan</button>
-      </form>
-      <div id="plan-err" style="color:var(--gold-light);font-size:0.85rem;margin-top:0.5rem;min-height:1em"></div>
-      <p id="plan-fine" style="font-size:0.8rem;color:var(--ink-faint);margin:0.25rem 0 0">Your download opens right here. Now and then we send a new game or tool. Never sold.</p>
-      <div id="plan-done" style="display:none">
-        <div style="font-family:var(--serif);font-size:1.35rem;color:var(--ink);margin:0.25rem 0 0.4rem">It&#39;s yours. Have fun out there.</div>
-        <p style="margin-bottom:1rem">Run it as written once. Then use the easier and harder lines to make it fit your kids.</p>
-        <a href="downloads/tuesday-night-practice.pdf" class="btn btn-primary" download>Download the plan (PDF)</a>
-        <a href="practice-example.html" class="btn btn-outline" style="margin-left:0.4rem">See it on the site</a>
-      </div>
+      <p class="ex-note">Fictional players. Built with Pod Rotation mode. <b>P</b> and <b>C</b> are boxed. warm = getting loose to pitch next.</p>
+      <div style="margin-top:1rem"><a href="lineup.html" class="btn btn-primary">Build my free lineup</a></div>
     </div>
   </div>
 </section>
 <style>
-  .plan-peek { display:grid; gap:0.35rem; }
-  .plan-peek div { display:flex; align-items:center; gap:0.75rem; background:var(--forest-deep); border:1px solid var(--rule); border-radius:8px; padding:0.5rem 0.8rem; font-size:0.92rem; color:var(--ink); }
-  .plan-peek span { font-family:var(--mono); color:var(--gold); font-weight:500; min-width:2.6rem; font-size:0.8rem; }
-  .plan-peek span::after { content:" min"; }
-  @media (max-width:768px) { #plan-done .btn { display:flex; justify-content:center; margin:0.5rem 0 0 !important; } }
+  .ex-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.6rem 1.5rem; }
+  .ex-title { font-family: var(--serif); font-size: 1.4rem; font-weight: 600; letter-spacing: -0.015em; margin-bottom: 0.4rem; }
+  .ex-p { font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6; margin-bottom: 1rem; }
+  .ex-wrap { overflow-x: auto; }
+  .ex-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.88rem; background: var(--forest-deep); border-radius: 8px; }
+  .ex-table th { font-family: var(--mono); font-size: 0.72rem; font-weight: 500; color: var(--gold); padding: 0.45rem 0.4rem; border-bottom: 1px solid var(--rule); text-align: center; }
+  .ex-table td { padding: 0.38rem 0.4rem; text-align: center; border-bottom: 1px solid var(--rule); color: var(--ink); font-weight: 600; }
+  .ex-table td.ex-nm { text-align: left; font-weight: 500; color: var(--ink-soft); }
+  .ex-table td.ex-pc span, .ex-table td.ex-pc { outline: 1.5px solid var(--gold); outline-offset: -4px; border-radius: 4px; color: var(--gold-light); }
+  .ex-table td.ex-sit { color: var(--ink-faint); font-weight: 400; font-style: italic; }
+  .ex-table tr.ex-pod td { text-align: left; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); font-weight: 500; background: var(--forest3); }
+  .ex-table th:first-child { width: 30%; }
+  .ex-note { font-size: 0.78rem; color: var(--ink-faint); margin-top: 0.6rem; }
 </style>
-<script>
-function planSignup(e) {
-  e.preventDefault();
-  var email = document.getElementById('plan-email').value.trim();
-  var err = document.getElementById('plan-err');
-  var btn = document.getElementById('plan-btn');
-  err.textContent = '';
-  btn.disabled = true; btn.textContent = 'Sending...';
-  fetch('/api/subscribe', { method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ email: email, source: 'practice-plan-7-9', website: document.getElementById('plan-hp').value }) })
-    .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
-    .then(function (x) {
-      if (!x.ok) throw new Error(x.j.error || 'Something went wrong. Try again.');
-      document.getElementById('plan-form').style.display = 'none';
-      document.getElementById('plan-done').style.display = 'block';
-      document.getElementById('plan-fine').style.display = 'none';
-      try { localStorage.setItem('dl_plan', '1'); } catch (e2) {}
-    })
-    .catch(function (e3) { err.textContent = e3.message || 'Something went wrong. Try again.'; btn.disabled = false; btn.textContent = 'Send me the plan'; });
-  return false;
-}
-</script>
 
 <section class="section section-cream">
   <div class="container">
@@ -175,6 +162,18 @@ function planSignup(e) {
       <a href="games.html" class="card card-link article-card" style="text-decoration:none">
         <div class="card-title">Games Library</div>
         <div class="card-summary">Small-sided games that teach the skill for you.</div>
+      </a>
+    </div>
+    <div class="grid-2" style="margin-top:1rem">
+      <a href="practice-example.html" class="card card-link article-card" style="text-decoration:none">
+        <div class="card-eyebrow">Free practice plan</div>
+        <div class="card-title">The Tuesday Night Practice</div>
+        <div class="card-summary">A 60-minute practice we ran with 8 and 9-year-olds. Five games, printable PDF.</div>
+      </a>
+      <a href="coach-dad.html" class="card card-link article-card" style="text-decoration:none">
+        <div class="card-eyebrow">For the parent who coaches</div>
+        <div class="card-title">Coach Dad</div>
+        <div class="card-summary">A daily reflection on the words we use with the kids who watch us closest.</div>
       </a>
     </div>
   </div>

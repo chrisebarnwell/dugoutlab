@@ -20,6 +20,10 @@ const SCHEMA = [
     a_score INTEGER, b_score INTEGER, status TEXT NOT NULL DEFAULT 'open', winner TEXT, created INTEGER NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS subscribers (
     email TEXT PRIMARY KEY, source TEXT NOT NULL, created INTEGER NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS lineup_sends (
+    id TEXT PRIMARY KEY, email_hash TEXT NOT NULL, ip_hash TEXT NOT NULL, ok INTEGER NOT NULL, created INTEGER NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS lineup_sends_email ON lineup_sends(email_hash, created)`,
+  `CREATE INDEX IF NOT EXISTS lineup_sends_ip ON lineup_sends(ip_hash, created)`,
   `CREATE INDEX IF NOT EXISTS hitters_acct ON hitters(account_id)`,
   `CREATE INDEX IF NOT EXISTS rounds_hitter ON rounds(hitter_id, created)`,
   `CREATE INDEX IF NOT EXISTS rounds_level ON rounds(level, score)`,
@@ -62,6 +66,73 @@ function scoreBalls(balls) {
   }
   return { score, liners, called, best, balls: out };
 }
+
+/* ---------- Lineup email (Resend) ----------
+   Needs Pages env vars: RESEND_API_KEY (secret) and LINEUP_FROM, e.g. "DugoutLab <lineups@dugoutlab.com>".
+   The sending domain must be verified in Resend. Without both, the feature reports itself as off. */
+const LIMIT_PER_EMAIL = 4, LIMIT_PER_IP = 8, LIMIT_WINDOW = 3600000;
+function lineupEmailOn(env) { return !!(env.RESEND_API_KEY && env.LINEUP_FROM && env.DB); }
+function h(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function txt(s, n) { return String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, n || 60); }
+async function sha(s) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join('').slice(0, 32);
+}
+/* Accept only the lineup itself: names, cells, a few game details. Tiers and notes are never sent by the page and are dropped here if present. */
+function cleanLineup(L) {
+  if (!L || typeof L !== 'object') return null;
+  const columns = Array.isArray(L.columns) ? L.columns.slice(0, 12).map(c => txt(c, 16)) : [];
+  if (columns.length < 1) return null;
+  const rows = [];
+  for (const r of (Array.isArray(L.rows) ? L.rows : []).slice(0, 40)) {
+    if (r && r.group) { rows.push({ group: txt(r.group, 60) }); continue; }
+    if (!r || !Array.isArray(r.cells)) return null;
+    const name = txt(r.name, 40);
+    if (!name) return null;
+    const cells = r.cells.slice(0, columns.length).map(c => txt(c, 12));
+    rows.push({ name, cells });
+  }
+  if (!rows.some(r => r.name)) return null;
+  const details = (Array.isArray(L.details) ? L.details : []).slice(0, 6).map(d => txt(d, 160)).filter(Boolean);
+  return { title: txt(L.title, 80) || 'Your lineup', mode: txt(L.mode, 40), details, columns, firstCol: txt(L.firstCol, 16) || 'Player', rows, legend: txt(L.legend, 200) };
+}
+function lineupHtml(L, optin) {
+  const th = 'padding:6px 8px;border:1px solid #999;background:#f3efe6;font:bold 12px Helvetica,Arial,sans-serif;text-align:center';
+  const td = 'padding:6px 8px;border:1px solid #bbb;font:14px Helvetica,Arial,sans-serif;text-align:center';
+  let rows = '';
+  for (const r of L.rows) {
+    if (r.group) { rows += `<tr><td colspan="${L.columns.length + 1}" style="${td};text-align:left;font-weight:bold;background:#faf8f3">${h(r.group)}</td></tr>`; continue; }
+    rows += `<tr><td style="${td};text-align:left;font-weight:bold;white-space:nowrap">${h(r.name)}</td>` +
+      r.cells.map(c => `<td style="${td}${/^(P|C)$/.test(c) ? ';font-weight:bold' : ''}">${h(c)}</td>`).join('') + '</tr>';
+  }
+  return `<!doctype html><html><body style="margin:0;padding:16px;background:#ffffff;color:#111">
+<div style="max-width:720px;margin:0 auto">
+<div style="font:bold 11px Helvetica,Arial,sans-serif;letter-spacing:2px;color:#555">DUGOUTLAB LINEUP</div>
+<h1 style="font:bold 22px Helvetica,Arial,sans-serif;margin:6px 0 4px">${h(L.title)}</h1>
+${L.mode ? `<div style="font:13px Helvetica,Arial,sans-serif;color:#555;margin-bottom:6px">${h(L.mode)}</div>` : ''}
+${L.details.map(d => `<div style="font:14px Helvetica,Arial,sans-serif;margin:2px 0">${h(d)}</div>`).join('')}
+<table cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin:14px 0;width:100%">
+<tr><th style="${th};text-align:left">${h(L.firstCol)}</th>${L.columns.map(c => `<th style="${th}">${h(c)}</th>`).join('')}</tr>
+${rows}</table>
+${L.legend ? `<div style="font:12px Helvetica,Arial,sans-serif;color:#555">${h(L.legend)}</div>` : ''}
+<p style="font:12px Helvetica,Arial,sans-serif;color:#555;margin-top:18px;line-height:1.5">You asked dugoutlab.com to email this lineup to you. This did not create an account, and the lineup is not saved online.${optin ? ' You also asked for occasional DugoutLab coaching tools and updates. Reply "unsubscribe" any time to stop those.' : ''}</p>
+<p style="font:12px Helvetica,Arial,sans-serif;color:#555">Make them want to come back tomorrow. dugoutlab.com</p>
+</div></body></html>`;
+}
+function lineupText(L, optin) {
+  const w0 = Math.max(L.firstCol.length, ...L.rows.filter(r => r.name).map(r => r.name.length)) + 2;
+  const ws = L.columns.map((c, i) => Math.max(c.length, ...L.rows.filter(r => r.name).map(r => (r.cells[i] || '').length)) + 2);
+  const line = (a, cells) => a.padEnd(w0) + cells.map((c, i) => (c || '').padEnd(ws[i])).join('');
+  const out = ['DUGOUTLAB LINEUP', L.title];
+  if (L.mode) out.push(L.mode);
+  out.push(...L.details, '', line(L.firstCol, L.columns), '-'.repeat(w0 + ws.reduce((a, b) => a + b, 0)));
+  for (const r of L.rows) out.push(r.group ? '[' + r.group + ']' : line(r.name, r.cells));
+  if (L.legend) out.push('', L.legend);
+  out.push('', 'You asked dugoutlab.com to email this lineup to you. This did not create an account, and the lineup is not saved online.' +
+    (optin ? ' You also asked for occasional DugoutLab coaching tools and updates. Reply "unsubscribe" any time to stop those.' : ''), 'dugoutlab.com');
+  return out.join('\n');
+}
+
 async function mirrorSub(env, email, source) {
   /* Same Google Sheet collector as game signups. */
   if (!env.EMAIL_HOOK) return;
@@ -125,6 +196,44 @@ export async function onRequest(ctx) {
       const r = await db.prepare('INSERT OR IGNORE INTO subscribers (email,source,created) VALUES (?,?,?)').bind(email, source, now).run();
       if (r.meta && r.meta.changes) ctx.waitUntil(mirrorSub(env, email, source));
       return json({ ok: true });
+    }
+
+    if (route === 'lineup-email' && method === 'GET') {
+      return json({ enabled: lineupEmailOn(env) });
+    }
+
+    if (route === 'lineup-email' && method === 'POST') {
+      if (body.website) return json({ ok: true });
+      if (!lineupEmailOn(env)) return bad('Email delivery is not set up yet. Print or download your lineup for now.', 503);
+      const email = clean(body.email, 120).toLowerCase();
+      if (!emailOK(email)) return bad('That email does not look right');
+      const L = cleanLineup(body.lineup);
+      if (!L) return bad('That lineup could not be read. Rebuild it and try again.');
+      const optin = body.optin === true;
+      await ensure(db);
+      const ip = request.headers.get('cf-connecting-ip') || 'unknown';
+      const eh = await sha('e:' + email), ih = await sha('i:' + ip), since = now - LIMIT_WINDOW;
+      const byEmail = await db.prepare('SELECT COUNT(*) AS n FROM lineup_sends WHERE email_hash = ? AND created > ?').bind(eh, since).first();
+      const byIp = await db.prepare('SELECT COUNT(*) AS n FROM lineup_sends WHERE ip_hash = ? AND created > ?').bind(ih, since).first();
+      if (byEmail.n >= LIMIT_PER_EMAIL || byIp.n >= LIMIT_PER_IP) return bad('Too many emails in the last hour. Try again a little later.', 429);
+      let res, info = {};
+      try {
+        res = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { 'authorization': 'Bearer ' + env.RESEND_API_KEY, 'content-type': 'application/json' },
+          body: JSON.stringify({ from: env.LINEUP_FROM, to: [email], subject: 'Your lineup: ' + L.title,
+            html: lineupHtml(L, optin), text: lineupText(L, optin), reply_to: env.LINEUP_REPLY_TO || undefined })
+        });
+        try { info = await res.json(); } catch (e) { info = {}; }
+      } catch (e) { res = null; }
+      const accepted = !!(res && res.ok && info && info.id);
+      await db.prepare('INSERT INTO lineup_sends (id,email_hash,ip_hash,ok,created) VALUES (?,?,?,?,?)').bind(id(), eh, ih, accepted ? 1 : 0, now).run();
+      if (!accepted) return bad('The email service did not accept that send. Check the address and try again.', 502);
+      if (optin) {
+        const r = await db.prepare('INSERT OR IGNORE INTO subscribers (email,source,created) VALUES (?,?,?)').bind(email, 'lineup-email', now).run();
+        if (r.meta && r.meta.changes) ctx.waitUntil(mirrorSub(env, email, 'lineup-email'));
+      }
+      return json({ ok: true, id: info.id });
     }
 
     if (route === 'leaderboard') {

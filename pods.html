@@ -83,7 +83,7 @@ textarea { width: 100%; min-height: 150px; }
   <div class="page-hero-inner">
     <div class="eyebrow">Lineup Builder &middot; Pod Rotation</div>
     <h1>Two pods. <em style="color:var(--gold);font-style:italic">Every kid, every spot.</em></h1>
-    <p>Split the field in two. Kids rotate inside their pod, sit once at most in a row, and switch sides next game. Runs in your browser. Nothing leaves your device.</p>
+    <p>Split the field in two. Kids rotate inside their pod, sit once at most in a row, and switch sides next game. Runs in your browser. Your roster is saved in this browser. If you email a lineup, we send that lineup and your email address for delivery.</p>
   </div>
 </div>
 
@@ -119,7 +119,7 @@ textarea { width: 100%; min-height: 150px; }
 
   <div class="pb-card">
     <h2>1. Roster</h2>
-    <p class="hint">Paste names, one per line. Tap a pod tag to flip a kid's side. Saved on this device.</p>
+    <p class="hint">Paste names, one per line. Tap a pod tag to flip a kid's side. Saved in this browser.</p>
     <div class="grid-2c">
       <div>
         <input class="pb-in" id="team" type="text" placeholder="Team name" style="width:100%;margin-bottom:0.6rem">
@@ -163,6 +163,10 @@ textarea { width: 100%; min-height: 150px; }
   </div>
 
   <div id="out"></div>
+  <div id="email-slot" style="display:none">
+    <div class="pb-row no-print" style="margin-top:0.75rem"><button class="btn btn-outline btn-sm" onclick="window.print()">Print / Save PDF</button></div>
+    <div id="email-box"></div>
+  </div>
 </div>
 
 <footer class="footer">
@@ -197,6 +201,7 @@ textarea { width: 100%; min-height: 150px; }
 
 <script src="js/site.js"></script>
 <script src="js/pods.js"></script>
+<script src="js/lineup-email.js"></script>
 <script>
 var KEY = 'dugout_pods_v1';
 var S = { team: '', names: [], pods: {}, innings: 6, game: 1, opp: '', p: [], c: [] };
@@ -295,7 +300,37 @@ function generate() {
   h += '</table></div>';
   if (flags.length) h += '<div class="flags no-print">' + flags.map(esc).join('<br>') + '</div>';
   out.innerHTML = h;
+  LAST = { team: S.team, game: S.game, opp: S.opp, inn: inn, P: P, C: C, caps: caps, pod: res.pod, grid: res.grid, names: S.names.slice() };
+  document.getElementById('email-slot').style.display = 'block';
+  LineupEmail.mount(document.getElementById('email-box'), lineupForEmail);
   out.scrollIntoView({ behavior: 'smooth' });
+}
+
+var LAST = null;
+// The card exactly as shown: pods, names, positions, plans, caps. Nothing else.
+function lineupForEmail() {
+  var L = LAST; if (!L) return null;
+  function plain(arr) {
+    var parts = [], i = 0;
+    while (i < arr.length) { var j = i; while (j + 1 < arr.length && arr[j + 1] === arr[i]) j++; if (arr[i]) parts.push(arr[i] + ' ' + (i + 1) + (j > i ? '-' + (j + 1) : '')); i = j + 1; }
+    return parts.join(', ') || 'none set';
+  }
+  var cols = []; for (var i = 1; i <= L.inn; i++) cols.push(String(i)); cols.push('Pitch cap');
+  var rows = [];
+  [['right', 'RIGHT POD: 1B / 2B / RF / CF'], ['left', 'LEFT POD: 3B / SS / LF']].forEach(function (pd) {
+    rows.push({ group: pd[1] });
+    L.names.filter(function (n) { return L.pod[n] === pd[0]; }).forEach(function (n) {
+      var cap = String(L.caps[n] || '').slice(0, 12);
+      rows.push({ name: n, cells: L.grid[n].concat([cap]) });
+    });
+  });
+  var details = ['Pitchers: ' + plain(L.P), 'Catchers: ' + plain(L.C), L.inn + ' innings'];
+  if (L.game === 2) details.push('Game 2: every kid switched sides.');
+  return {
+    title: (L.team || 'Lineup Card') + ' / Game ' + L.game + (L.opp ? ' vs ' + L.opp : ''),
+    mode: 'Pod Rotation', details: details, firstCol: 'Player', columns: cols, rows: rows,
+    legend: 'P and C in bold. warm = getting loose to pitch next. sit = sitting this inning.'
+  };
 }
 
 function renderAll() {
