@@ -4,78 +4,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stage Finder | DugoutLab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
 <style>
   :root{
-    --forest:#1C2B1E; --forest2:#24351F; --gold:#C8892A; --gold-dk:#9B6B20;
-    --paper:#F7F5EF; --card:#FFFFFF; --ltgreen:#6E8F74; --line:#DCE4DA;
-    --ink:#1F2A20; --sub:#4A6650; --shade:#EFF3ED; --warn:#9B6B20;
+    --p-head:var(--ink); --p-head2:var(--forest-deep); --p-gold:var(--gold); --p-gold-dk:var(--gold-light);
+    --p-bg:var(--forest); --p-card:var(--forest2); --p-green:rgba(244,239,230,0.22); --p-line:var(--rule);
+    --p-ink:var(--ink); --p-sub:var(--ink-soft); --p-shade:var(--forest3); --p-warn:var(--gold-light);
   }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
-  body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;}
-  .topbar{height:5px;background:linear-gradient(90deg,var(--gold),var(--gold-dk));}
-  header{background:var(--forest);color:#fff;padding:22px 24px;}
-  .head-inner{max-width:960px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;}
-  .logo{font-family:Georgia,serif;font-weight:bold;font-size:1.5rem;}
-  .logo span{color:var(--gold);}
-  .logo small{display:block;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:#9DB8A2;margin-top:2px;}
-
   .wrap{max-width:960px;margin:0 auto;padding:36px 24px;}
-  .kicker{color:var(--gold-dk);font-weight:bold;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;}
-  h1{font-family:Georgia,serif;font-size:2.4rem;color:var(--forest);margin:12px 0 10px;}
-  .intro{color:var(--sub);font-size:1.08rem;max-width:62ch;margin-bottom:8px;}
+  .kicker{color:var(--p-gold-dk);font-weight:bold;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;}
+  h1{font-family:var(--serif);font-size:2.4rem;color:var(--p-head);margin:12px 0 10px;}
+  .intro{color:var(--p-sub);font-size:1.08rem;max-width:62ch;margin-bottom:8px;}
 
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;margin-top:26px;}
+  .card{background:var(--p-card);border:1px solid var(--p-line);border-radius:14px;padding:26px;margin-top:26px;}
   .q{margin-bottom:22px;}
   .q:last-child{margin-bottom:0;}
-  .q label{display:block;font-weight:bold;color:var(--forest);font-size:1rem;margin-bottom:10px;}
+  .q label{display:block;font-weight:bold;color:var(--p-head);font-size:1rem;margin-bottom:10px;}
   .opts{display:flex;gap:10px;flex-wrap:wrap;}
-  .opt{border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:11px 16px;
+  .opt{border:1.5px solid var(--p-line);background:#fff;color:var(--p-ink);border-radius:10px;padding:11px 16px;
     font:inherit;font-size:.92rem;cursor:pointer;transition:.15s;}
-  .opt:hover{border-color:var(--ltgreen);background:rgba(92,122,98,0.10);}
-  .opt.sel{background:var(--forest);color:#fff;border-color:var(--forest);}
-  .opt.sel.gold{background:var(--gold);border-color:var(--gold);color:#10210f;}
+  .opt:hover{border-color:var(--p-green);background:rgba(92,122,98,0.10);}
+  .opt.sel{background:var(--p-head);color:#fff;border-color:var(--p-head);}
+  .opt.sel.gold{background:var(--p-gold);border-color:var(--p-gold);color:#10210f;}
 
   .result{margin-top:26px;display:none;}
   .result.show{display:block;animation:fade .3s ease;}
   @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 
   .stage-banner{border-radius:14px 14px 0 0;padding:24px 26px;color:#fff;}
-  .stage-banner .sb-name{font-family:Georgia,serif;font-size:1.7rem;}
+  .stage-banner .sb-name{font-family:var(--serif);font-size:1.7rem;}
   .stage-banner .sb-sub{font-size:.85rem;letter-spacing:1px;text-transform:uppercase;opacity:.9;margin-top:4px;}
-  .result-body{background:var(--card);border:1px solid var(--line);border-top:none;border-radius:0 0 14px 14px;padding:26px;}
-  .result-body .goal{font-size:1.02rem;color:var(--ink);margin-bottom:18px;}
+  .result-body{background:var(--p-card);border:1px solid var(--p-line);border-top:none;border-radius:0 0 14px 14px;padding:26px;}
+  .result-body .goal{font-size:1.02rem;color:var(--p-ink);margin-bottom:18px;}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
   @media(max-width:680px){.two{grid-template-columns:1fr;}}
-  .blocklabel{color:var(--gold-dk);font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:bold;margin-bottom:8px;}
-  ul{list-style:none;}
-  li{padding:5px 0 5px 18px;position:relative;font-size:.94rem;}
-  li::before{content:"";position:absolute;left:0;top:12px;width:6px;height:6px;border-radius:50%;background:var(--gold);}
-  .avoid li::before{background:var(--gold-dk);border-radius:0;transform:rotate(45deg);}
+  .blocklabel{color:var(--p-gold-dk);font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:bold;margin-bottom:8px;}
+  .result ul{list-style:none;}
+  .result li{padding:5px 0 5px 18px;position:relative;font-size:.94rem;}
+  .result li::before{content:"";position:absolute;left:0;top:12px;width:6px;height:6px;border-radius:50%;background:var(--p-gold);}
+  .avoid li::before{background:var(--p-gold-dk);border-radius:0;transform:rotate(45deg);}
 
-  .spurt{background:#FBF1E2;border:1px solid var(--gold);border-radius:11px;padding:18px 20px;margin-top:20px;}
-  .spurt .cl-label{color:var(--gold-dk);font-weight:bold;font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+  .spurt{background:#FBF1E2;border:1px solid var(--p-gold);border-radius:11px;padding:18px 20px;margin-top:20px;}
+  .spurt .cl-label{color:var(--p-gold-dk);font-weight:bold;font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
   .spurt p{font-size:.92rem;}
 
-  .disclaimer{border:1px dashed var(--ltgreen);border-radius:11px;padding:16px 18px;margin-top:22px;background:var(--shade);}
-  .disclaimer p{font-size:.84rem;color:var(--sub);}
-  .disclaimer b{color:var(--forest);}
+  .disclaimer{border:1px dashed var(--p-green);border-radius:11px;padding:16px 18px;margin-top:22px;background:var(--p-shade);}
+  .disclaimer p{font-size:.84rem;color:var(--p-sub);}
+  .disclaimer b{color:var(--p-head);}
 
-  footer{background:var(--forest2);color:#9DB8A2;text-align:center;padding:24px;margin-top:36px;font-size:.8rem;}
-  footer .sponsor{margin-top:8px;font-size:.74rem;color:#7d987f;}
-  footer a{color:var(--gold);text-decoration:none;}
+  /* site-theme overrides */
+  .sources{background:var(--forest-deep)!important;border:1px solid var(--rule);}
+  .callout,.spurt{background:rgba(200,134,46,0.10)!important;}
+  .opt{background:var(--forest3)!important;color:var(--ink)!important;}
+  .opt.sel{background:var(--gold)!important;border-color:var(--gold)!important;color:var(--forest)!important;}
+  .page-crumb{font-size:.85rem;margin-bottom:1rem;}
+  .page-crumb a{color:var(--ink-faint);}
+  .page-crumb a:hover{color:var(--gold);}
+  @media(max-width:600px){.hero h1,h1.serif{font-size:2.1rem!important;}}
 </style>
 </head>
 <body>
-<div class="topbar"></div>
-<header>
-  <div class="head-inner">
-    <a href="index.html" style="text-decoration:none;color:inherit;"><div class="logo">Dugout<span>Lab</span><small>Develop the Athlete, Not Just the Player</small></div></a>
-    <a href="training.html" style="color:#9DB8A2;text-decoration:none;font-size:.8rem;">&larr; Back to Fitness</a>
-  </div>
-</header>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="ages.html">My Age Group</a></li>
+    <li><a href="tools.html">Tools</a></li>
+    <li><a href="articles.html">Field Notes</a></li>
+    <li><a href="how-kids-learn.html">Why It Works</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="ages.html">My Age Group</a>
+  <a href="tools.html">Tools</a>
+  <a href="articles.html">Field Notes</a>
+  <a href="how-kids-learn.html">Why It Works</a>
+</div>
 
 <div class="wrap">
+  <div class="page-crumb"><a href="training.html">&larr; Training</a></div>
   <div class="kicker">Stage Finder</div>
   <h1 class="serif">What kind of training fits your athlete?</h1>
   <p class="intro">Answer two quick questions. This shows you what good, safe training looks like at your athlete's stage, and what to avoid. It is a guide for understanding, not a workout prescription.</p>
@@ -86,7 +98,7 @@
       <div class="opts" id="ageOpts"></div>
     </div>
     <div class="q">
-      <label>2. Are they in a growth spurt? <span style="font-weight:normal;color:var(--sub);font-size:.85rem;">(recent fast height jump, new shoe sizes, sometimes clumsy or sore knees/heels)</span></label>
+      <label>2. Are they in a growth spurt? <span style="font-weight:normal;color:var(--p-sub);font-size:.85rem;">(recent fast height jump, new shoe sizes, sometimes clumsy or sore knees/heels)</span></label>
       <div class="opts" id="spurtOpts">
         <button class="opt" data-v="no">Not yet</button>
         <button class="opt" data-v="yes">In it now</button>
@@ -98,12 +110,38 @@
   <div class="result" id="result"></div>
 
   <div class="disclaimer">
-    <p><b>Educational only. Not medical advice.</b> This tool explains what is generally appropriate at each stage of development. It does not create a personalized program and does not replace a qualified coach, athletic trainer, or doctor who can see your athlete. If your athlete is in pain or in a growth spurt, check with a professional before training. Stage names come from the LTAD framework, a consensus model, not tested science. Reasoning and sources: <a href="development.html" style="color:var(--forest)">The Development Playbook</a>.</p>
+    <p><b>Educational only. Not medical advice.</b> This tool explains what is generally appropriate at each stage of development. It does not create a personalized program and does not replace a qualified coach, athletic trainer, or doctor who can see your athlete. If your athlete is in pain or in a growth spurt, check with a professional before training. Stage names come from the LTAD framework, a consensus model, not tested science. Reasoning and sources: <a href="development.html" style="color:var(--p-head)">The Development Playbook</a>.</p>
   </div>
 </div>
 
-<footer>
-  <div>DugoutLab &nbsp;|&nbsp; Develop the Athlete, Not Just the Player &nbsp;|&nbsp; dugoutlab.com</div>
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
 </footer>
 
 <script>
@@ -122,7 +160,7 @@ const STAGES={
     avoid:["1-rep max testing without a qualified strength coach, and ego lifting","Pushing through knee or heel pain","Adult bodybuilding or powerlifting splits","Training hard through a growth spurt"]},
   compete:{name:"Train to Compete",color:"#3E5A43",dark:true,sub:"Building the real engine",
     goal:"After the growth spurt the body is ready for real, progressive strength and power. This is when specialization can reasonably begin, ideally while still playing a second sport.",
-    build:["Progressive barbell strength with sound technique and a qualified coach","Higher-intensity plyometrics and loaded jumps, after the growth spurt","A real off-season, pre-season, in-season plan","Full rotational power program","Simple testing: jumps, sprints, med-ball throws"],
+    build:["Progressive barbell strength with sound technique and a qualified coach","Higher-intensity plyometrics, after the growth spurt","A real off-season, pre-season, in-season plan","Full rotational power program","Simple testing: jumps, sprints, med-ball throws"],
     avoid:["Maxing without a technique base","Year-round play with no off-season","Skipping recovery, sleep and nutrition","Generic one-size-fits-all programs"]},
   pro:{name:"College / Pro / Adult",color:"#1C2B1E",dark:true,sub:"Peak and sustain",
     goal:"The job now is to maximize power and durability across a long season. Training is individualized, periodized and managed around the competitive calendar.",
@@ -182,11 +220,12 @@ function render(){
         <div><div class="blocklabel">What to avoid right now</div><ul class="avoid">${s.avoid.map(x=>`<li>${x}</li>`).join('')}</ul></div>
       </div>
       ${spurtBox}
-      <p style="font-size:.82rem;color:var(--sub);margin-top:18px;">Note: girls generally reach these stages about one to two years earlier than boys, so a younger girl may already fit the next stage up. Always train the athlete in front of you, not the birthday.</p>
+      <p style="font-size:.82rem;color:var(--p-sub);margin-top:18px;">Note: girls generally reach these stages about one to two years earlier than boys, so a younger girl may already fit the next stage up. Always train the athlete in front of you, not the birthday.</p>
     </div>`;
   res.classList.add('show');
   res.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 </script>
+<script src="js/site.js"></script>
 </body>
 </html>
