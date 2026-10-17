@@ -401,3 +401,8 @@ button { font: inherit; cursor: pointer; }
 .le-fine { font-size: 0.76rem; color: var(--ink-faint); margin-top: 0.5rem; line-height: 1.5; }
 @media (max-width: 480px) { .le-btn { width: 100%; } }
 @media print { .le-box { display: none !important; } }
+
+.trust-item { border-top: 3px solid var(--gold); padding: 1.25rem 1.35rem; }
+.trust-num { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.18em; color: var(--gold-dark); margin-bottom: 0.5rem; }
+.trust-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; color: var(--cream-ink); letter-spacing: -0.01em; margin-bottom: 0.35rem; }
+.trust-text { font-size: 0.92rem; line-height: 1.55; color: var(--cream-ink-soft); margin: 0; }
