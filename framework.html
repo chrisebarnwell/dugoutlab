@@ -293,6 +293,13 @@
     var w=window.open('','_blank'); w.document.write(html); w.document.close();
   };
 
+  // Preset from the link, e.g. framework.html?age=a1315
+  (function(){
+    var m=/[?&]age=(a46|a79|a1012|a1315|a16)\b/.exec(location.search);
+    if(!m) return;
+    var row=document.getElementById('fw-age').querySelectorAll('.wz-opt');
+    for(var i=0;i<row.length;i++){ if((row[i].getAttribute('onclick')||'').indexOf("'"+m[1]+"'")>-1){ fwPick('age',m[1],row[i]); return; } }
+  })();
   render();
 })();
 </script>

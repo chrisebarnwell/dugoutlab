@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DugoutLab | What actually works. Why it works. How to use it.</title>
+<title>Youth Baseball &amp; Softball Practice Plans | DugoutLab</title>
 <meta name="description" content="Honest, evidence-checked youth baseball and softball coaching. Games first, drills where they help. Free practice plans and guides for Little League and rec ball coaches. Make them want to come back tomorrow.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -35,9 +35,69 @@
   <div class="page-hero-inner" style="text-align:center">
     <div class="eyebrow">For volunteer baseball and softball coaches</div>
     <h1>Your job is to make them want to come back tomorrow.</h1>
-    <p style="margin:0.75rem auto 0;max-width:640px;font-size:1.05rem;color:rgba(255,255,255,0.75)"><strong style="color:var(--gold)">Play first.</strong> The pros forget how much they played. The research remembers. For you, coach, trying to get it right <em>is</em> getting it right.</p>
+    <p style="margin:0.75rem auto 0;max-width:640px;font-size:1.05rem;color:rgba(255,255,255,0.75)">Free, play-first practice plans and coaching help for volunteer baseball and softball coaches.</p>
+    <div style="margin-top:1.6rem"><a href="#free-plan" class="btn btn-primary btn-lg">Get the free practice plan</a></div>
   </div>
 </section>
+
+<section class="section" id="free-plan" style="padding-top:2.5rem">
+  <div class="container-sm">
+    <div class="email-capture" style="text-align:left">
+      <div class="section-label">Free practice plan &middot; Ages 7-9</div>
+      <h3 style="font-size:1.7rem;margin-bottom:0.5rem">Tomorrow&#39;s practice, already planned.</h3>
+      <p style="margin-bottom:1.1rem">The 60-minute practice we actually ran with our 8 and 9-year-olds. Five games, a setup diagram for each, how to score it, and an easier and harder version of each. Printable, one PDF.</p>
+      <div class="plan-peek" aria-label="What is in the plan">
+        <div><span>10</span>Dodgeball Warmup</div>
+        <div><span>10</span>Back-Up Catch</div>
+        <div><span>15</span>2-2 Relay Race</div>
+        <div><span>15</span>Tennis Ball Fly Game</div>
+        <div><span>10</span>Hat Tag</div>
+      </div>
+      <form id="plan-form" class="email-row" style="margin:1.25rem 0 0;max-width:none" onsubmit="return planSignup(event)">
+        <input type="email" id="plan-email" required maxlength="120" autocomplete="email" inputmode="email" placeholder="you@email.com" aria-label="Your email">
+        <input type="text" name="website" id="plan-hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+        <button type="submit" class="btn btn-primary" id="plan-btn">Send me the plan</button>
+      </form>
+      <div id="plan-err" style="color:var(--gold-light);font-size:0.85rem;margin-top:0.5rem;min-height:1em"></div>
+      <p id="plan-fine" style="font-size:0.8rem;color:var(--ink-faint);margin:0.25rem 0 0">Your download opens right here. Now and then we send a new game or tool. Never sold.</p>
+      <div id="plan-done" style="display:none">
+        <div style="font-family:var(--serif);font-size:1.35rem;color:var(--ink);margin:0.25rem 0 0.4rem">It&#39;s yours. Have fun out there.</div>
+        <p style="margin-bottom:1rem">Run it as written once. Then use the easier and harder lines to make it fit your kids.</p>
+        <a href="downloads/tuesday-night-practice.pdf" class="btn btn-primary" download>Download the plan (PDF)</a>
+        <a href="practice-example.html" class="btn btn-outline" style="margin-left:0.4rem">See it on the site</a>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  .plan-peek { display:grid; gap:0.35rem; }
+  .plan-peek div { display:flex; align-items:center; gap:0.75rem; background:var(--forest-deep); border:1px solid var(--rule); border-radius:8px; padding:0.5rem 0.8rem; font-size:0.92rem; color:var(--ink); }
+  .plan-peek span { font-family:var(--mono); color:var(--gold); font-weight:500; min-width:2.6rem; font-size:0.8rem; }
+  .plan-peek span::after { content:" min"; }
+  @media (max-width:768px) { #plan-done .btn { display:flex; justify-content:center; margin:0.5rem 0 0 !important; } }
+</style>
+<script>
+function planSignup(e) {
+  e.preventDefault();
+  var email = document.getElementById('plan-email').value.trim();
+  var err = document.getElementById('plan-err');
+  var btn = document.getElementById('plan-btn');
+  err.textContent = '';
+  btn.disabled = true; btn.textContent = 'Sending...';
+  fetch('/api/subscribe', { method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ email: email, source: 'practice-plan-7-9', website: document.getElementById('plan-hp').value }) })
+    .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+    .then(function (x) {
+      if (!x.ok) throw new Error(x.j.error || 'Something went wrong. Try again.');
+      document.getElementById('plan-form').style.display = 'none';
+      document.getElementById('plan-done').style.display = 'block';
+      document.getElementById('plan-fine').style.display = 'none';
+      try { localStorage.setItem('dl_plan', '1'); } catch (e2) {}
+    })
+    .catch(function (e3) { err.textContent = e3.message || 'Something went wrong. Try again.'; btn.disabled = false; btn.textContent = 'Send me the plan'; });
+  return false;
+}
+</script>
 
 <section class="section section-cream">
   <div class="container">

@@ -18,6 +18,8 @@ const SCHEMA = [
     id TEXT PRIMARY KEY, type TEXT NOT NULL, created_by TEXT NOT NULL,
     a_hitter TEXT NOT NULL, b_hitter TEXT NOT NULL DEFAULT '', a_round TEXT, b_round TEXT,
     a_score INTEGER, b_score INTEGER, status TEXT NOT NULL DEFAULT 'open', winner TEXT, created INTEGER NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS subscribers (
+    email TEXT PRIMARY KEY, source TEXT NOT NULL, created INTEGER NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS hitters_acct ON hitters(account_id)`,
   `CREATE INDEX IF NOT EXISTS rounds_hitter ON rounds(hitter_id, created)`,
   `CREATE INDEX IF NOT EXISTS rounds_level ON rounds(level, score)`,
@@ -59,6 +61,14 @@ function scoreBalls(balls) {
     out.push({ zone, call, pts });
   }
   return { score, liners, called, best, balls: out };
+}
+async function mirrorSub(env, email, source) {
+  /* Same Google Sheet collector as game signups. */
+  if (!env.EMAIL_HOOK) return;
+  try {
+    await fetch(env.EMAIL_HOOK, { method: 'POST', headers: { 'content-type': 'text/plain' },
+      body: JSON.stringify({ email, name: '', role: 'subscriber', source, website: '' }) });
+  } catch (e) { /* never block signup on the mirror */ }
 }
 async function mirrorEmail(env, a) {
   /* Optional: copy new account emails to the Google Sheet collector. Set EMAIL_HOOK in Pages env vars. */
@@ -103,6 +113,18 @@ export async function onRequest(ctx) {
         .bind(a.id, a.email, a.name, a.role, a.plan, a.token, a.consent_at, a.created).run();
       ctx.waitUntil(mirrorEmail(env, a));
       return json({ account: pubAcct(a), token: a.token, returning: false });
+    }
+
+    if (route === 'subscribe' && method === 'POST') {
+      /* Free practice plan signup. Email only. Honeypot field "website" must stay empty. */
+      if (body.website) return json({ ok: true });
+      const email = clean(body.email, 120).toLowerCase();
+      if (!emailOK(email)) return bad('That email does not look right');
+      const source = clean(body.source, 40) || 'site';
+      await ensure(db);
+      const r = await db.prepare('INSERT OR IGNORE INTO subscribers (email,source,created) VALUES (?,?,?)').bind(email, source, now).run();
+      if (r.meta && r.meta.changes) ctx.waitUntil(mirrorSub(env, email, source));
+      return json({ ok: true });
     }
 
     if (route === 'leaderboard') {
