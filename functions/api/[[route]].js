@@ -28,8 +28,42 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS rounds_hitter ON rounds(hitter_id, created)`,
   `CREATE INDEX IF NOT EXISTS rounds_level ON rounds(level, score)`,
   `CREATE INDEX IF NOT EXISTS matches_a ON matches(a_hitter, status)`,
-  `CREATE INDEX IF NOT EXISTS matches_b ON matches(b_hitter, status)`
+  `CREATE INDEX IF NOT EXISTS matches_b ON matches(b_hitter, status)`,
+  /* Pitch Tracker. Kids and players: nickname + age only (plus jersey for coach rosters). No other child data. */
+  `CREATE TABLE IF NOT EXISTS pitch_teams (
+    id TEXT PRIMARY KEY, account_id TEXT NOT NULL, name TEXT NOT NULL, age INTEGER NOT NULL, created INTEGER NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS pitch_kids (
+    id TEXT PRIMARY KEY, account_id TEXT NOT NULL, kind TEXT NOT NULL DEFAULT 'kid', team_id TEXT,
+    nickname TEXT NOT NULL, age INTEGER NOT NULL, jersey TEXT NOT NULL DEFAULT '', own INTEGER NOT NULL DEFAULT 0, created INTEGER NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS pitch_sessions (
+    session_id TEXT PRIMARY KEY, account_id TEXT NOT NULL, kid_id TEXT NOT NULL, tag TEXT NOT NULL, date TEXT NOT NULL,
+    pitches INTEGER NOT NULL, strikes INTEGER NOT NULL, balls INTEGER NOT NULL, logged_by_role TEXT NOT NULL,
+    fb INTEGER NOT NULL DEFAULT 0, ch INTEGER NOT NULL DEFAULT 0, seq TEXT NOT NULL DEFAULT '', created INTEGER NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS pitch_teams_acct ON pitch_teams(account_id)`,
+  `CREATE INDEX IF NOT EXISTS pitch_kids_acct ON pitch_kids(account_id)`,
+  `CREATE INDEX IF NOT EXISTS pitch_sessions_kid ON pitch_sessions(kid_id, date)`
 ];
+
+/* ---------- Pitch Tracker premium gate ----------
+   Feature flag: Pages env var PITCH_PREMIUM_GATE = "on" locks coach tools to plan 'pro'.
+   Unset or anything else = coach tools open (beta). Payments are not wired: see route pitch/upgrade. */
+function pitchGateOn(env) { return env.PITCH_PREMIUM_GATE === 'on'; }
+function coachOn(env, a) { return !!a && a.role === 'coach' && (!pitchGateOn(env) || a.plan === 'pro'); }
+const PT_TAGS = ['Home', 'Practice', 'Game'];
+function ageOK(n) { n = parseInt(n, 10); return n >= 6 && n <= 18 ? n : 0; }
+async function ownKid(db, acct, kid) {
+  if (!acct || !kid) return null;
+  return db.prepare('SELECT * FROM pitch_kids WHERE id = ? AND account_id = ?').bind(clean(kid, 40), acct.id).first();
+}
+/* Coach charting their own kid (or any kid on a coach account outside a team) must pick the tag every time. */
+function needsPick(env, acct, k) { return coachOn(env, acct) && (k.kind === 'kid' || k.own === 1); }
+function allowedTags(env, acct, k) {
+  if (!coachOn(env, acct)) return ['Home'];
+  return needsPick(env, acct, k) ? PT_TAGS : ['Practice', 'Game'];
+}
+function pubKid(env, acct, k) {
+  return { id: k.id, kind: k.kind, team_id: k.team_id || null, nickname: k.nickname, age: k.age, jersey: k.jersey, own: k.own === 1, tags: allowedTags(env, acct, k), pick: needsPick(env, acct, k) };
+}
 
 const ZONE_PTS = { mid: 30, lg: 20, rg: 20, ll: 10, rl: 10, miss: 0 };
 function levelOK(l) { return /^(bb|sb)(6|7|8|9|10|11|12|13|14|15|16|17|18)u$/.test(String(l || '')); }
@@ -141,12 +175,12 @@ async function mirrorSub(env, email, source) {
       body: JSON.stringify({ email, name: '', role: 'subscriber', source, website: '' }) });
   } catch (e) { /* never block signup on the mirror */ }
 }
-async function mirrorEmail(env, a) {
+async function mirrorEmail(env, a, app) {
   /* Optional: copy new account emails to the Google Sheet collector. Set EMAIL_HOOK in Pages env vars. */
   if (!env.EMAIL_HOOK) return;
   try {
     await fetch(env.EMAIL_HOOK, { method: 'POST', headers: { 'content-type': 'text/plain' },
-      body: JSON.stringify({ email: a.email, name: a.name, role: a.role, source: 'game-' + a.role, website: '' }) });
+      body: JSON.stringify({ email: a.email, name: a.name, role: a.role, source: (app || 'game') + '-' + a.role, website: '' }) });
   } catch (e) { /* never block signup on the mirror */ }
 }
 
@@ -182,7 +216,7 @@ export async function onRequest(ctx) {
       const a = { id: id(), email, name, role, plan: 'free', token: tok(), consent_at: now, created: now };
       await db.prepare('INSERT INTO accounts (id,email,name,role,plan,token,consent_at,created) VALUES (?,?,?,?,?,?,?,?)')
         .bind(a.id, a.email, a.name, a.role, a.plan, a.token, a.consent_at, a.created).run();
-      ctx.waitUntil(mirrorEmail(env, a));
+      ctx.waitUntil(mirrorEmail(env, a, body.app === 'pitch' ? 'pitch' : 'game'));
       return json({ account: pubAcct(a), token: a.token, returning: false });
     }
 
@@ -254,6 +288,139 @@ export async function onRequest(ctx) {
 
     const me = await auth(db, token);
     if (!me) return bad('Sign in first', 401);
+
+    /* ================= PITCH TRACKER ================= */
+    if (route.indexOf('pitch/') === 0) {
+      await ensure(db);
+      const sub = route.slice(6);
+      const coach = coachOn(env, me);
+
+      if (sub === 'me') {
+        const kids = (await db.prepare('SELECT * FROM pitch_kids WHERE account_id = ? ORDER BY team_id, created').bind(me.id).all()).results;
+        const teams = coach ? (await db.prepare('SELECT id, name, age FROM pitch_teams WHERE account_id = ? ORDER BY created').bind(me.id).all()).results : [];
+        const since = new Date(now - 6 * 86400000).toISOString().slice(0, 10);
+        const recent = (await db.prepare('SELECT kid_id, date, SUM(pitches) AS pitches FROM pitch_sessions WHERE account_id = ? AND date >= ? GROUP BY kid_id, date').bind(me.id, since).all()).results;
+        return json({
+          account: pubAcct(me), coach, gate: pitchGateOn(env),
+          kids: kids.filter(k => k.kind === 'kid' || coach).map(k => pubKid(env, me, k)),
+          teams, recent
+        });
+      }
+
+      if (sub === 'team' && method === 'POST') {
+        if (!coach) return bad(me.role === 'coach' ? 'Coach tools are part of Coach Pro' : 'Teams are a coach feature', 403);
+        const name = clean(body.name, 40), age = ageOK(body.age);
+        if (name.length < 2) return bad('Add a team name');
+        if (!age) return bad('Pick the team age (6 to 18)');
+        if (body.id) {
+          const t = await db.prepare('SELECT * FROM pitch_teams WHERE id = ? AND account_id = ?').bind(clean(body.id, 40), me.id).first();
+          if (!t) return bad('Not your team', 403);
+          await db.prepare('UPDATE pitch_teams SET name = ?, age = ? WHERE id = ?').bind(name, age, t.id).run();
+          return json({ team: { id: t.id, name, age } });
+        }
+        const n = await db.prepare('SELECT COUNT(*) AS n FROM pitch_teams WHERE account_id = ?').bind(me.id).first();
+        if (n.n >= 6) return bad('Up to 6 teams per coach');
+        const t = { id: id(), name, age };
+        await db.prepare('INSERT INTO pitch_teams (id,account_id,name,age,created) VALUES (?,?,?,?,?)').bind(t.id, me.id, name, age, now).run();
+        return json({ team: t });
+      }
+
+      if (sub === 'kid' && method === 'POST') {
+        const nickname = clean(body.nickname, 24), age = ageOK(body.age);
+        if (nickname.length < 2) return bad('Add a first name or nickname');
+        if (!age) return bad('Pick an age from 6 to 18');
+        let teamId = null, jersey = '', kind = 'kid', own = 0;
+        if (body.team_id) {
+          if (!coach) return bad('Team rosters are a coach feature', 403);
+          const t = await db.prepare('SELECT * FROM pitch_teams WHERE id = ? AND account_id = ?').bind(clean(body.team_id, 40), me.id).first();
+          if (!t) return bad('Not your team', 403);
+          teamId = t.id; kind = 'player'; own = body.own ? 1 : 0;
+          jersey = clean(body.jersey, 3).replace(/[^0-9]/g, '');
+        }
+        if (body.id) {
+          const k = await ownKid(db, me, body.id);
+          if (!k) return bad('Not your player', 403);
+          await db.prepare('UPDATE pitch_kids SET nickname = ?, age = ?, jersey = ?, own = ? WHERE id = ?')
+            .bind(nickname, age, k.kind === 'player' ? jersey : '', k.kind === 'player' ? own : 0, k.id).run();
+          return json({ kid: pubKid(env, me, await ownKid(db, me, k.id)) });
+        }
+        const cnt = teamId
+          ? await db.prepare('SELECT COUNT(*) AS n FROM pitch_kids WHERE team_id = ?').bind(teamId).first()
+          : await db.prepare("SELECT COUNT(*) AS n FROM pitch_kids WHERE account_id = ? AND kind = 'kid'").bind(me.id).first();
+        if (cnt.n >= (teamId ? 30 : 8)) return bad(teamId ? 'Up to 30 players per team' : 'Up to 8 kids per account');
+        const k = { id: id(), account_id: me.id, kind, team_id: teamId, nickname, age, jersey, own, created: now };
+        await db.prepare('INSERT INTO pitch_kids (id,account_id,kind,team_id,nickname,age,jersey,own,created) VALUES (?,?,?,?,?,?,?,?,?)')
+          .bind(k.id, k.account_id, k.kind, k.team_id, k.nickname, k.age, k.jersey, k.own, k.created).run();
+        return json({ kid: pubKid(env, me, k) });
+      }
+
+      if (sub === 'kid' && method === 'GET') {
+        const k = await ownKid(db, me, url.searchParams.get('kid'));
+        if (!k) return bad('Not your player', 404);
+        const sessions = (await db.prepare('SELECT session_id, tag, date, pitches, strikes, balls, fb, ch, created FROM pitch_sessions WHERE kid_id = ? AND account_id = ? ORDER BY date, created LIMIT 500')
+          .bind(k.id, me.id).all()).results;
+        return json({ kid: pubKid(env, me, k), sessions });
+      }
+
+      if (sub === 'session' && method === 'POST') {
+        const k = await ownKid(db, me, body.kid_id);
+        if (!k) return bad('Pick a player first', 403);
+        const tags = allowedTags(env, me, k);
+        let tag = tags.length === 1 ? tags[0] : body.tag;
+        if (tags.indexOf(tag) < 0) return bad(needsPick(env, me, k) ? 'Pick Home, Practice, or Game' : 'Pick Practice or Game');
+        const date = /^\d{4}-\d{2}-\d{2}$/.test(String(body.date || '')) ? body.date : new Date(now).toISOString().slice(0, 10);
+        const seq = String(body.seq || '').toUpperCase().replace(/[^SB]/g, '').slice(0, 250);
+        if (!seq.length) return bad('No pitches to save');
+        const types = String(body.types || '').toUpperCase().replace(/[^FC-]/g, '').slice(0, seq.length);
+        const strikes = (seq.match(/S/g) || []).length, balls = seq.length - strikes;
+        const fb = (types.match(/F/g) || []).length, ch = (types.match(/C/g) || []).length;
+        const sid = id();
+        await db.prepare('INSERT INTO pitch_sessions (session_id,account_id,kid_id,tag,date,pitches,strikes,balls,logged_by_role,fb,ch,seq,created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)')
+          .bind(sid, me.id, k.id, tag, date, seq.length, strikes, balls, me.role, fb, ch, seq, now).run();
+        return json({ session: { session_id: sid, tag, date, pitches: seq.length, strikes, balls, fb, ch } });
+      }
+
+      if (sub === 'kid-delete' && method === 'POST') {
+        const k = await ownKid(db, me, body.kid_id);
+        if (!k) return bad('Not your player', 404);
+        await db.prepare('DELETE FROM pitch_sessions WHERE kid_id = ? AND account_id = ?').bind(k.id, me.id).run();
+        await db.prepare('DELETE FROM pitch_kids WHERE id = ?').bind(k.id).run();
+        return json({ ok: true });
+      }
+
+      if (sub === 'team-delete' && method === 'POST') {
+        const t = await db.prepare('SELECT * FROM pitch_teams WHERE id = ? AND account_id = ?').bind(clean(body.team_id, 40), me.id).first();
+        if (!t) return bad('Not your team', 404);
+        await db.prepare('DELETE FROM pitch_sessions WHERE kid_id IN (SELECT id FROM pitch_kids WHERE team_id = ?)').bind(t.id).run();
+        await db.prepare('DELETE FROM pitch_kids WHERE team_id = ?').bind(t.id).run();
+        await db.prepare('DELETE FROM pitch_teams WHERE id = ?').bind(t.id).run();
+        return json({ ok: true });
+      }
+
+      if (sub === 'account-delete' && method === 'POST') {
+        /* Deletes everything tied to this adult account: pitch data, Hit Window hitters and rounds, and the email list row. */
+        if (body.confirm !== 'DELETE') return bad('Type DELETE to confirm');
+        const hs = (await db.prepare('SELECT id FROM hitters WHERE account_id = ?').bind(me.id).all()).results.map(r => r.id);
+        for (const hid of hs) {
+          await db.prepare('DELETE FROM rounds WHERE hitter_id = ?').bind(hid).run();
+          await db.prepare('DELETE FROM matches WHERE a_hitter = ? OR b_hitter = ?').bind(hid, hid).run();
+        }
+        await db.prepare('DELETE FROM hitters WHERE account_id = ?').bind(me.id).run();
+        await db.prepare('DELETE FROM pitch_sessions WHERE account_id = ?').bind(me.id).run();
+        await db.prepare('DELETE FROM pitch_kids WHERE account_id = ?').bind(me.id).run();
+        await db.prepare('DELETE FROM pitch_teams WHERE account_id = ?').bind(me.id).run();
+        await db.prepare('DELETE FROM subscribers WHERE email = ?').bind(me.email).run();
+        await db.prepare('DELETE FROM accounts WHERE id = ?').bind(me.id).run();
+        return json({ ok: true });
+      }
+
+      if (sub === 'upgrade' && method === 'POST') {
+        /* STUB. Wire Stripe Payment Link or Gumroad here, then set plan = 'pro' on a verified payment webhook. */
+        return json({ ok: false, live: false, message: 'Coach Pro checkout is not open yet. Coach tools are free while we test.' });
+      }
+
+      return bad('Not found', 404);
+    }
 
     if (route === 'me') {
       const hitters = await db.prepare('SELECT id, nickname, level FROM hitters WHERE account_id = ? ORDER BY created').bind(me.id).all();

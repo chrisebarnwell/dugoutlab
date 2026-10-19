@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pitch Tracker | DugoutLab</title>
+<meta name="description" content="Tap strike or ball. Count pitches, see strike percent over time, and get a heads-up when your pitcher nears the Pitch Smart daily max. Parents free. Coaches track the whole team.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+.g-wrap { max-width: 640px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+.g-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.4rem 1.2rem; margin-bottom: 1rem; }
+.g-eb { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+.g-h { font-family: var(--serif); font-size: 1.5rem; font-weight: 600; color: var(--ink); line-height: 1.15; letter-spacing: -0.015em; margin-bottom: 0.6rem; }
+.g-p { color: var(--ink-soft); font-size: 1rem; line-height: 1.55; }
+.g-note { color: var(--ink-faint); font-size: 0.85rem; line-height: 1.5; margin-top: 0.7rem; }
+.g-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.g-row .btn { flex: 1; justify-content: center; }
+.field { margin-bottom: 0.9rem; }
+.field label { display: block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); margin-bottom: 0.35rem; }
+.field input, .field select { width: 100%; background: var(--forest-deep); border: 1px solid var(--rule); color: var(--ink); border-radius: 8px; padding: 0.75rem 0.8rem; font-family: var(--sans); font-size: 1rem; }
+.field input:focus, .field select:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+.err { color: var(--gold-light); font-size: 0.92rem; min-height: 1.2em; margin-top: 0.4rem; }
+.chk { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.45; margin: 0.2rem 0 0.4rem; cursor: pointer; }
+.chk input { width: 22px; height: 22px; flex: 0 0 22px; accent-color: var(--gold); margin-top: 1px; }
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; margin-bottom: 1rem; font-size: 0.9rem; color: var(--ink-faint); }
+.topbar b { color: var(--ink); }
+.topbar button { background: none; border: 1px solid var(--rule); color: var(--ink-soft); border-radius: 999px; padding: 0.35rem 0.85rem; font-size: 0.82rem; font-family: var(--sans); white-space: nowrap; }
+.list { list-style: none; display: grid; gap: 0.45rem; }
+.list li { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.75rem 0.9rem; font-size: 0.95rem; color: var(--ink-soft); display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; }
+.list li b { color: var(--ink); font-family: var(--serif); font-size: 1.1rem; }
+.list li .sub { display: block; font-size: 0.82rem; color: var(--ink-faint); margin-top: 0.15rem; }
+.list li .acts { display: flex; gap: 0.4rem; flex: 0 0 auto; }
+.pill-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+.hidden { display: none !important; }
+.badge { display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.15rem 0.5rem; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink-soft); margin-left: 0.3rem; vertical-align: 2px; }
+.badge.warn { border-color: var(--gold); color: var(--gold-light); }
+/* logging */
+.count { display: grid; grid-template-columns: 1.2fr 1fr; gap: 0.6rem; margin-bottom: 0.8rem; }
+.count .big { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 12px; padding: 0.8rem; text-align: center; }
+.count .big b { display: block; font-family: var(--serif); font-size: 3.2rem; line-height: 1; color: var(--gold); font-weight: 600; }
+.count .big i { font-style: normal; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); }
+.count .sb { font-size: 0.85rem; color: var(--ink-soft); margin-top: 0.35rem; }
+.tapgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.tap { border-radius: 16px; min-height: 150px; font-family: var(--serif); font-size: clamp(1.7rem, 7vw, 2.3rem); font-weight: 700; letter-spacing: 0.02em; border: 2px solid var(--gold); touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+.tap.s { background: var(--gold); color: var(--forest-deep); }
+.tap.b { background: transparent; color: var(--ink); border-color: rgba(244,239,230,0.45); }
+.tap:active { transform: scale(0.97); }
+.tap:disabled { opacity: 0.35; }
+.tap small { display: block; font-family: var(--sans); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; opacity: 0.75; margin-top: 0.2rem; }
+.trail { display: flex; flex-wrap: wrap; gap: 4px; min-height: 14px; margin: 0.8rem 0 0.2rem; }
+.trail span { width: 12px; height: 12px; border-radius: 50%; }
+.trail span.S { background: var(--gold); }
+.trail span.B { border: 2px solid rgba(244,239,230,0.55); }
+.subrow { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.8rem; }
+.subrow .btn { justify-content: center; }
+.warnbox { border-radius: 10px; padding: 0.75rem 0.9rem; font-size: 0.95rem; line-height: 1.45; margin-bottom: 0.8rem; background: var(--forest-deep); border: 1px solid var(--rule); color: var(--ink-soft); }
+.warnbox.on { border-color: var(--gold); background: rgba(200,134,46,0.12); color: var(--ink); }
+.warnbox b { color: var(--gold-light); }
+.meter { height: 8px; background: var(--rule); border-radius: 4px; overflow: hidden; margin-top: 0.45rem; }
+.meter span { display: block; height: 100%; background: var(--gold); border-radius: 4px; transition: width 0.2s; }
+.typerow { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.8rem; }
+/* stats */
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.tile { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 12px; padding: 0.9rem 0.7rem; text-align: center; }
+.tile b { display: block; font-family: var(--serif); font-size: 2.4rem; color: var(--gold); line-height: 1; font-weight: 600; }
+.tile i { display: block; font-style: normal; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-top: 0.35rem; }
+.tile span { display: block; font-size: 0.8rem; color: var(--ink-faint); margin-top: 0.2rem; }
+.tile.sm b { font-size: 1.6rem; }
+.chart { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 12px; padding: 0.6rem 0.4rem 0.3rem; margin-top: 0.8rem; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart-tip { font-size: 0.9rem; color: var(--ink-soft); min-height: 1.4em; margin: 0.5rem 0.4rem 0.2rem; }
+.legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.82rem; color: var(--ink-soft); margin: 0.6rem 0.2rem 0; }
+.legend svg { vertical-align: -2px; margin-right: 4px; }
+.sources { font-size: 0.85rem; color: var(--ink-faint); line-height: 1.55; }
+.sources li { margin: 0.2rem 0 0.2rem 1.1rem; }
+.btn-danger { background: transparent; color: var(--gold-light); border: 1.5px solid var(--gold-dark); }
+.btn-danger:hover { background: rgba(200,134,46,0.12); color: var(--gold-light); }
+@media (max-width: 380px) { .count .big b { font-size: 2.6rem; } .tap { min-height: 132px; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="framework.html">Practice Framework</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="training.html">Training</a></li>
+    <li><a href="coach-dad.html">Coach Dad</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="stages.html">The 4 Stages</a><a href="framework.html">Practice Framework</a><a href="articles.html">Articles</a><a href="training.html">Training</a><a href="coach-dad.html">Coach Dad</a><a href="lineup.html">Lineup Builder</a><a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="tools.html">&#8592; Tools</a></div>
+    <div class="eyebrow">Pitch Tracker</div>
+    <h1>Tap strike or ball. That's it.</h1>
+    <p>Count every pitch, watch strike percent grow over time, and get a heads-up before your pitcher reaches the daily limit. Parents chart home bullpens free. Coaches track the whole team.</p>
+  </div>
+</div>
+
+<section class="section section-white" style="padding-top:1.5rem">
+<div class="g-wrap">
+
+  <!-- SIGN IN -->
+  <div class="g-card" id="s-signin">
+    <div class="g-eb">Sign in</div>
+    <div class="g-h">Grown-ups sign up. Kids just throw.</div>
+    <p class="g-p">One account per parent. Add every kid in the family under it. Kids never get an account and never type anything. No password, no card.</p>
+    <div style="margin-top:1rem">
+      <div class="field"><label for="in-role">I am a</label><select id="in-role"><option value="parent">Parent or guardian (free)</option><option value="coach">Coach (team tracking)</option></select></div>
+      <div class="field"><label for="in-name">Your name</label><input type="text" id="in-name" maxlength="40" autocomplete="name" placeholder="Your first name"></div>
+      <div class="field"><label for="in-email">Your email</label><input type="email" id="in-email" maxlength="120" autocomplete="email" inputmode="email" placeholder="you@email.com"></div>
+      <label class="chk" for="in-adult"><input type="checkbox" id="in-adult"> <span id="in-adult-txt">I'm 18 or older and the parent or legal guardian of every kid I add.</span></label>
+      <div class="err" id="in-err"></div>
+      <button type="button" class="btn btn-primary btn-lg btn-full" id="in-go">Sign up</button>
+      <div class="g-note">Returning? Same email signs you right back in. Works with your Hit Window game account too.</div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="s-home" class="hidden">
+    <div class="topbar"><span>Signed in as <b id="h-acct"></b></span><button type="button" id="h-out">Sign out</button></div>
+
+    <div class="g-card" id="kids-card">
+      <div class="g-eb">My kids &middot; Home bullpen</div>
+      <ul class="list" id="kid-list"></ul>
+      <div id="kid-add" style="margin-top:1rem">
+        <div class="g-h" style="font-size:1.2rem" id="kid-add-h">Add your pitcher</div>
+        <div class="g-row" style="gap:0.6rem">
+          <div class="field" style="flex:2;min-width:150px"><label for="kid-nick">First name or nickname</label><input type="text" id="kid-nick" maxlength="24" placeholder="Nickname"></div>
+          <div class="field" style="flex:1;min-width:90px"><label for="kid-age">Age</label><select id="kid-age"></select></div>
+        </div>
+        <div class="err" id="kid-err"></div>
+        <button type="button" class="btn btn-primary btn-full" id="kid-go">Add</button>
+        <div class="g-note">Age sets the daily pitch guideline. No last names.</div>
+      </div>
+    </div>
+
+    <div class="g-card hidden" id="coach-card">
+      <div class="g-eb">Coach &middot; Team tracking</div>
+      <div id="team-pills" class="pill-row"></div>
+      <div id="team-body"></div>
+      <details id="team-new" style="margin-top:1rem">
+        <summary style="cursor:pointer;color:var(--gold);font-weight:600;font-size:0.95rem">Add a team</summary>
+        <div class="g-row" style="gap:0.6rem;margin-top:0.8rem">
+          <div class="field" style="flex:2;min-width:150px"><label for="tm-name">Team name</label><input type="text" id="tm-name" maxlength="40" placeholder="Blue Jays 10U"></div>
+          <div class="field" style="flex:1;min-width:90px"><label for="tm-age">Age</label><select id="tm-age"></select></div>
+        </div>
+        <div class="err" id="tm-err"></div>
+        <button type="button" class="btn btn-primary btn-full" id="tm-go">Create team</button>
+      </details>
+      <div class="g-note" id="coach-note"></div>
+    </div>
+
+    <div class="g-card hidden" id="pro-card">
+      <div class="g-eb">Coach Pro</div>
+      <div class="g-h" style="font-size:1.25rem">Track the whole team.</div>
+      <p class="g-p">Roster by nickname and jersey, Practice and Game charting, and every pitcher's history in one place.</p>
+      <button type="button" class="btn btn-primary btn-full" id="pro-go" style="margin-top:0.9rem">Get Coach Pro</button>
+      <div class="err" id="pro-msg" style="color:var(--ink-soft)"></div>
+    </div>
+
+    <div class="g-card">
+      <details>
+        <summary style="cursor:pointer;color:var(--ink-soft);font-weight:600;font-size:0.95rem">Delete my account</summary>
+        <p class="g-p" style="margin-top:0.7rem">This removes your account, every kid, every session, your Hit Window scores, and your email from our list. It cannot be undone.</p>
+        <div class="field" style="margin-top:0.7rem"><label for="del-confirm">Type DELETE to confirm</label><input type="text" id="del-confirm" maxlength="10" autocomplete="off"></div>
+        <div class="err" id="del-err"></div>
+        <button type="button" class="btn btn-danger btn-full" id="del-go">Delete everything</button>
+      </details>
+    </div>
+  </div>
+
+  <!-- LOG -->
+  <div id="s-log" class="hidden">
+    <div class="topbar"><span><b id="lg-name"></b> <span id="lg-age"></span></span><button type="button" id="lg-back">Back</button></div>
+    <div class="g-card">
+      <div id="lg-tagwrap">
+        <div class="g-eb" id="lg-tag-eb">Where is this?</div>
+        <div class="pill-row" id="lg-tags"></div>
+      </div>
+      <div class="g-eb" id="lg-fixed"></div>
+      <div class="warnbox" id="lg-warn"></div>
+      <div class="count">
+        <div class="big"><b id="lg-n">0</b><i>Pitches</i></div>
+        <div class="big"><b id="lg-pct">--</b><i>Strike %</i><div class="sb" id="lg-sb">0 strikes &middot; 0 balls</div></div>
+      </div>
+      <div class="typerow">
+        <label class="chk" for="lg-types" style="margin:0"><input type="checkbox" id="lg-types"> <span>Track pitch type</span></label>
+        <div class="pill-row hidden" id="lg-typepick" style="margin:0"><button type="button" class="wz-opt active" data-t="F">FB</button><button type="button" class="wz-opt" data-t="C">CH</button></div>
+      </div>
+      <div class="tapgrid">
+        <button type="button" class="tap s" id="lg-s">STRIKE<small id="lg-s-sub">tap</small></button>
+        <button type="button" class="tap b" id="lg-b">BALL<small id="lg-b-sub">tap</small></button>
+      </div>
+      <div class="trail" id="lg-trail" aria-label="Pitches this session"></div>
+      <div class="subrow">
+        <button type="button" class="btn btn-outline" id="lg-undo">Undo last</button>
+        <button type="button" class="btn btn-secondary" id="lg-end">End session</button>
+      </div>
+      <div class="err" id="lg-err"></div>
+    </div>
+  </div>
+
+  <!-- DONE -->
+  <div id="s-done" class="hidden">
+    <div class="g-card">
+      <div class="g-eb" id="dn-eb">Session saved</div>
+      <div class="g-h" id="dn-h"></div>
+      <div class="tiles">
+        <div class="tile"><b id="dn-n">0</b><i>Pitches</i></div>
+        <div class="tile"><b id="dn-pct">--</b><i>Strike %</i></div>
+      </div>
+      <p class="g-p" id="dn-msg" style="margin-top:0.9rem"></p>
+      <div class="g-row" style="margin-top:1rem"><button type="button" class="btn btn-primary" id="dn-stats">See the trend</button><button type="button" class="btn btn-outline" id="dn-home">Done</button></div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div id="s-stats" class="hidden">
+    <div class="topbar"><span><b id="st-name"></b> <span id="st-age"></span></span><button type="button" id="st-back">Back</button></div>
+    <div class="g-card">
+      <div class="g-eb">Strike %</div>
+      <div class="tiles">
+        <div class="tile"><b id="st-all">--</b><i>Overall</i><span>Home, practice, game</span></div>
+        <div class="tile"><b id="st-coach">--</b><i>Coach-charted</i><span>Practice and game</span></div>
+      </div>
+      <div class="tiles" style="margin-top:0.6rem">
+        <div class="tile sm"><b id="st-sess">0</b><i>Sessions</i></div>
+        <div class="tile sm"><b id="st-pitches">0</b><i>Pitches</i></div>
+      </div>
+      <div class="chart" id="st-chart"></div>
+      <div class="legend" id="st-legend">
+        <span><svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" fill="none" stroke="#C8862E" stroke-width="2"/></svg>Home</span>
+        <span><svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="#C8862E"/></svg>Practice</span>
+        <span><svg width="12" height="12" viewBox="0 0 12 12"><rect x="2" y="2" width="8" height="8" transform="rotate(45 6 6)" fill="#e2a85a"/></svg>Game</span>
+      </div>
+      <div class="g-note" id="st-chartnote">Each dot is one session. Tap a dot for the details.</div>
+    </div>
+    <div class="g-card">
+      <div class="g-eb">Pitch count check</div>
+      <div class="warnbox" id="st-smart"></div>
+    </div>
+    <div class="g-card">
+      <div class="g-eb">Recent sessions</div>
+      <ul class="list" id="st-list"></ul>
+    </div>
+    <div class="g-card">
+      <button type="button" class="btn btn-primary btn-full" id="st-chart-go">Chart a session</button>
+      <details style="margin-top:1rem">
+        <summary style="cursor:pointer;color:var(--ink-soft);font-weight:600;font-size:0.95rem">Delete this player</summary>
+        <p class="g-p" style="margin-top:0.6rem">Removes the player and every session. It cannot be undone.</p>
+        <div class="err" id="st-del-err"></div>
+        <button type="button" class="btn btn-danger btn-full" id="st-del" style="margin-top:0.4rem">Delete player and all sessions</button>
+      </details>
+    </div>
+  </div>
+
+  <!-- PRIVACY + SOURCES -->
+  <div class="g-card" id="privacy">
+    <div class="g-eb">Privacy</div>
+    <ul class="sources" style="color:var(--ink-soft);font-size:0.92rem">
+      <li><b style="color:var(--ink)">Adults only.</b> A parent or coach age 18+ holds the account. Kids never get an account.</li>
+      <li><b style="color:var(--ink)">What we store.</b> Your name and email. For each kid: a first name or nickname and age (coaches add a jersey number). For each session: date, Home, Practice, or Game, and the pitch, strike, and ball counts.</li>
+      <li><b style="color:var(--ink)">What we never collect.</b> No kid email, last name, photo, school, or location.</li>
+      <li><b style="color:var(--ink)">Who sees it.</b> Only you see your kids. Parents never see other families. Coaches see only their own team.</li>
+      <li><b style="color:var(--ink)">Deleting.</b> Delete a player and every session from their stats page, or your whole account from your home screen. Done right away.</li>
+      <li>We use your email to save your data and send occasional DugoutLab updates. Never sold.</li>
+    </ul>
+  </div>
+
+  <div class="g-card">
+    <div class="g-eb">Guidelines &amp; sources</div>
+    <ul class="sources">
+      <li><a href="https://www.mlb.com/pitch-smart/pitching-guidelines" target="_blank" rel="noopener">MLB and USA Baseball, Pitch Smart: Pitching Guidelines for Youth and Adolescent Pitchers</a>. Daily max and rest days by age. Checked October 2026.</li>
+      <li>Pitch Smart numbers are written for game pitches. We count every pitch logged here that day, home and practice included, to stay on the safe side.</li>
+      <li>Pitch Smart's chart starts at ages 7 to 8. For 6-year-olds we show the 7 to 8 numbers.</li>
+      <li>This tool counts pitches. It is not medical advice. Warnings never block you. Any pain or soreness, stop and talk to a doctor.</li>
+    </ul>
+  </div>
+
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var PT_API = '/api/';
+  var PT_AGES = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+  /* MLB / USA Baseball Pitch Smart, checked 2026-10-19. rest[i] = most pitches that still need only i days of rest. */
+  var PT_SMART = [
+    { lo: 6, hi: 8, max: 50, rest: [20, 35, 50] },
+    { lo: 9, hi: 10, max: 75, rest: [20, 35, 50, 65, 75] },
+    { lo: 11, hi: 12, max: 85, rest: [20, 35, 50, 65, 85] },
+    { lo: 13, hi: 14, max: 95, rest: [20, 35, 50, 65, 95] },
+    { lo: 15, hi: 16, max: 95, rest: [30, 45, 60, 75, 95] },
+    { lo: 17, hi: 18, max: 105, rest: [30, 45, 60, 80, 105] }
+  ];
+  var PT_LIVE_KEY = 'dl_pitch_live';
+  var PT_KEY = 'dl_pitch';
+  var PT_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  var PT_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  var st = { token: null, account: null, coach: false, gate: false, kids: [], teams: [], recent: [], team: null };
+  var live = null;   /* current session: { kid, tag, seq, types, typeOn, type, date } */
+  var view = null;   /* kid on the stats screen */
+
+  function $(id) { return document.getElementById(id); }
+  function each(list, fn) { Array.prototype.forEach.call(list, fn); }
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function show(id) {
+    ['s-signin', 's-home', 's-log', 's-done', 's-stats'].forEach(function (s) { $(s).classList.toggle('hidden', s !== id); });
+    $('privacy').classList.toggle('hidden', id === 's-log');
+    window.scrollTo(0, 0);
+  }
+  function api(path, body) {
+    var opt = body ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(Object.assign({ token: st.token }, body)) } : {};
+    var u = PT_API + path + (body ? '' : (path.indexOf('?') > -1 ? '&' : '?') + 'token=' + encodeURIComponent(st.token || ''));
+    return fetch(u, opt).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Something broke. Try again.'); return j; }); });
+  }
+  function save() { try { localStorage.setItem(PT_KEY, JSON.stringify({ token: st.token, account: st.account })); } catch (e) {} }
+  function load() {
+    try {
+      var j = JSON.parse(localStorage.getItem(PT_KEY) || 'null');
+      if (!j || !j.token) j = JSON.parse(localStorage.getItem('dl_game2') || 'null'); /* same account as the Hit Window game */
+      if (j && j.token) { st.token = j.token; st.account = j.account || null; }
+    } catch (e) {}
+  }
+  function saveLive() { try { localStorage.setItem(PT_LIVE_KEY, live ? JSON.stringify(live) : ''); } catch (e) {} }
+  function loadLive() { try { var j = JSON.parse(localStorage.getItem(PT_LIVE_KEY) || 'null'); return j && j.kid && j.seq ? j : null; } catch (e) { return null; } }
+
+  /* ---------- dates ---------- */
+  function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function today() { return ymd(new Date()); }
+  function parseYmd(s) { var p = String(s).split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function addDays(s, n) { var d = parseYmd(s); d.setDate(d.getDate() + n); return ymd(d); }
+  function nice(s) { var d = parseYmd(s); return PT_DAYS[d.getDay()] + ' ' + PT_MON[d.getMonth()] + ' ' + d.getDate(); }
+
+  /* ---------- Pitch Smart ---------- */
+  function band(age) { for (var i = 0; i < PT_SMART.length; i++) if (age >= PT_SMART[i].lo && age <= PT_SMART[i].hi) return PT_SMART[i]; return PT_SMART[PT_SMART.length - 1]; }
+  function restFor(n, b) { if (n <= 0) return 0; for (var i = 0; i < b.rest.length; i++) if (n <= b.rest[i]) return i; return b.rest.length - 1; }
+  function dayTotals(kidId) {
+    var t = {};
+    st.recent.forEach(function (r) { if (r.kid_id === kidId) t[r.date] = (t[r.date] || 0) + r.pitches; });
+    return t;
+  }
+  /* Most recent earlier day that still has the kid inside a rest window, or null. */
+  function restWindow(kid) {
+    var b = band(kid.age), t = dayTotals(kid.id), td = today(), hit = null;
+    Object.keys(t).forEach(function (d) {
+      if (d >= td) return;
+      var r = restFor(t[d], b);
+      if (r > 0 && td <= addDays(d, r) && (!hit || addDays(d, r) > hit.until)) hit = { date: d, pitches: t[d], days: r, until: addDays(d, r) };
+    });
+    return hit;
+  }
+  function smartBox(kid, extra) {
+    var b = band(kid.age), t = dayTotals(kid.id), done = (t[today()] || 0) + (extra || 0), rw = restWindow(kid);
+    var msg = [], on = false;
+    if (rw) { on = true; msg.push('<b>Rest day.</b> ' + esc(kid.nickname) + ' threw ' + rw.pitches + ' on ' + nice(rw.date) + '. Pitch Smart says rest through ' + nice(rw.until) + '.'); }
+    if (done >= b.max) { on = true; msg.push('<b>Daily max reached.</b> ' + done + ' of ' + b.max + ' today. Pitch Smart says ' + b.max + ' is the most for one day at age ' + kid.age + '.'); }
+    else if (done >= b.max - 10) { on = true; msg.push('<b>Getting close.</b> ' + done + ' of ' + b.max + ' today.'); }
+    else msg.push('Today: <b>' + done + '</b> of ' + b.max + ' (Pitch Smart daily max, age ' + kid.age + ').');
+    var r = restFor(done, b);
+    msg.push(done ? 'Rest needed if done now: ' + (r === 0 ? 'none' : r + (r === 1 ? ' day' : ' days')) + '.' : '');
+    return { html: msg.filter(Boolean).join('<br>') + '<div class="meter"><span style="width:' + Math.min(100, Math.round(100 * done / b.max)) + '%"></span></div>', on: on, done: done, max: b.max, rest: rw };
+  }
+
+  /* ---------- sign in ---------- */
+  var ageOpts = PT_AGES.map(function (a) { return '<option value="' + a + '"' + (a === 10 ? ' selected' : '') + '>' + a + '</option>'; }).join('');
+  $('kid-age').innerHTML = ageOpts; $('tm-age').innerHTML = ageOpts;
+  function adultTxt() { $('in-adult-txt').textContent = $('in-role').value === 'coach' ? "I'm 18 or older. I add players by first name or nickname only, and any of my own kids I add are mine to add." : "I'm 18 or older and the parent or legal guardian of every kid I add."; }
+  $('in-role').addEventListener('change', adultTxt);
+  $('in-go').addEventListener('click', function () {
+    var b = $('in-go'); b.disabled = true; $('in-err').textContent = '';
+    if (!$('in-adult').checked) { $('in-err').textContent = 'Check the box to confirm you are the adult signing up.'; b.disabled = false; return; }
+    api('signup', { name: $('in-name').value, email: $('in-email').value, role: $('in-role').value, adult: true, app: 'pitch' }).then(function (j) {
+      st.token = j.token; st.account = j.account; save(); home();
+    }).catch(function (e) { $('in-err').textContent = e.message; }).then(function () { b.disabled = false; });
+  });
+  $('h-out').addEventListener('click', function () {
+    st.token = null; st.account = null; save();
+    try { localStorage.removeItem('dl_game2'); } catch (e) {}
+    show('s-signin');
+  });
+
+  /* ---------- home ---------- */
+  function kidRow(k) {
+    var sb = smartBox(k), badge = sb.rest ? '<span class="badge warn">Rest day</span>' : (sb.done ? '<span class="badge' + (sb.on ? ' warn' : '') + '">' + sb.done + ' today</span>' : '');
+    var label = k.kind === 'player' ? (k.jersey ? '#' + esc(k.jersey) + ' ' : '') + esc(k.nickname) : esc(k.nickname);
+    return '<li><div><b>' + label + '</b>' + badge + '<span class="sub">Age ' + k.age + (k.own ? ' &middot; my kid' : '') + '</span></div>' +
+      '<div class="acts"><button type="button" class="btn btn-forest btn-sm" data-stats="' + esc(k.id) + '">Stats</button><button type="button" class="btn btn-primary btn-sm" data-chart="' + esc(k.id) + '">Chart</button></div></li>';
+  }
+  function wireRows(root) {
+    each(root.querySelectorAll('[data-chart]'), function (b) { b.addEventListener('click', function () { startLog(kidById(b.getAttribute('data-chart'))); }); });
+    each(root.querySelectorAll('[data-stats]'), function (b) { b.addEventListener('click', function () { stats(kidById(b.getAttribute('data-stats'))); }); });
+  }
+  function kidById(id) { return st.kids.filter(function (k) { return k.id === id; })[0]; }
+  function home() {
+    show('s-home');
+    $('h-acct').textContent = st.account ? st.account.name : '';
+    $('kid-list').innerHTML = '<li><span>Loading...</span></li>';
+    api('pitch/me').then(function (j) {
+      st.account = j.account; st.coach = j.coach; st.gate = j.gate; st.kids = j.kids || []; st.teams = j.teams || []; st.recent = j.recent || []; save();
+      $('h-acct').textContent = st.account.name + (st.account.role === 'coach' ? ' (coach)' : '');
+      var mine = st.kids.filter(function (k) { return k.kind === 'kid'; });
+      var showKids = !st.coach || mine.length > 0;
+      $('kids-card').classList.toggle('hidden', !showKids);
+      $('kid-add').classList.toggle('hidden', st.coach);
+      $('kid-list').innerHTML = mine.map(kidRow).join('') || '<li><span>No pitchers yet. Add your kid below.</span></li>';
+      $('kid-add-h').textContent = mine.length ? 'Add another kid' : 'Add your pitcher';
+      wireRows($('kid-list'));
+      $('coach-card').classList.toggle('hidden', !st.coach);
+      $('pro-card').classList.toggle('hidden', !(st.account.role === 'coach' && !st.coach));
+      if (st.coach) drawTeams();
+      var resume = loadLive();
+      if (resume && kidById(resume.kid.id) && resume.seq.length) {
+        $('kid-list').insertAdjacentHTML('afterbegin', '<li style="border-color:var(--gold)"><div><b>Unsaved session</b><span class="sub">' + esc(resume.kid.nickname) + ' &middot; ' + resume.seq.length + ' pitches</span></div><div class="acts"><button type="button" class="btn btn-primary btn-sm" id="resume-go">Finish it</button></div></li>');
+        $('kids-card').classList.remove('hidden');
+        $('resume-go').addEventListener('click', function () { live = resume; live.kid = kidById(resume.kid.id); drawLog(); show('s-log'); });
+      }
+    }).catch(function (e) {
+      if (/sign in/i.test(e.message)) { st.token = null; save(); return show('s-signin'); }
+      $('kid-list').innerHTML = '<li><span>' + esc(e.message) + '</span></li>';
+    });
+  }
+  $('kid-go').addEventListener('click', function () {
+    var b = $('kid-go'); b.disabled = true; $('kid-err').textContent = '';
+    api('pitch/kid', { nickname: $('kid-nick').value, age: $('kid-age').value }).then(function () { $('kid-nick').value = ''; home(); })
+      .catch(function (e) { $('kid-err').textContent = e.message; }).then(function () { b.disabled = false; });
+  });
+
+  /* ---------- coach: teams ---------- */
+  function drawTeams() {
+    if (!st.team || !st.teams.some(function (t) { return t.id === st.team; })) st.team = st.teams.length ? st.teams[0].id : null;
+    $('team-pills').innerHTML = st.teams.length > 1 ? st.teams.map(function (t) { return '<button type="button" class="wz-opt' + (t.id === st.team ? ' active' : '') + '" data-team="' + esc(t.id) + '">' + esc(t.name) + '</button>'; }).join('') : '';
+    each($('team-pills').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { st.team = b.getAttribute('data-team'); drawTeams(); }); });
+    $('team-new').open = !st.teams.length;
+    $('coach-note').textContent = st.gate ? '' : 'Coach tools are free while we test them.';
+    if (!st.team) { $('team-body').innerHTML = '<p class="g-p">Create your team to start. Players go in by first name or nickname and jersey number.</p>'; return; }
+    var t = st.teams.filter(function (x) { return x.id === st.team; })[0];
+    var players = st.kids.filter(function (k) { return k.team_id === t.id; }).sort(function (a, b) { return (parseInt(a.jersey, 10) || 999) - (parseInt(b.jersey, 10) || 999); });
+    $('team-body').innerHTML =
+      '<div class="g-h" style="font-size:1.25rem">' + esc(t.name) + ' <span class="badge">Age ' + t.age + '</span></div>' +
+      '<ul class="list" id="roster">' + (players.map(kidRow).join('') || '<li><span>No players yet. Add your pitchers below.</span></li>') + '</ul>' +
+      '<div style="margin-top:1rem"><div class="g-h" style="font-size:1.1rem">Add a player</div>' +
+      '<div class="g-row" style="gap:0.6rem"><div class="field" style="flex:2;min-width:140px"><label for="pl-nick">First name or nickname</label><input type="text" id="pl-nick" maxlength="24" placeholder="Nickname"></div>' +
+      '<div class="field" style="flex:1;min-width:70px"><label for="pl-num">Jersey</label><input type="text" id="pl-num" maxlength="3" inputmode="numeric" placeholder="12"></div>' +
+      '<div class="field" style="flex:1;min-width:70px"><label for="pl-age">Age</label><select id="pl-age">' + PT_AGES.map(function (a) { return '<option value="' + a + '"' + (a === t.age ? ' selected' : '') + '>' + a + '</option>'; }).join('') + '</select></div></div>' +
+      '<label class="chk" for="pl-own"><input type="checkbox" id="pl-own"> <span>This is my own kid (I will pick Home, Practice, or Game each time)</span></label>' +
+      '<div class="err" id="pl-err"></div><button type="button" class="btn btn-primary btn-full" id="pl-go">Add player</button></div>';
+    wireRows($('roster'));
+    $('pl-go').addEventListener('click', function () {
+      var b = $('pl-go'); b.disabled = true; $('pl-err').textContent = '';
+      api('pitch/kid', { nickname: $('pl-nick').value, jersey: $('pl-num').value, age: $('pl-age').value, team_id: t.id, own: $('pl-own').checked }).then(home)
+        .catch(function (e) { $('pl-err').textContent = e.message; b.disabled = false; });
+    });
+  }
+  $('tm-go').addEventListener('click', function () {
+    var b = $('tm-go'); b.disabled = true; $('tm-err').textContent = '';
+    api('pitch/team', { name: $('tm-name').value, age: $('tm-age').value }).then(function (j) { st.team = j.team.id; $('tm-name').value = ''; home(); })
+      .catch(function (e) { $('tm-err').textContent = e.message; }).then(function () { b.disabled = false; });
+  });
+  $('pro-go').addEventListener('click', function () {
+    api('pitch/upgrade', {}).then(function (j) { $('pro-msg').textContent = j.message || ''; }).catch(function (e) { $('pro-msg').textContent = e.message; });
+  });
+  $('del-go').addEventListener('click', function () {
+    $('del-err').textContent = '';
+    if ($('del-confirm').value !== 'DELETE') { $('del-err').textContent = 'Type DELETE in capitals to confirm.'; return; }
+    api('pitch/account-delete', { confirm: 'DELETE' }).then(function () {
+      st.token = null; st.account = null; live = null; saveLive(); save();
+      try { localStorage.removeItem('dl_game2'); } catch (e) {}
+      show('s-signin'); $('in-err').textContent = 'Your account and everything in it is deleted.';
+    }).catch(function (e) { $('del-err').textContent = e.message; });
+  });
+
+  /* ---------- logging ---------- */
+  function startLog(kid) {
+    if (!kid) return;
+    var keep = loadLive();
+    if (keep && keep.kid.id === kid.id && keep.seq.length) live = keep;
+    else live = { kid: kid, tag: kid.tags.length === 1 ? kid.tags[0] : (kid.pick ? null : 'Practice'), seq: '', types: '', typeOn: false, type: 'F', date: today() };
+    live.kid = kid;
+    $('lg-err').textContent = '';
+    drawLog(); show('s-log');
+  }
+  function tagLabel(t) { return t === 'Home' ? 'Home Bullpen' : t; }
+  function drawLog() {
+    var k = live.kid, n = live.seq.length, s = (live.seq.match(/S/g) || []).length;
+    $('lg-name').textContent = (k.jersey ? '#' + k.jersey + ' ' : '') + k.nickname;
+    $('lg-age').textContent = '· age ' + k.age;
+    var multi = k.tags.length > 1;
+    $('lg-tagwrap').classList.toggle('hidden', !multi);
+    $('lg-fixed').classList.toggle('hidden', multi);
+    $('lg-fixed').textContent = tagLabel(k.tags[0]);
+    $('lg-tag-eb').textContent = k.pick ? 'Pick one every time' : 'Practice or game?';
+    $('lg-tags').innerHTML = k.tags.map(function (t) { return '<button type="button" class="wz-opt' + (live.tag === t ? ' active' : '') + '" data-tag="' + t + '">' + tagLabel(t) + '</button>'; }).join('');
+    each($('lg-tags').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { live.tag = b.getAttribute('data-tag'); saveLive(); drawLog(); }); });
+    var ready = !!live.tag;
+    $('lg-s').disabled = !ready; $('lg-b').disabled = !ready;
+    $('lg-s-sub').textContent = ready ? 'tap' : 'pick above first'; $('lg-b-sub').textContent = ready ? 'tap' : 'pick above first';
+    $('lg-n').textContent = n;
+    $('lg-pct').textContent = n ? Math.round(100 * s / n) + '%' : '--';
+    $('lg-sb').textContent = s + ' strikes · ' + (n - s) + ' balls';
+    $('lg-types').checked = !!live.typeOn;
+    $('lg-typepick').classList.toggle('hidden', !live.typeOn);
+    each($('lg-typepick').querySelectorAll('button'), function (b) { b.classList.toggle('active', b.getAttribute('data-t') === live.type); });
+    $('lg-trail').innerHTML = live.seq.split('').slice(-40).map(function (c) { return '<span class="' + c + '"></span>'; }).join('');
+    var sb = smartBox(k, n);
+    $('lg-warn').innerHTML = sb.html;
+    $('lg-warn').classList.toggle('on', sb.on);
+    $('lg-undo').disabled = !n;
+  }
+  function tap(c) {
+    if (!live || !live.tag) return;
+    live.seq += c; live.types += live.typeOn ? live.type : '-';
+    if (navigator.vibrate) { try { navigator.vibrate(12); } catch (e) {} }
+    saveLive(); drawLog();
+  }
+  $('lg-s').addEventListener('click', function () { tap('S'); });
+  $('lg-b').addEventListener('click', function () { tap('B'); });
+  $('lg-undo').addEventListener('click', function () { if (!live.seq) return; live.seq = live.seq.slice(0, -1); live.types = live.types.slice(0, -1); saveLive(); drawLog(); });
+  $('lg-types').addEventListener('change', function () { live.typeOn = this.checked; saveLive(); drawLog(); });
+  each($('lg-typepick').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { live.type = b.getAttribute('data-t'); saveLive(); drawLog(); }); });
+  $('lg-back').addEventListener('click', function () {
+    if (live && live.seq.length) { $('lg-err').textContent = 'Tap End session to save, or Undo to clear. Your count is kept on this phone until you do.'; return home(); }
+    live = null; saveLive(); home();
+  });
+  $('lg-end').addEventListener('click', function () {
+    if (!live.seq.length) { live = null; saveLive(); return home(); }
+    var b = $('lg-end'); b.disabled = true; $('lg-err').textContent = '';
+    api('pitch/session', { kid_id: live.kid.id, tag: live.tag, date: live.date, seq: live.seq, types: live.types }).then(function (j) {
+      var k = live.kid, se = j.session;
+      st.recent.push({ kid_id: k.id, date: se.date, pitches: se.pitches });
+      live = null; saveLive(); done(k, se);
+    }).catch(function (e) { $('lg-err').textContent = 'Not saved yet: ' + e.message + ' Your count is safe on this phone. Tap End session again.'; })
+      .then(function () { b.disabled = false; });
+  });
+
+  /* ---------- done ---------- */
+  var PT_CHEERS = ['Every pitch counts toward getting better.', 'Reps in the bank. Nice work.', 'Good work today. Same time next time?', 'Showing up is the skill. Well done.'];
+  function done(k, se) {
+    show('s-done');
+    $('dn-eb').textContent = 'Saved · ' + tagLabel(se.tag);
+    $('dn-h').textContent = 'Nice work, ' + k.nickname + '.';
+    $('dn-n').textContent = se.pitches;
+    $('dn-pct').textContent = Math.round(100 * se.strikes / se.pitches) + '%';
+    var sb = smartBox(k, 0), r = restFor(sb.done, band(k.age));
+    $('dn-msg').innerHTML = esc(PT_CHEERS[Math.floor(Math.random() * PT_CHEERS.length)]) +
+      (sb.done ? ' <br><span style="color:var(--ink-faint);font-size:0.92rem">' + sb.done + ' pitches today. Pitch Smart rest: ' + (r ? r + (r === 1 ? ' day' : ' days') + ' before pitching again.' : 'none needed.') + '</span>' : '');
+    $('dn-stats').onclick = function () { stats(k); };
+  }
+  $('dn-home').addEventListener('click', home);
+
+  /* ---------- stats ---------- */
+  function pct(s, n) { return n ? Math.round(100 * s / n) + '%' : '--'; }
+  function stats(k) {
+    if (!k) return;
+    view = k; show('s-stats');
+    $('st-name').textContent = (k.jersey ? '#' + k.jersey + ' ' : '') + k.nickname; $('st-age').textContent = '· age ' + k.age;
+    $('st-chart').innerHTML = '<div class="chart-tip">Loading...</div>'; $('st-list').innerHTML = '';
+    var sb = smartBox(k, 0); $('st-smart').innerHTML = sb.html; $('st-smart').classList.toggle('on', sb.on);
+    api('pitch/kid?kid=' + encodeURIComponent(k.id)).then(function (j) {
+      var ss = j.sessions || [], all = [0, 0], co = [0, 0];
+      ss.forEach(function (x) { all[0] += x.strikes; all[1] += x.pitches; if (x.tag !== 'Home') { co[0] += x.strikes; co[1] += x.pitches; } });
+      $('st-all').textContent = pct(all[0], all[1]); $('st-coach').textContent = pct(co[0], co[1]);
+      $('st-sess').textContent = ss.length; $('st-pitches').textContent = all[1];
+      drawChart(ss.slice(-20));
+      $('st-list').innerHTML = ss.slice(-8).reverse().map(function (x) {
+        return '<li><div><b style="font-size:1rem">' + nice(x.date) + '</b><span class="sub">' + tagLabel(x.tag) + ' &middot; ' + x.strikes + ' strikes, ' + x.balls + ' balls' + (x.fb || x.ch ? ' &middot; FB ' + x.fb + ', CH ' + x.ch : '') + '</span></div><div style="text-align:right"><b style="color:var(--gold)">' + pct(x.strikes, x.pitches) + '</b><span class="sub">' + x.pitches + ' pitches</span></div></li>';
+      }).join('') || '<li><span>No sessions yet. Chart one and it shows up here.</span></li>';
+    }).catch(function (e) { $('st-chart').innerHTML = '<div class="chart-tip">' + esc(e.message) + '</div>'; });
+  }
+  function drawChart(ss) {
+    if (!ss.length) { $('st-chart').innerHTML = '<div class="chart-tip">The trend line starts after the first session.</div>'; $('st-legend').classList.add('hidden'); $('st-chartnote').classList.add('hidden'); return; }
+    $('st-legend').classList.remove('hidden'); $('st-chartnote').classList.remove('hidden');
+    var W = 340, H = 190, L = 34, R = 12, T = 14, B = 26, n = ss.length;
+    function x(i) { return n === 1 ? (L + W - R) / 2 : L + i * (W - L - R) / (n - 1); }
+    function y(p) { return T + (100 - p) * (H - T - B) / 100; }
+    var g = '';
+    [0, 25, 50, 75, 100].forEach(function (p) {
+      g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(p) + '" y2="' + y(p) + '" stroke="rgba(244,239,230,' + (p === 0 ? 0.25 : 0.08) + ')" stroke-width="1"/>';
+      g += '<text x="' + (L - 6) + '" y="' + (y(p) + 4) + '" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="rgba(244,239,230,0.5)">' + p + '%</text>';
+    });
+    var pts = ss.map(function (s, i) { return { x: x(i), y: y(100 * s.strikes / s.pitches), s: s }; });
+    var path = pts.map(function (p, i) { return (i ? 'L' : 'M') + p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' ');
+    g += '<path d="' + path + '" fill="none" stroke="#C8862E" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+    pts.forEach(function (p, i) {
+      var t = p.s.tag, mk;
+      if (t === 'Home') mk = '<circle cx="' + p.x + '" cy="' + p.y + '" r="4.5" fill="#0a1610" stroke="#C8862E" stroke-width="2"/>';
+      else if (t === 'Game') mk = '<rect x="' + (p.x - 4.5) + '" y="' + (p.y - 4.5) + '" width="9" height="9" transform="rotate(45 ' + p.x + ' ' + p.y + ')" fill="#e2a85a" stroke="#0a1610" stroke-width="2"/>';
+      else mk = '<circle cx="' + p.x + '" cy="' + p.y + '" r="5" fill="#C8862E" stroke="#0a1610" stroke-width="2"/>';
+      g += mk + '<circle cx="' + p.x + '" cy="' + p.y + '" r="14" fill="transparent" data-i="' + i + '" style="cursor:pointer"/>';
+    });
+    g += '<text x="' + L + '" y="' + (H - 6) + '" font-family="Inter,sans-serif" font-size="10" fill="rgba(244,239,230,0.5)">' + nice(ss[0].date) + '</text>';
+    if (n > 1) g += '<text x="' + (W - R) + '" y="' + (H - 6) + '" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="rgba(244,239,230,0.5)">' + nice(ss[n - 1].date) + '</text>';
+    $('st-chart').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Strike percent by session, oldest to newest">' + g + '</svg><div class="chart-tip" id="st-tip">Tap a dot for the details.</div>';
+    function tip(i) { var s = ss[i]; $('st-tip').innerHTML = '<b style="color:var(--ink)">' + nice(s.date) + '</b> &middot; ' + tagLabel(s.tag) + ' &middot; ' + s.strikes + ' of ' + s.pitches + ' strikes (' + pct(s.strikes, s.pitches) + ')'; }
+    each($('st-chart').querySelectorAll('[data-i]'), function (c) {
+      var i = +c.getAttribute('data-i');
+      c.addEventListener('click', function () { tip(i); });
+      c.addEventListener('mouseenter', function () { tip(i); });
+    });
+    tip(n - 1);
+  }
+  $('st-back').addEventListener('click', home);
+  $('st-chart-go').addEventListener('click', function () { startLog(view); });
+  $('st-del').addEventListener('click', function () {
+    $('st-del-err').textContent = '';
+    if (!view || !confirm('Delete ' + view.nickname + ' and every session? This cannot be undone.')) return;
+    api('pitch/kid-delete', { kid_id: view.id }).then(function () {
+      var l = loadLive(); if (l && l.kid.id === view.id) { live = null; saveLive(); }
+      view = null; home();
+    }).catch(function (e) { $('st-del-err').textContent = e.message; });
+  });
+
+  load();
+  if (st.token) home(); else show('s-signin');
+})();
+</script>
+<script src="js/site.js"></script>
+</body>
+</html>
