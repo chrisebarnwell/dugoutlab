@@ -1,0 +1,106 @@
+/* DugoutLab email gate.
+   One email unlocks every tool. Saved to D1 "subscribers" via /api/subscribe (source "gate-<page>").
+   <script src="js/email-gate.js" data-mode="page"></script>   gates the whole page on load
+   <script src="js/email-gate.js" data-mode="links"></script>  gates only links marked data-gate (e.g. a PDF)
+   Anyone signed in to the Hit Window or Pitch Tracker is already in. */
+(function () {
+  var me = document.currentScript;
+  var mode = (me && me.getAttribute('data-mode')) || 'page';
+  var KEY = 'dl_email_ok';
+
+  function ok() {
+    try {
+      if (localStorage.getItem(KEY)) return true;
+      var a = JSON.parse(localStorage.getItem('dl_pitch') || 'null') || JSON.parse(localStorage.getItem('dl_game2') || 'null');
+      return !!(a && a.token);
+    } catch (e) { return false; }
+  }
+  function mark(email) { try { localStorage.setItem(KEY, JSON.stringify({ email: email, at: Date.now() })); } catch (e) {} }
+  function page() { return (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '') || 'index'; }
+
+  var css = '' +
+    '.dl-gate{position:fixed;inset:0;z-index:2000;background:rgba(10,22,16,0.86);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:1rem}' +
+    '.dl-gate-box{background:#15291f;border:1px solid #C8862E;border-radius:16px;max-width:420px;width:100%;padding:1.6rem 1.3rem;color:#f4efe6;box-shadow:0 8px 32px rgba(0,0,0,0.4)}' +
+    '.dl-gate-eb{font-family:\'JetBrains Mono\',ui-monospace,monospace;font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:#C8862E;margin-bottom:0.5rem}' +
+    '.dl-gate-h{font-family:\'Playfair Display\',Georgia,serif;font-size:1.5rem;font-weight:600;line-height:1.15;letter-spacing:-0.015em;margin-bottom:0.5rem}' +
+    '.dl-gate-p{color:rgba(244,239,230,0.72);font-size:1rem;line-height:1.5;margin-bottom:1rem}' +
+    '.dl-gate input[type=email]{width:100%;background:#0a1610;border:1px solid rgba(244,239,230,0.16);color:#f4efe6;border-radius:9px;padding:0.8rem 0.9rem;font-family:\'Inter\',system-ui,sans-serif;font-size:1rem;margin-bottom:0.7rem}' +
+    '.dl-gate input[type=email]:focus{outline:2px solid #C8862E;outline-offset:-1px}' +
+    '.dl-gate label{display:flex;gap:0.55rem;align-items:flex-start;font-size:0.92rem;color:rgba(244,239,230,0.72);line-height:1.4;margin-bottom:0.9rem;cursor:pointer}' +
+    '.dl-gate label input{width:20px;height:20px;flex:0 0 20px;accent-color:#C8862E;margin-top:1px}' +
+    '.dl-gate-err{color:#e2a85a;font-size:0.9rem;min-height:1.2em;margin:-0.3rem 0 0.5rem}' +
+    '.dl-gate-note{color:rgba(244,239,230,0.5);font-size:0.8rem;line-height:1.45;margin-top:0.8rem}' +
+    '.dl-gate-x{background:none;border:0;color:rgba(244,239,230,0.5);font-size:0.85rem;margin-top:0.6rem;padding:0;text-decoration:underline}' +
+    '.dl-gate-btn{display:block;width:100%;background:#C8862E;color:#0a1610;border:0;border-radius:10px;padding:0.95rem 1rem;font-family:\'Inter\',system-ui,sans-serif;font-size:1rem;font-weight:600;cursor:pointer}' +
+    '.dl-gate-btn:disabled{opacity:0.6}' +
+    '.dl-gate a{color:#e2a85a}' +
+    '.dl-gate .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}' +
+    'body.dl-gated{overflow:hidden}';
+
+  function build(after, canClose) {
+    if (!document.getElementById('dl-gate-css')) {
+      var st = document.createElement('style'); st.id = 'dl-gate-css'; st.textContent = css; document.head.appendChild(st);
+    }
+    var wrap = document.createElement('div');
+    wrap.className = 'dl-gate'; wrap.setAttribute('role', 'dialog'); wrap.setAttribute('aria-modal', 'true'); wrap.setAttribute('aria-labelledby', 'dl-gate-h');
+    wrap.innerHTML =
+      '<div class="dl-gate-box">' +
+        '<div class="dl-gate-eb">One quick thing</div>' +
+        '<div class="dl-gate-h" id="dl-gate-h">Your email unlocks every tool.</div>' +
+        '<p class="dl-gate-p">Pop it in once and every DugoutLab tool is open. No password, no card.</p>' +
+        '<input type="email" id="dl-gate-email" placeholder="you@email.com" autocomplete="email" inputmode="email" maxlength="120">' +
+        '<input type="text" class="hp" id="dl-gate-hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+        '<label><input type="checkbox" id="dl-gate-adult"> <span>I\'m 18 or older (a coach or parent).</span></label>' +
+        '<div class="dl-gate-err" id="dl-gate-err"></div>' +
+        '<button type="button" class="dl-gate-btn" id="dl-gate-go">Unlock the tools</button>' +
+        '<div class="dl-gate-note">We send an occasional new tool or guide. Unsubscribe any time. Never sold.</div>' +
+        (canClose ? '<button type="button" class="dl-gate-x" id="dl-gate-x">Not now</button>' : '<div class="dl-gate-note">Just reading? <a href="articles.html">The articles are open to everyone.</a></div>') +
+      '</div>';
+    document.body.appendChild(wrap);
+    document.body.classList.add('dl-gated');
+    var input = document.getElementById('dl-gate-email');
+    setTimeout(function () { try { input.focus(); } catch (e) {} }, 50);
+
+    function close() { wrap.parentNode && wrap.parentNode.removeChild(wrap); document.body.classList.remove('dl-gated'); }
+    if (canClose) document.getElementById('dl-gate-x').addEventListener('click', close);
+
+    function go() {
+      var err = document.getElementById('dl-gate-err'), b = document.getElementById('dl-gate-go');
+      var email = String(input.value || '').trim().toLowerCase();
+      err.textContent = '';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = 'That email does not look right.'; return; }
+      if (!document.getElementById('dl-gate-adult').checked) { err.textContent = 'Check the box to confirm you are 18 or older.'; return; }
+      b.disabled = true; b.textContent = 'Unlocking...';
+      fetch('/api/subscribe', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email: email, source: 'gate-' + page(), website: document.getElementById('dl-gate-hp').value })
+      }).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          if (r.status === 400) throw new Error(j.error || 'That email does not look right.');
+          mark(email); close(); if (after) after();
+        });
+      }).catch(function (e) {
+        /* A bad address stays on the gate. A network or server hiccup lets them in rather than punishing them. */
+        if (/look right/i.test(e.message)) { err.textContent = e.message; b.disabled = false; b.textContent = 'Unlock the tools'; return; }
+        mark(email); close(); if (after) after();
+      });
+    }
+    document.getElementById('dl-gate-go').addEventListener('click', go);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(); });
+  }
+
+  function start() {
+    if (mode === 'links') {
+      Array.prototype.forEach.call(document.querySelectorAll('a[data-gate]'), function (a) {
+        a.addEventListener('click', function (e) {
+          if (ok()) return;
+          e.preventDefault();
+          build(function () { var t = document.createElement('a'); t.href = a.href; if (a.hasAttribute('download')) t.setAttribute('download', a.getAttribute('download') || ''); document.body.appendChild(t); t.click(); t.remove(); }, true);
+        });
+      });
+      return;
+    }
+    if (!ok()) build(null, false);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
