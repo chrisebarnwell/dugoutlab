@@ -116,9 +116,8 @@
   <div class="g-card" id="s-signin">
     <div class="g-eb">Sign in</div>
     <div class="g-h">Grown-ups sign up. Kids just throw.</div>
-    <p class="g-p">One account per parent. Add every kid in the family under it. Kids never get an account and never type anything. No password, no card.</p>
+    <p class="g-p">One account per parent. Add every kid in the family under it. Kids never get an account and never type anything. No password, no card. Coaching a team? Start here too. Your team lives inside your account.</p>
     <div style="margin-top:1rem">
-      <div class="field"><label for="in-role">I am a</label><select id="in-role"><option value="parent">Parent or guardian (free)</option><option value="coach">Coach (team tracking)</option></select></div>
       <div class="field"><label for="in-name">Your name</label><input type="text" id="in-name" maxlength="40" autocomplete="name" placeholder="Your first name"></div>
       <div class="field"><label for="in-email">Your email</label><input type="email" id="in-email" maxlength="120" autocomplete="email" inputmode="email" placeholder="you@email.com"></div>
       <label class="chk" for="in-adult"><input type="checkbox" id="in-adult"> <span id="in-adult-txt">I'm 18 or older and the parent or legal guardian of every kid I add.</span></label>
@@ -144,7 +143,27 @@
         <div class="err" id="kid-err"></div>
         <button type="button" class="btn btn-primary btn-full" id="kid-go">Add</button>
         <div class="g-note">Age sets the daily pitch guideline. No last names.</div>
+        <button type="button" class="btn btn-outline btn-full" id="ts-open" style="margin-top:0.9rem">Coaching a team? Start a team</button>
       </div>
+    </div>
+
+    <div class="g-card hidden" id="ts-card" style="border-color:var(--gold)">
+      <div class="g-eb">Coaching a team?</div>
+      <div class="g-h" style="font-size:1.3rem">Track every pitcher on your team.</div>
+      <ul class="sources" style="color:var(--ink-soft);font-size:0.95rem;margin-bottom:0.9rem">
+        <li>Roster by first name or nickname and jersey</li>
+        <li>Practice and Game charting, every arm's count in one place</li>
+        <li>Daily max and rest-day heads-up for the whole staff</li>
+      </ul>
+      <div class="g-row" style="gap:0.6rem">
+        <div class="field" style="flex:2;min-width:150px"><label for="ts-name">Team name</label><input type="text" id="ts-name" maxlength="40" placeholder="Blue Jays 10U"></div>
+        <div class="field" style="flex:1;min-width:90px"><label for="ts-age">Age</label><select id="ts-age"></select></div>
+      </div>
+      <div class="field" id="ts-kidwrap"><label for="ts-kid">Put my kid on the roster</label><select id="ts-kid"></select></div>
+      <div class="err" id="ts-err"></div>
+      <button type="button" class="btn btn-primary btn-lg btn-full" id="ts-go">Start my team</button>
+      <div class="g-note" id="ts-note"></div>
+      <button type="button" class="btn btn-sm" id="ts-hide" style="background:none;color:var(--ink-faint);margin-top:0.4rem;padding-left:0">Not now</button>
     </div>
 
     <div class="g-card hidden" id="coach-card">
@@ -165,8 +184,8 @@
 
     <div class="g-card hidden" id="pro-card">
       <div class="g-eb">Coach Pro</div>
-      <div class="g-h" style="font-size:1.25rem">Track the whole team.</div>
-      <p class="g-p">Roster by nickname and jersey, Practice and Game charting, and every pitcher's history in one place.</p>
+      <div class="g-h" style="font-size:1.25rem">Your free trial has ended.</div>
+      <p class="g-p">Your roster and every session are saved. Coach Pro brings back team charting, Practice and Game tags, and the whole staff's pitch counts.</p>
       <button type="button" class="btn btn-primary btn-full" id="pro-go" style="margin-top:0.9rem">Get Coach Pro</button>
       <div class="err" id="pro-msg" style="color:var(--ink-soft)"></div>
     </div>
@@ -408,13 +427,11 @@
 
   /* ---------- sign in ---------- */
   var ageOpts = PT_AGES.map(function (a) { return '<option value="' + a + '"' + (a === 10 ? ' selected' : '') + '>' + a + '</option>'; }).join('');
-  $('kid-age').innerHTML = ageOpts; $('tm-age').innerHTML = ageOpts;
-  function adultTxt() { $('in-adult-txt').textContent = $('in-role').value === 'coach' ? "I'm 18 or older. I add players by first name or nickname only, and any of my own kids I add are mine to add." : "I'm 18 or older and the parent or legal guardian of every kid I add."; }
-  $('in-role').addEventListener('change', adultTxt);
+  $('kid-age').innerHTML = ageOpts; $('tm-age').innerHTML = ageOpts; $('ts-age').innerHTML = ageOpts;
   $('in-go').addEventListener('click', function () {
     var b = $('in-go'); b.disabled = true; $('in-err').textContent = '';
     if (!$('in-adult').checked) { $('in-err').textContent = 'Check the box to confirm you are the adult signing up.'; b.disabled = false; return; }
-    api('signup', { name: $('in-name').value, email: $('in-email').value, role: $('in-role').value, adult: true, app: 'pitch' }).then(function (j) {
+    api('signup', { name: $('in-name').value, email: $('in-email').value, role: 'parent', adult: true, app: 'pitch' }).then(function (j) {
       st.token = j.token; st.account = j.account; save(); home();
     }).catch(function (e) { $('in-err').textContent = e.message; }).then(function () { b.disabled = false; });
   });
@@ -441,7 +458,7 @@
     $('h-acct').textContent = st.account ? st.account.name : '';
     $('kid-list').innerHTML = '<li><span>Loading...</span></li>';
     api('pitch/me').then(function (j) {
-      st.account = j.account; st.coach = j.coach; st.gate = j.gate; st.kids = j.kids || []; st.teams = j.teams || []; st.recent = j.recent || []; save();
+      st.account = j.account; st.coach = j.coach; st.gate = j.gate; st.kids = j.kids || []; st.teams = j.teams || []; st.recent = j.recent || []; st.trial = j.trial; st.trialUsed = j.trial_used; st.sessions = j.sessions || 0; save();
       $('h-acct').textContent = st.account.name + (st.account.role === 'coach' ? ' (coach)' : '');
       var mine = st.kids.filter(function (k) { return k.kind === 'kid'; });
       var showKids = !st.coach || mine.length > 0;
@@ -452,6 +469,8 @@
       wireRows($('kid-list'));
       $('coach-card').classList.toggle('hidden', !st.coach);
       $('pro-card').classList.toggle('hidden', !(st.account.role === 'coach' && !st.coach));
+      $('ts-open').classList.toggle('hidden', st.account.role === 'coach');
+      teamStart(false);
       if (st.coach) drawTeams();
       var resume = loadLive();
       if (resume && kidById(resume.kid.id) && resume.seq.length) {
@@ -476,7 +495,7 @@
     $('team-pills').innerHTML = st.teams.length > 1 ? st.teams.map(function (t) { return '<button type="button" class="wz-opt' + (t.id === st.team ? ' active' : '') + '" data-team="' + esc(t.id) + '">' + esc(t.name) + '</button>'; }).join('') : '';
     each($('team-pills').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { st.team = b.getAttribute('data-team'); drawTeams(); }); });
     $('team-new').open = !st.teams.length;
-    $('coach-note').textContent = st.gate ? '' : 'Coach tools are free while we test them.';
+    $('coach-note').textContent = !st.gate ? 'Coach tools are free while we test them.' : (st.trial ? 'Free trial: ' + st.trial.days + (st.trial.days === 1 ? ' day' : ' days') + ' left. One team during the trial.' : '');
     if (!st.team) { $('team-body').innerHTML = '<p class="g-p">Create your team to start. Players go in by first name or nickname and jersey number.</p>'; return; }
     var t = st.teams.filter(function (x) { return x.id === st.team; })[0];
     var players = st.kids.filter(function (k) { return k.team_id === t.id; }).sort(function (a, b) { return (parseInt(a.jersey, 10) || 999) - (parseInt(b.jersey, 10) || 999); });
@@ -496,6 +515,31 @@
         .catch(function (e) { $('pl-err').textContent = e.message; b.disabled = false; });
     });
   }
+  /* ---------- the upgrade door: parent account starts a team ---------- */
+  function teamCardHidden() { try { return localStorage.getItem('dl_pitch_ts_hide') === '1'; } catch (e) { return false; } }
+  function teamStart(force) {
+    var parent = st.account && st.account.role !== 'coach';
+    var auto = parent && st.sessions >= 3 && !teamCardHidden();
+    var on = parent && (force || auto);
+    $('ts-card').classList.toggle('hidden', !on);
+    $('ts-open').classList.toggle('hidden', !parent || on);
+    if (!on) return;
+    var mine = st.kids.filter(function (k) { return k.kind === 'kid'; });
+    $('ts-kidwrap').classList.toggle('hidden', !mine.length);
+    $('ts-kid').innerHTML = '<option value="">None</option>' + mine.map(function (k, i) { return '<option value="' + esc(k.id) + '"' + (i === 0 ? ' selected' : '') + '>' + esc(k.nickname) + ' (age ' + k.age + ')</option>'; }).join('');
+    if (mine.length) $('ts-age').value = String(mine[0].age);
+    $('ts-note').textContent = !st.gate ? 'Free while we test it. No card.' : (st.trialUsed ? 'Your free trial has been used. Coach Pro unlocks team tools.' : 'Free for 14 days. No card. Your kid keeps every session, now tagged on the roster as yours.');
+    if (force) setTimeout(function () { $('ts-card').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30);
+  }
+  $('ts-open').addEventListener('click', function () { teamStart(true); });
+  $('ts-hide').addEventListener('click', function () { try { localStorage.setItem('dl_pitch_ts_hide', '1'); } catch (e) {} $('ts-card').classList.add('hidden'); $('ts-open').classList.remove('hidden'); });
+  $('ts-go').addEventListener('click', function () {
+    var b = $('ts-go'); b.disabled = true; $('ts-err').textContent = '';
+    api('pitch/start-team', { name: $('ts-name').value, age: $('ts-age').value, kid_id: $('ts-kid').value || '' }).then(function (j) {
+      st.team = j.team.id; st.account = j.account; save(); $('ts-name').value = ''; home();
+    }).catch(function (e) { $('ts-err').textContent = e.message; }).then(function () { b.disabled = false; });
+  });
+
   $('tm-go').addEventListener('click', function () {
     var b = $('tm-go'); b.disabled = true; $('tm-err').textContent = '';
     api('pitch/team', { name: $('tm-name').value, age: $('tm-age').value }).then(function (j) { st.team = j.team.id; $('tm-name').value = ''; home(); })

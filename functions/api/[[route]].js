@@ -41,14 +41,17 @@ const SCHEMA = [
     fb INTEGER NOT NULL DEFAULT 0, ch INTEGER NOT NULL DEFAULT 0, seq TEXT NOT NULL DEFAULT '', created INTEGER NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS pitch_teams_acct ON pitch_teams(account_id)`,
   `CREATE INDEX IF NOT EXISTS pitch_kids_acct ON pitch_kids(account_id)`,
-  `CREATE INDEX IF NOT EXISTS pitch_sessions_kid ON pitch_sessions(kid_id, date)`
+  `CREATE INDEX IF NOT EXISTS pitch_sessions_kid ON pitch_sessions(kid_id, date)`,
+  `CREATE TABLE IF NOT EXISTS coach_trials (account_id TEXT PRIMARY KEY, started INTEGER NOT NULL, ends INTEGER NOT NULL)`
 ];
 
 /* ---------- Pitch Tracker premium gate ----------
    Feature flag: Pages env var PITCH_PREMIUM_GATE = "on" locks coach tools to plan 'pro'.
    Unset or anything else = coach tools open (beta). Payments are not wired: see route pitch/upgrade. */
 function pitchGateOn(env) { return env.PITCH_PREMIUM_GATE === 'on'; }
-function coachOn(env, a) { return !!a && a.role === 'coach' && (!pitchGateOn(env) || a.plan === 'pro'); }
+const TRIAL_DAYS = 14;
+function coachOn(env, a) { return !!a && a.role === 'coach' && (!pitchGateOn(env) || a.plan === 'pro' || (a.trial_ends || 0) > Date.now()); }
+function onTrial(env, a) { return pitchGateOn(env) && a.plan !== 'pro' && (a.trial_ends || 0) > Date.now(); }
 const PT_TAGS = ['Home', 'Practice', 'Game'];
 function ageOK(n) { n = parseInt(n, 10); return n >= 6 && n <= 18 ? n : 0; }
 async function ownKid(db, acct, kid) {
@@ -293,6 +296,8 @@ export async function onRequest(ctx) {
     if (route.indexOf('pitch/') === 0) {
       await ensure(db);
       const sub = route.slice(6);
+      const tr = await db.prepare('SELECT ends FROM coach_trials WHERE account_id = ?').bind(me.id).first();
+      me.trial_ends = tr ? tr.ends : 0;
       const coach = coachOn(env, me);
 
       if (sub === 'me') {
@@ -300,8 +305,11 @@ export async function onRequest(ctx) {
         const teams = coach ? (await db.prepare('SELECT id, name, age FROM pitch_teams WHERE account_id = ? ORDER BY created').bind(me.id).all()).results : [];
         const since = new Date(now - 6 * 86400000).toISOString().slice(0, 10);
         const recent = (await db.prepare('SELECT kid_id, date, SUM(pitches) AS pitches FROM pitch_sessions WHERE account_id = ? AND date >= ? GROUP BY kid_id, date').bind(me.id, since).all()).results;
+        const sc = await db.prepare('SELECT COUNT(*) AS n FROM pitch_sessions WHERE account_id = ?').bind(me.id).first();
         return json({
-          account: pubAcct(me), coach, gate: pitchGateOn(env),
+          account: pubAcct(me), coach, gate: pitchGateOn(env), sessions: sc.n,
+          trial: onTrial(env, me) ? { ends: me.trial_ends, days: Math.ceil((me.trial_ends - now) / 86400000) } : null,
+          trial_used: !!tr,
           kids: kids.filter(k => k.kind === 'kid' || coach).map(k => pubKid(env, me, k)),
           teams, recent
         });
@@ -319,10 +327,35 @@ export async function onRequest(ctx) {
           return json({ team: { id: t.id, name, age } });
         }
         const n = await db.prepare('SELECT COUNT(*) AS n FROM pitch_teams WHERE account_id = ?').bind(me.id).first();
+        if (onTrial(env, me) && n.n >= 1) return bad('The free trial covers one team. Coach Pro adds more.');
         if (n.n >= 6) return bad('Up to 6 teams per coach');
         const t = { id: id(), name, age };
         await db.prepare('INSERT INTO pitch_teams (id,account_id,name,age,created) VALUES (?,?,?,?,?)').bind(t.id, me.id, name, age, now).run();
         return json({ team: t });
+      }
+
+      if (sub === 'start-team' && method === 'POST') {
+        /* The upgrade door: any parent account becomes a coach, starts a trial once, and creates its first team.
+           Optionally moves one of their own kids onto the roster, marked as theirs, with all sessions kept. */
+        const name = clean(body.name, 40), age = ageOK(body.age);
+        if (name.length < 2) return bad('Add a team name');
+        if (!age) return bad('Pick the team age (6 to 18)');
+        let mine = null;
+        if (body.kid_id) {
+          mine = await ownKid(db, me, body.kid_id);
+          if (!mine || mine.kind !== 'kid') return bad('Pick one of your kids, or none');
+        }
+        if (me.role !== 'coach') await db.prepare("UPDATE accounts SET role = 'coach' WHERE id = ?").bind(me.id).run();
+        await db.prepare('INSERT OR IGNORE INTO coach_trials (account_id, started, ends) VALUES (?,?,?)').bind(me.id, now, now + TRIAL_DAYS * 86400000).run();
+        me.role = 'coach';
+        if (!tr) me.trial_ends = now + TRIAL_DAYS * 86400000;
+        if (!coachOn(env, me)) return bad('Your free trial has ended. Coach Pro unlocks team tools.', 403);
+        const existing = await db.prepare('SELECT COUNT(*) AS n FROM pitch_teams WHERE account_id = ?').bind(me.id).first();
+        if (onTrial(env, me) && existing.n >= 1) return bad('The free trial covers one team. Coach Pro adds more.');
+        const t = { id: id(), name, age };
+        await db.prepare('INSERT INTO pitch_teams (id,account_id,name,age,created) VALUES (?,?,?,?,?)').bind(t.id, me.id, name, age, now).run();
+        if (mine) await db.prepare("UPDATE pitch_kids SET kind = 'player', team_id = ?, own = 1 WHERE id = ?").bind(t.id, mine.id).run();
+        return json({ team: t, account: pubAcct(me) });
       }
 
       if (sub === 'kid' && method === 'POST') {
