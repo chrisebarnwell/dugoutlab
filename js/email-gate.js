@@ -53,7 +53,7 @@
         '<label><input type="checkbox" id="dl-gate-adult"> <span>I\'m 18 or older (a coach or parent).</span></label>' +
         '<div class="dl-gate-err" id="dl-gate-err"></div>' +
         '<button type="button" class="dl-gate-btn" id="dl-gate-go">Unlock the tools</button>' +
-        '<div class="dl-gate-note">We send an occasional new tool or guide. Unsubscribe any time. Never sold.</div>' +
+        '<div class="dl-gate-note">We send an occasional new tool or guide.</div>' +
         (canClose ? '<button type="button" class="dl-gate-x" id="dl-gate-x">Not now</button>' : '<div class="dl-gate-note">Just reading? <a href="articles.html">The articles are open to everyone.</a></div>') +
       '</div>';
     document.body.appendChild(wrap);
