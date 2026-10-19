@@ -296,7 +296,12 @@ export async function onRequest(ctx) {
     if (route.indexOf('pitch/') === 0) {
       await ensure(db);
       const sub = route.slice(6);
-      const tr = await db.prepare('SELECT ends FROM coach_trials WHERE account_id = ?').bind(me.id).first();
+      let tr = await db.prepare('SELECT ends FROM coach_trials WHERE account_id = ?').bind(me.id).first();
+      if (!tr && me.role === 'coach') {
+        /* Coaches who signed up before the trial existed get their 14 days starting now. */
+        await db.prepare('INSERT OR IGNORE INTO coach_trials (account_id, started, ends) VALUES (?,?,?)').bind(me.id, now, now + TRIAL_DAYS * 86400000).run();
+        tr = await db.prepare('SELECT ends FROM coach_trials WHERE account_id = ?').bind(me.id).first();
+      }
       me.trial_ends = tr ? tr.ends : 0;
       const coach = coachOn(env, me);
 
