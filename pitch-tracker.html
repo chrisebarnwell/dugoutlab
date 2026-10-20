@@ -65,7 +65,29 @@
 .warnbox b { color: var(--gold-light); }
 .meter { height: 8px; background: var(--rule); border-radius: 4px; overflow: hidden; margin-top: 0.45rem; }
 .meter span { display: block; height: 100%; background: var(--gold); border-radius: 4px; transition: width 0.2s; }
-.typerow { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.8rem; }
+.typerow { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 1.2rem; margin-bottom: 0.8rem; }
+/* strike zone, catcher's view */
+.zcap { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; white-space: nowrap; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.4rem; }
+.zgrid { display: grid; gap: 5px; grid-template-columns: 0.62fr 1fr 1fr 1fr 0.62fr; grid-template-rows: 50px 74px 74px 74px 50px;
+  grid-template-areas: "u u u u u" "l z1 z2 z3 r" "l z4 z5 z6 r" "l z7 z8 z9 r" "d d d d d"; touch-action: manipulation; }
+.zgrid > * { position: relative; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--sans); font-size: 0.8rem; font-weight: 600; -webkit-user-select: none; user-select: none; }
+.zc { border: 1.5px dashed rgba(244,239,230,0.35); background: transparent; color: var(--ink-soft); }
+.zc.in { border: 2px solid var(--gold); background: rgba(200,134,46,0.12); color: var(--ink); }
+.zc:active { transform: scale(0.96); }
+.zc:disabled { opacity: 0.35; }
+.zc.flash { background: var(--gold); color: var(--forest-deep); }
+.zc b { position: absolute; top: 4px; right: 6px; font-family: var(--mono); font-size: 0.72rem; color: var(--gold-light); font-weight: 500; }
+.zc.flash b { color: var(--forest-deep); }
+.zc.side span { writing-mode: vertical-rl; transform: rotate(180deg); }
+.zlast { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; min-height: 2.6rem; margin-top: 0.6rem; font-size: 0.92rem; color: var(--ink-soft); }
+.zlast b { color: var(--ink); }
+.typepick .wz-opt { min-width: 64px; min-height: 40px; font-size: 0.95rem; }
+.heat .zc { border-style: solid; border-color: rgba(244,239,230,0.14); flex-direction: column; gap: 0.1rem; }
+.heat .zc.in { border-color: var(--gold); }
+.heat .zc i { font-style: normal; font-family: var(--serif); font-size: 1.15rem; font-weight: 600; }
+.heat .zc[style*='grid-area:l'] i, .heat .zc[style*='grid-area:r'] i { font-size: 0.95rem; }
+.heat .zc small { font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.8; }
+.heat.zgrid { grid-template-rows: 44px 62px 62px 62px 44px; }
 /* stats */
 .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
 .tile { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 12px; padding: 0.9rem 0.7rem; text-align: center; }
@@ -109,7 +131,7 @@
     <div class="breadcrumb"><a href="tools.html">&#8592; Tools</a></div>
     <div class="eyebrow">Pitch Tracker</div>
     <h1>Tap strike or ball. That's it.</h1>
-    <p>Count every pitch, watch strike percent grow over time, and get a heads-up before your pitcher reaches the daily limit. Parents chart home bullpens free. Coaches track the whole team.</p>
+    <p>Count every pitch, tap where it crossed, watch strike percent grow over time, and get a heads-up before your pitcher reaches the daily limit. Parents chart home bullpens free. Coaches track the whole team.</p>
   </div>
 </div>
 
@@ -224,10 +246,30 @@
         <div class="big"><b id="lg-pct">--</b><i>Strike %</i><div class="sb" id="lg-sb">0 strikes &middot; 0 balls</div></div>
       </div>
       <div class="typerow">
-        <label class="chk" for="lg-types" style="margin:0"><input type="checkbox" id="lg-types"> <span>Track pitch type</span></label>
-        <div class="pill-row hidden" id="lg-typepick" style="margin:0"><button type="button" class="wz-opt active" data-t="F">FB</button><button type="button" class="wz-opt" data-t="C">CH</button></div>
+        <label class="chk" for="lg-locs" style="margin:0"><input type="checkbox" id="lg-locs"> <span>Tap location</span></label>
+        <label class="chk" for="lg-types" style="margin:0"><input type="checkbox" id="lg-types"> <span>Pitch type</span></label>
       </div>
-      <div class="tapgrid">
+      <div class="pill-row typepick hidden" id="lg-typepick"><button type="button" class="wz-opt active" data-t="F">FB</button><button type="button" class="wz-opt" data-t="C">CH</button></div>
+      <div id="lg-zonewrap" class="hidden">
+        <div class="zcap"><span>Catcher's view</span><span id="lg-zready">Tap where it crossed</span></div>
+        <div class="zgrid" id="lg-zone">
+          <button type="button" class="zc" data-l="U" style="grid-area:u" aria-label="High, off the zone">High</button>
+          <button type="button" class="zc side" data-l="L" style="grid-area:l" aria-label="Left, off the zone"><span>Left</span></button>
+          <button type="button" class="zc in" data-l="1" style="grid-area:z1" aria-label="Zone, top left"></button>
+          <button type="button" class="zc in" data-l="2" style="grid-area:z2" aria-label="Zone, top middle"></button>
+          <button type="button" class="zc in" data-l="3" style="grid-area:z3" aria-label="Zone, top right"></button>
+          <button type="button" class="zc in" data-l="4" style="grid-area:z4" aria-label="Zone, middle left"></button>
+          <button type="button" class="zc in" data-l="5" style="grid-area:z5" aria-label="Zone, middle"></button>
+          <button type="button" class="zc in" data-l="6" style="grid-area:z6" aria-label="Zone, middle right"></button>
+          <button type="button" class="zc in" data-l="7" style="grid-area:z7" aria-label="Zone, bottom left"></button>
+          <button type="button" class="zc in" data-l="8" style="grid-area:z8" aria-label="Zone, bottom middle"></button>
+          <button type="button" class="zc in" data-l="9" style="grid-area:z9" aria-label="Zone, bottom right"></button>
+          <button type="button" class="zc side" data-l="R" style="grid-area:r" aria-label="Right, off the zone"><span>Right</span></button>
+          <button type="button" class="zc" data-l="D" style="grid-area:d" aria-label="Low, off the zone">Low</button>
+        </div>
+        <div class="zlast" id="lg-last"></div>
+      </div>
+      <div class="tapgrid" id="lg-sbbtns">
         <button type="button" class="tap s" id="lg-s">STRIKE<small id="lg-s-sub">tap</small></button>
         <button type="button" class="tap b" id="lg-b">BALL<small id="lg-b-sub">tap</small></button>
       </div>
@@ -275,6 +317,13 @@
       </div>
       <div class="g-note" id="st-chartnote">Each dot is one session. Tap a dot for the details.</div>
     </div>
+    <div class="g-card" id="st-heatcard">
+      <div class="g-eb">Where it crossed</div>
+      <div class="pill-row hidden" id="st-heatpick"><button type="button" class="wz-opt active" data-h="all">All</button><button type="button" class="wz-opt" data-h="F">FB</button><button type="button" class="wz-opt" data-h="C">CH</button></div>
+      <div class="zcap"><span>Catcher's view</span><span id="st-heatn"></span></div>
+      <div class="zgrid heat" id="st-heat"></div>
+      <div class="g-note" id="st-heatnote"></div>
+    </div>
     <div class="g-card">
       <div class="g-eb">Pitch count check</div>
       <div class="warnbox" id="st-smart"></div>
@@ -299,7 +348,7 @@
     <div class="g-eb">Privacy</div>
     <ul class="sources" style="color:var(--ink-soft);font-size:0.92rem">
       <li><b style="color:var(--ink)">Adults only.</b> A parent or coach age 18+ holds the account. Kids never get an account.</li>
-      <li><b style="color:var(--ink)">What we store.</b> Your name and email. For each kid: a first name or nickname and age (coaches add a jersey number). For each session: date, Home, Practice, or Game, and the pitch, strike, and ball counts.</li>
+      <li><b style="color:var(--ink)">What we store.</b> Your name and email. For each kid: a first name or nickname and age (coaches add a jersey number). For each session: date, Home, Practice, or Game, the pitch, strike, and ball counts, and where each pitch crossed and its type if you tap them.</li>
       <li><b style="color:var(--ink)">What we never collect.</b> No kid email, last name, photo, school, or location.</li>
       <li><b style="color:var(--ink)">Who sees it.</b> Only you see your kids. Parents never see other families. Coaches see only their own team.</li>
       <li><b style="color:var(--ink)">Deleting.</b> Delete a player and every session from their stats page, or your whole account from your home screen. Done right away.</li>
@@ -369,7 +418,11 @@
   var PT_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   var st = { token: null, account: null, coach: false, gate: false, kids: [], teams: [], recent: [], team: null };
-  var live = null;   /* current session: { kid, tag, seq, types, typeOn, type, date } */
+  var live = null;   /* current session: { kid, tag, seq, types, locs, typeOn, locOn, type, date } */
+  var PT_PREFS = 'dl_pitch_prefs';
+  var PT_ZONE = { '1': 'top left', '2': 'top middle', '3': 'top right', '4': 'middle left', '5': 'middle', '6': 'middle right', '7': 'bottom left', '8': 'bottom middle', '9': 'bottom right', U: 'high', D: 'low', L: 'off left', R: 'off right' };
+  function prefs() { try { var p = JSON.parse(localStorage.getItem(PT_PREFS) || 'null'); if (p) return p; } catch (e) {} return { locOn: true, typeOn: false }; }
+  function savePrefs() { try { localStorage.setItem(PT_PREFS, JSON.stringify({ locOn: !!live.locOn, typeOn: !!live.typeOn })); } catch (e) {} }
   var view = null;   /* kid on the stats screen */
 
   function $(id) { return document.getElementById(id); }
@@ -595,8 +648,11 @@
     if (!kid) return;
     var keep = loadLive();
     if (keep && keep.kid.id === kid.id && keep.seq.length) live = keep;
-    else live = { kid: kid, tag: kid.tags.length === 1 ? kid.tags[0] : (kid.pick ? null : 'Practice'), seq: '', types: '', typeOn: false, type: 'F', date: today() };
+    else { var pf = prefs(); live = { kid: kid, tag: kid.tags.length === 1 ? kid.tags[0] : (kid.pick ? null : 'Practice'), seq: '', types: '', locs: '', typeOn: !!pf.typeOn, locOn: pf.locOn !== false, type: 'F', date: today() }; }
     live.kid = kid;
+    if (typeof live.locs !== 'string') live.locs = '';
+    while (live.locs.length < live.seq.length) live.locs += '-';
+    while (live.types.length < live.seq.length) live.types += '-';
     $('lg-err').textContent = '';
     drawLog(); show('s-log');
   }
@@ -614,6 +670,19 @@
     each($('lg-tags').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { live.tag = b.getAttribute('data-tag'); saveLive(); drawLog(); }); });
     var ready = !!live.tag;
     $('lg-s').disabled = !ready; $('lg-b').disabled = !ready;
+    $('lg-locs').checked = !!live.locOn;
+    $('lg-zonewrap').classList.toggle('hidden', !live.locOn);
+    $('lg-sbbtns').classList.toggle('hidden', !!live.locOn);
+    $('lg-zready').textContent = ready ? 'Tap where it crossed' : 'Pick above first';
+    var cnt = {}; live.locs.split('').forEach(function (c) { cnt[c] = (cnt[c] || 0) + 1; });
+    each($('lg-zone').querySelectorAll('.zc'), function (z) {
+      var l = z.getAttribute('data-l'), b = z.querySelector('b');
+      z.disabled = !ready;
+      if (cnt[l]) { if (!b) { b = document.createElement('b'); z.appendChild(b); } b.textContent = cnt[l]; } else if (b) z.removeChild(b);
+    });
+    var lastR = live.seq.slice(-1), lastL = live.locs.slice(-1);
+    $('lg-last').innerHTML = live.locOn && lastR ? '<span>Last: <b>' + (lastR === 'S' ? 'Strike' : 'Ball') + '</b>' + (PT_ZONE[lastL] ? ', ' + PT_ZONE[lastL] : '') + '</span><button type="button" class="btn btn-forest btn-sm" id="lg-flip">' + (lastR === 'S' ? 'Make it a ball' : 'Swung: make it a strike') + '</button>' : '';
+    if ($('lg-flip')) $('lg-flip').addEventListener('click', function () { var r = live.seq.slice(-1) === 'S' ? 'B' : 'S'; live.seq = live.seq.slice(0, -1) + r; saveLive(); drawLog(); });
     $('lg-s-sub').textContent = ready ? 'tap' : 'pick above first'; $('lg-b-sub').textContent = ready ? 'tap' : 'pick above first';
     $('lg-n').textContent = n;
     $('lg-pct').textContent = n ? Math.round(100 * s / n) + '%' : '--';
@@ -621,22 +690,32 @@
     $('lg-types').checked = !!live.typeOn;
     $('lg-typepick').classList.toggle('hidden', !live.typeOn);
     each($('lg-typepick').querySelectorAll('button'), function (b) { b.classList.toggle('active', b.getAttribute('data-t') === live.type); });
+    $('lg-trail').classList.toggle('hidden', !!live.locOn);
     $('lg-trail').innerHTML = live.seq.split('').slice(-40).map(function (c) { return '<span class="' + c + '"></span>'; }).join('');
     var sb = smartBox(k, n);
     $('lg-warn').innerHTML = sb.html;
     $('lg-warn').classList.toggle('on', sb.on);
     $('lg-undo').disabled = !n;
   }
-  function tap(c) {
+  function tap(c, loc) {
     if (!live || !live.tag) return;
-    live.seq += c; live.types += live.typeOn ? live.type : '-';
+    live.seq += c; live.types += live.typeOn ? live.type : '-'; live.locs += loc || '-';
     if (navigator.vibrate) { try { navigator.vibrate(12); } catch (e) {} }
     saveLive(); drawLog();
   }
   $('lg-s').addEventListener('click', function () { tap('S'); });
   $('lg-b').addEventListener('click', function () { tap('B'); });
-  $('lg-undo').addEventListener('click', function () { if (!live.seq) return; live.seq = live.seq.slice(0, -1); live.types = live.types.slice(0, -1); saveLive(); drawLog(); });
-  $('lg-types').addEventListener('change', function () { live.typeOn = this.checked; saveLive(); drawLog(); });
+  each($('lg-zone').querySelectorAll('.zc'), function (z) {
+    z.addEventListener('click', function () {
+      var l = z.getAttribute('data-l');
+      tap(/[1-9]/.test(l) ? 'S' : 'B', l);
+      var el = $('lg-zone').querySelector('[data-l="' + l + '"]');
+      el.classList.add('flash'); clearTimeout(el._t); el._t = setTimeout(function () { el.classList.remove('flash'); }, 220);
+    });
+  });
+  $('lg-undo').addEventListener('click', function () { if (!live.seq) return; live.seq = live.seq.slice(0, -1); live.types = live.types.slice(0, -1); live.locs = live.locs.slice(0, -1); saveLive(); drawLog(); });
+  $('lg-types').addEventListener('change', function () { live.typeOn = this.checked; savePrefs(); saveLive(); drawLog(); });
+  $('lg-locs').addEventListener('change', function () { live.locOn = this.checked; savePrefs(); saveLive(); drawLog(); });
   each($('lg-typepick').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { live.type = b.getAttribute('data-t'); saveLive(); drawLog(); }); });
   $('lg-back').addEventListener('click', function () {
     if (live && live.seq.length) { $('lg-err').textContent = 'Tap End session to save, or Undo to clear. Your count is kept on this phone until you do.'; return home(); }
@@ -645,8 +724,9 @@
   $('lg-end').addEventListener('click', function () {
     if (!live.seq.length) { live = null; saveLive(); return home(); }
     var b = $('lg-end'); b.disabled = true; $('lg-err').textContent = '';
-    api('pitch/session', { kid_id: live.kid.id, tag: live.tag, date: live.date, seq: live.seq, types: live.types }).then(function (j) {
-      var k = live.kid, se = j.session;
+    api('pitch/session', { kid_id: live.kid.id, tag: live.tag, date: live.date, seq: live.seq, types: live.types, locs: live.locs }).then(function (j) {
+      var k = live.kid, se = j.session, tapped = live.locs.replace(/-/g, '').length, inz = (live.locs.match(/[1-9]/g) || []).length;
+      se.inzone = tapped ? Math.round(100 * inz / tapped) : null;
       st.recent.push({ kid_id: k.id, date: se.date, pitches: se.pitches });
       live = null; saveLive(); done(k, se);
     }).catch(function (e) { $('lg-err').textContent = 'Not saved yet: ' + e.message + ' Your count is safe on this phone. Tap End session again.'; })
@@ -661,6 +741,8 @@
     $('dn-h').textContent = 'Nice work, ' + k.nickname + '.';
     $('dn-n').textContent = se.pitches;
     $('dn-pct').textContent = Math.round(100 * se.strikes / se.pitches) + '%';
+    $('dn-pct').parentNode.querySelector('i').textContent = 'Strike %';
+    if (se.inzone !== null && se.inzone !== undefined) $('dn-pct').parentNode.querySelector('i').textContent = 'Strike % \u00B7 ' + se.inzone + '% in the box';
     var sb = smartBox(k, 0), r = restFor(sb.done, band(k.age));
     $('dn-msg').innerHTML = esc(PT_CHEERS[Math.floor(Math.random() * PT_CHEERS.length)]) +
       (sb.done ? ' <br><span style="color:var(--ink-faint);font-size:0.92rem">' + sb.done + ' pitches today. Pitch Smart rest: ' + (r ? r + (r === 1 ? ' day' : ' days') + ' before pitching again.' : 'none needed.') + '</span>' : '');
@@ -682,11 +764,45 @@
       $('st-all').textContent = pct(all[0], all[1]); $('st-coach').textContent = pct(co[0], co[1]);
       $('st-sess').textContent = ss.length; $('st-pitches').textContent = all[1];
       drawChart(ss.slice(-20));
+      heatData = ss; heatType = 'all'; drawHeat();
       $('st-list').innerHTML = ss.slice(-8).reverse().map(function (x) {
         return '<li><div><b style="font-size:1rem">' + nice(x.date) + '</b><span class="sub">' + tagLabel(x.tag) + ' &middot; ' + x.strikes + ' strikes, ' + x.balls + ' balls' + (x.fb || x.ch ? ' &middot; FB ' + x.fb + ', CH ' + x.ch : '') + '</span></div><div style="text-align:right"><b style="color:var(--gold)">' + pct(x.strikes, x.pitches) + '</b><span class="sub">' + x.pitches + ' pitches</span></div></li>';
       }).join('') || '<li><span>No sessions yet. Chart one and it shows up here.</span></li>';
     }).catch(function (e) { $('st-chart').innerHTML = '<div class="chart-tip">' + esc(e.message) + '</div>'; });
   }
+  var heatData = [], heatType = 'all';
+  var PT_CELLS = [['U', 'u', 'High'], ['L', 'l', 'Left'], ['1', 'z1', ''], ['2', 'z2', ''], ['3', 'z3', ''], ['4', 'z4', ''], ['5', 'z5', ''], ['6', 'z6', ''], ['7', 'z7', ''], ['8', 'z8', ''], ['9', 'z9', ''], ['R', 'r', 'Right'], ['D', 'd', 'Low']];
+  function drawHeat() {
+    var cnt = {}, tot = 0, inz = 0, typed = false;
+    heatData.forEach(function (x) {
+      var L = x.locs || '', T = x.types || '';
+      for (var i = 0; i < L.length; i++) {
+        var l = L.charAt(i), t = T.charAt(i);
+        if (t === 'F' || t === 'C') typed = true;
+        if (l === '-' || !l) continue;
+        if (heatType !== 'all' && t !== heatType) continue;
+        cnt[l] = (cnt[l] || 0) + 1; tot++; if (/[1-9]/.test(l)) inz++;
+      }
+    });
+    $('st-heatpick').classList.toggle('hidden', !typed);
+    each($('st-heatpick').querySelectorAll('button'), function (b) { b.classList.toggle('active', b.getAttribute('data-h') === heatType); });
+    if (!tot) {
+      $('st-heat').innerHTML = ''; $('st-heatn').textContent = '';
+      $('st-heatnote').textContent = heatType === 'all' ? 'Turn on Tap location when you chart, and this map fills in.' : 'No ' + (heatType === 'F' ? 'fastballs' : 'changeups') + ' tapped yet.';
+      return;
+    }
+    var max = 0; Object.keys(cnt).forEach(function (k) { if (cnt[k] > max) max = cnt[k]; });
+    $('st-heat').innerHTML = PT_CELLS.map(function (c) {
+      var n = cnt[c[0]] || 0, share = n / tot, a = n ? 0.1 + 0.78 * (n / max) : 0, dark = a > 0.5;
+      var label = c[2] && c[0] !== 'L' && c[0] !== 'R' ? '<small>' + c[2] + '</small>' : '';
+      return '<div class="zc' + (/[1-9]/.test(c[0]) ? ' in' : '') + '" style="grid-area:' + c[1] + ';background:rgba(200,134,46,' + a.toFixed(2) + ');color:' + (dark ? '#0a1610' : 'var(--ink)') + '" title="' + PT_ZONE[c[0]] + ': ' + n + ' of ' + tot + '">' +
+        '<i>' + (n ? Math.round(100 * share) + '%' : '') + '</i>' + label + '</div>';
+    }).join('');
+    $('st-heatn').textContent = tot + ' tapped';
+    $('st-heatnote').textContent = 'In the box: ' + Math.round(100 * inz / tot) + '%. Darker means more pitches crossed there.';
+  }
+  each($('st-heatpick').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { heatType = b.getAttribute('data-h'); drawHeat(); }); });
+
   function drawChart(ss) {
     if (!ss.length) { $('st-chart').innerHTML = '<div class="chart-tip">The trend line starts after the first session.</div>'; $('st-legend').classList.add('hidden'); $('st-chartnote').classList.add('hidden'); return; }
     $('st-legend').classList.remove('hidden'); $('st-chartnote').classList.remove('hidden');

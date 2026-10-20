@@ -38,7 +38,8 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS pitch_sessions (
     session_id TEXT PRIMARY KEY, account_id TEXT NOT NULL, kid_id TEXT NOT NULL, tag TEXT NOT NULL, date TEXT NOT NULL,
     pitches INTEGER NOT NULL, strikes INTEGER NOT NULL, balls INTEGER NOT NULL, logged_by_role TEXT NOT NULL,
-    fb INTEGER NOT NULL DEFAULT 0, ch INTEGER NOT NULL DEFAULT 0, seq TEXT NOT NULL DEFAULT '', created INTEGER NOT NULL)`,
+    fb INTEGER NOT NULL DEFAULT 0, ch INTEGER NOT NULL DEFAULT 0, seq TEXT NOT NULL DEFAULT '', created INTEGER NOT NULL,
+    types TEXT NOT NULL DEFAULT '', locs TEXT NOT NULL DEFAULT '')`,
   `CREATE INDEX IF NOT EXISTS pitch_teams_acct ON pitch_teams(account_id)`,
   `CREATE INDEX IF NOT EXISTS pitch_kids_acct ON pitch_kids(account_id)`,
   `CREATE INDEX IF NOT EXISTS pitch_sessions_kid ON pitch_sessions(kid_id, date)`,
@@ -82,7 +83,18 @@ function pubAcct(a) { return { id: a.id, name: a.name, role: a.role, plan: a.pla
 const MJOIN = `SELECT m.*, ha.nickname AS a_name, ha.account_id AS a_acct, COALESCE(hb.nickname, '') AS b_name, COALESCE(hb.account_id, '') AS b_acct
   FROM matches m JOIN hitters ha ON ha.id = m.a_hitter LEFT JOIN hitters hb ON hb.id = m.b_hitter`;
 
-async function ensure(db) { for (const s of SCHEMA) await db.prepare(s).run(); }
+/* Columns added after a table first shipped. Each runs once per worker; "duplicate column" means it is already there. */
+const MIGRATIONS = [
+  `ALTER TABLE pitch_sessions ADD COLUMN types TEXT NOT NULL DEFAULT ''`,
+  `ALTER TABLE pitch_sessions ADD COLUMN locs TEXT NOT NULL DEFAULT ''`
+];
+let migrated = false;
+async function ensure(db) {
+  for (const s of SCHEMA) await db.prepare(s).run();
+  if (migrated) return;
+  for (const m of MIGRATIONS) { try { await db.prepare(m).run(); } catch (e) { if (!/duplicate column/i.test(String(e.message || e))) throw e; } }
+  migrated = true;
+}
 async function auth(db, token) { return token ? db.prepare('SELECT * FROM accounts WHERE token = ?').bind(token).first() : null; }
 async function ownHitter(db, acct, hid) {
   if (!acct || !hid) return null;
@@ -408,7 +420,7 @@ export async function onRequest(ctx) {
       if (sub === 'kid' && method === 'GET') {
         const k = await ownKid(db, me, url.searchParams.get('kid'));
         if (!k) return bad('Not your player', 404);
-        const sessions = (await db.prepare('SELECT session_id, tag, date, pitches, strikes, balls, fb, ch, created FROM pitch_sessions WHERE kid_id = ? AND account_id = ? ORDER BY date, created LIMIT 500')
+        const sessions = (await db.prepare('SELECT session_id, tag, date, pitches, strikes, balls, fb, ch, seq, types, locs, created FROM pitch_sessions WHERE kid_id = ? AND account_id = ? ORDER BY date, created LIMIT 500')
           .bind(k.id, me.id).all()).results;
         return json({ kid: pubKid(env, me, k), sessions });
       }
@@ -422,12 +434,14 @@ export async function onRequest(ctx) {
         const date = /^\d{4}-\d{2}-\d{2}$/.test(String(body.date || '')) ? body.date : new Date(now).toISOString().slice(0, 10);
         const seq = String(body.seq || '').toUpperCase().replace(/[^SB]/g, '').slice(0, 250);
         if (!seq.length) return bad('No pitches to save');
-        const types = String(body.types || '').toUpperCase().replace(/[^FC-]/g, '').slice(0, seq.length);
+        const types = String(body.types || '').toUpperCase().replace(/[^FC-]/g, '').slice(0, seq.length).padEnd(seq.length, '-');
+        /* Where it crossed, catcher's view: 1-9 inside the zone (1 top left, 9 bottom right), U D L R just off, - not tapped. */
+        const locs = String(body.locs || '').toUpperCase().replace(/[^1-9UDLR-]/g, '').slice(0, seq.length).padEnd(seq.length, '-');
         const strikes = (seq.match(/S/g) || []).length, balls = seq.length - strikes;
         const fb = (types.match(/F/g) || []).length, ch = (types.match(/C/g) || []).length;
         const sid = id();
-        await db.prepare('INSERT INTO pitch_sessions (session_id,account_id,kid_id,tag,date,pitches,strikes,balls,logged_by_role,fb,ch,seq,created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)')
-          .bind(sid, me.id, k.id, tag, date, seq.length, strikes, balls, me.role, fb, ch, seq, now).run();
+        await db.prepare('INSERT INTO pitch_sessions (session_id,account_id,kid_id,tag,date,pitches,strikes,balls,logged_by_role,fb,ch,seq,types,locs,created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+          .bind(sid, me.id, k.id, tag, date, seq.length, strikes, balls, me.role, fb, ch, seq, types, locs, now).run();
         return json({ session: { session_id: sid, tag, date, pitches: seq.length, strikes, balls, fb, ch } });
       }
 
