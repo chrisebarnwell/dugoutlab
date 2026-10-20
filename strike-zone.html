@@ -125,6 +125,10 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
       </ol>
       <button type="button" class="btn btn-primary btn-lg ar-btn" id="ar-open" style="margin-top:1.1rem">Open in AR</button>
       <div class="ar-warn" id="ar-warn"></div>
+      <div id="ar-dlwrap" hidden>
+        <a class="btn btn-outline btn-lg" id="ar-dl" href="#" download>Download 3D zone</a>
+        <div class="tool-note">Not using Safari? Download the zone, open it from your Files app (Downloads), then tap <b style="color:var(--ink)">AR</b> at the top.</div>
+      </div>
       <ul class="ar-legend">
         <li><i style="background:rgba(200,134,46,0.35);border:2px solid #C8862E"></i><span>Gold box: the strike zone, shaped like the plate, top to bottom.</span></li>
         <li><i style="background:#f4efe6"></i><span>White: home plate, true size.</span></li>
@@ -149,7 +153,7 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
         <li><strong>MLB.</strong> Major League Baseball defines the top and bottom differently. Not modeled here.</li>
         <li><strong>Home plate.</strong> 17 in across the front, the same in baseball and softball. The zone takes the plate's five-sided shape.</li>
         <li><strong>Height quick start.</strong> Top about 70% of standing height, bottom about 27%. DugoutLab rough estimate for a batting stance, not from a study. Flagged uncertain. Kids grow and crouch differently. Measure your hitter.</li>
-        <li><strong>AR view.</strong> Apple AR Quick Look at true size, using the phone's motion tracking. It can drift a little. Accuracy has not been measured. Flagged uncertain. DugoutLab build.</li>
+        <li><strong>AR view.</strong> Apple AR Quick Look at true size, using the phone's motion tracking. Safari only on iPhone; other browsers can download the file and open it from Files. It can drift a little. Accuracy has not been measured. Flagged uncertain. DugoutLab build.</li>
       </ul>
     </details>
 
@@ -186,7 +190,6 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
   </div>
 </footer>
 
-<script src="js/strike-zone-ar.js"></script>
 <script>
 (function () {
   var Z = { top: 37, bot: 14 };
@@ -214,6 +217,7 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
   function render() {
     $('sz-top').textContent = Z.top;
     $('sz-bot').textContent = Z.bot;
+    $('ar-dl').href = '/api/zone.usdz?top=' + Z.top + '&bot=' + Z.bot; $('ar-dl').setAttribute('download', 'strike-zone-' + Z.bot + '-' + Z.top + '.usdz');
     /* Front view from the mound, to scale. 1 in = S px. */
     var W = 340, H = 300, S = 4, gx = W / 2, gy = H - 26, hw = 8.5 * S, g = '';
     for (var t = 0; t <= 60; t += 12) {
@@ -235,18 +239,20 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
     $('sz-viz').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Strike zone from ' + Z.bot + ' to ' + Z.top + ' inches over a 17 inch plate">' + g + '</svg>';
   }
 
-  /* ---------- AR (AR Quick Look, model built on the phone by js/strike-zone-ar.js) ---------- */
+  /* ---------- AR (AR Quick Look). The model is a real file built by /api/zone.usdz for this zone size. ---------- */
   var arOK = false;
   try { arOK = document.createElement('a').relList.supports('ar'); } catch (e) {}
   var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  if (!arOK) { $('ar-open').disabled = true; $('ar-warn').textContent = (isIOS ? 'AR opens in Safari only. Tap your browser\'s share button, then Open in Safari.' : 'AR view opens on an iPhone or iPad. Open this page there in Safari.'); }
-  var lastUrl = null;
+  function zoneUrl() { return '/api/zone.usdz?top=' + Z.top + '&bot=' + Z.bot; }
+  if (!arOK) {
+    $('ar-open').disabled = true;
+    $('ar-warn').textContent = isIOS ? 'Your browser cannot open AR. Safari can, or use the download below.' : 'AR view opens on an iPhone or iPad. Open this page there in Safari.';
+    if (isIOS) $('ar-dlwrap').hidden = false;
+  }
   $('ar-open').addEventListener('click', function () {
-    if (!arOK || !window.DLZoneUSDZ) return;
-    if (lastUrl) { try { URL.revokeObjectURL(lastUrl); } catch (e) {} }
-    lastUrl = URL.createObjectURL(new Blob([window.DLZoneUSDZ(Z.top, Z.bot)], { type: 'model/vnd.usdz+zip' }));
+    if (!arOK) return;
     var a = document.createElement('a');
-    a.rel = 'ar'; a.href = lastUrl + '#allowsContentScaling=0'; a.setAttribute('download', 'strike-zone.usdz');
+    a.rel = 'ar'; a.href = zoneUrl() + '#allowsContentScaling=0';
     a.appendChild(document.createElement('img'));
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
   });
