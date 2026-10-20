@@ -278,13 +278,14 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
   /* ---------- AR view (AR Quick Look, models built by .github/scripts/build_field_ar.py) ---------- */
   var arOK = false;
   try { arOK = document.createElement('a').relList.supports('ar'); } catch (e) {}
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   function arFile(L) {
     if (L.id === 'custom') return null;
     return 'ar/field-' + String(L.b).replace('.', 'p') + '-' + String(L.m).replace('.', 'p') + '-' + L.sp + '.usdz';
   }
   function arState(L) {
     var btn = $('ar-open'), w = $('ar-warn');
-    if (!arOK) { btn.disabled = true; w.textContent = 'AR view opens on an iPhone or iPad. Open this page there.'; return; }
+    if (!arOK) { btn.disabled = true; w.textContent = (isIOS ? 'AR opens in Safari only. Tap your browser\'s share button, then Open in Safari.' : 'AR view opens on an iPhone or iPad. Open this page there in Safari.'); return; }
     if (!arFile(L)) { btn.disabled = true; w.textContent = 'AR view needs a preset league. Pick one above.'; return; }
     btn.disabled = false; w.textContent = '';
   }

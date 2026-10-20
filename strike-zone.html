@@ -238,7 +238,8 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
   /* ---------- AR (AR Quick Look, model built on the phone by js/strike-zone-ar.js) ---------- */
   var arOK = false;
   try { arOK = document.createElement('a').relList.supports('ar'); } catch (e) {}
-  if (!arOK) { $('ar-open').disabled = true; $('ar-warn').textContent = 'AR view opens on an iPhone or iPad. Open this page there.'; }
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (!arOK) { $('ar-open').disabled = true; $('ar-warn').textContent = (isIOS ? 'AR opens in Safari only. Tap your browser\'s share button, then Open in Safari.' : 'AR view opens on an iPhone or iPad. Open this page there in Safari.'); }
   var lastUrl = null;
   $('ar-open').addEventListener('click', function () {
     if (!arOK || !window.DLZoneUSDZ) return;
