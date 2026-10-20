@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strike Zone in AR | DugoutLab</title>
+<meta name="description" content="Size the strike zone to your hitter, then drop it over home plate with your phone and walk around it. See it from the mound, behind the plate, or the side.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+.tool-wrap { max-width: 860px; margin: 0 auto; }
+.tool-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.6rem 1.5rem; margin-bottom: 1.25rem; }
+.tool-step { font-family: var(--mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.55rem; }
+.tool-h { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; color: var(--ink); letter-spacing: -0.015em; margin-bottom: 0.9rem; line-height: 1.2; }
+.tool-note { font-size: 0.85rem; color: var(--ink-faint); line-height: 1.55; margin-top: 0.7rem; }
+.field label { display: block; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); margin-bottom: 0.35rem; }
+.field select, .field input { width: 100%; background: var(--forest-deep); border: 1px solid var(--rule); color: var(--ink); border-radius: 8px; padding: 0.7rem 0.75rem; font-family: var(--sans); font-size: 1rem; font-weight: 600; }
+.field select:focus, .field input:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+.custom-row[hidden] { display: none; }
+.custom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.8rem; }
+.dist-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1.2rem; }
+.dist { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.9rem 1rem; }
+.dist i { display: block; font-style: normal; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.35rem; }
+.dist b { font-family: var(--serif); font-size: clamp(1.9rem, 7vw, 2.6rem); font-weight: 600; color: var(--gold); line-height: 1; }
+.viz { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: var(--radius); padding: 10px 8px 6px; margin-top: 1rem; }
+.viz svg { width: 100%; height: auto; display: block; max-width: 440px; margin: 0 auto; }
+.tape { list-style: none; display: grid; gap: 0.4rem; margin-top: 1rem; }
+.tape li { display: flex; justify-content: space-between; gap: 0.8rem; font-size: 0.95rem; color: var(--ink-soft); padding: 0.55rem 0.75rem; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 8px; }
+.tape li b { font-family: var(--mono); font-size: 0.9rem; color: var(--ink); white-space: nowrap; }
+.tape li.key { border-color: var(--gold); }
+.built-list { margin: 0 0 0 1.2rem; color: var(--ink-soft); font-size: 1rem; line-height: 1.7; }
+.src-list { margin: 0.6rem 0 0 1.2rem; color: var(--ink-soft); font-size: 0.9rem; line-height: 1.65; }
+.src-list li { margin-bottom: 0.5rem; }
+.src-list strong { color: var(--ink); }
+.lock-list { list-style: none; display: grid; gap: 0.45rem; margin-top: 1rem; }
+.lock-list li { background: var(--forest-deep); border: 1px solid var(--gold); border-radius: 8px; padding: 0.6rem 0.8rem; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.45; }
+.lock-list li b { color: var(--ink); display: block; }
+details.setup { margin-top: 1rem; border-top: 1px solid var(--rule); padding-top: 0.9rem; }
+details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); }
+
+.ar-btn { display: inline-flex; align-items: center; gap: 0.6rem; }
+.ar-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.ar-legend { list-style: none; display: grid; gap: 0.4rem; margin-top: 1rem; }
+.ar-legend li { display: grid; grid-template-columns: 14px 1fr; gap: 0.7rem; align-items: center; font-size: 0.95rem; color: var(--ink-soft); }
+.ar-legend i { width: 14px; height: 14px; border-radius: 3px; display: block; }
+.ar-warn { font-size: 0.9rem; color: var(--gold-light); margin-top: 0.8rem; min-height: 1.2em; }
+@media (max-width: 768px) { .tool-card { padding: 1.3rem 1.1rem; } }
+
+.step-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.5rem; margin-top: 1rem; }
+.stepper { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.8rem 0.7rem; min-width: 0; }
+.stepper i { display: block; font-style: normal; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.15rem; }
+.stepper small { display: block; font-size: 0.8rem; color: var(--ink-faint); margin-bottom: 0.5rem; }
+.stepper .ctl { display: grid; grid-template-columns: 36px minmax(0, 1fr) 36px; align-items: center; gap: 0.3rem; }
+.stepper .ctl button { height: 44px; padding: 0; border-radius: 10px; border: 1.5px solid var(--gold); background: transparent; color: var(--gold-light); font-size: 1.4rem; font-weight: 600; font-family: var(--sans); touch-action: manipulation; }
+.stepper .ctl button:active { transform: scale(0.95); }
+.stepper .ctl b { text-align: center; font-family: var(--serif); font-size: clamp(1.45rem, 5.5vw, 2.2rem); font-weight: 600; color: var(--gold); line-height: 1; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="framework.html">Practice Framework</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="training.html">Training</a></li>
+    <li><a href="coach-dad.html">Coach Dad</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="stages.html">The 4 Stages</a>
+  <a href="framework.html">Practice Framework</a>
+  <a href="articles.html">Articles</a>
+  <a href="training.html">Training</a>
+  <a href="coach-dad.html">Coach Dad</a>
+  <a href="lineup.html">Lineup Builder</a>
+  <a href="about.html">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="tools.html">&#8592; Tools</a></div>
+    <div class="eyebrow">Tools &middot; Pitching</div>
+    <h1>Strike Zone in AR</h1>
+    <p>Size the zone to your hitter. Drop it over home plate with your phone. Walk around it and see it from anywhere.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="tool-wrap">
+
+    <!-- STEP 1 -->
+    <div class="tool-card">
+      <div class="tool-step">Step 01 &middot; Size it to your hitter</div>
+      <div class="tool-h">How tall is the zone?</div>
+      <div class="field">
+        <label for="sz-height">Quick start: hitter's height</label>
+        <select id="sz-height"></select>
+      </div>
+      <div class="step-row">
+        <div class="stepper"><i>Top</i><small>Armpits, in.</small><div class="ctl"><button type="button" data-k="top" data-d="-1" aria-label="Lower the top">&#8722;</button><b id="sz-top">37</b><button type="button" data-k="top" data-d="1" aria-label="Raise the top">+</button></div></div>
+        <div class="stepper"><i>Bottom</i><small>Knee tops, in.</small><div class="ctl"><button type="button" data-k="bot" data-d="-1" aria-label="Lower the bottom">&#8722;</button><b id="sz-bot">14</b><button type="button" data-k="bot" data-d="1" aria-label="Raise the bottom">+</button></div></div>
+      </div>
+      <div class="viz" id="sz-viz"></div>
+      <div class="tool-note">Measure in the batting stance, not standing tall. Height gives a rough start. Best: stand your hitter in their stance and run a tape from the ground to the armpits and to the top of the knees.</div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="tool-card">
+      <div class="tool-step">Step 02 &middot; See it over the plate</div>
+      <div class="tool-h">Drop the zone. Walk around it.</div>
+      <ol class="built-list">
+        <li>Stand at home plate. Tap <b style="color:var(--ink)">Open in AR</b>.</li>
+        <li>Point at the ground and move the phone slowly until the zone drops in.</li>
+        <li>Drag the white plate onto your real plate. Twist with two fingers until the flat front edge faces the mound.</li>
+        <li>Walk it. Look from the mound, from the catcher's spot, and from the side.</li>
+      </ol>
+      <button type="button" class="btn btn-primary btn-lg ar-btn" id="ar-open" style="margin-top:1.1rem">Open in AR</button>
+      <div class="ar-warn" id="ar-warn"></div>
+      <ul class="ar-legend">
+        <li><i style="background:rgba(200,134,46,0.35);border:2px solid #C8862E"></i><span>Gold box: the strike zone, shaped like the plate, top to bottom.</span></li>
+        <li><i style="background:#f4efe6"></i><span>White: home plate, true size.</span></li>
+        <li><i style="background:#f2b85c"></i><span>Lines on the front face: the same 9 boxes you tap in the Pitch Tracker.</span></li>
+      </ul>
+      <div class="tool-note">iPhone or iPad. Uses the AR viewer built into your phone. The zone is drawn on your phone and nothing leaves it.</div>
+    </div>
+
+    <!-- NEXT -->
+    <div class="tool-card" style="border-color:var(--gold)">
+      <div class="tool-step">Zone is up</div>
+      <div class="tool-h">Now chart it.</div>
+      <p style="color:var(--ink-soft);margin-bottom:1rem;line-height:1.6">Tap where each pitch crossed. Same 9 boxes, plus high, low, left, and right. Strike percent and a heat map build over time.</p>
+      <a href="pitch-tracker.html" class="btn btn-primary btn-lg">Open the Pitch Tracker</a>
+    </div>
+
+    <details class="setup" style="border-top:none;margin-top:0.5rem">
+      <summary style="font-size:0.8rem;color:var(--ink-faint)">Guidelines &amp; sources</summary>
+      <ul class="src-list" style="margin-top:0.8rem">
+        <li><strong>Little League International, Definition of the Little League Strike Zone.</strong> The space over home plate between the batter's armpits and the top of the knees in a natural stance. The umpire sets it from the batter's usual stance when swinging. The zone stays over the plate wherever the batter stands in the box.</li>
+        <li><strong>Referee magazine, Strike Zone Math (2021).</strong> USA Softball fastpitch and NFHS softball: armpit to the top of the knees. NCAA softball uses the bottom of the sternum for the top. Not modeled here.</li>
+        <li><strong>MLB.</strong> Major League Baseball defines the top and bottom differently. Not modeled here.</li>
+        <li><strong>Home plate.</strong> 17 in across the front, the same in baseball and softball. The zone takes the plate's five-sided shape.</li>
+        <li><strong>Height quick start.</strong> Top about 70% of standing height, bottom about 27%. DugoutLab rough estimate for a batting stance, not from a study. Flagged uncertain. Kids grow and crouch differently. Measure your hitter.</li>
+        <li><strong>AR view.</strong> Apple AR Quick Look at true size, using the phone's motion tracking. It can drift a little. Accuracy has not been measured. Flagged uncertain. DugoutLab build.</li>
+      </ul>
+    </details>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script src="js/strike-zone-ar.js"></script>
+<script>
+(function () {
+  var Z = { top: 37, bot: 14 };
+  var TOP_K = 0.70, BOT_K = 0.27;
+  function $(id) { return document.getElementById(id); }
+  function ftin(n) { return Math.floor(n / 12) + ' ft ' + (n % 12) + ' in'; }
+
+  var hs = [];
+  for (var h = 40; h <= 74; h += 2) hs.push(h);
+  $('sz-height').innerHTML = '<option value="">Pick a height</option>' + hs.map(function (h) { return '<option value="' + h + '"' + (h === 54 ? ' selected' : '') + '>' + ftin(h) + '</option>'; }).join('');
+  function fromHeight() {
+    var h = parseInt($('sz-height').value, 10); if (!h) return;
+    Z.top = Math.round(h * TOP_K); Z.bot = Math.round(h * BOT_K); render();
+  }
+  $('sz-height').addEventListener('change', fromHeight);
+  Array.prototype.forEach.call(document.querySelectorAll('.stepper button'), function (b) {
+    b.addEventListener('click', function () {
+      var k = b.getAttribute('data-k'), d = parseInt(b.getAttribute('data-d'), 10), v = Z[k] + d;
+      if (k === 'top' && (v > 60 || v - Z.bot < 8)) return;
+      if (k === 'bot' && (v < 6 || Z.top - v < 8)) return;
+      Z[k] = v; $('sz-height').value = ''; render();
+    });
+  });
+
+  function render() {
+    $('sz-top').textContent = Z.top;
+    $('sz-bot').textContent = Z.bot;
+    /* Front view from the mound, to scale. 1 in = S px. */
+    var W = 340, H = 300, S = 4, gx = W / 2, gy = H - 26, hw = 8.5 * S, g = '';
+    for (var t = 0; t <= 60; t += 12) {
+      var y = gy - t * S;
+      g += '<line x1="34" x2="' + (W - 10) + '" y1="' + y + '" y2="' + y + '" stroke="rgba(244,239,230,' + (t ? 0.07 : 0.3) + ')"/>';
+      g += '<text x="28" y="' + (y + 4) + '" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="rgba(244,239,230,0.5)">' + (t ? (t / 12) + ' ft' : '0') + '</text>';
+    }
+    var yt = gy - Z.top * S, yb = gy - Z.bot * S;
+    g += '<rect x="' + (gx - hw) + '" y="' + yt + '" width="' + (2 * hw) + '" height="' + (yb - yt) + '" fill="rgba(200,134,46,0.22)" stroke="#C8862E" stroke-width="2" rx="2"/>';
+    for (var i = 1; i < 3; i++) {
+      var x = gx - hw + i * (2 * hw / 3), yy = yt + i * (yb - yt) / 3;
+      g += '<line x1="' + x + '" x2="' + x + '" y1="' + yt + '" y2="' + yb + '" stroke="#f2b85c" stroke-width="1"/>';
+      g += '<line x1="' + (gx - hw) + '" x2="' + (gx + hw) + '" y1="' + yy + '" y2="' + yy + '" stroke="#f2b85c" stroke-width="1"/>';
+    }
+    g += '<rect x="' + (gx - hw) + '" y="' + (gy - 3) + '" width="' + (2 * hw) + '" height="5" fill="#f4efe6" rx="1"/>';
+    g += '<text x="' + (gx + hw + 10) + '" y="' + (yt + 4) + '" font-family="Inter,sans-serif" font-size="11" fill="#f4efe6">Top ' + Z.top + ' in</text>';
+    g += '<text x="' + (gx + hw + 10) + '" y="' + (yb + 4) + '" font-family="Inter,sans-serif" font-size="11" fill="#f4efe6">Bottom ' + Z.bot + ' in</text>';
+    g += '<text x="' + gx + '" y="' + (gy + 19) + '" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="rgba(244,239,230,0.5)">Home plate, 17 in. View from the mound.</text>';
+    $('sz-viz').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Strike zone from ' + Z.bot + ' to ' + Z.top + ' inches over a 17 inch plate">' + g + '</svg>';
+  }
+
+  /* ---------- AR (AR Quick Look, model built on the phone by js/strike-zone-ar.js) ---------- */
+  var arOK = false;
+  try { arOK = document.createElement('a').relList.supports('ar'); } catch (e) {}
+  if (!arOK) { $('ar-open').disabled = true; $('ar-warn').textContent = 'AR view opens on an iPhone or iPad. Open this page there.'; }
+  var lastUrl = null;
+  $('ar-open').addEventListener('click', function () {
+    if (!arOK || !window.DLZoneUSDZ) return;
+    if (lastUrl) { try { URL.revokeObjectURL(lastUrl); } catch (e) {} }
+    lastUrl = URL.createObjectURL(new Blob([window.DLZoneUSDZ(Z.top, Z.bot)], { type: 'model/vnd.usdz+zip' }));
+    var a = document.createElement('a');
+    a.rel = 'ar'; a.href = lastUrl + '#allowsContentScaling=0'; a.setAttribute('download', 'strike-zone.usdz');
+    a.appendChild(document.createElement('img'));
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+
+  fromHeight();
+})();
+</script>
+<script src="js/email-gate.js" data-mode="page"></script>
+<script src="js/site.js"></script>
+</body>
+</html>
