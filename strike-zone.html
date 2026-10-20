@@ -127,7 +127,7 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
       <div class="ar-warn" id="ar-warn"></div>
       <div id="ar-dlwrap" hidden>
         <a class="btn btn-outline btn-lg" id="ar-dl" href="#" download>Download 3D zone</a>
-        <div class="tool-note">Not using Safari? Download the zone, open it from your Files app (Downloads), then tap <b style="color:var(--ink)">AR</b> at the top.</div>
+        <div class="tool-note">If nothing opens: download the zone, open it from your Files app (Downloads), then tap <b style="color:var(--ink)">AR</b> at the top.</div>
       </div>
       <ul class="ar-legend">
         <li><i style="background:rgba(200,134,46,0.35);border:2px solid #C8862E"></i><span>Gold box: the strike zone, shaped like the plate, top to bottom.</span></li>
@@ -244,11 +244,9 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
   try { arOK = document.createElement('a').relList.supports('ar'); } catch (e) {}
   var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   function zoneUrl() { return '/api/zone.usdz?top=' + Z.top + '&bot=' + Z.bot; }
-  if (!arOK) {
-    $('ar-open').disabled = true;
-    $('ar-warn').textContent = isIOS ? 'Your browser cannot open AR. Safari can, or use the download below.' : 'AR view opens on an iPhone or iPad. Open this page there in Safari.';
-    if (isIOS) $('ar-dlwrap').hidden = false;
-  }
+  /* Some iPhone browsers say no here but open AR fine, so on iOS we always try. */
+  if (isIOS) { arOK = true; $('ar-dlwrap').hidden = false; }
+  if (!arOK) { $('ar-open').disabled = true; $('ar-warn').textContent = 'AR view opens on an iPhone or iPad. Open this page there.'; }
   $('ar-open').addEventListener('click', function () {
     if (!arOK) return;
     var a = document.createElement('a');
