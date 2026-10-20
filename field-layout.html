@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lay Out the Field: Base and Mound Distances by League | DugoutLab</title>
-<meta name="description" content="Pick your league. Stand on home plate. Your phone camera points to first, second, third, and the mound. Base and pitching distances for youth baseball and softball, 7U to high school.">
+<meta name="description" content="Pick your league. Your phone drops a true-size diamond on the grass from the back point of home plate. Base and pitching distances for youth baseball and softball, 7U to high school.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
@@ -40,36 +40,12 @@
 details.setup { margin-top: 1rem; border-top: 1px solid var(--rule); padding-top: 0.9rem; }
 details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); }
 
-.sight { position: fixed; inset: 0; z-index: 2000; background: #050b08; display: none; color: #f4efe6; }
-.sight.open { display: block; }
-.sight [hidden] { display: none !important; }
-.sight video, .sight canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.sight video { object-fit: cover; }
-.sight canvas { pointer-events: none; }
-.sight-top { position: absolute; top: 0; left: 0; right: 0; padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px 40px; background: linear-gradient(rgba(5,11,8,0.92), rgba(5,11,8,0)); text-align: center; pointer-events: none; }
-.sight-eb { font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.2em; color: #e2a85a; margin-bottom: 0.3rem; }
-.sight-zone { font-family: var(--serif); font-size: 2.1rem; font-weight: 700; line-height: 1.05; letter-spacing: -0.01em; }
-.sight-zone.is-hit { color: #e2a85a; }
-.sight-sub { font-size: 1.05rem; font-weight: 600; margin-top: 0.4rem; }
-.sight-sub2 { font-size: 0.95rem; color: rgba(244,239,230,0.85); margin-top: 0.25rem; }
-.sight-locked { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 0.55rem; }
-.sight-locked span { font-size: 0.74rem; font-weight: 700; color: #0a1610; background: #C8862E; padding: 3px 9px; border-radius: 999px; }
-.sight-ring { position: absolute; left: 50%; top: 50%; width: 110px; height: 110px; margin: -55px 0 0 -55px; border: 4px solid #f4efe6; border-radius: 50%; box-shadow: 0 0 0 2px rgba(0,0,0,0.5); pointer-events: none; }
-.sight-ring::before, .sight-ring::after { content: ""; position: absolute; background: #f4efe6; }
-.sight-ring::before { left: 50%; top: 38%; bottom: 38%; width: 2px; margin-left: -1px; }
-.sight-ring::after { top: 50%; left: 38%; right: 38%; height: 2px; margin-top: -1px; }
-.sight-ring.is-hit { border-color: #C8862E; border-width: 8px; box-shadow: 0 0 0 8px rgba(200,134,46,0.35); }
-.sight-ar { position: absolute; left: 50%; top: 50%; width: 0; height: 0; border: 20px solid transparent; filter: drop-shadow(0 0 3px #000); pointer-events: none; }
-.sight-ar.l { margin: -20px 0 0 -120px; border-right-color: #e2a85a; border-left-width: 0; }
-.sight-ar.r { margin: -20px 0 0 100px; border-left-color: #e2a85a; border-right-width: 0; }
-.sight-bot { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 16px calc(env(safe-area-inset-bottom, 0px) + 18px); background: linear-gradient(rgba(5,11,8,0), rgba(5,11,8,0.92)); text-align: center; }
-.sight-warn { font-size: 0.9rem; color: #e2a85a; min-height: 1.3em; margin-bottom: 0.6rem; }
-.sight-chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 12px; -webkit-overflow-scrolling: touch; justify-content: center; flex-wrap: wrap; }
-.sight-chip { flex: 0 0 auto; border: 2px solid rgba(244,239,230,0.55); background: rgba(5,11,8,0.65); color: #f4efe6; border-radius: 999px; padding: 0.5rem 0.9rem; font-family: var(--sans); font-size: 0.88rem; font-weight: 600; }
-.sight-chip.cur { border-color: #e2a85a; color: #e2a85a; }
-.sight-chip.locked { background: #C8862E; border-color: #C8862E; color: #0a1610; }
-.sight-btns { display: flex; gap: 10px; justify-content: center; }
-.sight .btn[disabled] { opacity: 0.4; }
+.ar-btn { display: inline-flex; align-items: center; gap: 0.6rem; }
+.ar-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.ar-legend { list-style: none; display: grid; gap: 0.4rem; margin-top: 1rem; }
+.ar-legend li { display: grid; grid-template-columns: 14px 1fr; gap: 0.7rem; align-items: center; font-size: 0.95rem; color: var(--ink-soft); }
+.ar-legend i { width: 14px; height: 14px; border-radius: 3px; display: block; }
+.ar-warn { font-size: 0.9rem; color: var(--gold-light); margin-top: 0.8rem; min-height: 1.2em; }
 @media (max-width: 768px) { .tool-card { padding: 1.3rem 1.1rem; } }
 </style>
 </head>
@@ -105,7 +81,7 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
     <div class="breadcrumb"><a href="tools.html">&#8592; Tools</a></div>
     <div class="eyebrow">Tools &middot; Field Setup</div>
     <h1>Lay Out the Field</h1>
-    <p>Pick your league. Stand on home plate. Your phone points to first, second, third, and the mound.</p>
+    <p>Pick your league. Drop the field on the grass with your phone. Walk out and place every bag.</p>
   </div>
 </div>
 
@@ -135,22 +111,23 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
 
     <!-- STEP 2 -->
     <div class="tool-card">
-      <div class="tool-step">Step 02 &middot; See it</div>
-      <div class="tool-h">Stand on the plate. Point. Drop the bags.</div>
+      <div class="tool-step">Step 02 &middot; See it on the grass</div>
+      <div class="tool-h">Drop the field. Walk it. Place the bags.</div>
       <ol class="built-list">
-        <li>Stand on home plate. Hold the phone at your chest.</li>
-        <li>Aim where second base should go. Tap <b style="color:var(--ink)">Lock home plate</b>.</li>
-        <li>The diamond appears on the grass. Follow the arrow to each base and the mound.</li>
-        <li>Send a helper down the line. Count the steps or run the tape. Tap <b style="color:var(--ink)">Placed</b>.</li>
+        <li>Stand behind home plate. Tap <b style="color:var(--ink)">Open in AR</b>.</li>
+        <li>Point at the grass and move the phone slowly until the field drops in.</li>
+        <li>Drag the red home pole onto the back point of home plate.</li>
+        <li>Twist with two fingers until the thin gold line points at second base.</li>
+        <li>Walk out. Put a bag at each gold pole and the rubber at the orange pole.</li>
       </ol>
-      <button type="button" class="btn btn-primary btn-lg" id="sight-open" style="margin-top:1.1rem">Open the camera</button>
-      <div class="tool-note">Phone only. Stay on the plate while you point. The phone gives the direction. The tape or your steps give the distance. Nothing is recorded and nothing leaves your phone.</div>
-      <details class="setup">
-        <summary>Phone height</summary>
-        <div class="field" style="margin-top:0.8rem;max-width:220px"><label for="ph">Phone off the ground (ft)</label><input id="ph" type="number" inputmode="decimal" min="2" max="7" step="0.5" value="4.5"></div>
-        <div class="tool-note">Chest height for most adults is about 4 to 5 ft. It only changes where the pins sit on screen.</div>
-      </details>
-      <ul class="lock-list" id="lock-list"></ul>
+      <button type="button" class="btn btn-primary btn-lg ar-btn" id="ar-open" style="margin-top:1.1rem">Open in AR</button>
+      <div class="ar-warn" id="ar-warn"></div>
+      <ul class="ar-legend">
+        <li><i style="background:#d9332a"></i><span>Red pole: back point of home plate. Every distance starts here.</span></li>
+        <li><i style="background:#C8862E"></i><span>Gold poles: 1st, 2nd, 3rd. 1st and 3rd poles mark the outside back corner of the bag.</span></li>
+        <li><i style="background:#f2731a"></i><span>Orange pole and ring: front edge of the rubber or pitching plate.</span></li>
+      </ul>
+      <div class="tool-note">iPhone or iPad. Uses the AR viewer built into your phone, the same one behind Apple's Measure app. Run the tape on one base before you trust the rest. Nothing is recorded and nothing leaves your phone.</div>
     </div>
 
     <!-- PLAY -->
@@ -169,35 +146,13 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
         <li><strong>Travel baseball (9U to 13U).</strong> 65/46, 70/50, and 80/54 are common travel distances. They change by organization, host, and year. Not checked against one rulebook. Flagged uncertain. Use the host's rules.</li>
         <li><strong>8U softball.</strong> Little League Minors softball uses 35 ft. Many rec and travel leagues use 30 ft at 8U. Flagged uncertain. Pick Custom if your league differs.</li>
         <li><strong>Base placement.</strong> In the official rules diagram, first and third bags sit inside the lines in fair territory, and second base is centered on its point. Check your league book.</li>
-        <li><strong>Phone sight.</strong> Reads the tilt sensor and camera on your phone. The direction to each base is good to a few degrees. Distance from tilt is too rough to trust, so pins on screen are a guide and the tape or steps decide. Pins are exact at the center of the screen and approximate near the edges. The heading can drift over a few minutes. Tap Re-aim to reset it. DugoutLab build, not a measured result.</li>
+        <li><strong>AR view.</strong> Uses Apple AR Quick Look and the phone's motion tracking. The model is drawn at true size from the back point of home plate. Tracking can drift over long walks and on plain grass with little texture. Accuracy across a full field has not been measured. Flagged uncertain. Check with a tape. DugoutLab build.</li>
+        <li><strong>Mound and circle rings.</strong> Ring sizes are approximate: 5 ft radius for Little League and teen mounds, 9 ft for the full-size mound, 8 ft for the softball pitching circle. Rubber 18 by 4 in on smaller fields, 24 by 6 in on full size and softball. Check your league book.</li>
       </ul>
     </details>
 
   </div>
 </section>
-
-<div class="sight" id="sight">
-  <video id="sight-video" playsinline muted autoplay></video>
-  <canvas id="sight-canvas"></canvas>
-  <div class="sight-top">
-    <div class="sight-eb" id="s-eb">FIRST</div>
-    <div class="sight-zone" id="s-title">STAND ON HOME PLATE</div>
-    <div class="sight-sub" id="s-sub">Aim where second base goes</div>
-    <div class="sight-sub2" id="s-sub2"></div>
-    <div class="sight-locked" id="s-locked"></div>
-  </div>
-  <div class="sight-ring" id="s-ring"></div>
-  <div class="sight-ar l" id="ar-l" hidden></div>
-  <div class="sight-ar r" id="ar-r" hidden></div>
-  <div class="sight-bot">
-    <div class="sight-warn" id="s-warn"></div>
-    <div class="sight-chips" id="s-chips"></div>
-    <div class="sight-btns">
-      <button type="button" class="btn btn-primary btn-lg" id="s-set">Lock home plate</button>
-      <button type="button" class="btn btn-secondary btn-lg" id="s-close">Done</button>
-    </div>
-  </div>
-</div>
 
 <footer class="footer">
   <div class="footer-inner">
@@ -273,17 +228,6 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
     return o;
   }
 
-  /* field points, feet: x to the first base side, y toward second base */
-  function points(L) {
-    var s = L.b / SQ2, P = [
-      { id: 'b1', name: '1ST BASE', chip: '1st', x: s, y: s, d: L.b },
-      { id: 'b2', name: '2ND BASE', chip: '2nd', x: 0, y: L.b * SQ2, d: L.b * SQ2 },
-      { id: 'b3', name: '3RD BASE', chip: '3rd', x: -s, y: s, d: L.b }
-    ];
-    if (L.m > 0) P.push({ id: 'mnd', name: L.sp === 'sb' ? 'PITCHING PLATE' : 'MOUND', chip: L.sp === 'sb' ? 'Circle' : 'Mound', x: 0, y: L.m, d: L.m });
-    return P;
-  }
-
   function diamondSVG(L) {
     var W = 340, H = 300, hx = 170, hy = 268, sc = 175 / (L.b * SQ2);
     function X(x) { return (hx + x * sc).toFixed(1); }
@@ -325,190 +269,31 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
     if (L.m > 0) rows.push([L.sp === 'sb' ? 'Home to pitching plate (front edge)' : 'Home to front of the rubber', ftin(L.m), '']);
     rows.push(['Big steps to 1st or 3rd', 'about ' + steps(L.b), '']);
     $('tape').innerHTML = rows.map(function (r) { return '<li' + (r[2] ? ' class="key"' : '') + '><span>' + r[0] + '</span><b>' + r[1] + '</b></li>'; }).join('');
-    if (sight.on && sight.ready) { sight.pts = points(L); sight.placed = {}; sight.cur = 'b1'; drawChips(); lockList(); }
+    arState(L);
   }
   sel.addEventListener('change', render);
   $('c-bases').addEventListener('input', render);
   $('c-mound').addEventListener('input', render);
 
-  /* ---------- camera sight ---------- */
-  var sight = { on: false, ready: false, R: null, got: false, psi0: 0, stream: null, raf: 0, cur: 'b1', placed: {}, pts: [], flash: 0 };
-
-  function m3(A, B) { var C = []; for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) C.push(A[i * 3] * B[j] + A[i * 3 + 1] * B[3 + j] + A[i * 3 + 2] * B[6 + j]); return C; }
-  function camFromEarth(alpha, beta, gamma) {
-    var ca = Math.cos(alpha * D2R), sa = Math.sin(alpha * D2R), cb = Math.cos(beta * D2R), sb = Math.sin(beta * D2R), cg = Math.cos(gamma * D2R), sg = Math.sin(gamma * D2R);
-    var M = m3(m3([ca, -sa, 0, sa, ca, 0, 0, 0, 1], [1, 0, 0, 0, cb, -sb, 0, sb, cb]), [cg, 0, sg, 0, 1, 0, -sg, 0, cg]);
-    /* rows: camera right, camera up, camera forward, each in earth coords (east, north, up) */
-    return [M[0], M[3], M[6], M[1], M[4], M[7], -M[2], -M[5], -M[8]];
+  /* ---------- AR view (AR Quick Look, models built by .github/scripts/build_field_ar.py) ---------- */
+  var arOK = false;
+  try { arOK = document.createElement('a').relList.supports('ar'); } catch (e) {}
+  function arFile(L) {
+    if (L.id === 'custom') return null;
+    return 'ar/field-' + String(L.b).replace('.', 'p') + '-' + String(L.m).replace('.', 'p') + '-' + L.sp + '.usdz';
   }
-  function onOrient(e) {
-    if (e.alpha === null || e.beta === null) return;
-    var R = camFromEarth(e.alpha, e.beta, e.gamma || 0);
-    if (!sight.got) { sight.R = R; sight.got = true; return; }
-    for (var i = 0; i < 9; i++) sight.R[i] += (R[i] - sight.R[i]) * 0.3;
+  function arState(L) {
+    var btn = $('ar-open'), w = $('ar-warn');
+    if (!arOK) { btn.disabled = true; w.textContent = 'AR view opens on an iPhone or iPad. Open this page there.'; return; }
+    if (!arFile(L)) { btn.disabled = true; w.textContent = 'AR view needs a preset league. Pick one above.'; return; }
+    btn.disabled = false; w.textContent = '';
   }
-  function heading(R) { return Math.atan2(R[6], R[7]) / D2R; }
-  function wrapDeg(d) { return ((d + 180) % 360 + 360) % 360 - 180; }
-  function earth(p) {
-    var c = Math.cos(sight.psi0 * D2R), s = Math.sin(sight.psi0 * D2R);
-    return [p[0] * c + p[1] * s, -p[0] * s + p[1] * c, 0];
-  }
-  function camQ(p, h) {
-    var E = earth(p), R = sight.R, v = [E[0], E[1], -h];
-    return [R[0] * v[0] + R[1] * v[1] + R[2] * v[2], R[3] * v[0] + R[4] * v[1] + R[5] * v[2], R[6] * v[0] + R[7] * v[1] + R[8] * v[2]];
-  }
-  function phoneH() { var h = parseFloat($('ph').value); return isFinite(h) && h > 1 && h < 8 ? h : 4.5; }
-  function ptOf(id) { for (var i = 0; i < sight.pts.length; i++) if (sight.pts[i].id === id) return sight.pts[i]; return null; }
-
-  function drawChips() {
-    var box = $('s-chips'); box.innerHTML = '';
-    if (!sight.ready) return;
-    sight.pts.concat([{ id: 'reaim', chip: 'Re-aim at 2nd' }]).forEach(function (p) {
-      var b = document.createElement('button'); b.type = 'button';
-      var done = sight.placed[p.id];
-      b.className = 'sight-chip' + (done ? ' locked' : '') + (sight.cur === p.id ? ' cur' : '');
-      b.textContent = p.chip + (done ? ' ✓' : '');
-      b.addEventListener('click', function () {
-        if (p.id === 'reaim') { sight.ready = false; drawChips(); return; }
-        sight.cur = p.id; drawChips();
-      });
-      box.appendChild(b);
-    });
-    var h = '';
-    sight.pts.forEach(function (p) { if (sight.placed[p.id]) h += '<span>' + p.chip + ' ✓</span>'; });
-    $('s-locked').innerHTML = h;
-  }
-  function lockList() {
-    var L = league(), h = '';
-    sight.pts.forEach(function (p) {
-      if (!sight.placed[p.id]) return;
-      h += '<li><b>✓ ' + p.name.charAt(0) + p.name.slice(1).toLowerCase() + '</b>' + ftin(p.d) + ' from home. About ' + steps(p.d) + ' big steps.</li>';
-    });
-    $('lock-list').innerHTML = h ? '<li><b>' + L.name + '</b>Bases ' + ftin(L.b) + (L.m > 0 ? ', ' + (L.sp === 'sb' ? 'pitching ' : 'mound ') + ftin(L.m) : '') + '</li>' + h : '';
-  }
-
-  function drawField(g, W, H) {
-    var R = sight.R, f = (H / 2) / Math.tan(32 * D2R), h = phoneH(), L = league();
-    function S(p) { var q = camQ(p, h); if (q[2] < 0.5) return null; return [W / 2 + f * q[0] / q[2], H / 2 - f * q[1] / q[2]]; }
-    function path(pts, dash) {
-      g.setLineDash(dash || []); g.beginPath(); var on = false;
-      pts.forEach(function (p) { var s = S(p); if (!s) { on = false; return; } if (!on) { g.moveTo(s[0], s[1]); on = true; } else g.lineTo(s[0], s[1]); });
-      g.stroke(); g.setLineDash([]);
-    }
-    function seg(a, b, n) { var o = []; for (var i = 0; i <= n; i++) o.push([a[0] + (b[0] - a[0]) * i / n, a[1] + (b[1] - a[1]) * i / n]); return o; }
-    var s = L.b / SQ2, b2 = [0, L.b * SQ2];
-    g.lineCap = 'round';
-    g.strokeStyle = 'rgba(0,0,0,0.55)'; g.lineWidth = 6;
-    var lines = [seg([0, 0], [s, s], 40), seg([s, s], b2, 40), seg(b2, [-s, s], 40), seg([-s, s], [0, 0], 40)];
-    lines.forEach(function (l) { path(l); });
-    g.strokeStyle = '#f4efe6'; g.lineWidth = 3;
-    lines.forEach(function (l) { path(l); });
-    g.strokeStyle = 'rgba(244,239,230,0.6)'; g.lineWidth = 2;
-    path(seg([s, s], [s * 1.8, s * 1.8], 40), [8, 8]);
-    path(seg([-s, s], [-s * 1.8, s * 1.8], 40), [8, 8]);
-    if (L.m > 0) {
-      var r = L.sp === 'sb' ? 8 : 5, ring = [];
-      for (var a = 0; a <= 48; a++) ring.push([r * Math.cos(a / 48 * 2 * Math.PI), L.m + r * Math.sin(a / 48 * 2 * Math.PI)]);
-      g.strokeStyle = '#C8862E'; g.lineWidth = 3; path(ring);
-      g.lineWidth = 5; path([[-1, L.m], [1, L.m]]);
-    }
-    sight.pts.forEach(function (p) {
-      var c = S([p.x, p.y]); if (!c) return;
-      var cur = sight.cur === p.id, done = sight.placed[p.id], rad = cur ? 16 : 11;
-      g.beginPath(); g.arc(c[0], c[1], rad, 0, Math.PI * 2);
-      g.fillStyle = done ? 'rgba(200,134,46,0.9)' : (cur ? 'rgba(200,134,46,0.35)' : 'rgba(244,239,230,0.25)');
-      g.fill(); g.lineWidth = cur ? 4 : 3; g.strokeStyle = cur || done ? '#C8862E' : '#f4efe6'; g.stroke();
-      g.font = '700 13px Inter, sans-serif'; g.textAlign = 'center';
-      var lab = p.chip + ' ' + ftin(p.d), tw = g.measureText(lab).width + 14, below = p.id === 'mnd', ty = below ? c[1] + rad + 6 : c[1] - rad - 26;
-      g.fillStyle = 'rgba(5,11,8,0.82)'; g.fillRect(c[0] - tw / 2, ty, tw, 20);
-      g.fillStyle = '#f4efe6'; g.fillText(lab, c[0], ty + 15);
-    });
-  }
-
-  function arrows(l, r) { $('ar-l').hidden = !l; $('ar-r').hidden = !r; }
-  function frame() {
-    if (!sight.on) return;
-    sight.raf = requestAnimationFrame(frame);
-    var cv = $('sight-canvas'), W = cv.clientWidth, H = cv.clientHeight, dpr = window.devicePixelRatio || 1;
-    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
-    var g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
-    if (!sight.got) return;
-    var eb = $('s-eb'), tt = $('s-title'), sub = $('s-sub'), sub2 = $('s-sub2'), btn = $('s-set'), ring = $('s-ring');
-    if (!sight.ready) {
-      eb.textContent = 'FIRST'; tt.textContent = 'STAND ON HOME PLATE'; tt.className = 'sight-zone';
-      sub.textContent = 'Aim where second base goes'; sub2.textContent = 'Then tap Lock home plate';
-      ring.className = 'sight-ring'; arrows(0, 0); btn.textContent = 'Lock home plate'; btn.disabled = false;
-      return;
-    }
-    drawField(g, W, H);
-    btn.textContent = 'Placed';
-    if (sight.flash > Date.now()) {
-      eb.textContent = 'PLACED'; tt.className = 'sight-zone is-hit'; ring.className = 'sight-ring is-hit'; arrows(0, 0); btn.disabled = true;
-      var nx = ptOf(sight.cur); sub.textContent = nx ? 'Next: ' + nx.chip : 'Field is set'; sub2.textContent = '';
-      return;
-    }
-    if (sight.cur === 'done') {
-      eb.textContent = 'DONE'; tt.textContent = 'FIELD IS SET'; tt.className = 'sight-zone is-hit';
-      sub.textContent = 'Tap Done. Your spots are saved on the page.'; sub2.textContent = 'Tap any chip to check one again.';
-      ring.className = 'sight-ring'; arrows(0, 0); btn.disabled = true;
-      return;
-    }
-    var p = ptOf(sight.cur);
-    var want = wrapDeg(sight.psi0 + Math.atan2(p.x, p.y) / D2R), diff = wrapDeg(want - heading(sight.R)), ok = Math.abs(diff) <= 3;
-    eb.textContent = 'PLACE'; tt.textContent = p.name; tt.className = 'sight-zone' + (ok ? ' is-hit' : '');
-    ring.className = 'sight-ring' + (ok ? ' is-hit' : ''); btn.disabled = !ok;
-    if (ok) { sub.textContent = 'On line. Send a helper straight out.'; arrows(0, 0); }
-    else { sub.textContent = 'Turn ' + (diff > 0 ? 'right ' : 'left ') + Math.round(Math.abs(diff)) + '°'; arrows(diff < 0, diff > 0); }
-    sub2.textContent = ftin(p.d) + ' from home. About ' + steps(p.d) + ' big steps.';
-  }
-
-  function placeNow() {
-    if (!sight.ready || btnBusy()) return;
-    sight.placed[sight.cur] = true;
-    var next = 'done';
-    for (var i = 0; i < sight.pts.length; i++) if (!sight.placed[sight.pts[i].id]) { next = sight.pts[i].id; break; }
-    $('s-title').textContent = ptOf(sight.cur).name + ' ✓';
-    sight.cur = next; sight.flash = Date.now() + 1100;
-    drawChips(); lockList();
-  }
-  function btnBusy() { return sight.flash > Date.now(); }
-
-  function openSight() {
-    function go() {
-      $('sight').classList.add('open');
-      sight.on = true; sight.ready = false; sight.got = false; sight.placed = {}; sight.cur = 'b1'; sight.pts = points(league());
-      $('s-warn').textContent = ''; $('s-locked').innerHTML = ''; drawChips();
-      window.addEventListener('deviceorientation', onOrient);
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false }).then(function (st) {
-          if (!sight.on) { st.getTracks().forEach(function (t) { t.stop(); }); return; }
-          sight.stream = st; var v = $('sight-video'); v.srcObject = st;
-          var pl = v.play(); if (pl && pl.catch) pl.catch(function () {});
-        }).catch(function () { if (sight.on) $('s-warn').textContent = 'Camera is blocked. Allow the camera for this site and reopen.'; });
-      } else { $('s-warn').textContent = 'No camera here. Open this page on a phone.'; }
-      setTimeout(function () { if (sight.on && !sight.got) $('s-warn').textContent = 'No tilt sensor found. Open this page on a phone.'; }, 2000);
-      frame();
-    }
-    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') DeviceOrientationEvent.requestPermission().then(go, go);
-    else go();
-  }
-  function closeSight() {
-    sight.on = false; cancelAnimationFrame(sight.raf);
-    window.removeEventListener('deviceorientation', onOrient);
-    if (sight.stream) { sight.stream.getTracks().forEach(function (t) { t.stop(); }); sight.stream = null; }
-    $('sight-video').srcObject = null;
-    $('sight').classList.remove('open');
-  }
-  $('sight-open').addEventListener('click', openSight);
-  $('s-close').addEventListener('click', closeSight);
-  $('s-set').addEventListener('click', function () {
-    if (!sight.got) return;
-    if (!sight.ready) {
-      sight.psi0 = heading(sight.R); sight.ready = true;
-      if (!sight.cur || sight.cur === 'done') sight.cur = 'b1';
-      drawChips(); return;
-    }
-    placeNow();
+  $('ar-open').addEventListener('click', function () {
+    var f = arFile(league()); if (!arOK || !f) return;
+    var a = document.createElement('a');
+    a.rel = 'ar'; a.href = f + '#allowsContentScaling=0';
+    a.appendChild(document.createElement('img'));
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
   });
 
   render();
