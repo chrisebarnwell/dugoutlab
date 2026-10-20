@@ -10,6 +10,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 <style>
+.dl-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.3rem; margin-bottom: 1rem; }
+.dl-tabs button { background: transparent; border: 0; border-radius: 7px; padding: 0.7rem 0.5rem; font-family: var(--sans); font-size: 1rem; font-weight: 600; color: var(--ink-soft); }
+.dl-tabs button.on { background: var(--gold); color: var(--forest-deep); }
+.dl-swap { background: none; border: 0; padding: 0; color: var(--gold-light); font-weight: 600; text-decoration: underline; font-size: inherit; }
 .g-wrap { max-width: 640px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
 .g-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.4rem 1.2rem; margin-bottom: 1rem; }
 .g-eb { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
@@ -114,16 +118,20 @@
 
   <!-- SIGN IN -->
   <div class="g-card" id="s-signin">
-    <div class="g-eb">Sign in</div>
-    <div class="g-h">Grown-ups sign up. Kids just throw.</div>
-    <p class="g-p">One account per parent. Add every kid in the family under it. Kids never get an account and never type anything. No password, no card. Coaching a team? Start here too. Your team lives inside your account.</p>
+    <div class="dl-tabs" role="tablist"><button type="button" id="tab-up" class="on" role="tab">Sign up</button><button type="button" id="tab-in" role="tab">Sign in</button></div>
+    <div class="g-eb">Pitch Tracker</div>
+    <div class="g-h si-only hidden">Welcome back.</div>
+    <div class="g-h su-only">Grown-ups sign up. Kids just throw.</div>
+    <p class="g-p si-only hidden">Enter the email you signed up with. No password needed.</p>
+    <p class="g-p su-only">One account per parent. Add every kid in the family under it. Kids never get an account and never type anything. No password, no card. Coaching a team? Start here too. Your team lives inside your account.</p>
     <div style="margin-top:1rem">
-      <div class="field"><label for="in-name">Your name</label><input type="text" id="in-name" maxlength="40" autocomplete="name" placeholder="Your first name"></div>
+      <div class="field su-only"><label for="in-name">Your name</label><input type="text" id="in-name" maxlength="40" autocomplete="name" placeholder="Your first name"></div>
       <div class="field"><label for="in-email">Your email</label><input type="email" id="in-email" maxlength="120" autocomplete="email" inputmode="email" placeholder="you@email.com"></div>
-      <label class="chk" for="in-adult"><input type="checkbox" id="in-adult"> <span id="in-adult-txt">I'm 18 or older and the parent or legal guardian of every kid I add.</span></label>
+      <label class="chk su-only" for="in-adult"><input type="checkbox" id="in-adult"> <span id="in-adult-txt">I'm 18 or older and the parent or legal guardian of every kid I add.</span></label>
       <div class="err" id="in-err"></div>
       <button type="button" class="btn btn-primary btn-lg btn-full" id="in-go">Sign up</button>
-      <div class="g-note">Returning? Same email signs you right back in. Works with your Hit Window game account too.</div>
+      <div class="g-note" style="font-size:0.95rem"><span id="in-swap-txt">Already have an account?</span> <button type="button" class="dl-swap" id="in-swap">Sign in</button></div>
+      <div class="g-note">One account works for the Pitch Tracker and the Hit Window.</div>
     </div>
   </div>
 
@@ -428,12 +436,36 @@
   /* ---------- sign in ---------- */
   var ageOpts = PT_AGES.map(function (a) { return '<option value="' + a + '"' + (a === 10 ? ' selected' : '') + '>' + a + '</option>'; }).join('');
   $('kid-age').innerHTML = ageOpts; $('tm-age').innerHTML = ageOpts; $('ts-age').innerHTML = ageOpts;
+
+  /* ---------- sign up / sign in tabs ---------- */
+  var MODE = 'up';
+  function setMode(m) {
+    MODE = m;
+    $('tab-up').classList.toggle('on', m === 'up'); $('tab-in').classList.toggle('on', m === 'in');
+    Array.prototype.forEach.call(document.querySelectorAll('.su-only'), function (el) { el.classList.toggle('hidden', m === 'in'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.si-only'), function (el) { el.classList.toggle('hidden', m !== 'in'); });
+    $('in-go').textContent = m === 'in' ? 'Sign in' : 'Sign up';
+    $('in-swap-txt').textContent = m === 'in' ? 'New here?' : 'Already have an account?';
+    $('in-swap').textContent = m === 'in' ? 'Sign up' : 'Sign in';
+    $('in-err').textContent = '';
+  }
+  $('tab-up').addEventListener('click', function () { setMode('up'); });
+  $('tab-in').addEventListener('click', function () { setMode('in'); });
+  $('in-swap').addEventListener('click', function () { setMode(MODE === 'in' ? 'up' : 'in'); });
+  try { var lastE = localStorage.getItem('dl_last_email'); if (lastE) { $('in-email').value = lastE; setMode('in'); } } catch (e) {}
+  function rememberEmail() { try { localStorage.setItem('dl_last_email', String($('in-email').value || '').trim().toLowerCase()); } catch (e) {} }
   $('in-go').addEventListener('click', function () {
     var b = $('in-go'); b.disabled = true; $('in-err').textContent = '';
+    function done(j) { st.token = j.token; st.account = j.account; rememberEmail(); save(); home(); }
+    function fail(e) { $('in-err').textContent = e.message; }
+    if (MODE === 'in') {
+      return api('signin', { email: $('in-email').value }).then(function (j) {
+        if (!j.token) { setMode('up'); $('in-err').textContent = 'Almost there. Add your name to finish your Pitch Tracker account.'; return; }
+        done(j);
+      }).catch(fail).then(function () { b.disabled = false; });
+    }
     if (!$('in-adult').checked) { $('in-err').textContent = 'Check the box to confirm you are the adult signing up.'; b.disabled = false; return; }
-    api('signup', { name: $('in-name').value, email: $('in-email').value, role: 'parent', adult: true, app: 'pitch' }).then(function (j) {
-      st.token = j.token; st.account = j.account; save(); home();
-    }).catch(function (e) { $('in-err').textContent = e.message; }).then(function () { b.disabled = false; });
+    api('signup', { name: $('in-name').value, email: $('in-email').value, role: 'parent', adult: true, app: 'pitch' }).then(done).catch(fail).then(function () { b.disabled = false; });
   });
   $('h-out').addEventListener('click', function () {
     st.token = null; st.account = null; save();

@@ -223,6 +223,19 @@ export async function onRequest(ctx) {
       return json({ account: pubAcct(a), token: a.token, returning: false });
     }
 
+    if (route === 'signin' && method === 'POST') {
+      /* Returning users: email only. Finds a game/pitch account, else a tool-gate subscriber. */
+      if (body.website) return json({ ok: true });
+      const email = clean(body.email, 120).toLowerCase();
+      if (!emailOK(email)) return bad('That email does not look right');
+      await ensure(db);
+      const a = await db.prepare('SELECT * FROM accounts WHERE email = ?').bind(email).first();
+      if (a) return json({ account: pubAcct(a), token: a.token, returning: true });
+      const sub = await db.prepare('SELECT email FROM subscribers WHERE email = ?').bind(email).first();
+      if (sub) return json({ ok: true, subscriber: true });
+      return bad('No account with that email yet. Tap Sign up.', 404);
+    }
+
     if (route === 'subscribe' && method === 'POST') {
       /* Free practice plan signup. Email only. Honeypot field "website" must stay empty. */
       if (body.website) return json({ ok: true });

@@ -15,7 +15,7 @@
       return !!(a && a.token);
     } catch (e) { return false; }
   }
-  function mark(email) { try { localStorage.setItem(KEY, JSON.stringify({ email: email, at: Date.now() })); } catch (e) {} }
+  function mark(email) { try { localStorage.setItem(KEY, JSON.stringify({ email: email, at: Date.now() })); localStorage.setItem('dl_last_email', email); } catch (e) {} }
   function page() { return (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '') || 'index'; }
 
   var css = '' +
@@ -50,15 +50,28 @@
         '<p class="dl-gate-p">Pop it in once and every DugoutLab tool is open. No password, no card.</p>' +
         '<input type="email" id="dl-gate-email" placeholder="you@email.com" autocomplete="email" inputmode="email" maxlength="120">' +
         '<input type="text" class="hp" id="dl-gate-hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
-        '<label><input type="checkbox" id="dl-gate-adult"> <span>I\'m 18 or older (a coach or parent).</span></label>' +
+        '<label id="dl-gate-adult-row"><input type="checkbox" id="dl-gate-adult"> <span>I\'m 18 or older (a coach or parent).</span></label>' +
         '<div class="dl-gate-err" id="dl-gate-err"></div>' +
         '<button type="button" class="dl-gate-btn" id="dl-gate-go">Unlock the tools</button>' +
+        '<div class="dl-gate-note" style="font-size:0.95rem;color:rgba(244,239,230,0.72)"><span id="dl-gate-swap-t">Already signed up?</span> <button type="button" class="dl-gate-x" style="margin:0;color:#e2a85a;font-weight:600;font-size:0.95rem" id="dl-gate-swap">Sign in</button></div>' +
         '<div class="dl-gate-note">We send an occasional new tool or guide.</div>' +
         (canClose ? '<button type="button" class="dl-gate-x" id="dl-gate-x">Not now</button>' : '<div class="dl-gate-note">Just reading? <a href="articles.html">The articles are open to everyone.</a></div>') +
       '</div>';
     document.body.appendChild(wrap);
     document.body.classList.add('dl-gated');
     var input = document.getElementById('dl-gate-email');
+    var signin = false;
+    function setIn(v) {
+      signin = v;
+      document.getElementById('dl-gate-h').textContent = v ? 'Welcome back.' : 'Your email unlocks every tool.';
+      document.getElementById('dl-gate-adult-row').style.display = v ? 'none' : '';
+      document.getElementById('dl-gate-go').textContent = v ? 'Sign in' : 'Unlock the tools';
+      document.getElementById('dl-gate-swap-t').textContent = v ? 'New here?' : 'Already signed up?';
+      document.getElementById('dl-gate-swap').textContent = v ? 'Sign up' : 'Sign in';
+      document.getElementById('dl-gate-err').textContent = '';
+    }
+    document.getElementById('dl-gate-swap').addEventListener('click', function () { setIn(!signin); input.focus(); });
+    try { var lastE = localStorage.getItem('dl_last_email'); if (lastE) { input.value = lastE; setIn(true); } } catch (e) {}
     setTimeout(function () { try { input.focus(); } catch (e) {} }, 50);
 
     function close() { wrap.parentNode && wrap.parentNode.removeChild(wrap); document.body.classList.remove('dl-gated'); }
@@ -69,6 +82,15 @@
       var email = String(input.value || '').trim().toLowerCase();
       err.textContent = '';
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = 'That email does not look right.'; return; }
+      if (signin) {
+        b.disabled = true; b.textContent = 'Signing in...';
+        return fetch('/api/signin', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: email }) })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) {
+            if (!r.ok) { err.textContent = j.error || 'Could not sign in. Try again.'; b.disabled = false; b.textContent = 'Sign in'; if (r.status === 404) setIn(false), err.textContent = j.error; return; }
+            mark(email); close(); if (after) after();
+          }); })
+          .catch(function () { mark(email); close(); if (after) after(); });
+      }
       if (!document.getElementById('dl-gate-adult').checked) { err.textContent = 'Check the box to confirm you are 18 or older.'; return; }
       b.disabled = true; b.textContent = 'Unlocking...';
       fetch('/api/subscribe', {
