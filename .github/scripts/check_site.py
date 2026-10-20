@@ -31,6 +31,7 @@ FOOTER = '''<footer class="footer">
         <li><a href="{p}stages.html">The 4 Stages</a></li>
         <li><a href="{p}progression.html">Season Plan</a></li>
         <li><a href="{p}about.html">About</a></li>
+        <li><a href="{p}privacy.html">Privacy</a></li>
       </ul>
     </div>
   </div>
