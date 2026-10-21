@@ -406,3 +406,43 @@ button { font: inherit; cursor: pointer; }
 .trust-num { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.18em; color: var(--gold-dark); margin-bottom: 0.5rem; }
 .trust-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; color: var(--cream-ink); letter-spacing: -0.01em; margin-bottom: 0.35rem; }
 .trust-text { font-size: 0.92rem; line-height: 1.55; color: var(--cream-ink-soft); margin: 0; }
+
+/* Tool phone cards (index.html, tools.html) */
+.trow { margin-top: 2rem; }
+.trow:first-child { margin-top: 0; }
+.trow-h { display: flex; align-items: baseline; gap: 0.7rem; margin: 0 0 0.8rem; }
+.trow-h .n { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em; color: var(--gold); }
+.trow-h .t { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+.trow-h .w { font-size: 0.85rem; color: var(--ink-faint); margin-left: auto; }
+.tcards { display: grid; grid-template-columns: repeat(3, minmax(0, 290px)); justify-content: start; gap: 1.25rem; }
+.tcard { display: block; text-decoration: none; color: var(--ink); min-width: 0; }
+.tcard:hover { text-decoration: none; color: var(--ink); }
+.phone { position: relative; border-radius: 26px; background: #0a1610; border: 1px solid var(--rule); padding: 7px; box-shadow: var(--shadow); overflow: hidden; aspect-ratio: 374 / 640; transition: transform 0.15s, border-color 0.15s; }
+.phone img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 20px; display: block; }
+.phone .new { position: absolute; top: 14px; left: 14px; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; background: var(--gold); color: var(--forest); padding: 0.22rem 0.5rem; border-radius: 4px; }
+.tcard:hover .phone { transform: translateY(-3px); border-color: var(--gold); }
+.tcard .nm { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; margin: 0.75rem 0 0.1rem; line-height: 1.2; letter-spacing: -0.01em; }
+.tcard .ds { font-size: 0.86rem; color: var(--ink-faint); line-height: 1.4; }
+.tmore { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.9rem; }
+.tmore a { display: inline-flex; align-items: center; min-height: 38px; padding: 0.4rem 0.85rem; border: 1px solid var(--rule); border-radius: 999px; color: var(--ink-soft); font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+.tmore a:hover { border-color: var(--gold); color: var(--gold-light); text-decoration: none; }
+.age-row { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+.age-row a { display: inline-flex; flex-direction: column; align-items: center; min-width: 76px; padding: 0.55rem 0.9rem; border: 1px solid #d8d0bf; background: #fbf8f1; border-radius: 12px; color: var(--cream-ink); text-decoration: none; }
+.age-row a b { font-family: var(--serif); font-size: 1.05rem; font-weight: 600; }
+.age-row a small { font-size: 0.72rem; color: var(--cream-ink-soft); }
+.age-row a:hover { border-color: var(--gold); text-decoration: none; }
+.qlist { border: 1px solid #d8d0bf; background: #fbf8f1; border-radius: var(--radius); overflow: hidden; }
+.qlist a { display: flex; align-items: center; gap: 0.8rem; padding: 0.85rem 1rem; border-bottom: 1px solid #e5dcc4; color: var(--cream-ink); text-decoration: none; }
+.qlist a:last-child { border-bottom: 0; }
+.qlist a:hover { background: #fff; text-decoration: none; }
+.qlist b { font-family: var(--serif); font-size: 1.02rem; font-weight: 600; }
+.qlist span { font-size: 0.85rem; color: var(--cream-ink-soft); }
+.qlist i { margin-left: auto; color: var(--gold-dark); font-style: normal; }
+@media (max-width: 768px) {
+  .tcards { display: flex; justify-content: flex-start; gap: 0.8rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 1.25rem; padding: 0 1.25rem 0.4rem; margin: 0 -1.25rem; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .tcards::-webkit-scrollbar { display: none; }
+  .tcard { flex: 0 0 64%; scroll-snap-align: start; }
+  .tcard .nm { font-size: 1rem; }
+  .trow { margin-top: 1.6rem; }
+  .qlist span { display: none; }
+}
