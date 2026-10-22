@@ -128,6 +128,7 @@ textarea { width: 100%; min-height: 150px; }
           <button class="btn btn-sm btn-forest" onclick="loadNames()">Load names</button>
           <button class="btn btn-sm btn-forest" onclick="resplit()">Auto-split pods</button>
         </div>
+        <div id="roster-import"></div>
       </div>
       <div id="podlist"></div>
     </div>
@@ -202,6 +203,13 @@ textarea { width: 100%; min-height: 150px; }
 </footer>
 
 <script src="js/email-gate.js" data-mode="page"></script>
+<script src="js/roster-import.js"></script>
+<script>
+  RosterImport.mount(document.getElementById('roster-import'), function (names) {
+    document.getElementById('names').value = names.join('\n');
+    loadNames();
+  });
+</script>
 <script src="js/site.js"></script>
 <script src="js/pods.js"></script>
 <script src="js/lineup-email.js"></script>

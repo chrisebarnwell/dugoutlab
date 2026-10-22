@@ -604,6 +604,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 
     <div class="field-group">
       <div class="field-label">Players <span id="player-count" style="font-weight:400;color:var(--text-light)">(0 added)</span></div>
+      <div id="roster-import"></div>
       <div id="player-list" class="roster-grid"></div>
       <button class="add-player-btn" onclick="addPlayer()">+ Add Player</button>
       <div id="roster-saved-note" style="display:none;align-items:center;justify-content:space-between;gap:10px;margin-top:0.75rem;padding:0.6rem 0.85rem;background:rgba(110,148,118,0.12);border:1px solid var(--rule);border-radius:8px;font-size:0.82rem;color:var(--ink-soft);">
@@ -860,6 +861,18 @@ select option { background: var(--forest-deep); color: var(--ink); }
 </footer>
 
 <script src="js/email-gate.js" data-mode="page"></script>
+<script src="js/roster-import.js"></script>
+<script>
+  /* Roster import: replace the rows with the uploaded names. Keep a tier if the name was already there. */
+  RosterImport.mount(document.getElementById('roster-import'), function (names) {
+    var tiers = {};
+    state.players.forEach(function (p) { if (p.name && p.name.trim()) tiers[p.name.trim().toLowerCase()] = p.tier; });
+    state.players = [];
+    document.getElementById('player-list').innerHTML = '';
+    names.forEach(function (n) { addPlayer(n, tiers[n.toLowerCase()] || '2'); });
+    saveRoster(); updatePlayerCount(); showRosterSavedNote();
+  });
+</script>
 <script src="js/site.js"></script>
 <script src="js/lineup-email.js"></script>
 <script>
