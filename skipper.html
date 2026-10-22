@@ -129,6 +129,29 @@
   .sk-cb-c.end { border-style: dashed; }
   .sk-cb-a { color: var(--ink-faint); font-size: 1.1rem; }
   .sk-cb-f { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-faint); border: 1px dashed var(--rule); border-radius: 50%; width: 22px; height: 22px; display: inline-grid; place-items: center; }
+  .sk-modal { position: fixed; inset: 0; z-index: 1200; background: rgba(5,12,8,0.8); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 0.6rem; }
+  .sk-modal[hidden] { display: none; }
+  .sk-modal-card { width: 100%; max-width: 560px; max-height: calc(100vh - 1.2rem); max-height: calc(100dvh - 1.2rem); overflow: auto; background: var(--forest2); border: 1.5px solid var(--gold); border-radius: var(--radius-lg); box-shadow: 0 20px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; animation: skmodal 0.25s ease; }
+  @keyframes skmodal { from { transform: translateY(18px) scale(0.98); opacity: 0; } to { transform: none; opacity: 1; } }
+  .sk-modal-body .sk-card { border: none; border-radius: 0; background: transparent; padding: 0.9rem 0.9rem 0.3rem; }
+  .sk-modal-body .sk-field { margin: 0.6rem 0 0.2rem; }
+  .sk-modal-body .sk-field svg { max-height: 300px; width: auto; max-width: 100%; margin: 0 auto; }
+  .sk-modal-body .sk-field.empty { display: none; }
+  .sk-modal-foot { position: sticky; bottom: 0; padding: 0.6rem 0.9rem calc(0.6rem + env(safe-area-inset-bottom)); background: var(--forest2); border-top: 1px solid var(--rule); }
+  body.sk-noscroll { overflow: hidden; }
+  .sk-strip { display: none; }
+  .sk-decide { scroll-margin-top: 112px; }
+  .sk-ask { scroll-margin-top: 112px; }
+  @media (max-width: 900px) {
+    .sk-strip { display: flex; position: sticky; top: 60px; z-index: 90; align-items: center; gap: 0.55rem; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.35rem 0.6rem; font-size: 0.84rem; color: var(--ink-soft); margin-bottom: 0.5rem; box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
+    .sk-strip[hidden] { display: none; }
+    .sk-strip b { color: var(--ink); }
+    .sk-strip svg { width: 30px; height: 30px; flex: 0 0 auto; }
+    .sk-strip .o { display: inline-flex; gap: 3px; margin-left: 0.3rem; vertical-align: middle; }
+    .sk-strip .o i { width: 8px; height: 8px; border-radius: 50%; border: 1px solid rgba(244,239,230,0.5); display: inline-block; }
+    .sk-strip .o i.on { background: #e0a090; border-color: #e0a090; }
+    .sk-game .sk-last, .sk-game .sk-fieldcard { display: none; }
+  }
   .sk-learn { max-width: 760px; margin: 0 auto; padding: 0 1rem 3rem; }
   .sk-learn details { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius); padding: 0.9rem 1.1rem; margin-bottom: 0.75rem; }
   .sk-learn summary { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; cursor: pointer; }
@@ -190,6 +213,7 @@
     <div class="sk-hint" style="margin-top:0.6rem">Rosters are made up on the spot and graded on the 20 to 80 scouting scale. 50 is average for this level. Nobody here is a real person. Your game saves on this device after every play. No login.</div>
   </div>
 
+  <div class="sk-strip" id="sk-strip" hidden></div>
   <div class="sk-game" id="sk-game" hidden>
 
     <div class="sk-card sk-board">
@@ -207,7 +231,7 @@
       </div>
     </div>
 
-    <div class="sk-card sk-decide">
+    <div class="sk-card sk-decide" id="sk-decidecard">
       <div id="sk-notice"></div>
       <div class="sk-label" id="sk-dec-label">Your call</div>
       <div id="sk-dec"></div>
@@ -226,7 +250,7 @@
       <div id="sk-countbar"></div>
     </div>
 
-    <div class="sk-card sk-fieldcard">
+    <div class="sk-card sk-fieldcard" id="sk-fieldcard">
       <div class="sk-label">Last ball in play</div>
       <div class="sk-field"><svg id="sk-top" viewBox="0 0 400 330" aria-label="Field view of the last play"></svg></div>
     </div>
@@ -243,6 +267,13 @@
       <div class="sk-hint" id="sk-re-note" style="margin-top:0.5rem"></div>
     </div>
 
+  </div>
+
+  <div class="sk-modal" id="sk-modal" hidden role="dialog" aria-modal="true" aria-label="What happened">
+    <div class="sk-modal-card">
+      <div class="sk-modal-body" id="sk-modal-body"></div>
+      <div class="sk-modal-foot"><button class="sk-btn" id="sk-modal-close">Back to the dugout</button></div>
+    </div>
   </div>
 
   <div class="sk-card" id="sk-final" hidden style="margin-top:0.75rem">
@@ -969,6 +1000,7 @@ var SK = (function () {
   var $ = function (id) { return document.getElementById(id); };
   var NS = 'http://www.w3.org/2000/svg';
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var phone = window.matchMedia('(max-width: 900px)');
   var G = null, UI = { approach: 'normal', first: null, two: null, steal: null, hitrun: false, ibb: false, anim: null };
   var APP_LABEL = { normal: 'Swing away', patient: 'Work the count', power: 'Swing big', contact: 'Contact swing', bunt: 'Sacrifice bunt' };
 
@@ -1005,6 +1037,15 @@ var SK = (function () {
     var cap = SK.rules(G.lv).cap;
     $('sk-inn').innerHTML = G.over ? '<b>Final</b>' : '<b>' + halfName(G.half) + ' ' + ordinal(G.inning) + '</b> &middot; ' + (SK.userBats(G) ? 'You are batting' : 'You are in the field');
     $('sk-cap').textContent = cap ? 'Pitch cap ' + cap : 'No pitch cap';
+  }
+
+  // Sticky one-line status for phones
+  function renderStrip() {
+    var st = G.st, you = G.user;
+    function base(i, x, y) { return '<rect x="' + (x - 4.5) + '" y="' + (y - 4.5) + '" width="9" height="9" transform="rotate(45 ' + x + ' ' + y + ')" fill="' + (st.bases[i] ? '#C8862E' : 'none') + '" stroke="' + (st.bases[i] ? '#e2a85a' : 'rgba(244,239,230,0.55)') + '" stroke-width="1.2"/>'; }
+    var svg = '<svg viewBox="0 0 30 30" aria-hidden="true">' + base(1, 15, 7) + base(0, 23, 15) + base(2, 7, 15) + '<path d="M11 24 L19 24 L15 28 Z" fill="#f4efe6"/></svg>';
+    var outs = '<span class="o">'; for (var o = 0; o < 3; o++) outs += '<i class="' + (o < st.outs ? 'on' : '') + '"></i>'; outs += '</span>';
+    $('sk-strip').innerHTML = svg + '<span><b>' + (G.over ? 'Final' : halfName(G.half).slice(0, 3) + ' ' + ordinal(G.inning)) + '</b>' + (G.over ? '' : outs) + '</span><span style="margin-left:auto"><b>' + G.score[you] + '</b> you, <b>' + G.score[1 - you] + '</b> them</span>';
   }
 
   // Bases and outs
@@ -1087,7 +1128,8 @@ var SK = (function () {
       txt(g, 0, 3.5, f.n, { 'text-anchor': 'middle', 'font-size': 8, fill: '#f4efe6', 'font-weight': 600 });
       nodes[f.n] = { g: g, from: p };
     });
-    if (!ev || !ev.r) { txt(svg, 200, 200, ev ? ev.label : 'The field', { 'text-anchor': 'middle', 'font-size': 13, fill: 'rgba(244,239,230,0.7)' }); return; }
+    svg.parentNode.classList.toggle('empty', !ev || !ev.r);
+    if (!ev || !ev.r) { txt(svg, 200, 160, ev ? ev.label : 'The field', { 'text-anchor': 'middle', 'font-size': 13, fill: 'rgba(244,239,230,0.7)' }); return; }
     var r = ev.r, end = r.f.pts[r.f.pts.length - 1], ep = LL.xy(end.x, ev.ball.spray), eq = tp(ep.x, ep.y);
     el('line', { x1: h.x, y1: h.y, x2: eq.x, y2: eq.y, stroke: 'rgba(226,168,90,0.55)', 'stroke-width': 1.5, 'stroke-dasharray': '4 4' }, svg);
     var who = r.catch ? r.catch.f.n : (r.field ? r.field.f.n : null), at = r.catch ? r.catch.at : (r.field ? r.field.at : null), mover = null;
@@ -1264,6 +1306,7 @@ var SK = (function () {
     rows.forEach(function (r) { h += '<li><span>' + esc(r.label) + '</span><span class="n">' + fmtRE(r.ev) + ' runs</span></li>'; });
     h += '</ul><div class="sk-ask-note">' + note + ' Each option was simulated 400 times from this exact spot. Differences under 0.05 are noise' + (lowerBetter ? '. You are in the field, so lower is better for you' : '') + '.</div>';
     $('sk-ask').innerHTML = h; $('sk-askcard').hidden = false; $('sk-askcard').classList.remove('sk-flash'); void $('sk-askcard').offsetWidth; $('sk-askcard').classList.add('sk-flash');
+    if (phone.matches) $('sk-askcard').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   }
   function askBat() {
     var rows = SK.evaluate(G, SK.batOptions(G), 400), notes = [], st = G.st, lv = G.lv;
@@ -1328,10 +1371,43 @@ var SK = (function () {
   function afterPlay(ev) {
     $('sk-askcard').hidden = true; notice('');
     if (!G.over && SK.userBats(G)) { var n = SK.aiDef(G); if (n) G.notes.push(n); }
-    renderAll(); renderLast(ev); renderField(ev);
+    renderAll(); renderLast(ev);
     if (G.over) renderReport(); else saveGame();
+    if (phone.matches && ev) openModal();
+    renderField(ev);
   }
-  function renderAll() { renderScore(); renderDiamond(); renderMatch(); renderRE(); renderLog(); renderDecide(); }
+  function renderAll() { renderScore(); renderDiamond(); renderMatch(); renderRE(); renderLog(); renderDecide(); renderStrip(); }
+
+  // Phones: the play pops up in the middle of the screen, then you close it and you are back at the decision.
+  function placeCards() {
+    var fieldBox = document.querySelector('.sk-field'), last = $('sk-lastcard'), fieldCard = $('sk-fieldcard'), mb = $('sk-modal-body'), grid = $('sk-game');
+    if (phone.matches) {
+      if (fieldBox.parentNode !== last) last.insertBefore(fieldBox, $('sk-why'));
+      if (last.parentNode !== mb) mb.appendChild(last);
+    } else {
+      if (fieldBox.parentNode !== fieldCard) fieldCard.appendChild(fieldBox);
+      if (last.parentNode !== grid) grid.insertBefore(last, fieldCard);
+      closeModal(true);
+    }
+  }
+  function openModal() {
+    placeCards();
+    var m = $('sk-modal'); m.hidden = false; document.body.classList.add('sk-noscroll');
+    m.querySelector('.sk-modal-card').scrollTop = 0;
+    $('sk-modal-close').textContent = G.over ? 'See the final report' : 'Back to the dugout';
+  }
+  function closeModal(silent) {
+    var m = $('sk-modal'); if (m.hidden) return;
+    m.hidden = true; document.body.classList.remove('sk-noscroll');
+    if (silent) return;
+    var target = G && G.over ? $('sk-final') : $('sk-decidecard');
+    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  }
+  $('sk-modal-close').onclick = function () { closeModal(); };
+  $('sk-modal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+  window.addEventListener('resize', placeCards);
+  placeCards();
 
   // End of game report
   function renderReport() {
@@ -1443,12 +1519,12 @@ var SK = (function () {
   function begin(g) {
     G = g;
     UI.approach = 'normal'; UI.first = null; UI.two = null; UI.steal = null; UI.hitrun = false; UI.ibb = false; logCount = 0; lastInnKey = ''; $('sk-log').innerHTML = '';
-    $('sk-setup').hidden = true; $('sk-game').hidden = false; $('sk-final').hidden = true; $('sk-askcard').hidden = true;
+    $('sk-setup').hidden = true; $('sk-game').hidden = false; $('sk-strip').hidden = false; $('sk-final').hidden = true; $('sk-askcard').hidden = true;
     renderAll(); renderLast(null); renderField(null);
     if (G.log.length) { $('sk-res').textContent = 'Welcome back'; $('sk-sub').textContent = 'Picking up where you left off. The play by play has the whole game so far.'; }
     $('sk-game').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   }
-  function reset() { renderSaved(); $('sk-game').hidden = true; $('sk-final').hidden = true; $('sk-setup').hidden = false; $('sk-setup').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); }
+  function reset() { renderSaved(); $('sk-game').hidden = true; $('sk-strip').hidden = true; $('sk-final').hidden = true; $('sk-setup').hidden = false; $('sk-setup').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); }
   $('sk-start').onclick = start;
   renderSaved();
 })();
