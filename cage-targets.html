@@ -207,7 +207,7 @@ details.setup .field-grid { margin-top: 0.9rem; }
         <button type="button" class="wz-opt" data-mode="field">On a field</button>
       </div>
       <div id="mode-cage">
-      <div class="tool-h">Measure three things. Hang the nets.</div>
+      <div class="tool-h">Measure three things. Hang the targets.</div>
       <div class="field-grid">
         <div class="field"><label for="dist">Tee to back net, ft</label><input type="number" id="dist" min="5" max="70" step="1" value="15"></div>
         <div class="field"><label for="cw">Cage width, ft</label><input type="number" id="cw" min="8" max="20" step="1" value="12"></div>
@@ -229,13 +229,13 @@ details.setup .field-grid { margin-top: 0.9rem; }
       </div>
       </div>
       <div id="mode-field" hidden>
-        <div class="tool-h">Walk it off. Drop a net in each lane.</div>
+        <div class="tool-h">Walk it off. Drop a target in each lane.</div>
         <div class="big-num" id="fd-num">--</div>
         <p class="big-line" id="fd-line"></p>
         <div class="viz" id="fieldmap"></div>
-        <div class="tool-note" style="text-align:center">View from above. Gold is where hit-window balls first touch down. Rings are the five nets. Dots are fielders.</div>
+        <div class="tool-note" style="text-align:center">View from above. Gold is where hit-window balls first touch down. Rings are the five targets. Dots are fielders.</div>
         <ul class="zone-list" id="fd-list"></ul>
-        <div class="tool-note">A big step is counted as 3 ft. Use a tape if you want it exact. No nets? Hoops, cones, or buckets work.</div>
+        <div class="tool-note">A big step is counted as 3 ft. Use a tape if you want it exact. Hula hoops, cones, or buckets all work.</div>
       </div>
     </div>
 
@@ -246,12 +246,12 @@ details.setup .field-grid { margin-top: 0.9rem; }
       <ol class="built-list" id="see-cage">
         <li>Stand at the tee. Hold the phone where the ball sits.</li>
         <li>Aim straight down the cage. Tap <b style="color:var(--ink)">Set middle</b>.</li>
-        <li>All five spots appear on screen. Follow the arrows to each one, hang the net where the ring sits, tap <b style="color:var(--ink)">Hung</b>.</li>
+        <li>All five spots appear on screen. Follow the arrows to each one, hang the target on the cage net where the ring sits, tap <b style="color:var(--ink)">Hung</b>.</li>
       </ol>
       <ol class="built-list" id="see-field" hidden>
         <li>Stand on home plate. Aim at second base. Tap <b style="color:var(--ink)">Set middle</b>.</li>
-        <li>All five lanes appear on screen. Follow the arrows to each one, tap <b style="color:var(--ink)">Hung</b> once the net is out there.</li>
-        <li>Send a helper down each locked line. Count the steps. Drop the net.</li>
+        <li>All five lanes appear on screen. Follow the arrows to each one, tap <b style="color:var(--ink)">Hung</b> once the target is out there.</li>
+        <li>Send a helper down each locked line. Count the steps. Drop the target.</li>
       </ol>
       <button type="button" class="btn btn-primary btn-lg" id="sight-open" style="margin-top:1.1rem">Open the camera</button>
       <div class="tool-note">Phone only. Stay on one spot while you lock. Pins hold while you turn and drift if you walk. Nothing is recorded and nothing leaves your phone.</div>
@@ -276,7 +276,7 @@ details.setup .field-grid { margin-top: 0.9rem; }
     <!-- PLAY -->
     <div class="tool-card" style="border-color:var(--gold)">
       <div class="tool-step">Now play</div>
-      <div class="tool-h">Nets are up. Keep score.</div>
+      <div class="tool-h">Targets are up. Keep score.</div>
       <p class="big-line" style="margin-bottom:1rem">Ten balls. Call your shot. Middle 30, gaps 20, lines 10. Challenge a teammate or run head-to-head. Free with an email.</p>
       <a href="game.html" class="btn btn-primary btn-lg">Open the game</a>
     </div>
@@ -293,7 +293,7 @@ details.setup .field-grid { margin-top: 0.9rem; }
         <li><strong>MLB automated ball-strike zone.</strong> Bottom of the zone at 27 percent of batter height and top at 53.5 percent, so the middle sits at about 40 percent. This is the major league definition. Youth rulebooks describe the zone by body landmarks, such as armpits to the top of the knees, and that zone is taller. Youth fit is uncertain, so the contact height can be typed in by hand.</li>
         <li><strong>Catcher's view.</strong> Six taps place the camera against the cage size you entered. A tap on the screen becomes a point on the net, then a launch angle and direction from the tee. Accuracy depends on your taps, your cage numbers, and a phone that stays still. The call uses DugoutLab assumptions: infielders near 14 and 33 degrees off center on each side, each covering about 7 degrees. Not measured.</li>
         <li><strong>Phone sight.</strong> Reads the tilt sensor in your phone. Sensor accuracy varies by phone. Check one spot against the table and a tape measure before you trust it. Locked pins are drawn with an assumed camera angle, so they are exact at the center of the screen and approximate near the edges. On a field the phone gives the direction only. Tilt is too rough to judge distance past the infield, so distance is paced off.</li>
-        <li><strong>Line drive cap.</strong> Whatever the field model says, the nets only mark 10 to 22 degree launch angles. For small fields and low exit velocities the model can favor fly balls, since it assumes every fielder makes every reachable play. Youth fielders do not, and a target that teaches lift is the wrong lesson. DugoutLab decision, not a measured result.</li>
+        <li><strong>Line drive cap.</strong> Whatever the field model says, the targets only mark 10 to 22 degree launch angles. For small fields and low exit velocities the model can favor fly balls, since it assumes every fielder makes every reachable play. Youth fielders do not, and a target that teaches lift is the wrong lesson. DugoutLab decision, not a measured result.</li>
         <li><strong>Fielder depth, speed, reach, and reaction time.</strong> DugoutLab assumptions. Not measured. Open the field setup and change them.</li>
       </ul>
     </details>
@@ -790,7 +790,7 @@ function callHit(f, launch, s) {
     function arc(d, dash, op, w) {
       return '<path d="M' + P(d, -45) + ' A' + (d * sc).toFixed(1) + ' ' + (d * sc).toFixed(1) + ' 0 0 1 ' + P(d, 45) + '" fill="none" stroke="#f4efe6" stroke-opacity="' + op + '" stroke-width="' + w + '"' + (dash ? ' stroke-dasharray="5 5"' : '') + '/>';
     }
-    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Field from above with the landing zone and five net spots">';
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Field from above with the landing zone and five target spots">';
     s += '<path d="M' + hx + ',' + hy + ' L' + P(f.fence, -45) + ' A' + (f.fence * sc).toFixed(1) + ' ' + (f.fence * sc).toFixed(1) + ' 0 0 1 ' + P(f.fence, 45) + ' Z" fill="#15291f" stroke="#f4efe6" stroke-opacity="0.6" stroke-width="2"/>';
     if (land) {
       var ri = land.lo * sc, ro = Math.min(land.hi, f.fence) * sc;
@@ -849,7 +849,7 @@ function callHit(f, launch, s) {
       $('win-num').innerHTML = Math.ceil(win.lo) + '&#176; to ' + Math.floor(win.hi) + '&#176;<small>launch angle</small>';
       var line = 'At ' + Math.round(f.ev) + ' mph on this field, balls launched in this range clear the infield and land in front of the outfielders.';
       if (wins[1]) line += ' A second window opens from ' + Math.ceil(wins[1].lo) + '&#176; to ' + Math.floor(wins[1].hi) + '&#176;, over the outfielders and short of the fence.';
-      if (wasCut) line += ' Nets are capped to line drives, ' + Math.ceil(band.lo) + '&#176; to ' + Math.floor(band.hi) + '&#176;, so the game never asks a kid to lift the ball.';
+      if (wasCut) line += ' Targets are capped to line drives, ' + Math.ceil(band.lo) + '&#176; to ' + Math.floor(band.hi) + '&#176;, so the game never asks a kid to lift the ball.';
       $('win-line').innerHTML = line;
     } else if (linerRg) {
       $('win-num').innerHTML = Math.ceil(linerRg.lo) + '&#176; to ' + Math.floor(linerRg.hi) + '&#176;<small>low liners</small>';
@@ -899,7 +899,7 @@ function callHit(f, launch, s) {
     state = { f: f, rg: rg, cage: { dist: dist, cw: cw, ch: ch }, land: land, mode: mode, aim: { lo: Math.ceil(band.lo), hi: Math.floor(band.hi), liner: false } };
     if (land) {
       $('fd-num').innerHTML = land.lo + ' to ' + land.hi + '<small>ft from home</small>';
-      $('fd-line').textContent = 'About ' + Math.round(land.lo / 3) + ' to ' + Math.round(land.hi / 3) + ' big steps. Balls in the hit window first touch down here. Set a net in each lane, anywhere in the gold.';
+      $('fd-line').textContent = 'About ' + Math.round(land.lo / 3) + ' to ' + Math.round(land.hi / 3) + ' big steps. Balls in the hit window first touch down here. Set a target in each lane, anywhere in the gold.';
       var mid = Math.round((land.lo + land.hi) / 2), st = Math.round(mid / 3);
       $('fd-list').innerHTML = [['Up the middle', 'Straight over second base'], ['Left-center and right-center gaps', 'Halfway between second base and each foul line'], ['Left and right field lines', 'A few steps inside each foul line']].map(function (r) {
         return '<li class="is-hit"><span class="sw" style="background:' + COL.hit + '"></span><span><b style="color:var(--ink)">' + r[0] + '.</b> ' + r[1] + '.</span><span class="rg">' + mid + ' ft · ' + st + ' steps</span></li>';
@@ -998,7 +998,7 @@ function callHit(f, launch, s) {
     var h = '';
     LANES.forEach(function (l) {
       var k = sight.locks[l.id]; if (!k) return;
-      h += '<li><b>' + (k.hung ? '\u2713 ' : '') + (k.field ? 'Net lane ' : 'Line drive ') + l.name.toLowerCase() + '</b>' + k.where + '</li>';
+      h += '<li><b>' + (k.hung ? '\u2713 ' : '') + (k.field ? 'Target lane ' : 'Line drive ') + l.name.toLowerCase() + '</b>' + k.where + '</li>';
     });
     $('lock-list').innerHTML = h;
   }
@@ -1059,7 +1059,7 @@ function callHit(f, launch, s) {
     $('sight-dbg').textContent = 'v17 az ' + sight.az.toFixed(1) + ' el ' + sight.el.toFixed(1) + ' sp ' + wrapDeg(sight.az - sight.az0).toFixed(1) + ' cur ' + sight.cur + ' locks ' + Object.keys(sight.locks).join(',') + ' pins ' + $('sight-pins').children.length;
     if (sight.flash && Date.now() < sight.flash) {
       eb.textContent = 'HUNG'; zt.textContent = laneOf(sight.lastLocked).name + ' \u2713'; zt.className = 'sight-zone is-hit';
-      sub.textContent = 'Net up. Next: ' + (sight.cur === 'done' ? 'all done' : laneOf(sight.cur) ? laneOf(sight.cur).chip : ''); sub2.textContent = '';
+      sub.textContent = 'Target up. Next: ' + (sight.cur === 'done' ? 'all done' : laneOf(sight.cur) ? laneOf(sight.cur).chip : ''); sub2.textContent = '';
       ring.className = 'sight-ring is-hit'; arrows(0, 0, 0, 0); btn.disabled = true; $('sight-h').hidden = true;
       return;
     }
@@ -1071,7 +1071,7 @@ function callHit(f, launch, s) {
 
     if (sight.cur === 'done') {
       $('sight-h').hidden = true;
-      eb.textContent = 'DONE'; zt.textContent = 'ALL 5 NETS UP'; zt.className = 'sight-zone is-hit';
+      eb.textContent = 'DONE'; zt.textContent = 'ALL 5 TARGETS UP'; zt.className = 'sight-zone is-hit';
       sub.textContent = 'Tap Done. Your spots are saved on the page.'; sub2.textContent = 'Tap any chip to go back to it.';
       ring.className = 'sight-ring'; arrows(0, 0, 0, 0); btn.disabled = true;
       return;
@@ -1091,11 +1091,11 @@ function callHit(f, launch, s) {
     if (!field) { up = ev > 4; down = ev < -4; }
     var vOK = field || !up && !down;
     sight.onT = hOK && vOK;
-    eb.textContent = field ? 'NET LANE' : (state.aim && state.aim.liner ? 'LOW LINER' : 'LINE DRIVE');
+    eb.textContent = field ? 'TARGET LANE' : (state.aim && state.aim.liner ? 'LOW LINER' : 'LINE DRIVE');
     zt.textContent = lane.name; zt.className = 'sight-zone' + (sight.onT ? ' is-hit' : '');
     ring.className = 'sight-ring' + (sight.onT ? ' is-hit' : '');
     btn.disabled = !sight.onT;
-    if (sight.onT) { sub.textContent = 'Hang the net here. Tap Hung when it is up.'; arrows(0, 0, 0, 0); }
+    if (sight.onT) { sub.textContent = 'Hang the target here. Tap Hung when it is up.'; arrows(0, 0, 0, 0); }
     else {
       var parts = [];
       if (!hOK) parts.push('Turn ' + (eh > 0 ? 'left' : 'right') + ' ' + Math.round(Math.abs(eh)) + '°');
