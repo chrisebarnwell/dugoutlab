@@ -50,12 +50,12 @@
       <div class="page-hero-inner">
         <div class="eyebrow">How we coach</div>
         <h2 class="hs-h">What works, why, and how.</h2>
-        <div class="www">
-          <div><div class="section-label">What works</div><p>Games first. Drills where they help.</p></div>
-          <div><div class="section-label">Why</div><p>Fun is the prerequisite. Kids who want to come back tomorrow get better.</p></div>
-          <div><div class="section-label">How</div><p>Small-sided games. One cue at a time. Less coach talk.</p></div>
+        <div class="hs-tiles">
+          <div class="hs-tile"><span class="hs-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M7.5 5.5c2 3.5 2 9.5 0 13M16.5 5.5c-2 3.5-2 9.5 0 13"/></svg></span><span class="hs-k">What works</span><b>Games first.</b><small>Drills where they help.</small></div>
+          <div class="hs-tile"><span class="hs-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></span><span class="hs-k">Why</span><b>Fun first.</b><small>Kids who come back get better.</small></div>
+          <div class="hs-tile"><span class="hs-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="17" r="2.5"/><circle cx="18" cy="17" r="2.5"/><circle cx="12" cy="6" r="2.5"/><path d="M8.5 16h7M7.3 14.8l3.4-6.4M16.7 14.8l-3.4-6.4"/></svg></span><span class="hs-k">How</span><b>Less talk.</b><small>Small games. One cue.</small></div>
         </div>
-        <p class="www-src">Every claim cites a source or says it's uncertain. <a href="how-kids-learn.html">How kids actually learn &rarr;</a></p>
+        <a class="hs-more" href="how-kids-learn.html">How kids actually learn &rarr;</a>
       </div>
     </div>
 
@@ -63,11 +63,11 @@
       <div class="page-hero-inner">
         <div class="eyebrow">Right now</div>
         <h2 class="hs-h">Something just happened?</h2>
-        <div class="qlist hs-q">
-          <a href="articles/player-cries.html"><b>A player is crying</b><span>What to say after the error.</span><i>&rarr;</i></a>
-          <a href="articles/parent-sideline.html"><b>A parent is yelling</b><span>Six words that help.</span><i>&rarr;</i></a>
-          <a href="articles/why-kids-quit.html"><b>A kid wants to quit</b><span>The top reason, and your part.</span><i>&rarr;</i></a>
-          <a href="articles/the-week-before.html"><b>The big game is coming</b><span>The nerves are ours, not theirs.</span><i>&rarr;</i></a>
+        <div class="hs-tiles hs-tiles-2">
+          <a class="hs-tile" href="articles/player-cries.html"><span class="hs-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 10h.01M15.5 10h.01M9 16.5c1.8-1.3 4.2-1.3 6 0"/><path d="M8.5 12.5c-.6 1-.6 1.8 0 2.2.6-.4.6-1.2 0-2.2z"/></svg></span><b>A player is crying</b><small>What to say after the error.</small></a>
+          <a class="hs-tile" href="articles/parent-sideline.html"><span class="hs-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l7 4V6L7 10H4z"/><path d="M17.5 9a4 4 0 0 1 0 6M7 14l1 5h2.5l-1-4.5"/></svg></span><b>A parent is yelling</b><small>Six words that help.</small></a>
+          <a class="hs-tile" href="articles/why-kids-quit.html"><span class="hs-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4H6v16h8"/><path d="M11 12h9M17 9l3 3-3 3"/></svg></span><b>A kid wants to quit</b><small>The top reason, and your part.</small></a>
+          <a class="hs-tile" href="articles/the-week-before.html"><span class="hs-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4M6 4h11l-2 4 2 4H6"/></svg></span><b>The big game is coming</b><small>The nerves are ours, not theirs.</small></a>
         </div>
       </div>
     </div>
@@ -90,18 +90,24 @@
   .hs-slide.is-on { opacity: 1; visibility: visible; }
   .hs-btns { margin-top: 1.4rem; display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
   .hs-h { font-family: var(--serif); font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 600; color: var(--ink); line-height: 1.1; letter-spacing: -0.015em; margin-bottom: 1.25rem; text-wrap: balance; }
-  .www { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; text-align: left; }
-  .www p { margin: 0; font-family: var(--serif); font-size: 1.15rem; line-height: 1.35; letter-spacing: -0.01em; color: var(--ink); }
-  .www-src { margin: 1.25rem auto 0 !important; font-size: 0.88rem !important; color: var(--ink-faint) !important; }
-  .www-src a { font-weight: 600; }
-  .hs-q { max-width: 600px; margin: 0 auto; text-align: left; }
+  .hs-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; max-width: 760px; margin: 0 auto; }
+  .hs-tiles-2 { grid-template-columns: repeat(2, 1fr); max-width: 640px; }
+  .hs-tile { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding: 1.1rem 0.75rem 1rem; background: rgba(10,22,16,0.7); border: 1px solid rgba(200,134,46,0.35); border-radius: 16px; color: var(--ink); text-decoration: none; text-align: center; transition: border-color 0.15s, transform 0.15s; }
+  a.hs-tile:hover { border-color: var(--gold); color: var(--ink); text-decoration: none; transform: translateY(-2px); }
+  a.hs-tile:active { transform: scale(0.97); }
+  .hs-ic { width: 46px; height: 46px; border-radius: 999px; display: grid; place-items: center; background: rgba(200,134,46,0.14); color: var(--gold-light); margin-bottom: 0.25rem; }
+  .hs-ic svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .hs-k { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+  .hs-tile b { font-family: var(--serif); font-size: 1.2rem; font-weight: 600; line-height: 1.15; letter-spacing: -0.01em; }
+  .hs-tile small { font-size: 0.82rem; line-height: 1.35; color: var(--ink-soft); }
+  .hs-more { display: inline-block; margin-top: 1.1rem; font-weight: 600; font-size: 0.95rem; }
   .hs-nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.6rem; }
   .hs-dots { display: flex; gap: 8px; }
   .hs-dot { width: 10px; height: 10px; border: 0; border-radius: 999px; background: var(--rule); padding: 0; transition: width 0.25s, background 0.25s; }
   .hs-dot.is-on { width: 30px; background: var(--gold); }
   .hs-arrow { width: 36px; height: 36px; border-radius: 999px; border: 1px solid var(--rule); background: transparent; color: var(--ink); display: grid; place-items: center; }
   .hs-arrow:hover { border-color: var(--gold); color: var(--gold); }
-  @media (max-width: 768px) { .www { grid-template-columns: 1fr; gap: 0.9rem; } .www p { font-size: 1.05rem; } .hs-arrow { display: none; } }
+  @media (max-width: 768px) { .hs-arrow { display: none; } .hs-tiles { gap: 0.5rem; } .hs-tile { padding: 0.9rem 0.4rem 0.85rem; } .hs-tile b { font-size: 1.02rem; } .hs-tile small { font-size: 0.74rem; } .hs-k { font-size: 0.58rem; letter-spacing: 0.12em; } .hs-ic { width: 40px; height: 40px; } .hs-ic svg { width: 22px; height: 22px; } .hs-h { margin-bottom: 1rem; } }
   @media print { .hs-nav { display: none; } .hs-slide { opacity: 1; visibility: visible; grid-area: auto; } .hs-track { display: block; } }
 </style>
 <script>
