@@ -60,7 +60,11 @@
   #ll-result-card { scroll-margin-top: 72px; }
   #ll-result-card.ll-pop { animation: llpop 0.9s ease; }
   @keyframes llpop { 0% { box-shadow: 0 0 0 0 rgba(200,134,46,0.9); border-color: var(--gold); } 100% { box-shadow: 0 0 0 14px rgba(200,134,46,0); } }
-  .ll-again { display: none; width: 100%; margin-top: 0.9rem; background: var(--gold); color: var(--forest); border: none; border-radius: 12px; padding: 0.9rem; font-size: 1.05rem; font-weight: 700; }
+  .ll-short, .ll-moretog { display: none; }
+  .ll-hud-row { display: flex; gap: 0.5rem; align-items: stretch; margin-top: 0.25rem; }
+  .ll-hud-row .ll-swing { flex: 1; margin-top: 0; }
+  .ll-moretog { flex: 0 0 auto; background: var(--forest-deep); color: var(--ink-soft); border: 1.5px solid var(--rule); border-radius: 10px; padding: 0.3rem 0.55rem; font: inherit; font-size: 0.72rem; line-height: 1.2; font-weight: 600; }
+  .ll-moretog.on { border-color: var(--gold); color: var(--gold-light); }
   #ll-swing-card { scroll-margin-top: 72px; }
   @keyframes llflash { 0% { background: rgba(200,134,46,0.35); } 100% { background: transparent; } }
   .ll-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin-top: 0.4rem; }
@@ -80,14 +84,40 @@
   .ll-learn li { margin-bottom: 0.45rem; }
   .ll-learn strong { color: var(--ink); }
   @media (max-width: 900px) {
-    .ll-again { display: block; }
+    body { padding-bottom: var(--ll-hud, 300px); }
     .ll-grid { grid-template-columns: 1fr; }
+    .ll-grid > div:first-child { display: contents; }
+    #ll-result-card { order: 1; } .ll-score-card { order: 2; margin-top: 0 !important; }
     .ll-views { grid-template-columns: 1fr; }
-    .ll-res-label { font-size: 1.6rem; }
+    .ll-views > .ll-view:nth-child(2) { order: -1; }
+    .ll-res-label { font-size: 1.4rem; }
+    .ll-result { margin-bottom: 0.45rem; gap: 0.4rem; }
+    .ll-res-sub { font-size: 0.84rem; margin-top: 0.1rem; }
+    .ll-chip { font-size: 0.7rem; padding: 0.2rem 0.4rem; }
+    .ll-pred { font-size: 0.86rem; padding: 0.45rem 0.6rem; margin-bottom: 0.5rem; line-height: 1.4; }
+    .ll-view-label { padding-top: 0.4rem; }
+    .ll-chips .ll-chip:nth-child(4) { display: none; }
+    .ll-view svg { width: auto; max-width: 100%; max-height: 240px; margin: 0 auto; }
+    .ll-long { display: none; } .ll-short { display: inline; } .ll-moretog { display: block; }
+    #ll-swing-card { position: fixed; left: 0; right: 0; bottom: 0; z-index: 950; border-radius: 16px 16px 0 0; border-bottom: none; padding: 0.5rem 0.9rem calc(0.55rem + env(safe-area-inset-bottom)); box-shadow: 0 -10px 28px rgba(0,0,0,0.45); display: flex; flex-direction: column; gap: 0.2rem; }
+    #ll-swing-card .ll-h, #ll-swing-card .ll-hint, #ll-swing-card .ll-ends { display: none; }
+    #ll-swing-card .ll-ctl { margin: 0; display: grid; grid-template-columns: 46px 1fr 78px; align-items: center; column-gap: 0.5rem; }
+    #ll-swing-card .ll-ctl-top { display: contents; }
+    #ll-swing-card .ll-ctl label { grid-column: 1; grid-row: 1; font-size: 0.78rem; }
+    #ll-swing-card .ll-ctl input[type=range] { grid-column: 2; grid-row: 1; height: 30px; margin: 0; }
+    #ll-swing-card .ll-val { grid-column: 3; grid-row: 1; font-size: 0.84rem; text-align: right; }
+    #ll-swing-card .ll-more { display: none; }
+    #ll-swing-card.open-more .ll-more { display: grid; }
+    #ll-c-field { grid-template-columns: 46px 1fr; }
+    #ll-c-field .ll-sel { grid-column: 2; grid-row: 1; margin: 0; padding: 0.35rem 0.5rem; font-size: 14px; }
+    #ll-c-pick { grid-template-columns: 46px 1fr; border-top: 1px solid var(--rule) !important; padding-top: 0.4rem !important; margin-top: 0.15rem !important; }
+    #ll-c-pick label { grid-column: 1; grid-row: 1; } #ll-c-pick .ll-pick { grid-column: 2; grid-row: 1; margin-top: 0; gap: 0.3rem; }
+    .ll-pick button { padding: 0.42rem 0.2rem; font-size: 0.84rem; }
+    .ll-swing { padding: 0.65rem; font-size: 1rem; }
   }
 </style>
 </head>
-<body>
+<body data-nobar>
 
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
@@ -123,54 +153,57 @@
       <div class="ll-card" id="ll-swing-card">
         <div class="ll-h">Your swing</div>
 
-        <div class="ll-ctl">
+        <div class="ll-ctl ll-more" id="ll-c-field">
           <label for="ll-level">Field</label>
           <select id="ll-level" class="ll-sel"></select>
           <div class="ll-hint" id="ll-level-hint"></div>
         </div>
 
         <div class="ll-ctl">
-          <div class="ll-ctl-top"><label for="ll-ev">Exit velocity</label><span class="ll-val" id="ll-ev-v"></span></div>
+          <div class="ll-ctl-top"><label for="ll-ev"><span class="ll-long">Exit velocity</span><span class="ll-short">Velo</span></label><span class="ll-val" id="ll-ev-v"></span></div>
           <input type="range" id="ll-ev" min="20" max="115" step="1" value="55">
           <div class="ll-hint" id="ll-ev-hint"></div>
         </div>
 
         <div class="ll-ctl">
-          <div class="ll-ctl-top"><label for="ll-la">Launch angle</label><span class="ll-val" id="ll-la-v"></span></div>
+          <div class="ll-ctl-top"><label for="ll-la"><span class="ll-long">Launch angle</span><span class="ll-short">Angle</span></label><span class="ll-val" id="ll-la-v"></span></div>
           <input type="range" id="ll-la" min="-20" max="70" step="1" value="18">
           <div class="ll-hint" id="ll-la-hint"></div>
         </div>
 
         <div class="ll-ctl">
-          <div class="ll-ctl-top"><label for="ll-sp">Direction</label><span class="ll-val" id="ll-sp-v"></span></div>
+          <div class="ll-ctl-top"><label for="ll-sp"><span class="ll-long">Direction</span><span class="ll-short">Aim</span></label><span class="ll-val" id="ll-sp-v"></span></div>
           <input type="range" id="ll-sp" min="-45" max="45" step="1" value="-10">
           <div class="ll-ends"><span>Left field line</span><span>Center</span><span>Right field line</span></div>
         </div>
 
-        <div class="ll-ctl">
+        <div class="ll-ctl ll-more">
           <div class="ll-ctl-top"><label for="ll-wind">Wind</label><span class="ll-val" id="ll-wind-v"></span></div>
           <input type="range" id="ll-wind" min="-15" max="15" step="1" value="0">
           <div class="ll-ends"><span>Blowing in</span><span>Calm</span><span>Blowing out</span></div>
         </div>
 
-        <div class="ll-ctl" style="border-top:1px solid var(--rule);padding-top:0.9rem">
-          <label>Predict first: what happens?</label>
+        <div class="ll-ctl" id="ll-c-pick" style="border-top:1px solid var(--rule);padding-top:0.9rem">
+          <label><span class="ll-long">Predict first: what happens?</span><span class="ll-short">Call it</span></label>
           <div class="ll-pick" id="ll-pick">
             <button type="button" data-k="out">Out</button>
             <button type="button" data-k="hit">Hit</button>
-            <button type="button" data-k="hr">Home run</button>
+            <button type="button" data-k="hr"><span class="ll-long">Home run</span><span class="ll-short">HR</span></button>
           </div>
         </div>
-        <div class="ll-ctl">
-          <div class="ll-ctl-top"><label for="ll-guess">How far will it fly?</label><span class="ll-val" id="ll-guess-v"></span></div>
+        <div class="ll-ctl" id="ll-c-guess">
+          <div class="ll-ctl-top"><label for="ll-guess"><span class="ll-long">How far will it fly?</span><span class="ll-short">Guess</span></label><span class="ll-val" id="ll-guess-v"></span></div>
           <input type="range" id="ll-guess" min="0" max="520" step="5" value="150">
           <div class="ll-hint">Ground balls only score the call, not the distance.</div>
         </div>
 
-        <button class="ll-swing" id="ll-go" disabled>Make your call first</button>
+        <div class="ll-hud-row">
+          <button type="button" class="ll-moretog" id="ll-moretog">Field<br>+ wind</button>
+          <button class="ll-swing" id="ll-go" disabled>Make your call first</button>
+        </div>
       </div>
 
-      <div class="ll-card" style="margin-top:1rem">
+      <div class="ll-card ll-score-card" style="margin-top:1rem">
         <div class="ll-h">Scientist score</div>
         <div class="ll-proc">
           <div class="ll-stat"><div class="ll-stat-n" id="ll-swings">0</div><div class="ll-stat-l">Swings</div></div>
@@ -209,7 +242,6 @@
 
       <div class="ll-h" style="font-size:1.05rem">Why it happened</div>
       <ul class="ll-why" id="ll-why"><li>Every swing gets an explanation here: the forces, the timing, and who had a chance.</li></ul>
-      <button type="button" class="ll-again" id="ll-again">Change one thing and swing again</button>
     </div>
 
   </div>
@@ -766,7 +798,11 @@ var LL = (function () {
     renderExp(-1);
   }
   $('ll-reset').addEventListener('click', resetLab);
-  $('ll-again').addEventListener('click', function () { $('ll-swing-card').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); });
+  // Phone layout: the controls become a fixed panel at the bottom, so the result stays in view while you change one thing.
+  var hud = $('ll-swing-card'), mq = window.matchMedia('(max-width: 900px)');
+  function fitHud() { if (mq.matches) document.documentElement.style.setProperty('--ll-hud', (hud.offsetHeight + 12) + 'px'); else document.documentElement.style.removeProperty('--ll-hud'); }
+  window.addEventListener('resize', fitHud); fitHud(); setTimeout(fitHud, 300);
+  $('ll-moretog').addEventListener('click', function () { hud.classList.toggle('open-more'); $('ll-moretog').classList.toggle('on', hud.classList.contains('open-more')); fitHud(); });
 
   updateLabels(); fitGuess(); renderExp(-1); drawSide(lvl(), null); drawTop(lvl(), null);
 })();
