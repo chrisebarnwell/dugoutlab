@@ -172,6 +172,7 @@
 <div class="sk-wrap">
 
   <div class="sk-card" id="sk-setup">
+    <div id="sk-saved"></div>
     <div class="sk-h">New game</div>
     <div class="sk-pick" style="grid-template-columns:1fr">
       <label class="sk-label" for="sk-level" style="margin:0">Field and level</label>
@@ -186,7 +187,7 @@
     <div class="sk-row">
       <button class="sk-btn" id="sk-start">Play ball</button>
     </div>
-    <div class="sk-hint" style="margin-top:0.6rem">Rosters are made up on the spot and graded on the 20 to 80 scouting scale. 50 is average for this level. Nobody here is a real person.</div>
+    <div class="sk-hint" style="margin-top:0.6rem">Rosters are made up on the spot and graded on the 20 to 80 scouting scale. 50 is average for this level. Nobody here is a real person. Your game saves on this device after every play. No login.</div>
   </div>
 
   <div class="sk-game" id="sk-game" hidden>
@@ -1247,7 +1248,7 @@ var SK = (function () {
         var np = SK.changePitcher(G, t, i);
         G.notes.push('You bring in ' + np.name + ' for ' + old.name + ' after ' + old.pitches + ' pitches.');
         G.decisions.push({ inning: G.inning, half: G.half, kind: 'pitch', label: 'Pitching change: ' + np.name + ' for ' + old.name + ' at ' + old.pitches + ' pitches', fat: SK.fatigue(old), capped: capped });
-        notice(''); renderAll();
+        notice(''); renderAll(); saveGame();
       };
       if ($('sk-in')) $('sk-in').onchange = function (e) { G.def[1 - G.half].infieldIn = e.target.checked; };
       if ($('sk-ibb')) $('sk-ibb').onchange = function (e) { UI.ibb = e.target.checked; };
@@ -1328,13 +1329,14 @@ var SK = (function () {
     $('sk-askcard').hidden = true; notice('');
     if (!G.over && SK.userBats(G)) { var n = SK.aiDef(G); if (n) G.notes.push(n); }
     renderAll(); renderLast(ev); renderField(ev);
-    if (G.over) renderReport();
+    if (G.over) renderReport(); else saveGame();
   }
   function renderAll() { renderScore(); renderDiamond(); renderMatch(); renderRE(); renderLog(); renderDecide(); }
 
   // End of game report
   function renderReport() {
     var you = G.user, won = G.winner === you, tie = G.winner === -1, h = '';
+    recordCareer(); clearSave();
     h += '<div class="sk-label">Final</div><div class="sk-big">' + (tie ? 'Tie game' : (won ? 'You won' : 'You lost')) + ', ' + G.score[you] + ' to ' + G.score[1 - you] + '</div>';
     var calls = G.decisions.filter(function (d) { return d.kind === 'bat'; }), styles = G.decisions.filter(function (d) { return d.kind === 'style'; }).length, agreed = calls.filter(function (d) { return d.agree; }).length;
     var big = null; G.log.forEach(function (e) { if (e.userTeam && (!big || Math.abs(e.dRE) > Math.abs(big.dRE))) big = e; });
@@ -1359,6 +1361,75 @@ var SK = (function () {
     $('sk-final').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   }
 
+  // Saving: this device only, no login. Wrapped so private windows and blocked storage never break the game.
+  var SAVE_KEY = 'dl-skipper-game-v1', CAREER_KEY = 'dl-skipper-career-v1';
+  function store(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+  function load(k) { try { var s = localStorage.getItem(k); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
+  function refMap(g) {
+    var m = new Map();
+    g.teams.forEach(function (t, ti) { t.lineup.forEach(function (x, i) { m.set(x, 'L' + ti + '_' + i); }); t.pitchers.forEach(function (x, i) { m.set(x, 'P' + ti + '_' + i); }); });
+    return m;
+  }
+  function saveGame() {
+    if (!G || G.over) return;
+    var m = refMap(G), lists = [];
+    G.teams.forEach(function (t) { lists.push(t.lineup, t.pitchers); });
+    var json;
+    try {
+      json = JSON.stringify(G, function (k, v) {
+        if (k === 'lv' && v && v.id) return { $lv: v.id };
+        if (k === 'last') return undefined;
+        if (k === 'r' && v && v.f) return { ground: v.ground, hr: v.hr, kind: v.kind, f: { dist: v.f.dist, hang: v.f.hang, fenceFt: v.f.fenceFt } };
+        if (v && typeof v === 'object' && m.has(v) && lists.indexOf(this) < 0) return { $ref: m.get(v) };
+        return v;
+      });
+    } catch (e) { return; }
+    try { localStorage.setItem(SAVE_KEY, json); } catch (e) { }
+  }
+  function restoreGame(data) {
+    var g = data, lv = null;
+    SK.LEVELS.forEach(function (l) { if (data.lv && l.id === data.lv.$lv) lv = l; });
+    if (!lv || !g.teams) return null;
+    g.lv = lv;
+    var byId = {};
+    g.teams.forEach(function (t, ti) { t.lineup.forEach(function (x, i) { byId['L' + ti + '_' + i] = x; }); t.pitchers.forEach(function (x, i) { byId['P' + ti + '_' + i] = x; }); });
+    (function walk(o) {
+      if (!o || typeof o !== 'object') return;
+      Object.keys(o).forEach(function (k) {
+        var v = o[k];
+        if (v && typeof v === 'object' && v.$ref) o[k] = byId[v.$ref] || null;
+        else walk(v);
+      });
+    })(g);
+    g.last = g.log.length ? g.log[g.log.length - 1] : null;
+    g.notes = g.notes || [];
+    return g;
+  }
+  function clearSave() { store(SAVE_KEY, null); }
+  function recordCareer() {
+    if (!G || G.recorded) return;
+    G.recorded = true;
+    var c = load(CAREER_KEY) || { games: 0, w: 0, l: 0, t: 0, calls: 0, agreed: 0, runs: 0, against: 0 };
+    var calls = G.decisions.filter(function (d) { return d.kind === 'bat'; });
+    c.games++; if (G.winner === -1) c.t++; else if (G.winner === G.user) c.w++; else c.l++;
+    c.calls += calls.length; c.agreed += calls.filter(function (d) { return d.agree; }).length;
+    c.runs += G.score[G.user]; c.against += G.score[1 - G.user];
+    store(CAREER_KEY, c);
+  }
+  function renderSaved() {
+    var box = $('sk-saved'), saved = load(SAVE_KEY), c = load(CAREER_KEY), h = '';
+    if (saved && saved.teams && !saved.over) {
+      var you = saved.teams[saved.user] ? saved.teams[saved.user].name : 'Your team';
+      h += '<div class="sk-notice"><b>Game in progress:</b> ' + esc(you) + ', ' + (saved.half === 0 ? 'top' : 'bottom') + ' of the ' + ordinal(saved.inning) + ', ' + saved.score[saved.user] + ' to ' + saved.score[1 - saved.user] + '.<div class="sk-row"><button class="sk-btn" id="sk-resume">Resume</button><button class="sk-btn2" id="sk-discard">Start over</button></div></div>';
+    }
+    if (c && c.games) {
+      h += '<div class="sk-stat3" style="margin-bottom:0.6rem"><div class="sk-stat"><div class="n">' + c.w + '-' + c.l + (c.t ? '-' + c.t : '') + '</div><div class="l">Your record</div></div><div class="sk-stat"><div class="n">' + (c.calls ? r0(c.agreed / c.calls * 100) + '%' : '--') + '</div><div class="l">Calls the numbers liked</div></div><div class="sk-stat"><div class="n">' + c.games + '</div><div class="l">Games managed</div></div></div>';
+    }
+    box.innerHTML = h;
+    if ($('sk-resume')) $('sk-resume').onclick = function () { var g = restoreGame(load(SAVE_KEY)); if (g) begin(g); else { clearSave(); renderSaved(); } };
+    if ($('sk-discard')) $('sk-discard').onclick = function () { clearSave(); renderSaved(); };
+  }
+
   // Setup
   var sel = $('sk-level'), side = 1;
   SK.LEVELS.forEach(function (lv, i) { var o = document.createElement('option'); o.value = i; o.textContent = lv.name; sel.appendChild(o); });
@@ -1368,15 +1439,18 @@ var SK = (function () {
   }
   sel.addEventListener('change', levelHint); levelHint();
   Array.prototype.forEach.call($('sk-side').children, function (btn) { btn.onclick = function () { side = +btn.getAttribute('data-v'); Array.prototype.forEach.call($('sk-side').children, function (b) { b.classList.toggle('on', b === btn); }); }; });
-  function start() {
-    G = SK.newGame({ lv: SK.LEVELS[+sel.value], user: side });
+  function start() { begin(SK.newGame({ lv: SK.LEVELS[+sel.value], user: side })); saveGame(); }
+  function begin(g) {
+    G = g;
     UI.approach = 'normal'; UI.first = null; UI.two = null; UI.steal = null; UI.hitrun = false; UI.ibb = false; logCount = 0; lastInnKey = ''; $('sk-log').innerHTML = '';
     $('sk-setup').hidden = true; $('sk-game').hidden = false; $('sk-final').hidden = true; $('sk-askcard').hidden = true;
     renderAll(); renderLast(null); renderField(null);
+    if (G.log.length) { $('sk-res').textContent = 'Welcome back'; $('sk-sub').textContent = 'Picking up where you left off. The play by play has the whole game so far.'; }
     $('sk-game').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   }
-  function reset() { $('sk-game').hidden = true; $('sk-final').hidden = true; $('sk-setup').hidden = false; $('sk-setup').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); }
+  function reset() { renderSaved(); $('sk-game').hidden = true; $('sk-final').hidden = true; $('sk-setup').hidden = false; $('sk-setup').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); }
   $('sk-start').onclick = start;
+  renderSaved();
 })();
 </script>
 <script src="js/site.js"></script>

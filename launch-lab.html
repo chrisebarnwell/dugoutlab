@@ -175,6 +175,7 @@
         <div class="ll-sci" id="ll-dist-score">Distance guesses: none yet.</div>
         <div class="ll-h" style="font-size:1.05rem;margin-top:0.5rem">Experiments</div>
         <ul class="ll-exp" id="ll-exp"></ul>
+        <div class="ll-hint" style="margin-top:0.6rem">Your progress saves on this device. No login. <button type="button" id="ll-reset" style="background:none;border:none;color:var(--gold-light);text-decoration:underline;font:inherit;padding:0;cursor:pointer">Start fresh</button></div>
       </div>
     </div>
 
@@ -714,6 +715,7 @@ var LL = (function () {
       if (thin.mlb && thin.mlb === thin.mile && !done[6]) { done[6] = true; flash = 6; }
     }
     renderExp(flash);
+    saveLab(v);
 
     var side = drawSide(lv, r), topv = drawTop(lv, r);
     animate(r, side, topv);
@@ -722,6 +724,37 @@ var LL = (function () {
   ['ll-ev', 'll-la', 'll-sp', 'll-wind'].forEach(function (id) { $(id).addEventListener('input', updateLabels); });
   sel.addEventListener('change', function () { updateLabels(); fitGuess(); drawSide(lvl(), null); drawTop(lvl(), null); });
   $('ll-go').addEventListener('click', go);
+
+  // Progress saves on this device only. No login. Wrapped so blocked storage never breaks the page.
+  var LAB_KEY = 'dl-launchlab-v1';
+  function saveLab(v) {
+    try { localStorage.setItem(LAB_KEY, JSON.stringify({ swings: swings, good: good, calls: calls, guesses: guesses, guessErr: guessErr, done: done, thin: thin, v: v })); } catch (e) { }
+  }
+  (function loadLab() {
+    var d = null;
+    try { d = JSON.parse(localStorage.getItem(LAB_KEY) || 'null'); } catch (e) { d = null; }
+    if (!d || typeof d.swings !== 'number') return;
+    swings = d.swings; good = d.good || 0; calls = d.calls || 0; guesses = d.guesses || 0; guessErr = d.guessErr || 0;
+    if (Array.isArray(d.done)) d.done.forEach(function (x, i) { if (i < done.length) done[i] = !!x; });
+    thin = d.thin || {};
+    if (d.v) {
+      if (LL.LEVELS[d.v.lv]) sel.value = d.v.lv;
+      $('ll-ev').value = d.v.ev; $('ll-la').value = d.v.la; $('ll-sp').value = d.v.sp; $('ll-wind').value = d.v.wind;
+    }
+    $('ll-swings').textContent = swings; $('ll-good').textContent = good; $('ll-calls').textContent = calls + '/' + swings;
+    if (guesses) $('ll-dist-score').textContent = 'Distance guesses: average miss ' + Math.round(guessErr / guesses) + ' ft over ' + guesses + '. Watch it shrink.';
+    if (swings) { var msg = $('ll-sci'); msg.className = 'll-sci'; msg.textContent = 'Welcome back. Your score and experiments picked up where you left off.'; }
+  })();
+  function resetLab() {
+    try { localStorage.removeItem(LAB_KEY); } catch (e) { }
+    swings = good = calls = guesses = guessErr = 0; prev = null; thin = {};
+    for (var i = 0; i < done.length; i++) done[i] = false;
+    $('ll-swings').textContent = '0'; $('ll-good').textContent = '0'; $('ll-calls').textContent = '0';
+    $('ll-dist-score').textContent = 'Distance guesses: none yet.'; $('ll-sci').className = 'll-sci';
+    $('ll-sci').textContent = 'Tip: change one thing per swing. That is how you find out what caused what.';
+    renderExp(-1);
+  }
+  $('ll-reset').addEventListener('click', resetLab);
 
   updateLabels(); fitGuess(); renderExp(-1); drawSide(lvl(), null); drawTop(lvl(), null);
 })();
