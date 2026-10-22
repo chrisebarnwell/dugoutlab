@@ -57,6 +57,11 @@
   .ll-exp li.done .ll-exp-t { color: var(--gold-light); }
   .ll-exp-d { font-size: 0.82rem; color: var(--ink-faint); line-height: 1.4; }
   .ll-flash { animation: llflash 0.9s ease; }
+  #ll-result-card { scroll-margin-top: 72px; }
+  #ll-result-card.ll-pop { animation: llpop 0.9s ease; }
+  @keyframes llpop { 0% { box-shadow: 0 0 0 0 rgba(200,134,46,0.9); border-color: var(--gold); } 100% { box-shadow: 0 0 0 14px rgba(200,134,46,0); } }
+  .ll-again { display: none; width: 100%; margin-top: 0.9rem; background: var(--gold); color: var(--forest); border: none; border-radius: 12px; padding: 0.9rem; font-size: 1.05rem; font-weight: 700; }
+  #ll-swing-card { scroll-margin-top: 72px; }
   @keyframes llflash { 0% { background: rgba(200,134,46,0.35); } 100% { background: transparent; } }
   .ll-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin-top: 0.4rem; }
   .ll-pick button { background: var(--forest-deep); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 9px; padding: 0.6rem 0.3rem; font: inherit; font-size: 0.92rem; font-weight: 600; }
@@ -75,6 +80,7 @@
   .ll-learn li { margin-bottom: 0.45rem; }
   .ll-learn strong { color: var(--ink); }
   @media (max-width: 900px) {
+    .ll-again { display: block; }
     .ll-grid { grid-template-columns: 1fr; }
     .ll-views { grid-template-columns: 1fr; }
     .ll-res-label { font-size: 1.6rem; }
@@ -114,7 +120,7 @@
   <div class="ll-grid">
 
     <div>
-      <div class="ll-card">
+      <div class="ll-card" id="ll-swing-card">
         <div class="ll-h">Your swing</div>
 
         <div class="ll-ctl">
@@ -179,7 +185,7 @@
       </div>
     </div>
 
-    <div class="ll-card">
+    <div class="ll-card" id="ll-result-card">
       <div class="ll-result">
         <div>
           <div class="ll-res-label out" id="ll-res">Ready</div>
@@ -203,6 +209,7 @@
 
       <div class="ll-h" style="font-size:1.05rem">Why it happened</div>
       <ul class="ll-why" id="ll-why"><li>Every swing gets an explanation here: the forces, the timing, and who had a chance.</li></ul>
+      <button type="button" class="ll-again" id="ll-again">Change one thing and swing again</button>
     </div>
 
   </div>
@@ -718,7 +725,11 @@ var LL = (function () {
     saveLab(v);
 
     var side = drawSide(lv, r), topv = drawTop(lv, r);
-    animate(r, side, topv);
+    // On a phone the result sits below the controls. Bring it into view so the answer is never hidden.
+    var card = $('ll-result-card'), box = card.getBoundingClientRect();
+    if (box.top < 60 || box.top > window.innerHeight * 0.35) card.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    card.classList.remove('ll-pop'); void card.offsetWidth; card.classList.add('ll-pop');
+    if (reduce) animate(r, side, topv); else setTimeout(function () { animate(r, side, topv); }, 350);
   }
 
   ['ll-ev', 'll-la', 'll-sp', 'll-wind'].forEach(function (id) { $(id).addEventListener('input', updateLabels); });
@@ -755,6 +766,7 @@ var LL = (function () {
     renderExp(-1);
   }
   $('ll-reset').addEventListener('click', resetLab);
+  $('ll-again').addEventListener('click', function () { $('ll-swing-card').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); });
 
   updateLabels(); fitGuess(); renderExp(-1); drawSide(lvl(), null); drawTop(lvl(), null);
 })();
