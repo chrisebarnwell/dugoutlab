@@ -2,12 +2,18 @@
    Drop a CSV, TSV, or Excel file (GameChanger, TeamSnap, a Google Sheet export), or paste a column of names.
    Everything is parsed in the browser. Nothing is uploaded anywhere.
    Usage:  RosterImport.mount(document.getElementById('roster-import'), function (names) { ... });
-   Excel files load the SheetJS reader from cdnjs the first time one is chosen. */
+   Excel files load the SheetJS reader (js/vendor/xlsx.full.min.js, Apache-2.0) the first time one is chosen. */
 (function () {
-  var XLSX_URL = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  var XLSX_URL = 'js/vendor/xlsx.full.min.js';
 
   function parseDelimited(text) {
-    text = String(text || '').replace(/^﻿/, '');
+    text = String(text || '').replace(/^\ufeff/, '');
+    /* A typed list like "Smith, John" (comma then a space, two parts per line) is one name per line, not two columns. */
+    var lines = text.split(/\r?\n/).filter(function (l) { return l.trim(); });
+    var lf = function (l) { return /^[^,\t;"]+,\s+[^,\t;"]+$/.test(l.trim()); };
+    if (lines.length && lines.some(lf) && lines.filter(lf).length * 2 > lines.length && !/name|player|first|last|roster/i.test(lines[0])) {
+      return lines.map(function (l) { return lf(l) ? [l.trim()] : l.split(/[,\t;]/).map(function (x) { return x.trim(); }); });
+    }
     var head = text.split(/\r?\n/).slice(0, 5).join('\n');
     var delim = ',';
     var counts = { ',': (head.match(/,/g) || []).length, '\t': (head.match(/\t/g) || []).length, ';': (head.match(/;/g) || []).length };
