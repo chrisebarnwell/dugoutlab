@@ -131,3 +131,52 @@ document.addEventListener('keydown', function(e) {
     }
   });
 })();
+
+// ── Field bar: thumb-reach tool tabs on phones ─────────────────────
+(function () {
+  if (document.body.hasAttribute('data-nobar') || document.querySelector('.fieldbar')) return;
+  var page = window.location.pathname.split('/').pop() || 'index.html';
+  var I = {
+    home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>',
+    lineup: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1.2"/><circle cx="4" cy="12" r="1.2"/><circle cx="4" cy="18" r="1.2"/>',
+    pitch: '<circle cx="12" cy="12" r="8.5"/><path d="M7.5 5.5c2 3.5 2 9.5 0 13M16.5 5.5c-2 3.5-2 9.5 0 13"/>',
+    practice: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/>',
+    tools: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'
+  };
+  var tabs = [
+    ['index.html', 'Home', 'home'],
+    ['lineup.html', 'Lineup', 'lineup'],
+    ['pitch-tracker.html', 'Pitches', 'pitch'],
+    ['practice.html', 'Practice', 'practice'],
+    ['tools.html', 'Tools', 'tools']
+  ];
+  var nav = document.createElement('nav');
+  nav.className = 'fieldbar';
+  nav.setAttribute('aria-label', 'Quick tools');
+  nav.innerHTML = tabs.map(function (t) {
+    var on = t[0] === page || (t[0] === 'lineup.html' && page === 'pods.html');
+    return '<a href="/' + t[0] + '"' + (on ? ' class="on" aria-current="page"' : '') + '>' +
+      '<svg viewBox="0 0 24 24" aria-hidden="true">' + I[t[2]] + '</svg><span>' + t[1] + '</span></a>';
+  }).join('');
+  document.body.appendChild(nav);
+  document.body.classList.add('has-fieldbar');
+})();
+
+// ── Keep the screen awake on field tools ───────────────────────────
+(function () {
+  var page = window.location.pathname.split('/').pop() || 'index.html';
+  var FIELD = ['pitch-tracker.html', 'lineup.html', 'pods.html', 'practice.html', 'practice-example.html',
+               'game.html', 'field-layout.html', 'strike-zone.html', 'cage-targets.html', 'games.html'];
+  if (FIELD.indexOf(page) < 0 || !('wakeLock' in navigator)) return;
+  var lock = null;
+  function grab() {
+    if (lock || document.visibilityState !== 'visible') return;
+    navigator.wakeLock.request('screen').then(function (l) {
+      lock = l;
+      l.addEventListener('release', function () { lock = null; });
+    }).catch(function () {});
+  }
+  document.addEventListener('pointerdown', grab, { passive: true });
+  document.addEventListener('visibilitychange', grab);
+  grab();
+})();
