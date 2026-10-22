@@ -19,6 +19,7 @@ FOOTER = '''<footer class="footer">
     <div class="footer-links">
       <h4>Tools</h4>
       <ul>
+        <li><a href="{p}practice.html">Practice in a Pinch</a></li>
         <li><a href="{p}framework.html">Practice Framework</a></li>
         <li><a href="{p}lineup.html">Lineup Builder</a></li>
         <li><a href="{p}training.html">Training</a></li>

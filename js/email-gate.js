@@ -1,7 +1,7 @@
 /* DugoutLab email gate.
    One email unlocks every tool. Saved to D1 "subscribers" via /api/subscribe (source "gate-<page>").
    <script src="js/email-gate.js" data-mode="page"></script>   gates the whole page on load
-   <script src="js/email-gate.js" data-mode="links"></script>  gates only links marked data-gate (e.g. a PDF)
+   <script src="js/email-gate.js" data-mode="links"></script>  gates only links or buttons marked data-gate (a PDF, a Build button)
    Anyone signed in to the Hit Window or Pitch Tracker is already in. */
 (function () {
   var me = document.currentScript;
@@ -119,6 +119,14 @@
           e.preventDefault();
           build(function () { var t = document.createElement('a'); t.href = a.href; if (a.hasAttribute('download')) t.setAttribute('download', a.getAttribute('download') || ''); document.body.appendChild(t); t.click(); t.remove(); }, true);
         });
+      });
+      /* Buttons marked data-gate: the gate runs first (capture phase). Once unlocked, the click is replayed. */
+      Array.prototype.forEach.call(document.querySelectorAll('button[data-gate]'), function (b) {
+        b.addEventListener('click', function (e) {
+          if (ok()) return;
+          e.preventDefault(); e.stopImmediatePropagation();
+          build(function () { b.click(); }, true);
+        }, true);
       });
       return;
     }

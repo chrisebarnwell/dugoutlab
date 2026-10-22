@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice in a Pinch | DugoutLab</title>
+<meta name="description" content="Three taps and you have tonight's youth baseball or softball practice: how long, which sport, what age. Games first, one focused fix, a closer they will talk about in the car.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+  .pp-hero { padding: 2.25rem 1.25rem 1.5rem; }
+  .pp-wrap { max-width: 720px; margin: 0 auto; padding: 0 1.25rem 3rem; }
+  .pp-q { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.1rem 1.1rem 1rem; margin-top: 0.85rem; }
+  .pp-q-label { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.65rem; }
+  .pp-q-label .n { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em; color: var(--gold); }
+  .pp-q-label .t { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; letter-spacing: -0.01em; }
+  .pp-opts { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .pp-opt { min-height: 44px; padding: 0.5rem 1rem; border: 1.5px solid var(--rule); border-radius: 10px; background: transparent; color: var(--ink-soft); font: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+  .pp-opt:hover { border-color: var(--gold); color: var(--gold-light); }
+  .pp-opt.active { background: var(--gold); color: var(--forest); border-color: var(--gold); }
+  .pp-build { margin-top: 1rem; }
+  .pp-out { margin-top: 1.5rem; }
+  .pp-out-h { display: flex; justify-content: space-between; align-items: flex-end; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+  .pp-out-h .section-title { margin: 0; font-size: 1.6rem; }
+  .pp-out-h .sub { font-size: 0.88rem; color: var(--ink-faint); margin-top: 0.2rem; }
+  .pp-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .pp-block { display: flex; margin-bottom: 0.6rem; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--forest3); }
+  .pp-time { min-width: 66px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.8rem 0.4rem; background: var(--forest-deep); flex-shrink: 0; border-right: 3px solid var(--c, var(--gold)); }
+  .pp-time b { font-family: var(--mono); font-size: 1.15rem; color: var(--ink); line-height: 1.1; }
+  .pp-time i { font-size: 0.6rem; font-style: normal; color: var(--ink-faint); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+  .pp-body { flex: 1; padding: 0.8rem 0.95rem 0.85rem; min-width: 0; }
+  .pp-slot { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--c, var(--gold)); margin-bottom: 0.15rem; }
+  .pp-name { font-family: var(--serif); font-size: 1.08rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+  .pp-name button { background: none; border: 0; padding: 0; color: inherit; font: inherit; cursor: pointer; text-align: left; }
+  .pp-name button:hover { color: var(--gold-light); }
+  .pp-run { font-size: 0.86rem; color: var(--ink-soft); line-height: 1.5; margin-top: 0.3rem; }
+  .pp-cue { display: inline-block; background: rgba(200,134,46,0.12); border: 1px solid rgba(200,134,46,0.35); border-radius: 6px; padding: 0.25rem 0.6rem; font-size: 0.8rem; color: var(--gold-light); font-weight: 600; margin-top: 0.5rem; }
+  .pp-tools { display: flex; gap: 0.6rem; margin-top: 0.5rem; }
+  .pp-tools button { background: none; border: 0; padding: 0; font: inherit; font-size: 0.78rem; font-weight: 600; color: var(--ink-faint); cursor: pointer; }
+  .pp-tools button:hover { color: var(--gold); }
+  .pp-note { font-size: 0.8rem; color: var(--ink-faint); line-height: 1.5; margin-top: 0.9rem; }
+  .pp-note a { color: var(--gold); }
+  .pp-sticky { position: sticky; bottom: 0; background: linear-gradient(to top, var(--forest) 70%, transparent); padding: 0.9rem 0 0.5rem; margin-top: 0.4rem; }
+  .pp-sticky .btn { width: 100%; justify-content: center; }
+  @media (min-width: 640px) { .pp-sticky { position: static; background: none; padding: 0; } .pp-sticky .btn { width: auto; } }
+  @media print {
+    .pp-hero, .pp-q, .pp-actions, .pp-tools, .pp-sticky, .pp-note, .nav, .footer, .mobile-menu { display: none !important; }
+    body { background: #fff; color: #000; }
+    .pp-wrap { max-width: none; padding: 0; }
+    .pp-out-h .section-title, .pp-name, .pp-run, .pp-time b { color: #000 !important; }
+    .pp-block { background: #fff !important; border-color: #bbb !important; break-inside: avoid; page-break-inside: avoid; }
+    .pp-time { background: #f1f1f1 !important; }
+    .pp-slot { color: #555 !important; }
+    .pp-cue { color: #000 !important; background: #fff !important; border-color: #999 !important; }
+    .pp-run { color: #222 !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+    <ul class="nav-links">
+    <li><a href="ages.html">My Age Group</a></li>
+    <li><a href="tools.html" class="active">Tools</a></li>
+    <li><a href="articles.html">Field Notes</a></li>
+    <li><a href="how-kids-learn.html">Why It Works</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="ages.html">My Age Group</a>
+  <a href="tools.html">Tools</a>
+  <a href="articles.html">Field Notes</a>
+  <a href="how-kids-learn.html">Why It Works</a>
+</div>
+
+<div class="page-hero pp-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="tools.html">Tools</a> &rsaquo; Practice in a Pinch</div>
+    <h1>Practice in a pinch.</h1>
+    <p>Three taps. A practice you can run tonight. Games first, one focused fix, a closer they will talk about in the car.</p>
+  </div>
+</div>
+
+<div class="pp-wrap">
+  <div class="pp-q">
+    <div class="pp-q-label"><span class="n">01</span><span class="t">How long is practice?</span></div>
+    <div class="pp-opts" id="q-len">
+      <button type="button" class="pp-opt" data-v="45">45 min</button>
+      <button type="button" class="pp-opt active" data-v="60">60 min</button>
+      <button type="button" class="pp-opt" data-v="75">75 min</button>
+      <button type="button" class="pp-opt" data-v="90">90 min</button>
+    </div>
+  </div>
+  <div class="pp-q">
+    <div class="pp-q-label"><span class="n">02</span><span class="t">Baseball or softball?</span></div>
+    <div class="pp-opts" id="q-sport">
+      <button type="button" class="pp-opt active" data-v="baseball">Baseball</button>
+      <button type="button" class="pp-opt" data-v="softball">Softball</button>
+    </div>
+  </div>
+  <div class="pp-q">
+    <div class="pp-q-label"><span class="n">03</span><span class="t">How old are they?</span></div>
+    <div class="pp-opts" id="q-age">
+      <button type="button" class="pp-opt" data-v="a46">4-6</button>
+      <button type="button" class="pp-opt active" data-v="a79">7-9</button>
+      <button type="button" class="pp-opt" data-v="a1012">10-12</button>
+      <button type="button" class="pp-opt" data-v="a1315">13-15</button>
+      <button type="button" class="pp-opt" data-v="a16">16+</button>
+    </div>
+  </div>
+
+  <div class="pp-sticky" id="build-wrap">
+    <button type="button" class="btn btn-primary btn-lg" id="build" data-gate>Build my practice &rarr;</button>
+  </div>
+
+  <div class="pp-out" id="out" hidden>
+    <div class="pp-out-h">
+      <div>
+        <div class="section-label">Tonight's practice</div>
+        <div class="section-title" id="out-title">60 minutes, ages 7-9</div>
+        <div class="sub" id="out-sub">Tap any block for setup, cues, and how to make it harder or easier.</div>
+      </div>
+      <div class="pp-actions">
+        <button type="button" class="btn btn-sm btn-outline" id="reshuffle">New mix</button>
+        <button type="button" class="btn btn-sm btn-secondary" id="print">Print</button>
+      </div>
+    </div>
+    <div id="blocks"></div>
+    <p class="pp-note">Minutes follow the <a href="framework.html">Practice Framework</a> for this age. The activities are coach-designed, not lab-tested; the ideas behind them are on <a href="how-kids-learn.html">How Kids Actually Learn</a>. No throwing mechanics here on purpose.</p>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<!-- DRILL MODAL -->
+<div class="modal-overlay" id="drill-modal" onclick="if(event.target===this)closeDrillModal()">
+  <div class="modal-box">
+    <div class="modal-header" id="modal-header">
+      <div>
+        <div class="modal-header-cat" id="modal-cat"></div>
+        <div class="modal-header-name" id="modal-name"></div>
+      </div>
+      <button class="modal-close" onclick="closeDrillModal()">&#x2715;</button>
+    </div>
+    <div class="modal-meta">
+      <span class="modal-pill" id="modal-dur"></span>
+      <span class="modal-pill" id="modal-players"></span>
+      <span class="modal-pill" id="modal-equip"></span>
+      <span class="modal-pill" id="modal-sport" style="background:rgba(125,179,212,0.15);color:#9dc5e0;font-weight:700"></span>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-field-label">Setup</div>
+        <div class="modal-field-text" id="modal-setup"></div>
+      </div>
+      <div>
+        <div class="modal-field-label">How to Run It</div>
+        <div class="modal-field-text" id="modal-exec"></div>
+      </div>
+      <div class="modal-cue-box">
+        <div class="modal-field-label">Coaching Cue</div>
+        <div class="modal-field-text" id="modal-cue"></div>
+      </div>
+      <div class="modal-why-box">
+        <div class="modal-field-label">Why This Works</div>
+        <div class="modal-field-text" id="modal-why"></div>
+      </div>
+      <div data-modal-box style="background:rgba(200,134,46,0.08);border:1px solid rgba(200,134,46,0.25);border-radius:8px;padding:0.85rem 1rem">
+        <div class="modal-field-label" style="color:var(--gold)">Watch For</div>
+        <div class="modal-field-text" id="modal-watch"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem">
+        <div data-modal-box style="background:rgba(82,183,136,0.08);border:1px solid rgba(82,183,136,0.22);border-radius:8px;padding:0.75rem 0.9rem">
+          <div class="modal-field-label" style="color:#7ad6a8">Make It Harder</div>
+          <div class="modal-field-text" id="modal-prog" style="font-size:0.85rem"></div>
+        </div>
+        <div data-modal-box style="background:rgba(244,239,230,0.05);border:1px solid var(--rule);border-radius:8px;padding:0.75rem 0.9rem">
+          <div class="modal-field-label">Make It Easier</div>
+          <div class="modal-field-text" id="modal-reg" style="font-size:0.85rem"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/email-gate.js" data-mode="links"></script>
+<script src="js/drills-data.js"></script>
+<script src="js/site.js"></script>
+<script>
+(function () {
+  /* Minutes per block by age, same shares as the Practice Framework at "Developing". Our judgment, not research numbers. */
+  var BASE = {
+    a46:   { label: 'ages 4-6',   lo: 4,  hi: 6,  arr: 15, sta: 26, fix: 4,  ssg: 45, clo: 10 },
+    a79:   { label: 'ages 7-9',   lo: 7,  hi: 9,  arr: 12, sta: 32, fix: 8,  ssg: 40, clo: 8  },
+    a1012: { label: 'ages 10-12', lo: 10, hi: 12, arr: 10, sta: 35, fix: 10, ssg: 38, clo: 7  },
+    a1315: { label: 'ages 13-15', lo: 13, hi: 15, arr: 8,  sta: 45, fix: 15, ssg: 25, clo: 7  },
+    a16:   { label: 'ages 16+',   lo: 16, hi: 18, arr: 7,  sta: 45, fix: 25, ssg: 18, clo: 5  }
+  };
+  var SLOTS = [
+    { key: 'arr', slot: 'warmup',      label: 'Arrival',        color: '#3a8a5e', n: 1 },
+    { key: 'sta', slot: 'variable',    label: 'Skill stations', color: '#5fa382', n: 2 },
+    { key: 'fix', slot: 'acquisition', label: 'One focused fix', color: '#c8862e', n: 1 },
+    { key: 'ssg', slot: 'small-sided', label: 'Small-sided and live', color: '#3a8a5e', n: 1 },
+    { key: 'clo', slot: 'closing',     label: 'The closer',     color: '#7a9480', n: 1 }
+  ];
+  var PLAY_FIRST = { 'game-based-play': 1, 'modified-play-adm': 1, 'classic-staple': 1, 'perception-decision': 1, 'variable-practice': 1 };
+  var state = { len: 60, sport: 'baseball', age: 'a79' };
+  var seed = Date.now() % 100000, used = {};
+
+  function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+  function $(id) { return document.getElementById(id); }
+  function pick(id, v, btn) { state[id] = v; var row = btn.parentNode.querySelectorAll('.pp-opt'); for (var i = 0; i < row.length; i++) row[i].classList.remove('active'); btn.classList.add('active'); if (!$('out').hidden) build(); }
+  ['len', 'sport', 'age'].forEach(function (k) {
+    var row = $('q-' + k);
+    row.addEventListener('click', function (e) { var b = e.target.closest('.pp-opt'); if (!b) return; pick(k, k === 'len' ? parseInt(b.getAttribute('data-v'), 10) : b.getAttribute('data-v'), b); });
+  });
+
+  function minutes() {
+    var b = BASE[state.age], L = state.len;
+    function r5(p) { return Math.round(p * L / 100 / 5) * 5; }
+    var arr = Math.max(5, r5(b.arr)), clo = Math.max(5, r5(b.clo)), sta = r5(b.sta), fix = r5(b.fix);
+    var ssg = L - arr - clo - sta - fix;
+    if (ssg < 10) { sta -= (10 - ssg); ssg = 10; }
+    return { arr: arr, sta: sta, fix: fix, ssg: ssg, clo: clo };
+  }
+  function fits(d, slot, looseAge) {
+    var b = BASE[state.age];
+    if (d.practiceSlot !== slot) return false;
+    if (d.sport !== 'both' && d.sport !== state.sport) return false;
+    if (d.category === 'throwing' || d.category === 'pitching') return false; /* no arm programs in a pinch plan */
+    if (looseAge) return d.ageMax >= b.lo - 3; /* older groups: allow drills written for a few years younger */
+    return !(d.ageMax < b.lo || d.ageMin > b.hi);
+  }
+  function choose(slot, n, avoid) {
+    function pool(loose, allowUsed) { return DRILLS.filter(function (d) { return fits(d, slot, loose) && (allowUsed || !used[d.id]) && (!avoid || d.id !== avoid); }); }
+    var p = pool(false, false);
+    if (slot !== 'acquisition') { var play = p.filter(function (d) { return PLAY_FIRST[d.principle]; }); if (play.length >= n) p = play; }
+    if (p.length < n) p = pool(false, true);
+    if (p.length < n) p = pool(true, false);
+    if (p.length < n) p = pool(true, true);
+    var out = [];
+    while (out.length < n && p.length) { var i = Math.floor(rnd() * p.length); out.push(p.splice(i, 1)[0]); }
+    out.forEach(function (d) { used[d.id] = 1; });
+    return out;
+  }
+  var plan = [];
+  function build() {
+    used = {}; var m = minutes(); plan = [];
+    SLOTS.forEach(function (s) { if (m[s.key] <= 0) return; plan.push({ s: s, min: m[s.key], drills: choose(s.slot, s.n) }); });
+    /* A slot with nothing that fits hands its minutes to the live block, so the clock still adds up. */
+    var live = null; plan.forEach(function (p) { if (p.s.key === 'ssg') live = p; });
+    plan = plan.filter(function (p) { if (p.drills.length) return true; if (live) live.min += p.min; return false; });
+    render();
+  }
+  function render() {
+    var b = BASE[state.age];
+    $('out-title').textContent = state.len + ' minutes, ' + b.label + ', ' + (state.sport === 'softball' ? 'softball' : 'baseball');
+    var t = 0, html = '';
+    plan.forEach(function (p, pi) {
+      var each = p.drills.length > 1 ? Math.round(p.min / p.drills.length) : p.min;
+      p.drills.forEach(function (d, di) {
+        var start = t; t += (di === p.drills.length - 1) ? (p.min - each * (p.drills.length - 1)) : each;
+        var mins = t - start;
+        html += '<div class="pp-block" style="--c:' + p.s.color + '">' +
+          '<div class="pp-time"><b>' + mins + '</b><i>min</i></div>' +
+          '<div class="pp-body">' +
+            '<div class="pp-slot">' + p.s.label + (p.drills.length > 1 ? ' ' + String.fromCharCode(65 + di) : '') + ' &middot; ' + fmt(start) + '</div>' +
+            '<div class="pp-name"><button type="button" onclick="showDrill(\'' + d.id + '\')">' + esc(d.name) + '</button></div>' +
+            '<div class="pp-run">' + esc(short(d.setup)) + '</div>' +
+            (d.cue ? '<div class="pp-cue">' + esc(d.cue) + '</div>' : '') +
+            '<div class="pp-tools"><button type="button" onclick="showDrill(\'' + d.id + '\')">How to run it</button><button type="button" data-swap="' + pi + ':' + di + '">Swap</button></div>' +
+          '</div></div>';
+      });
+    });
+    $('blocks').innerHTML = html;
+    $('out').hidden = false;
+    $('build-wrap').style.display = 'none';
+  }
+  function fmt(m) { return m === 0 ? 'start' : 'at ' + m + ' min'; }
+  function short(s) { s = String(s || ''); if (s.length <= 150) return s; var cut = s.slice(0, 150); return cut.slice(0, cut.lastIndexOf(' ')) + '...'; }
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+  $('build').addEventListener('click', function () { build(); setTimeout(function () { $('out').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50); });
+  $('reshuffle').addEventListener('click', function () { seed = Date.now() % 100000; build(); });
+  $('print').addEventListener('click', function () { window.print(); });
+  $('blocks').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-swap]'); if (!b) return;
+    var ix = b.getAttribute('data-swap').split(':'), p = plan[+ix[0]], old = p.drills[+ix[1]];
+    delete used[old.id];
+    var nd = choose(p.s.slot, 1, old.id)[0];
+    if (nd) p.drills[+ix[1]] = nd; else used[old.id] = 1;
+    render();
+  });
+})();
+</script>
+</body>
+</html>
