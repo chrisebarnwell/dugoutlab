@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Back Pocket Card: Where Are You Going to Hit It? | DugoutLab</title>
+<meta name="description" content="A printable card for youth hitters. Circle the spot, draw the flight, write it out. Laminate one for the back pocket and hang the team's cards in the dugout.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+  .pc-wrap { max-width: 760px; margin: 0 auto; padding: 0 1.25rem; }
+  .pc-steps { list-style: none; border-top: 1px solid rgba(200,134,46,0.4); margin: 0 0 1.5rem; }
+  .pc-steps li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.75rem; padding: 0.8rem 0; border-bottom: 1px solid rgba(200,134,46,0.4); }
+  .pc-steps b { font-family: var(--serif); font-size: 1.5rem; line-height: 1; color: var(--gold); }
+  .pc-steps span { color: var(--ink); line-height: 1.5; }
+  .pc-tabs { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid rgba(200,134,46,0.4); margin-bottom: 1.25rem; }
+  .pc-tabs button { min-height: 52px; background: transparent; border: 0; color: var(--ink-soft); font-weight: 600; font-size: 0.95rem; }
+  .pc-tabs button + button { border-left: 1px solid rgba(200,134,46,0.4); }
+  .pc-tabs button.on { background: var(--gold); color: var(--forest); }
+  .pc-panel[hidden] { display: none; }
+  .pc-field { margin-bottom: 1.1rem; }
+  .pc-field label, .pc-lbl { display: block; font-size: 0.92rem; font-weight: 600; color: var(--ink); margin-bottom: 0.4rem; }
+  .pc-lbl b { font-family: var(--serif); color: var(--gold); font-size: 1.15rem; margin-right: 0.35rem; }
+  .pc-field input, .pc-field textarea, .pc-field select { width: 100%; background: var(--forest-deep); color: var(--ink); border: 1px solid var(--rule); border-radius: 8px; padding: 0.7rem 0.8rem; font: inherit; font-size: 16px; }
+  .pc-field textarea { min-height: 96px; resize: vertical; line-height: 1.45; }
+  .pc-row { display: grid; grid-template-columns: 1fr 6rem; gap: 0.75rem; }
+  .pc-hint { font-size: 0.85rem; color: var(--ink-soft); margin-top: 0.35rem; }
+  .pc-draw { background: #fbf8f1; border-radius: 10px; padding: 0.5rem; }
+  .pc-draw svg { display: block; width: 100%; height: auto; }
+  #ed-top { cursor: crosshair; }
+  #ed-side { touch-action: none; cursor: crosshair; }
+  .pc-mini-btns { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+  .pc-mini-btns button { min-height: 40px; padding: 0 0.9rem; background: transparent; border: 1px solid var(--rule); border-radius: 8px; color: var(--ink-soft); font-size: 0.85rem; font-weight: 600; }
+  .pc-prefix { font-size: 0.92rem; color: var(--ink-soft); margin-bottom: 0.35rem; font-style: italic; }
+  .pc-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.25rem 0; }
+  .pc-team { border-top: 1px solid rgba(200,134,46,0.4); margin: 0.5rem 0 1rem; }
+  .pc-team-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0; border-bottom: 1px solid rgba(200,134,46,0.4); }
+  .pc-team-row b { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; flex: 1; }
+  .pc-team-row button { min-height: 40px; padding: 0 0.8rem; background: transparent; border: 1px solid var(--rule); border-radius: 8px; color: var(--ink-soft); font-size: 0.82rem; font-weight: 600; }
+  .pc-empty { color: var(--ink-soft); font-size: 0.92rem; padding: 0.75rem 0; }
+  .pc-preview-h { font-size: 0.92rem; font-weight: 600; color: var(--ink); margin: 1.5rem 0 0.6rem; }
+  .pc-preview { display: flex; justify-content: center; }
+  .pc-note { font-size: 0.88rem; color: var(--ink-soft); margin-top: 0.75rem; }
+
+  /* The card itself (paper) */
+  .pc-card { width: 4in; height: 5.25in; background: #fff; color: #1b1b1b; font-family: Helvetica, Arial, sans-serif; padding: 0.16in 0.2in; display: flex; flex-direction: column; border: 1px dashed #9a9a9a; overflow: hidden; }
+  .pc-card .c-head { display: flex; gap: 0.12in; font-size: 9.5pt; align-items: flex-end; }
+  .pc-card .c-head .nm { flex: 1; border-bottom: 1px solid #555; min-height: 0.26in; font-weight: 700; font-size: 12pt; line-height: 1; padding-bottom: 0.03in; }
+  .pc-card .c-head .no { width: 0.6in; border-bottom: 1px solid #555; min-height: 0.26in; font-weight: 700; font-size: 12pt; line-height: 1; padding-bottom: 0.03in; }
+  .pc-card .c-head small { display: block; font-size: 6.5pt; font-weight: 400; color: #666; margin-bottom: 0.04in; }
+  .pc-card .c-q { font-size: 13.5pt; font-weight: 700; margin: 0.08in 0 0; letter-spacing: -0.01em; }
+  .pc-card .c-step { font-size: 8.5pt; font-weight: 700; color: #333; margin-top: 0.05in; }
+  .pc-card .c-step i { font-style: normal; display: inline-block; width: 0.17in; height: 0.17in; line-height: 0.17in; text-align: center; border: 1px solid #333; border-radius: 50%; font-size: 7.5pt; margin-right: 0.05in; }
+  .pc-card .c-see { display: grid; grid-template-columns: 1fr auto; align-items: start; column-gap: 0.1in; }
+  .pc-card .c-see .c-step { margin-top: 0.1in; }
+  .pc-card .c-see .c-tip { font-size: 7.5pt; color: #666; line-height: 1.35; margin-top: 0.06in; max-width: 1.5in; }
+  .pc-card .c-top { height: 1.62in; }
+  .pc-card .c-top svg { height: 100%; width: auto; display: block; }
+  .pc-card .c-side svg { width: 100%; height: auto; display: block; }
+  .pc-card .c-lines { margin-top: 0.02in; }
+  .pc-card .c-line { border-bottom: 1px solid #8a8a8a; height: 0.27in; font-size: 9.5pt; line-height: 0.36in; white-space: nowrap; overflow: hidden; }
+  .pc-card .c-line .pre { color: #6b6b6b; font-size: 8pt; }
+  .pc-card .c-line .kid { font-weight: 600; }
+  .pc-card .c-foot { margin-top: auto; font-size: 6.5pt; color: #888; display: flex; justify-content: space-between; }
+
+  /* Dugout sheet card */
+  .pc-dug { width: 4in; height: 3.45in; background: #fff; color: #1b1b1b; font-family: Helvetica, Arial, sans-serif; padding: 0.14in 0.18in; border: 1px solid #bbb; display: flex; flex-direction: column; overflow: hidden; }
+  .pc-dug .d-head { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.5px solid #222; padding-bottom: 0.03in; }
+  .pc-dug .d-head b { font-size: 15pt; letter-spacing: -0.01em; }
+  .pc-dug .d-head span { font-size: 15pt; font-weight: 700; }
+  .pc-dug .d-mid { display: grid; grid-template-columns: 1.55in 1fr; gap: 0.12in; margin-top: 0.08in; height: 1.35in; }
+  .pc-dug .d-mid svg { width: 100%; height: 100%; }
+  .pc-dug .d-say { font-size: 10pt; line-height: 1.3; font-weight: 600; overflow: hidden; }
+  .pc-dug .d-say em { display: block; font-style: normal; font-weight: 400; color: #666; font-size: 8pt; margin-bottom: 0.03in; }
+  .pc-dug .d-side { margin-top: auto; }
+  .pc-dug .d-side svg { width: 100%; height: auto; display: block; }
+
+  #pc-print { display: none; }
+  @media print {
+    @page { size: letter; margin: 0.25in; }
+    body { background: #fff !important; padding: 0 !important; }
+    body > *:not(#pc-print) { display: none !important; }
+    #pc-print { display: block; }
+    .pc-page { display: grid; grid-template-columns: repeat(2, 4in); justify-content: center; break-after: page; page-break-after: always; }
+    .pc-page:last-child { break-after: auto; page-break-after: auto; }
+    .pc-page.dug { row-gap: 0; }
+    .pc-card, .pc-dug { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+  @media (max-width: 560px) { .pc-row { grid-template-columns: 1fr 5rem; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="ages.html">My Age Group</a></li>
+    <li><a href="tools.html">Tools</a></li>
+    <li><a href="articles.html">Field Notes</a></li>
+    <li><a href="how-kids-learn.html">Why It Works</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="ages.html">My Age Group</a>
+  <a href="tools.html">Tools</a>
+  <a href="articles.html">Field Notes</a>
+  <a href="how-kids-learn.html">Why It Works</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="tools.html">&#8592; Tools</a></div>
+    <h1>Back Pocket Card</h1>
+    <p>Where are you going to hit it? Each player circles the spot, draws the flight, and writes it out. One laminated copy rides in the back pocket. The team's cards hang in the dugout every game.</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:2rem">
+  <div class="pc-wrap">
+
+    <ol class="pc-steps">
+      <li><b>1</b><span>Print the cards. Four to a page. Each one fits a 4x6 laminating pouch.</span></li>
+      <li><b>2</b><span>Players circle the spot, draw the flight from the side, and finish the sentence. Kids who can't write yet tell you, and you write it.</span></li>
+      <li><b>3</b><span>Laminate two. One goes in the back pocket. One hangs on the dugout fence, every game.</span></li>
+      <li><b>4</b><span>Before each at-bat: touch the pocket, see it, say it, hit.</span></li>
+    </ol>
+
+    <div class="pc-tabs" role="tablist">
+      <button type="button" class="on" role="tab" aria-selected="true" data-tab="blank">Print blank cards</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="fill">Fill in on a phone</button>
+    </div>
+
+    <!-- BLANK -->
+    <div class="pc-panel" id="tab-blank">
+      <div class="pc-field">
+        <label for="bl-roster">Player names (optional, one per line)</label>
+        <textarea id="bl-roster" placeholder="Maya&#10;Theo&#10;Leo"></textarea>
+        <div class="pc-hint">Leave it empty to print unnamed cards.</div>
+      </div>
+      <div class="pc-field" id="bl-count-wrap">
+        <label for="bl-count">How many blank cards?</label>
+        <select id="bl-count">
+          <option value="4">4 (one page)</option>
+          <option value="8">8</option>
+          <option value="12" selected>12</option>
+          <option value="16">16</option>
+        </select>
+      </div>
+      <div class="pc-actions">
+        <button type="button" class="btn btn-primary btn-lg" id="bl-print">Print cards</button>
+      </div>
+      <p class="pc-note">For the dugout copy, put four finished cards on any copier and laminate the copies.</p>
+      <div class="pc-preview-h">What prints</div>
+      <div class="pc-preview" id="bl-preview"></div>
+    </div>
+
+    <!-- FILL -->
+    <div class="pc-panel" id="tab-fill" hidden>
+      <div class="pc-row">
+        <div class="pc-field"><label for="ed-name">Player name</label><input id="ed-name" maxlength="24" autocomplete="off"></div>
+        <div class="pc-field"><label for="ed-num">Number</label><input id="ed-num" maxlength="3" inputmode="numeric" autocomplete="off"></div>
+      </div>
+
+      <div class="pc-field">
+        <div class="pc-lbl"><b>1</b>See it. Tap where it lands.</div>
+        <div class="pc-draw"><svg id="ed-top" viewBox="0 0 200 168" role="img" aria-label="Field from above. Tap to circle where the ball lands."></svg></div>
+      </div>
+
+      <div class="pc-field">
+        <div class="pc-lbl"><b>2</b>Shape it. Draw the flight with your finger.</div>
+        <div class="pc-draw"><svg id="ed-side" viewBox="0 0 300 100" role="img" aria-label="Field from the side. Draw the path of the ball from home plate."></svg></div>
+        <div class="pc-mini-btns"><button type="button" id="ed-undo">Undo</button><button type="button" id="ed-clear">Clear drawing</button></div>
+      </div>
+
+      <div class="pc-field">
+        <label class="pc-lbl" for="ed-say"><b>3</b>Say it.</label>
+        <div class="pc-prefix">When I get my pitch, I'm going to hit...</div>
+        <textarea id="ed-say" maxlength="150" placeholder="a line drive between the left fielder and the center fielder. It lands in the grass about ten feet from the fence."></textarea>
+      </div>
+
+      <div class="pc-actions">
+        <button type="button" class="btn btn-primary btn-lg" id="ed-save">Save card</button>
+        <button type="button" class="btn btn-outline btn-lg" id="ed-new">Start over</button>
+      </div>
+
+      <div class="pc-preview-h">The team</div>
+      <div class="pc-team" id="team"></div>
+      <div class="pc-actions">
+        <button type="button" class="btn btn-primary" id="pr-pocket">Print pocket cards</button>
+        <button type="button" class="btn btn-outline" id="pr-dugout">Print dugout sheet</button>
+      </div>
+      <p class="pc-note">Cards are saved in this phone's browser. Nothing is sent to DugoutLab.</p>
+
+      <div class="pc-preview-h">What prints</div>
+      <div class="pc-preview" id="ed-preview"></div>
+    </div>
+
+    <p class="pc-note" style="margin-top:2rem">Why this works, and where it stops: <a href="articles/back-pocket.html">Put It in Your Back Pocket</a>.</p>
+  </div>
+</section>
+
+<div id="pc-print"></div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+<script>
+(function () {
+  var KEY = 'dl_pocket_cards';
+  var INK = '#1d3b2e';
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s || '').replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+  /* ── Field from above (viewBox 0 0 200 168, home at 100,160) ── */
+  function topSVG(spot, opts) {
+    opts = opts || {};
+    var g = '';
+    g += '<path d="M100 160 L1 61 A140 140 0 0 1 199 61 Z" fill="#f1f4ef" stroke="#555" stroke-width="1.4"/>';
+    g += '<path d="M146.7 113.3 A66 66 0 0 0 53.3 113.3" fill="none" stroke="#9a9a9a" stroke-width="0.9"/>';
+    g += '<path d="M100 160 L129.7 130.3 L100 100.6 L70.3 130.3 Z" fill="#fff" stroke="#777" stroke-width="0.9"/>';
+    [[129.7,130.3],[100,100.6],[70.3,130.3]].forEach(function (b) { g += '<rect x="' + (b[0]-2.2) + '" y="' + (b[1]-2.2) + '" width="4.4" height="4.4" fill="#fff" stroke="#555" stroke-width="0.8" transform="rotate(45 ' + b[0] + ' ' + b[1] + ')"/>'; });
+    g += '<path d="M97 160 h6 v-3 l-3 -3 l-3 3 z" fill="#fff" stroke="#555" stroke-width="0.8"/>';
+    g += '<circle cx="100" cy="128" r="3" fill="none" stroke="#999" stroke-width="0.8"/>';
+    var pos = [['LF',54.6,70.9],['CF',100,58],['RF',145.4,70.9],['SS',82,110],['2B',118,110],['3B',55,142],['1B',145,142],['P',100,143]];
+    pos.forEach(function (p) { g += '<text x="' + p[1] + '" y="' + p[2] + '" font-family="Helvetica, Arial, sans-serif" font-size="7" font-weight="700" fill="#8a8a8a" text-anchor="middle">' + p[0] + '</text>'; });
+    if (spot) {
+      var x = spot[0], y = spot[1];
+      g += '<path d="M' + (x + 10) + ' ' + (y - 1) + ' C' + (x + 10) + ' ' + (y - 9) + ' ' + (x - 9) + ' ' + (y - 9) + ' ' + (x - 10) + ' ' + y +
+           ' C' + (x - 10) + ' ' + (y + 8) + ' ' + (x + 9) + ' ' + (y + 9) + ' ' + (x + 10) + ' ' + (y + 1) +
+           ' C' + (x + 10.5) + ' ' + (y - 3) + ' ' + (x + 8) + ' ' + (y - 6) + ' ' + (x + 4) + ' ' + (y - 8) + '" fill="none" stroke="' + INK + '" stroke-width="2.2" stroke-linecap="round"/>';
+    }
+    return (opts.inner ? '' : '<svg viewBox="0 0 200 168" xmlns="http://www.w3.org/2000/svg">') + g + (opts.inner ? '' : '</svg>');
+  }
+
+  /* ── Field from the side (viewBox 0 0 300 100, ground at y 86) ── */
+  function figure(x, h) {
+    var top = 86 - h;
+    return '<circle cx="' + x + '" cy="' + (top + 3) + '" r="3" fill="#fff" stroke="#666" stroke-width="1"/>' +
+           '<path d="M' + x + ' ' + (top + 6) + ' V' + (86 - 6) + ' M' + (x - 4) + ' 86 L' + x + ' ' + (86 - 6) + ' L' + (x + 4) + ' 86 M' + (x - 4) + ' ' + (top + 10) + ' H' + (x + 4) + '" fill="none" stroke="#666" stroke-width="1" stroke-linecap="round"/>';
+  }
+  function sideSVG(strokes, opts) {
+    opts = opts || {};
+    var g = '';
+    g += '<rect x="0" y="86" width="300" height="14" fill="#f1f4ef"/>';
+    g += '<path d="M4 86 H296" stroke="#555" stroke-width="1.2"/>';
+    g += figure(12, 17) + figure(96, 15) + figure(206, 15);
+    g += '<rect x="282" y="70" width="5" height="16" fill="#e6e6e6" stroke="#555" stroke-width="1"/>';
+    var lab = [['Home',12],['Infield',96],['Outfield',206],['Fence',284]];
+    lab.forEach(function (l) { g += '<text x="' + l[1] + '" y="96" font-family="Helvetica, Arial, sans-serif" font-size="6.5" fill="#777" text-anchor="middle">' + l[0] + '</text>'; });
+    (strokes || []).forEach(function (s) {
+      if (!s.length) return;
+      var d = 'M' + s[0][0].toFixed(1) + ' ' + s[0][1].toFixed(1);
+      for (var i = 1; i < s.length; i++) d += ' L' + s[i][0].toFixed(1) + ' ' + s[i][1].toFixed(1);
+      if (s.length === 1) d += ' l0.1 0';
+      g += '<path d="' + d + '" fill="none" stroke="' + INK + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';
+    });
+    return (opts.inner ? '' : '<svg viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">') + g + (opts.inner ? '' : '</svg>');
+  }
+
+  /* ── Card markup ── */
+  var PRE = 'When I get my pitch, I&rsquo;m going to hit';
+  function splitLines(text) {
+    var words = String(text || '').trim().split(/\s+/).filter(Boolean);
+    var lines = ['', '', ''], cap = [24, 46, 46], li = 0;
+    words.forEach(function (w) {
+      while (li < 3 && lines[li].length + w.length + (lines[li] ? 1 : 0) > cap[li]) li++;
+      if (li < 3) lines[li] += (lines[li] ? ' ' : '') + w;
+    });
+    return lines;
+  }
+  function cardHTML(c) {
+    c = c || {};
+    var L = splitLines(c.say);
+    return '<div class="pc-card">' +
+      '<div class="c-head"><div class="nm"><small>Name</small>' + esc(c.name) + '</div><div class="no"><small>Number</small>' + esc(c.num) + '</div></div>' +
+      '<div class="c-q">Where are you going to hit it?</div>' +
+      '<div class="c-see"><div><div class="c-step"><i>1</i>See it.</div><div class="c-tip">Circle the spot where the ball lands.</div></div>' +
+      '<div class="c-top">' + topSVG(c.spot) + '</div></div>' +
+      '<div class="c-step"><i>2</i>Shape it. Draw the flight.</div>' +
+      '<div class="c-side">' + sideSVG(c.strokes) + '</div>' +
+      '<div class="c-step"><i>3</i>Say it.</div>' +
+      '<div class="c-lines">' +
+        '<div class="c-line"><span class="pre">' + PRE + ' </span><span class="kid">' + esc(L[0]) + '</span></div>' +
+        '<div class="c-line"><span class="kid">' + esc(L[1]) + '</span></div>' +
+        '<div class="c-line"><span class="kid">' + esc(L[2]) + '</span></div>' +
+      '</div>' +
+      '<div class="c-foot"><span>See it. Say it. Hit.</span><span>dugoutlab.com</span></div>' +
+    '</div>';
+  }
+  function dugHTML(c) {
+    return '<div class="pc-dug">' +
+      '<div class="d-head"><b>' + esc(c.name || 'Player') + '</b><span>' + (c.num ? '#' + esc(c.num) : '') + '</span></div>' +
+      '<div class="d-mid">' + topSVG(c.spot) + '<div class="d-say"><em>When I get my pitch, I&rsquo;m going to hit</em>' + esc(c.say) + '</div></div>' +
+      '<div class="d-side">' + sideSVG(c.strokes) + '</div>' +
+    '</div>';
+  }
+  function printPages(items, per, render, cls) {
+    var html = '';
+    for (var i = 0; i < items.length; i += per) {
+      html += '<div class="pc-page ' + (cls || '') + '">' + items.slice(i, i + per).map(render).join('') + '</div>';
+    }
+    $('pc-print').innerHTML = html;
+    setTimeout(function () { window.print(); }, 60);
+  }
+  function fit(el) {
+    var card = el.firstElementChild; if (!card) return;
+    var avail = el.clientWidth, w = 384;
+    card.style.zoom = avail < w ? (avail / w).toFixed(3) : '';
+  }
+
+  /* ── Tabs ── */
+  var tabs = document.querySelectorAll('.pc-tabs button');
+  Array.prototype.forEach.call(tabs, function (b) {
+    b.addEventListener('click', function () {
+      Array.prototype.forEach.call(tabs, function (t) { var on = t === b; t.classList.toggle('on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      $('tab-blank').hidden = b.getAttribute('data-tab') !== 'blank';
+      $('tab-fill').hidden = b.getAttribute('data-tab') !== 'fill';
+      fit($('bl-preview')); fit($('ed-preview'));
+    });
+  });
+
+  /* ── Blank cards ── */
+  function roster() { return $('bl-roster').value.split(/\n+/).map(function (s) { return s.trim().slice(0, 24); }).filter(Boolean); }
+  $('bl-roster').addEventListener('input', function () { $('bl-count-wrap').hidden = roster().length > 0; });
+  $('bl-preview').innerHTML = cardHTML({});
+  $('bl-print').addEventListener('click', function () {
+    var names = roster(), items = [];
+    if (names.length) items = names.map(function (n) { return { name: n }; });
+    else for (var i = 0; i < Number($('bl-count').value); i++) items.push({});
+    printPages(items, 4, cardHTML);
+  });
+
+  /* ── Fill in ── */
+  var team = [];
+  try { team = JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch (e) { team = []; }
+  function persist() { try { localStorage.setItem(KEY, JSON.stringify(team)); } catch (e) {} }
+  var cur = { name: '', num: '', spot: null, strokes: [], say: '' }, editing = -1;
+
+  function svgPoint(svg, evt) {
+    var pt = svg.createSVGPoint(); pt.x = evt.clientX; pt.y = evt.clientY;
+    var m = svg.getScreenCTM(); if (!m) return null;
+    var p = pt.matrixTransform(m.inverse()); return [p.x, p.y];
+  }
+  function drawEditor() {
+    $('ed-top').innerHTML = topSVG(cur.spot, { inner: true });
+    $('ed-side').innerHTML = sideSVG(cur.strokes, { inner: true });
+    $('ed-preview').innerHTML = cardHTML(cur); fit($('ed-preview'));
+  }
+  $('ed-top').addEventListener('click', function (e) {
+    var p = svgPoint(this, e); if (!p) return;
+    cur.spot = [Math.max(10, Math.min(190, p[0])), Math.max(10, Math.min(160, p[1]))];
+    drawEditor();
+  });
+  var side = $('ed-side'), drawing = false;
+  side.addEventListener('pointerdown', function (e) {
+    var p = svgPoint(side, e); if (!p) return;
+    drawing = true; side.setPointerCapture(e.pointerId);
+    cur.strokes.push([p]); drawEditor();
+  });
+  side.addEventListener('pointermove', function (e) {
+    if (!drawing) return;
+    var p = svgPoint(side, e); if (!p) return;
+    var s = cur.strokes[cur.strokes.length - 1], last = s[s.length - 1];
+    if (Math.abs(p[0] - last[0]) + Math.abs(p[1] - last[1]) < 1.2) return;
+    s.push([Math.max(0, Math.min(300, p[0])), Math.max(0, Math.min(100, p[1]))]);
+    $('ed-side').innerHTML = sideSVG(cur.strokes, { inner: true });
+  });
+  function endStroke() { if (!drawing) return; drawing = false; drawEditor(); }
+  side.addEventListener('pointerup', endStroke);
+  side.addEventListener('pointercancel', endStroke);
+  $('ed-undo').addEventListener('click', function () { cur.strokes.pop(); drawEditor(); });
+  $('ed-clear').addEventListener('click', function () { cur.strokes = []; drawEditor(); });
+  $('ed-name').addEventListener('input', function () { cur.name = this.value; drawEditor(); });
+  $('ed-num').addEventListener('input', function () { cur.num = this.value; drawEditor(); });
+  $('ed-say').addEventListener('input', function () { cur.say = this.value; drawEditor(); });
+
+  function load(c) {
+    cur = { name: c.name || '', num: c.num || '', spot: c.spot || null, strokes: (c.strokes || []).map(function (s) { return s.slice(); }), say: c.say || '' };
+    $('ed-name').value = cur.name; $('ed-num').value = cur.num; $('ed-say').value = cur.say;
+    drawEditor();
+  }
+  function reset() { editing = -1; load({}); $('ed-save').textContent = 'Save card'; }
+  function slim(c) {
+    return { name: c.name.trim().slice(0, 24), num: c.num.trim().slice(0, 3), say: c.say.trim().slice(0, 150),
+      spot: c.spot ? [Math.round(c.spot[0] * 10) / 10, Math.round(c.spot[1] * 10) / 10] : null,
+      strokes: c.strokes.map(function (s) { return s.map(function (p) { return [Math.round(p[0] * 10) / 10, Math.round(p[1] * 10) / 10]; }); }) };
+  }
+  function renderTeam() {
+    if (!team.length) { $('team').innerHTML = '<div class="pc-empty">No cards yet. Fill one in above and tap Save card.</div>'; return; }
+    $('team').innerHTML = team.map(function (c, i) {
+      return '<div class="pc-team-row"><b>' + esc(c.name || 'Player') + (c.num ? ' #' + esc(c.num) : '') + '</b>' +
+        '<button type="button" data-edit="' + i + '">Edit</button><button type="button" data-del="' + i + '">Remove</button></div>';
+    }).join('');
+  }
+  $('team').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.hasAttribute('data-edit')) {
+      editing = Number(b.getAttribute('data-edit')); load(team[editing]);
+      $('ed-save').textContent = 'Update card';
+      $('ed-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (b.hasAttribute('data-del')) {
+      var k = Number(b.getAttribute('data-del')); team.splice(k, 1);
+      if (editing === k) reset(); else if (editing > k) editing--;
+      persist(); renderTeam();
+    }
+  });
+  $('ed-save').addEventListener('click', function () {
+    if (!cur.name.trim()) { $('ed-name').focus(); $('ed-name').placeholder = 'Add a name first'; return; }
+    var c = slim(cur);
+    if (editing >= 0) team[editing] = c; else team.push(c);
+    persist(); renderTeam(); reset();
+    $('team').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  $('ed-new').addEventListener('click', reset);
+  $('pr-pocket').addEventListener('click', function () { if (team.length) printPages(team, 4, cardHTML); });
+  $('pr-dugout').addEventListener('click', function () { if (team.length) printPages(team, 6, dugHTML, 'dug'); });
+
+  reset(); renderTeam();
+  fit($('bl-preview'));
+  window.addEventListener('resize', function () { fit($('bl-preview')); fit($('ed-preview')); });
+})();
+</script>
+</body>
+</html>
