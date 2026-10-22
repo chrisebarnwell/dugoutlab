@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Hit Window Game | DugoutLab</title>
+<title>Call Your Shot | DugoutLab</title>
 <meta name="description" content="Ten balls. Call your shot. Hit the net. Play solo, challenge a friend, or run coach head-to-head. Free. Parents register their players.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -109,7 +109,7 @@
 <div class="page-hero">
   <div class="page-hero-inner">
     <div class="breadcrumb"><a href="cage-targets.html">&#8592; The Hit Window</a></div>
-    <div class="eyebrow">Game</div>
+    <div class="eyebrow">Call Your Shot</div>
     <h1>Ten balls. Call your shot. Hit the net.</h1>
     <p>Hang the nets with <a href="cage-targets.html">The Hit Window</a>, then play. Points for every net you hit, double for calling it first. Challenge anyone. Coaches run head-to-head.</p>
   </div>
@@ -458,7 +458,7 @@
   $('m-lb').addEventListener('click', function () { showLB(false); });
   $('m-invite').addEventListener('click', function () {
     var b = $('m-invite').querySelector('span');
-    share('Hit Window Game', 'Come hit with me. Ten balls, call your shot, hit the net. Free.', SHARE_URL).then(function (r) { b.textContent = r === 'sent' ? 'Sent.' : r === 'copied' ? 'Link copied. Paste it anywhere.' : 'Send the game to a teammate.'; });
+    share('Call Your Shot', 'Come hit with me. Ten balls, call your shot, hit the net. Free.', SHARE_URL).then(function (r) { b.textContent = r === 'sent' ? 'Sent.' : r === 'copied' ? 'Link copied. Paste it anywhere.' : 'Send the game to a teammate.'; });
   });
   $('m-chal').addEventListener('click', function () { show('s-chal'); $('ch-q').value = ''; $('ch-list').innerHTML = ''; $('ch-err').textContent = ''; });
   $('ch-back').addEventListener('click', home);
@@ -632,7 +632,7 @@
   $('res-home').addEventListener('click', home);
   $('res-share').addEventListener('click', function () {
     var sc = R && R.h2h ? R.a.name + ' ' + R.A.score + ', ' + R.b.name + ' ' + R.B.score : (R ? R.A.score : 0);
-    share('Hit Window Game', (R && R.h2h ? 'Head-to-head: ' + sc + '.' : S.player.name + ' just put up ' + sc + ' in the Hit Window.') + ' Think you can beat it?', SHARE_URL)
+    share('Call Your Shot', (R && R.h2h ? 'Head-to-head: ' + sc + '.' : S.player.name + ' just put up ' + sc + ' in Call Your Shot.') + ' Think you can beat it?', SHARE_URL)
       .then(function (r) { shareMsg($('res-msg'), r, SHARE_URL); });
   });
 
