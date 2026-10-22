@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Launch Lab: Baseball and Softball Physics Game | DugoutLab</title>
+<meta name="description" content="Pick exit velocity, launch angle, and a field. Watch the ball fly with real drag and spin, see which fielder gets there, and learn why. A physics and baseball game for kids and coaches.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+  .ll-wrap { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  .ll-grid { display: grid; grid-template-columns: 340px 1fr; gap: 1rem; align-items: start; }
+  .ll-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.15rem; color: var(--ink); }
+  .ll-h { font-family: var(--serif); font-size: 1.2rem; font-weight: 600; margin-bottom: 0.7rem; letter-spacing: -0.01em; }
+  .ll-ctl { margin-bottom: 1rem; }
+  .ll-ctl-top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+  .ll-ctl label { font-size: 0.95rem; font-weight: 600; }
+  .ll-val { font-family: var(--mono); font-size: 1.15rem; color: var(--gold-light); font-weight: 500; white-space: nowrap; }
+  .ll-hint { font-size: 0.8rem; color: var(--ink-faint); margin-top: 0.2rem; line-height: 1.4; }
+  .ll-ctl input[type=range] { width: 100%; height: 30px; accent-color: var(--gold); margin-top: 0.25rem; }
+  .ll-ends { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--ink-faint); margin-top: -0.2rem; }
+  .ll-sel { width: 100%; background: var(--forest-deep); color: var(--ink); border: 1px solid var(--rule); border-radius: 9px; padding: 0.65rem 0.75rem; font: inherit; font-size: 16px; margin-top: 0.35rem; }
+  .ll-swing { width: 100%; background: var(--gold); color: var(--forest); border: none; border-radius: 12px; padding: 1rem; font-size: 1.15rem; font-weight: 700; letter-spacing: 0.02em; margin-top: 0.25rem; }
+  .ll-swing:hover { background: var(--gold-light); }
+  .ll-result { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+  .ll-res-label { font-family: var(--serif); font-size: 1.9rem; font-weight: 600; line-height: 1.05; letter-spacing: -0.015em; }
+  .ll-res-label.hit { color: var(--gold-light); }
+  .ll-res-label.hr { color: var(--gold); font-style: italic; }
+  .ll-res-label.out { color: var(--ink); }
+  .ll-res-sub { font-size: 0.9rem; color: var(--ink-soft); margin-top: 0.2rem; }
+  .ll-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .ll-chip { font-family: var(--mono); font-size: 0.78rem; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 6px; padding: 0.3rem 0.55rem; color: var(--ink-soft); }
+  .ll-chip b { color: var(--ink); font-weight: 500; }
+  .ll-view { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: var(--radius); margin-bottom: 0.75rem; overflow: hidden; }
+  .ll-view-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--gold); padding: 0.55rem 0.75rem 0; }
+  .ll-view svg { display: block; width: 100%; height: auto; }
+  .ll-views { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .ll-why { list-style: none; margin: 0; padding: 0; }
+  .ll-why li { font-size: 0.95rem; color: var(--ink-soft); line-height: 1.5; padding: 0.45rem 0 0.45rem 1.1rem; border-bottom: 1px solid var(--rule); position: relative; }
+  .ll-why li:last-child { border-bottom: none; }
+  .ll-why li::before { content: ""; position: absolute; left: 0; top: 0.95rem; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+  .ll-why li b { color: var(--ink); font-weight: 600; }
+  .ll-proc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .ll-stat { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 8px; padding: 0.6rem; text-align: center; }
+  .ll-stat-n { font-family: var(--mono); font-size: 1.5rem; color: var(--gold-light); line-height: 1.1; }
+  .ll-stat-l { font-size: 0.72rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.15rem; }
+  .ll-sci { font-size: 0.88rem; color: var(--ink-soft); min-height: 1.3em; margin-bottom: 0.75rem; }
+  .ll-sci.good { color: #7ad6a8; font-weight: 600; }
+  .ll-exp { list-style: none; margin: 0; padding: 0; }
+  .ll-exp li { display: flex; gap: 0.6rem; align-items: flex-start; padding: 0.55rem 0; border-bottom: 1px solid var(--rule); }
+  .ll-exp li:last-child { border-bottom: none; }
+  .ll-box { flex: 0 0 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--rule); display: grid; place-items: center; font-size: 0.8rem; font-weight: 700; color: var(--forest); margin-top: 0.1rem; }
+  .ll-exp li.done .ll-box { background: var(--gold); border-color: var(--gold); }
+  .ll-exp-t { font-weight: 600; font-size: 0.95rem; }
+  .ll-exp li.done .ll-exp-t { color: var(--gold-light); }
+  .ll-exp-d { font-size: 0.82rem; color: var(--ink-faint); line-height: 1.4; }
+  .ll-flash { animation: llflash 0.9s ease; }
+  @keyframes llflash { 0% { background: rgba(200,134,46,0.35); } 100% { background: transparent; } }
+  .ll-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin-top: 0.4rem; }
+  .ll-pick button { background: var(--forest-deep); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 9px; padding: 0.6rem 0.3rem; font: inherit; font-size: 0.92rem; font-weight: 600; }
+  .ll-pick button.on { background: var(--gold); border-color: var(--gold); color: var(--forest); }
+  .ll-swing:disabled { background: var(--forest-deep); color: var(--ink-faint); border: 1.5px dashed var(--rule); cursor: not-allowed; }
+  .ll-pred { background: var(--forest-deep); border: 1px solid var(--rule); border-left: 4px solid var(--gold); border-radius: 8px; padding: 0.65rem 0.8rem; margin-bottom: 0.75rem; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.5; }
+  .ll-pred b { color: var(--ink); }
+  .ll-pred.right { border-left-color: #7ad6a8; }
+  .ll-pred-pts { font-family: var(--mono); color: var(--gold-light); font-weight: 500; }
+  .ll-learn { max-width: 760px; margin: 0 auto; padding: 0 1rem 3rem; }
+  .ll-learn details { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius); padding: 0.9rem 1.1rem; margin-bottom: 0.75rem; }
+  .ll-learn summary { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; cursor: pointer; }
+  .ll-learn p, .ll-learn li { font-size: 1rem; color: var(--ink-soft); line-height: 1.65; }
+  .ll-learn p { margin-top: 0.7rem; }
+  .ll-learn ul { margin: 0.7rem 0 0 1.2rem; }
+  .ll-learn li { margin-bottom: 0.45rem; }
+  .ll-learn strong { color: var(--ink); }
+  @media (max-width: 900px) {
+    .ll-grid { grid-template-columns: 1fr; }
+    .ll-views { grid-template-columns: 1fr; }
+    .ll-res-label { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+    <ul class="nav-links">
+    <li><a href="ages.html">My Age Group</a></li>
+    <li><a href="tools.html">Tools</a></li>
+    <li><a href="articles.html">Field Notes</a></li>
+    <li><a href="how-kids-learn.html">Why It Works</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="ages.html">My Age Group</a>
+  <a href="tools.html">Tools</a>
+  <a href="articles.html">Field Notes</a>
+  <a href="how-kids-learn.html">Why It Works</a>
+</div>
+
+<section class="page-hero" style="padding:2.5rem 1.25rem 2rem">
+  <div class="page-hero-inner">
+    <div class="eyebrow">New &middot; A physics game</div>
+    <h1>Launch Lab</h1>
+    <p>Pick how hard and how high. Pick the field. Swing, and watch real drag and spin decide where it lands and who gets there. Then change one thing and swing again.</p>
+  </div>
+</section>
+
+<div class="ll-wrap">
+  <div class="ll-grid">
+
+    <div>
+      <div class="ll-card">
+        <div class="ll-h">Your swing</div>
+
+        <div class="ll-ctl">
+          <label for="ll-level">Field</label>
+          <select id="ll-level" class="ll-sel"></select>
+          <div class="ll-hint" id="ll-level-hint"></div>
+        </div>
+
+        <div class="ll-ctl">
+          <div class="ll-ctl-top"><label for="ll-ev">Exit velocity</label><span class="ll-val" id="ll-ev-v"></span></div>
+          <input type="range" id="ll-ev" min="20" max="115" step="1" value="55">
+          <div class="ll-hint" id="ll-ev-hint"></div>
+        </div>
+
+        <div class="ll-ctl">
+          <div class="ll-ctl-top"><label for="ll-la">Launch angle</label><span class="ll-val" id="ll-la-v"></span></div>
+          <input type="range" id="ll-la" min="-20" max="70" step="1" value="18">
+          <div class="ll-hint" id="ll-la-hint"></div>
+        </div>
+
+        <div class="ll-ctl">
+          <div class="ll-ctl-top"><label for="ll-sp">Direction</label><span class="ll-val" id="ll-sp-v"></span></div>
+          <input type="range" id="ll-sp" min="-45" max="45" step="1" value="-10">
+          <div class="ll-ends"><span>Left field line</span><span>Center</span><span>Right field line</span></div>
+        </div>
+
+        <div class="ll-ctl">
+          <div class="ll-ctl-top"><label for="ll-wind">Wind</label><span class="ll-val" id="ll-wind-v"></span></div>
+          <input type="range" id="ll-wind" min="-15" max="15" step="1" value="0">
+          <div class="ll-ends"><span>Blowing in</span><span>Calm</span><span>Blowing out</span></div>
+        </div>
+
+        <div class="ll-ctl" style="border-top:1px solid var(--rule);padding-top:0.9rem">
+          <label>Predict first: what happens?</label>
+          <div class="ll-pick" id="ll-pick">
+            <button type="button" data-k="out">Out</button>
+            <button type="button" data-k="hit">Hit</button>
+            <button type="button" data-k="hr">Home run</button>
+          </div>
+        </div>
+        <div class="ll-ctl">
+          <div class="ll-ctl-top"><label for="ll-guess">How far will it fly?</label><span class="ll-val" id="ll-guess-v"></span></div>
+          <input type="range" id="ll-guess" min="0" max="520" step="5" value="150">
+          <div class="ll-hint">Ground balls only score the call, not the distance.</div>
+        </div>
+
+        <button class="ll-swing" id="ll-go" disabled>Make your call first</button>
+      </div>
+
+      <div class="ll-card" style="margin-top:1rem">
+        <div class="ll-h">Scientist score</div>
+        <div class="ll-proc">
+          <div class="ll-stat"><div class="ll-stat-n" id="ll-swings">0</div><div class="ll-stat-l">Swings</div></div>
+          <div class="ll-stat"><div class="ll-stat-n" id="ll-calls">0</div><div class="ll-stat-l">Calls right</div></div>
+          <div class="ll-stat"><div class="ll-stat-n" id="ll-good">0</div><div class="ll-stat-l">One-change tests</div></div>
+        </div>
+        <div class="ll-sci" id="ll-sci">Tip: change one thing per swing. That is how you find out what caused what.</div>
+        <div class="ll-sci" id="ll-dist-score">Distance guesses: none yet.</div>
+        <div class="ll-h" style="font-size:1.05rem;margin-top:0.5rem">Experiments</div>
+        <ul class="ll-exp" id="ll-exp"></ul>
+      </div>
+    </div>
+
+    <div class="ll-card">
+      <div class="ll-result">
+        <div>
+          <div class="ll-res-label out" id="ll-res">Ready</div>
+          <div class="ll-res-sub" id="ll-res-sub">Set your swing and tap Swing.</div>
+        </div>
+        <div class="ll-chips" id="ll-chips"></div>
+      </div>
+
+      <div class="ll-pred" id="ll-pred" hidden></div>
+
+      <div class="ll-views">
+        <div class="ll-view">
+          <div class="ll-view-label">From the side</div>
+          <svg id="ll-side" viewBox="0 0 600 260" aria-label="Side view of the ball flight"></svg>
+        </div>
+        <div class="ll-view">
+          <div class="ll-view-label">From above</div>
+          <svg id="ll-top" viewBox="0 0 400 330" aria-label="Top view of the field and fielders"></svg>
+        </div>
+      </div>
+
+      <div class="ll-h" style="font-size:1.05rem">Why it happened</div>
+      <ul class="ll-why" id="ll-why"><li>Every swing gets an explanation here: the forces, the timing, and who had a chance.</li></ul>
+    </div>
+
+  </div>
+</div>
+
+<div class="ll-learn">
+  <details>
+    <summary>The science inside</summary>
+    <p><strong>Three forces act on the ball.</strong> Gravity pulls it down. Drag pushes against its motion and grows with the square of speed, so a ball hit twice as hard feels about four times the drag. Backspin creates lift (the Magnus force), which is why a well-hit fly ball hangs and carries.</p>
+    <p><strong>No air, no drag.</strong> After each swing we show how far the same ball would go in a vacuum. The gap between the two numbers is what the air did.</p>
+    <p><strong>Thin air carries.</strong> At a mile high the air is roughly a fifth less dense, so there is less drag and less lift, and the drag drop wins. Same swing, more distance.</p>
+    <p><strong>Fielders are a race against hang time.</strong> A fielder reacts, then runs. If he can cover the distance before the ball lands, it is an out. On ground balls the race is fielder plus throw against the runner going to first.</p>
+    <p><strong>The sweet spot.</strong> Statcast calls launch angles from 8 to 32 degrees the sweet spot. Below 10 is a ground ball, 10 to 25 a line drive, 25 to 50 a fly ball, above 50 a pop-up.</p>
+  </details>
+  <details>
+    <summary>For coaches</summary>
+    <p>This is a thinking toy, not a swing lesson. Kids must call the result before every swing. That is on purpose: guessing first, then seeing why the guess was wrong, is where the learning happens. The scientist score rewards good calls and changing one thing at a time, not big hits.</p>
+    <p>Best use: sit next to them. When a call is wrong, ask one question: what surprised you?</p>
+  </details>
+
+  <h2 style="font-family:var(--serif);font-size:1.4rem;margin:1.5rem 0 0.6rem">Guidelines &amp; sources this game follows</h2>
+  <ul>
+    <li><strong>Nathan, A. M. The Physics of Baseball</strong> (University of Illinois). Drag, lift, and how air density changes carry. <a href="https://baseball.physics.illinois.edu/">baseball.physics.illinois.edu</a></li>
+    <li><strong>Sawicki, G. S., Hubbard, M., and Stronge, W. J. (2003).</strong> How to hit home runs. <em>American Journal of Physics</em>. The lift model used here.</li>
+    <li><strong>MLB Statcast glossary.</strong> Exit velocity, launch angle, sweet spot (8 to 32 degrees), batted-ball types. <a href="https://www.mlb.com/glossary/statcast">mlb.com/glossary/statcast</a></li>
+    <li><strong>Crouch, C., Fagen, A. P., Callan, J. P., and Mazur, E. (2004).</strong> Classroom demonstrations: Learning tools or entertainment? <em>American Journal of Physics</em>, 72(6). Students who predicted the outcome before a demonstration understood it better than students who only watched. The reason this game makes you call it first.</li>
+    <li><strong>Lewis, M. (2003). Moneyball.</strong> Measure what happens instead of trusting how it looks.</li>
+    <li><strong>Lindbergh, B., and Sawchik, T. (2019). The MVP Machine.</strong> How measurement like exit velocity and launch angle changed player development.</li>
+  </ul>
+  <p style="font-size:0.95rem;color:var(--ink-soft)">Ready to run a whole game with this physics under the hood? Try <a href="skipper.html">Skipper</a>.</p>
+  <p style="font-size:0.9rem;color:var(--ink-soft)"><em>Note on certainty: this is a simplified model. Spin is estimated from launch angle. Fielders run at a steady speed. There is no sidespin, no bounce off the wall, and no bad hops. The typical exit velocity range shown for each field is a rough estimate, not a study. Use it to learn how the forces work, not to judge a player. The prediction study was with college physics students; we expect it to carry to kids, but that is not proven.</em></p>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script id="ll-core">
+var LL = (function () {
+  'use strict';
+  var FT = 3.28084, MPH = 0.44704, G = 9.81, RAD = Math.PI / 180;
+  var BALLS = {
+    baseball: { m: 0.145, d: 0.0737, cd: 0.31 },
+    softball: { m: 0.184, d: 0.097, cd: 0.37 }
+  };
+  // run = fielder speed m/s, ofR/ifR = reaction s, runner = home to first s, reach = catch height m
+  var LEVELS = [
+    { id: 'll', name: 'Little League baseball (60 ft bases)', sport: 'baseball', base: 60, fence: [200, 200, 200], fenceH: 4, rho: 1.2, run: 4.8, ofR: 0.6, ifR: 0.4, runner: 3.8, throwMph: 50, transfer: 1.0, reach: 2.0, typ: [45, 65] },
+    { id: 'sb12', name: '12U softball (60 ft bases)', sport: 'softball', base: 60, fence: [200, 200, 200], fenceH: 4, rho: 1.2, run: 4.8, ofR: 0.6, ifR: 0.4, runner: 3.6, throwMph: 45, transfer: 1.0, reach: 2.0, typ: [40, 60] },
+    { id: 'i13', name: '13U baseball (70 ft bases)', sport: 'baseball', base: 70, fence: [250, 275, 250], fenceH: 6, rho: 1.2, run: 5.5, ofR: 0.55, ifR: 0.35, runner: 4.0, throwMph: 60, transfer: 0.85, reach: 2.2, typ: [55, 75] },
+    { id: 'hssb', name: 'High school softball', sport: 'softball', base: 60, fence: [210, 220, 210], fenceH: 4, rho: 1.2, run: 5.6, ofR: 0.5, ifR: 0.35, runner: 3.2, throwMph: 55, transfer: 0.75, reach: 2.3, typ: [55, 75] },
+    { id: 'hs', name: 'High school baseball (90 ft bases)', sport: 'baseball', base: 90, fence: [325, 390, 325], fenceH: 8, rho: 1.2, run: 6.0, ofR: 0.5, ifR: 0.3, runner: 4.4, throwMph: 75, transfer: 0.7, reach: 2.4, typ: [70, 90] },
+    { id: 'mlb', name: 'Big league park', sport: 'baseball', base: 90, fence: [330, 400, 330], fenceH: 10, rho: 1.2, run: 6.5, ofR: 0.45, ifR: 0.3, runner: 4.3, throwMph: 85, transfer: 0.6, reach: 2.5, typ: [85, 105] },
+    { id: 'mile', name: 'Big league park, a mile high', sport: 'baseball', base: 90, fence: [347, 415, 350], fenceH: 8, rho: 0.98, run: 6.5, ofR: 0.45, ifR: 0.3, runner: 4.3, throwMph: 85, transfer: 0.6, reach: 2.5, typ: [85, 105] }
+  ];
+
+  function xy(d, aDeg) { return { x: d * Math.sin(aDeg * RAD), y: d * Math.cos(aDeg * RAD) }; }
+  function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+  function fenceAt(lv, s) {
+    var t = Math.min(1, Math.abs(s) / 45);
+    var side = s < 0 ? lv.fence[0] : lv.fence[2];
+    return lv.fence[1] + (side - lv.fence[1]) * t;
+  }
+  function spinRpm(la) { return la >= 8 ? 650 + 45 * la : 900; }
+  function cdAt(base, sp) { return sp < 30 ? base + 0.13 : (sp > 40 ? base : base + 0.13 * (40 - sp) / 10); }
+
+  function fielders(lv) {
+    var b = lv.base;
+    var list = [
+      { n: 'P', a: 0, r: 0.72 * b, g: 'IF' },
+      { n: 'C', a: 180, r: 4, g: 'C' },
+      { n: '1B', a: 36, r: 1.2 * b, g: 'IF' },
+      { n: '2B', a: 13, r: 1.55 * b, g: 'IF' },
+      { n: 'SS', a: -13, r: 1.55 * b, g: 'IF' },
+      { n: '3B', a: -36, r: 1.15 * b, g: 'IF' },
+      { n: 'LF', a: -27, r: 0.76 * fenceAt(lv, -27), g: 'OF' },
+      { n: 'CF', a: 0, r: 0.8 * lv.fence[1], g: 'OF' },
+      { n: 'RF', a: 27, r: 0.76 * fenceAt(lv, 27), g: 'OF' }
+    ];
+    list.forEach(function (f) { var p = xy(f.r, f.a); f.x = p.x; f.y = p.y; });
+    return list;
+  }
+
+  // Ball flight with drag + backspin lift, 2D along the spray line. Returns feet and seconds.
+  function flight(ev, la, spray, lv, wind) {
+    var b = BALLS[lv.sport], A = Math.PI * Math.pow(b.d / 2, 2), r = b.d / 2;
+    var v0 = ev * MPH, th = la * RAD;
+    var vx = v0 * Math.cos(th), vz = v0 * Math.sin(th), x = 0, z = 0.9, t = 0;
+    var w = (wind || 0) * MPH * Math.cos(spray * RAD);
+    var omega = spinRpm(la) * 2 * Math.PI / 60;
+    var fenceFt = fenceAt(lv, spray), fenceM = fenceFt / FT, fenceHM = lv.fenceH / FT;
+    var pts = [{ x: 0, z: z * FT, t: 0 }], apex = z, cleared = false, wall = false, hAtFence = null;
+    var dt = 0.004, i = 0, px, pz;
+    while (z > 0 && t < 15) {
+      var rx = vx - w, rz = vz, sp = Math.hypot(rx, rz) || 1e-6;
+      var S = r * omega / sp;
+      var CL = Math.min(0.35, S < 0.1 ? 1.5 * S : 0.09 + 0.6 * S);
+      var k = 0.5 * lv.rho * A * sp * sp / b.m;
+      var cd = cdAt(b.cd, sp);
+      var ax = -k * cd * rx / sp - k * CL * rz / sp;
+      var az = -k * cd * rz / sp + k * CL * rx / sp - G;
+      px = x; pz = z;
+      vx += ax * dt; vz += az * dt; x += vx * dt; z += vz * dt; t += dt; i++;
+      if (z > apex) apex = z;
+      if (hAtFence === null && px < fenceM && x >= fenceM) {
+        hAtFence = z;
+        if (z > fenceHM) { cleared = true; }
+        else { wall = true; x = fenceM; break; }
+      }
+      if (i % 5 === 0) pts.push({ x: x * FT, z: Math.max(0, z) * FT, t: t });
+    }
+    var landX = x;
+    if (!wall && z < 0) { var f = pz / (pz - z); landX = px + (x - px) * f; t = t - dt + dt * f; }
+    var hang = t;
+    if (wall) { hang = t + Math.sqrt(2 * Math.max(0, z) / G); pts.push({ x: fenceFt, z: Math.max(0, z) * FT, t: t }); pts.push({ x: fenceFt, z: 0, t: hang }); }
+    else pts.push({ x: landX * FT, z: 0, t: hang });
+    var vac = v0 * v0 * Math.sin(2 * th) / G * FT;
+    return { pts: pts, dist: landX * FT, hang: hang, apex: apex * FT, cleared: cleared, wall: wall,
+      fenceFt: fenceFt, clearBy: hAtFence === null ? null : hAtFence * FT - lv.fenceH, vac: vac };
+  }
+
+  function heightAt(pts, X) {
+    for (var i = 1; i < pts.length; i++) {
+      if (pts[i].x >= X) {
+        var a = pts[i - 1], c = pts[i], f = (X - a.x) / ((c.x - a.x) || 1e-6);
+        return { z: a.z + (c.z - a.z) * f, t: a.t + (c.t - a.t) * f };
+      }
+    }
+    return null;
+  }
+
+  function resolveAir(ev, la, spray, lv, wind) {
+    var fl = flight(ev, la, spray, lv, wind), fs = fielders(lv), spdFt = lv.run * FT;
+    var res = { ground: false, f: fl, fs: fs };
+    if (fl.cleared) { res.kind = 'hr'; res.label = 'Home run'; res.bases = 4; return res; }
+    // Line drives snagged by an infielder on the way past
+    var best = null;
+    fs.forEach(function (f) {
+      if (f.g !== 'IF') return;
+      var diff = (f.a - spray) * RAD, along = f.r * Math.cos(diff), lat = Math.abs(f.r * Math.sin(diff));
+      if (along <= 0 || along >= fl.dist) return;
+      var h = heightAt(fl.pts, along);
+      if (!h || h.z > lv.reach * FT) return;
+      var can = spdFt * (lv.ld || 1) * Math.max(0, h.t - lv.ifR) + 3;
+      if (lat <= can && (!best || h.t < best.t)) best = { f: f, t: h.t, need: lat, can: can, at: xy(along, spray), line: true };
+    });
+    if (!best && !fl.wall) {
+      var L = xy(fl.dist, spray);
+      fs.forEach(function (f) {
+        var react = f.g === 'OF' ? lv.ofR : lv.ifR;
+        var d = dist(f, L), can = spdFt * (fl.hang < 3.2 && lv.ld ? lv.ld : 1) * Math.max(0, fl.hang - react) + 3;
+        if (d <= can && (!best || (can - d) > (best.can - best.need))) best = { f: f, t: fl.hang, need: d, can: can, at: L };
+      });
+    }
+    if (best) {
+      res.kind = 'out'; res.catch = best; res.bases = 0;
+      res.label = best.line ? 'Line out' : (la > 50 ? 'Pop out' : (best.f.g === 'OF' ? 'Fly out' : 'Caught'));
+      return res;
+    }
+    // Not caught: closest fielder for the explanation
+    var target = fl.wall ? xy(fl.fenceFt, spray) : xy(fl.dist, spray), close = null;
+    fs.forEach(function (f) {
+      var react = f.g === 'OF' ? lv.ofR : lv.ifR, d = dist(f, target), can = spdFt * Math.max(0, fl.hang - react) + 3;
+      if (!close || d - can < close.short) close = { f: f, short: d - can };
+    });
+    res.close = close;
+    var ratio = fl.dist / fl.fenceFt, gap = Math.abs(spray) >= 12 && Math.abs(spray) <= 38;
+    if (fl.wall) { res.bases = 2; res.label = 'Double off the wall'; }
+    else if (ratio > 0.9 && gap && lv.base >= 70) { res.bases = 3; res.label = 'Triple'; }
+    else if (ratio >= 0.75) { res.bases = 2; res.label = 'Double'; }
+    else { res.bases = 1; res.label = 'Single'; }
+    res.kind = 'hit';
+    return res;
+  }
+
+  function resolveGround(ev, la, spray, lv) {
+    var v1 = ev * MPH * Math.cos(la * RAD) * 0.8, a = 2.0, tStop = v1 / a;
+    var bM = lv.base / FT, fs = fielders(lv);
+    function dAt(t) { var tt = Math.min(t, tStop); return v1 * tt - 0.5 * a * tt * tt; }
+    var best = null;
+    fs.forEach(function (f) {
+      if (f.g === 'OF') return;
+      var react = f.g === 'C' ? 0.8 : lv.ifR, F = { x: f.x / FT, y: f.y / FT };
+      for (var t = 0.05; t < tStop + 4; t += 0.02) {
+        var d = dAt(t);
+        if (d > 1.9 * bM) break;
+        var P = xy(d, spray), gap = dist(P, F), can = lv.run * (lv.gb || 1) * Math.max(0, t - react) + 1.0;
+        if (gap <= can) { if (!best || t < best.t) best = { f: f, t: t, at: { x: P.x * FT, y: P.y * FT } }; break; }
+      }
+    });
+    var pts = [], endT = best ? best.t : Math.min(tStop, 6);
+    for (var s = 0; s <= 20; s++) { var tt = endT * s / 20; pts.push({ x: dAt(tt) * FT, z: 0, t: tt }); }
+    if (!best) { var d1 = dAt(tStop) * FT; pts.push({ x: Math.max(d1, lv.base * 2.2), z: 0, t: endT + 1 }); }
+    var res = { ground: true, fs: fs, f: { pts: pts, dist: pts[pts.length - 1].x, hang: endT, apex: 0, fenceFt: fenceAt(lv, spray), vac: null } };
+    if (!best) { res.kind = 'hit'; res.bases = 1; res.label = 'Single through the hole'; return res; }
+    var bag = xy(lv.base, 45), fieldT = best.t + lv.transfer, dBag = dist(best.at, bag), throwT;
+    if (best.f.n === '1B' && dBag < 25) throwT = dBag / (lv.run * FT) - lv.transfer + 0.2;
+    else throwT = dBag / (lv.throwMph * MPH * FT);
+    var total = fieldT + throwT;
+    res.field = best; res.total = total; res.margin = lv.runner - total;
+    if (total < lv.runner) { res.kind = 'out'; res.bases = 0; res.label = 'Ground out'; }
+    else { res.kind = 'infield'; res.bases = 1; res.label = 'Infield single'; }
+    return res;
+  }
+
+  function swing(ev, la, spray, lv, wind) {
+    var r = la < 8 ? resolveGround(ev, la, spray, lv) : resolveAir(ev, la, spray, lv, wind);
+    r.ev = ev; r.la = la; r.spray = spray; r.lv = lv; r.wind = wind;
+    r.hr = r.kind === 'hr'; r.hit = r.bases > 0; r.out = r.bases === 0;
+    return r;
+  }
+
+  return { LEVELS: LEVELS, swing: swing, fenceAt: fenceAt, xy: xy, fielders: fielders, FT: FT };
+})();
+</script>
+
+<script id="ll-ui">
+(function () {
+  'use strict';
+  if (typeof document === 'undefined') return;
+  var $ = function (id) { return document.getElementById(id); };
+  var NS = 'http://www.w3.org/2000/svg';
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function laType(la) {
+    if (la < 10) return 'ground ball';
+    if (la <= 25) return 'line drive';
+    if (la <= 50) return 'fly ball';
+    return 'pop-up';
+  }
+  function dir(s) {
+    if (Math.abs(s) <= 6) return 'up the middle';
+    if (s < -30) return 'down the left field line';
+    if (s > 30) return 'down the right field line';
+    return s < 0 ? 'to left field' : 'to right field';
+  }
+  function r0(n) { return Math.round(n); }
+
+  var sel = $('ll-level');
+  LL.LEVELS.forEach(function (lv, i) {
+    var o = document.createElement('option'); o.value = i; o.textContent = lv.name; sel.appendChild(o);
+  });
+
+  function lvl() { return LL.LEVELS[+sel.value]; }
+  function inputs() {
+    return { ev: +$('ll-ev').value, la: +$('ll-la').value, sp: +$('ll-sp').value, wind: +$('ll-wind').value, lv: +sel.value };
+  }
+
+  function updateLabels() {
+    var v = inputs(), lv = lvl();
+    $('ll-ev-v').textContent = v.ev + ' mph';
+    $('ll-la-v').textContent = v.la + '\u00B0';
+    $('ll-sp-v').textContent = v.sp === 0 ? 'Center' : (Math.abs(v.sp) + '\u00B0 ' + (v.sp < 0 ? 'left' : 'right'));
+    $('ll-wind-v').textContent = v.wind === 0 ? 'Calm' : (Math.abs(v.wind) + ' mph ' + (v.wind < 0 ? 'in' : 'out'));
+    $('ll-ev-hint').textContent = 'Rough typical range here: ' + lv.typ[0] + ' to ' + lv.typ[1] + ' mph.';
+    var t = laType(v.la);
+    $('ll-la-hint').textContent = t.charAt(0).toUpperCase() + t.slice(1) + (v.la >= 8 && v.la <= 32 ? '. Inside the sweet spot.' : '.');
+    $('ll-level-hint').textContent = 'Bases ' + lv.base + ' ft. Fences ' + lv.fence[0] + ' / ' + lv.fence[1] + ' / ' + lv.fence[2] + ' ft. ' + (lv.sport === 'softball' ? 'Softball.' : 'Baseball.') + (lv.rho < 1.1 ? ' Thin air.' : '');
+  }
+
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function txt(parent, x, y, s, attrs) {
+    var a = { x: x, y: y, fill: 'rgba(244,239,230,0.55)', 'font-size': 11, 'font-family': 'Inter, sans-serif' };
+    for (var k in attrs || {}) a[k] = attrs[k];
+    var t = el('text', a, parent); t.textContent = s; return t;
+  }
+
+  // TOP VIEW
+  var topScale, topHome = { x: 200, y: 318 };
+  function tp(x, y) { return { x: topHome.x + x * topScale, y: topHome.y - y * topScale }; }
+  function drawTop(lv, res) {
+    var svg = $('ll-top'); svg.innerHTML = '';
+    var F = Math.max(lv.fence[0], lv.fence[1], lv.fence[2]);
+    topScale = 262 / F;
+    var d = 'M' + topHome.x + ' ' + topHome.y;
+    for (var s = -45; s <= 45; s += 3) { var p = LL.xy(LL.fenceAt(lv, s), s), q = tp(p.x, p.y); d += ' L' + q.x.toFixed(1) + ' ' + q.y.toFixed(1); }
+    el('path', { d: d + ' Z', fill: '#1a3024', stroke: '#C8862E', 'stroke-width': 2 }, svg);
+    var b = lv.base, h = tp(0, 0), b1 = LL.xy(b, 45), b2 = LL.xy(b * Math.SQRT2, 0), b3 = LL.xy(b, -45);
+    var p1 = tp(b1.x, b1.y), p2 = tp(b2.x, b2.y), p3 = tp(b3.x, b3.y);
+    el('path', { d: 'M' + h.x + ' ' + h.y + ' L' + p1.x + ' ' + p1.y + ' L' + p2.x + ' ' + p2.y + ' L' + p3.x + ' ' + p3.y + ' Z', fill: 'rgba(200,134,46,0.18)', stroke: 'rgba(244,239,230,0.35)', 'stroke-width': 1 }, svg);
+    [p1, p2, p3].forEach(function (p) { el('rect', { x: p.x - 3, y: p.y - 3, width: 6, height: 6, fill: '#f4efe6' }, svg); });
+    var fF = LL.fenceAt(lv, 0), cf = tp(0, fF);
+    txt(svg, cf.x, cf.y - 6, lv.fence[1] + ' ft', { 'text-anchor': 'middle', fill: '#e2a85a' });
+    var lf = LL.xy(lv.fence[0], -45), lq = tp(lf.x, lf.y); txt(svg, lq.x + 4, lq.y + 14, lv.fence[0] + '', { fill: '#e2a85a' });
+    var rf = LL.xy(lv.fence[2], 45), rq = tp(rf.x, rf.y); txt(svg, rq.x - 4, rq.y + 14, lv.fence[2] + '', { fill: '#e2a85a', 'text-anchor': 'end' });
+    var nodes = {};
+    (res ? res.fs : LL.fielders(lv)).forEach(function (f) {
+      var p = tp(f.x, f.y), g = el('g', { transform: 'translate(' + p.x + ',' + p.y + ')' }, svg);
+      el('circle', { r: 7, fill: '#0a1610', stroke: 'rgba(244,239,230,0.6)', 'stroke-width': 1.5 }, g);
+      txt(g, 0, 3.5, f.n, { 'text-anchor': 'middle', 'font-size': 8, fill: '#f4efe6', 'font-weight': 600 });
+      nodes[f.n] = { g: g, from: p };
+    });
+    if (!res) return;
+    var end = res.f.pts[res.f.pts.length - 1], ep = LL.xy(end.x, res.spray), eq = tp(ep.x, ep.y);
+    el('line', { x1: h.x, y1: h.y, x2: eq.x, y2: eq.y, stroke: 'rgba(226,168,90,0.55)', 'stroke-width': 1.5, 'stroke-dasharray': '4 4' }, svg);
+    var ball = el('circle', { r: 4.5, cx: h.x, cy: h.y, fill: '#ffffff' }, svg);
+    var mover = null, catchAt = res.catch ? res.catch.at : (res.field ? res.field.at : null), who = res.catch ? res.catch.f.n : (res.field ? res.field.f.n : null);
+    if (catchAt && who) {
+      var c = tp(catchAt.x, catchAt.y);
+      mover = { node: nodes[who], to: c };
+      el('circle', { cx: c.x, cy: c.y, r: 10, fill: 'none', stroke: '#7ad6a8', 'stroke-width': 1.5, 'stroke-dasharray': '3 3' }, svg);
+    } else if (!res.hr) {
+      el('circle', { cx: eq.x, cy: eq.y, r: 8, fill: 'none', stroke: '#e2a85a', 'stroke-width': 2 }, svg);
+    }
+    return { ball: ball, mover: mover };
+  }
+
+  // SIDE VIEW
+  function drawSide(lv, res) {
+    var svg = $('ll-side'); svg.innerHTML = '';
+    var W = 600, gy = 228, left = 28, usable = W - left - 14;
+    var fence = res ? res.f.fenceFt : LL.fenceAt(lv, 0);
+    var maxX = Math.max(fence * 1.12, res ? res.f.dist * 1.05 : 0, 120);
+    var maxY = Math.max(res ? res.f.apex * 1.2 : 0, lv.fenceH * 4, 30);
+    var sx = usable / maxX, sy = Math.min(190 / maxY, sx * 3);
+    function sp(x, z) { return { x: left + x * sx, y: gy - z * sy }; }
+    el('rect', { x: 0, y: gy, width: W, height: 32, fill: '#15291f' }, svg);
+    el('line', { x1: 0, y1: gy, x2: W, y2: gy, stroke: 'rgba(244,239,230,0.3)' }, svg);
+    var step = maxX > 320 ? 100 : 50;
+    for (var x = step; x < maxX; x += step) { var p = sp(x, 0); el('line', { x1: p.x, y1: gy, x2: p.x, y2: gy + 5, stroke: 'rgba(244,239,230,0.4)' }, svg); txt(svg, p.x, gy + 18, x + ' ft', { 'text-anchor': 'middle', 'font-size': 10 }); }
+    var fp = sp(fence, 0), fh = Math.max(3, lv.fenceH * sy);
+    el('rect', { x: fp.x - 2, y: gy - fh, width: 4, height: fh, fill: '#C8862E' }, svg);
+    txt(svg, fp.x, gy - fh - 6, 'Fence ' + r0(fence) + ' ft', { 'text-anchor': 'middle', fill: '#e2a85a', 'font-size': 10 });
+    var hp = sp(0, 0); el('rect', { x: hp.x - 5, y: gy - 2, width: 10, height: 4, fill: '#f4efe6' }, svg);
+    if (!res) { txt(svg, W / 2, 110, 'Tap Swing to launch', { 'text-anchor': 'middle', 'font-size': 14 }); return null; }
+    var d = '';
+    res.f.pts.forEach(function (pt, i) { var q = sp(pt.x, pt.z); d += (i ? ' L' : 'M') + q.x.toFixed(1) + ' ' + q.y.toFixed(1); });
+    var path = el('path', { d: d, fill: 'none', stroke: 'rgba(226,168,90,0.8)', 'stroke-width': 2 }, svg);
+    if (!res.ground && res.f.apex > 3) {
+      var top = res.f.pts.reduce(function (a, b) { return b.z > a.z ? b : a; });
+      var tq = sp(top.x, top.z); txt(svg, tq.x, Math.max(12, tq.y - 8), r0(res.f.apex) + ' ft high', { 'text-anchor': 'middle', fill: '#f4efe6', 'font-size': 10 });
+    }
+    var ball = el('circle', { r: 5, cx: hp.x, cy: gy - 3, fill: '#ffffff' }, svg);
+    return { ball: ball, sp: sp, path: path };
+  }
+
+  var anim = null;
+  function animate(res, side, topv) {
+    if (anim) cancelAnimationFrame(anim);
+    var pts = res.f.pts, n = pts.length - 1;
+    var dur = reduce ? 0 : Math.min(2200, 500 + res.f.hang * 380);
+    var t0 = null;
+    function place(frac) {
+      var fi = frac * n, i = Math.min(n - 1, Math.floor(fi)), f = fi - i;
+      var a = pts[i], b = pts[Math.min(n, i + 1)];
+      var x = a.x + (b.x - a.x) * f, z = a.z + (b.z - a.z) * f;
+      var q = side.sp(x, z); side.ball.setAttribute('cx', q.x); side.ball.setAttribute('cy', q.y - 3);
+      var g = LL.xy(x, res.spray), tq = tp(g.x, g.y);
+      topv.ball.setAttribute('cx', tq.x); topv.ball.setAttribute('cy', tq.y);
+      topv.ball.setAttribute('r', 4.5 + Math.min(4, z / 25));
+      if (topv.mover && topv.mover.node) {
+        var m = topv.mover, fx = m.from ? m.from : m.node.from;
+        var fr = Math.min(1, frac * 1.05), px = m.node.from.x + (m.to.x - m.node.from.x) * fr, py = m.node.from.y + (m.to.y - m.node.from.y) * fr;
+        m.node.g.setAttribute('transform', 'translate(' + px + ',' + py + ')');
+      }
+    }
+    if (!dur) { place(1); return; }
+    function step(ts) {
+      if (!t0) t0 = ts;
+      var frac = Math.min(1, (ts - t0) / dur);
+      place(frac);
+      if (frac < 1) anim = requestAnimationFrame(step);
+    }
+    anim = requestAnimationFrame(step);
+  }
+
+  function explain(r) {
+    var why = [], lv = r.lv, f = r.f;
+    why.push('<b>' + r.la + '\u00B0 = ' + laType(r.la) + '.</b>' + (r.la >= 8 && r.la <= 32 ? ' Inside the 8 to 32 degree sweet spot.' : (r.la > 32 ? ' Above the sweet spot: more height, less distance.' : ' Below the sweet spot: it stays on the ground.')));
+    if (r.ground) {
+      if (r.field) {
+        why.push('<b>' + r.field.f.n + '</b> got to it in ' + r.field.t.toFixed(1) + ' s.');
+        why.push('Field it, throw it: <b>' + r.total.toFixed(1) + ' s</b>. Runner to first: <b>' + lv.runner.toFixed(1) + ' s</b>. ' + (r.margin > 0 ? 'Throw won by ' + r.margin.toFixed(1) + ' s.' : 'Runner won by ' + (-r.margin).toFixed(1) + ' s. Speed wins races.'));
+      } else {
+        why.push('Hit ' + dir(r.spray) + ' and nobody could get to it in time. That is a hole in the defense.');
+      }
+    } else {
+      why.push('Hang time <b>' + f.hang.toFixed(1) + ' s</b>. Carried <b>' + r0(f.dist) + ' ft</b>, peaked at ' + r0(f.apex) + ' ft.');
+      if (f.vac > 0) why.push('With no air it would go <b>' + r0(f.vac) + ' ft</b>. Drag and spin changed it by ' + r0(Math.abs(f.vac - f.dist)) + ' ft.');
+      if (r.hr) why.push('Cleared the ' + lv.fenceH + ' ft fence at ' + r0(f.fenceFt) + ' ft with ' + r0(f.clearBy) + ' ft to spare.');
+      else if (f.wall) why.push('Hit the wall at ' + r0(f.fenceFt) + ' ft. A little more angle or speed and it is gone.');
+      if (r.catch) {
+        var c = r.catch;
+        why.push('<b>' + c.f.n + '</b> needed to cover ' + r0(c.need) + ' ft and could cover about ' + r0(c.can) + ' ft in time. ' + (c.line ? 'Low liner, right at him.' : 'He got there.'));
+      } else if (r.close && !r.hr) {
+        why.push('Closest fielder, <b>' + r.close.f.n + '</b>, was about ' + r0(Math.max(0, r.close.short)) + ' ft short. Hit it where they are not.');
+      }
+    }
+    if (lv.rho < 1.1 && !r.ground) why.push('Thin air at a mile high means less drag. Same swing goes farther.');
+    if (r.wind && !r.ground) why.push('Wind ' + Math.abs(r.wind) + ' mph ' + (r.wind > 0 ? 'out helped carry it.' : 'in knocked it down.'));
+    return why;
+  }
+
+  var EXP = [
+    { t: 'Find the sweet spot', d: 'Get a hit with a launch angle from 8 to 32 degrees.', test: function (r) { return r.hit && r.la >= 8 && r.la <= 32; } },
+    { t: 'Hit it where they are not', d: 'Get a hit at or below the low end of the typical speed for this field.', test: function (r) { return r.hit && r.ev <= r.lv.typ[0]; } },
+    { t: 'Split the outfielders', d: 'Hit a double or better into a gap.', test: function (r) { return r.bases >= 2 && !r.hr && Math.abs(r.spray) >= 12 && Math.abs(r.spray) <= 38; } },
+    { t: 'Beat the throw', d: 'Get an infield single on a ground ball.', test: function (r) { return r.kind === 'infield'; } },
+    { t: 'Clear the fence', d: 'Hit a home run. Then find the slowest exit velocity that still does it.', test: function (r) { return r.hr; } },
+    { t: 'Find the ceiling', d: 'Hit a pop-up above 50 degrees and see why it gets caught.', test: function (r) { return r.la > 50 && r.out; } },
+    { t: 'Thin air test', d: 'Hit the same swing at the big league park and a mile high. Compare.', test: function (r) { return false; } }
+  ];
+  var done = EXP.map(function () { return false; });
+  var thin = {};
+  function renderExp(flash) {
+    var ul = $('ll-exp'); ul.innerHTML = '';
+    EXP.forEach(function (e, i) {
+      var li = document.createElement('li'); if (done[i]) li.className = 'done';
+      if (flash === i) li.classList.add('ll-flash');
+      li.innerHTML = '<span class="ll-box">' + (done[i] ? '&#10003;' : '') + '</span><span><div class="ll-exp-t">' + e.t + '</div><div class="ll-exp-d">' + e.d + '</div></span>';
+      ul.appendChild(li);
+    });
+  }
+
+  var prev = null, swings = 0, good = 0, calls = 0, pick = null, guesses = 0, guessErr = 0;
+  var NAMES = { out: 'Out', hit: 'Hit', hr: 'Home run' };
+  function setPick(k) {
+    pick = k;
+    Array.prototype.forEach.call($('ll-pick').children, function (b) { b.classList.toggle('on', b.getAttribute('data-k') === k); });
+    var go = $('ll-go'); go.disabled = !k; go.textContent = k ? 'Swing' : 'Make your call first';
+  }
+  $('ll-pick').addEventListener('click', function (e) { var k = e.target.getAttribute && e.target.getAttribute('data-k'); if (k) setPick(k); });
+  function guessLabel() { $('ll-guess-v').textContent = $('ll-guess').value + ' ft'; }
+  $('ll-guess').addEventListener('input', guessLabel);
+  function fitGuess() {
+    var lv = lvl(), mx = Math.ceil(Math.max(lv.fence[0], lv.fence[1], lv.fence[2]) * 1.3 / 10) * 10, g = $('ll-guess');
+    g.max = mx; if (+g.value > mx) g.value = mx; guessLabel();
+  }
+  function scorePrediction(r) {
+    var actual = r.hr ? 'hr' : (r.hit ? 'hit' : 'out'), right = pick === actual, pts = right ? 1 : 0;
+    if (right) calls++;
+    var g = +$('ll-guess').value, line = 'You called <b>' + NAMES[pick] + '</b>' + (r.ground ? '' : ', ' + g + ' ft') + '. It was <b>' + r.label + '</b>' + (r.ground ? '' : ', ' + Math.round(r.f.dist) + ' ft') + '. ';
+    if (!r.ground) {
+      var err = Math.abs(g - r.f.dist), pct = err / Math.max(1, r.f.dist);
+      guesses++; guessErr += err;
+      if (pct <= 0.1) { pts += 2; line += 'Bullseye, within ' + Math.round(err) + ' ft. '; }
+      else if (pct <= 0.2) { pts += 1; line += 'Close, off by ' + Math.round(err) + ' ft. '; }
+      else line += 'Off by ' + Math.round(err) + ' ft. ' + (g > r.f.dist ? 'Air took more than you thought.' : 'It carried more than you thought.') + ' ';
+      $('ll-dist-score').textContent = 'Distance guesses: average miss ' + Math.round(guessErr / guesses) + ' ft over ' + guesses + '. Watch it shrink.';
+    }
+    if (!right) line += 'Read the why below and try to call the next one.';
+    var box = $('ll-pred'); box.hidden = false; box.className = 'll-pred' + (right ? ' right' : '');
+    box.innerHTML = line + ' <span class="ll-pred-pts">+' + pts + '</span>';
+    $('ll-calls').textContent = calls + '/' + swings;
+  }
+  function go() {
+    if (!pick) return;
+    var v = inputs(), lv = lvl();
+    var r = LL.swing(v.ev, v.la, v.sp, lv, v.wind);
+    swings++;
+    var msg = $('ll-sci');
+    if (prev) {
+      var changed = ['ev', 'la', 'sp', 'wind', 'lv'].filter(function (k) { return prev[k] !== v[k]; }).length;
+      if (changed === 1) { good++; msg.className = 'll-sci good'; msg.textContent = 'One change, clean test. Now you know what caused the difference.'; }
+      else if (changed === 0) { msg.className = 'll-sci'; msg.textContent = 'Same swing, same result. Physics gives the same answer every time.'; }
+      else { msg.className = 'll-sci'; msg.textContent = changed + ' things changed. Hard to tell which one did it. Try changing just one.'; }
+    }
+    prev = v;
+    $('ll-swings').textContent = swings; $('ll-good').textContent = good;
+    scorePrediction(r);
+    setPick(null);
+
+    var lab = $('ll-res');
+    lab.textContent = r.label;
+    lab.className = 'll-res-label ' + (r.hr ? 'hr' : (r.hit ? 'hit' : 'out'));
+    $('ll-res-sub').textContent = (r.ground ? 'Ground ball ' : (laType(r.la).charAt(0).toUpperCase() + laType(r.la).slice(1) + ' ')) + dir(r.spray) + '.';
+    var chips = [['EV', r.ev + ' mph'], ['LA', r.la + '\u00B0']];
+    if (!r.ground) chips.push(['Dist', r0(r.f.dist) + ' ft'], ['Hang', r.f.hang.toFixed(1) + ' s']);
+    $('ll-chips').innerHTML = chips.map(function (c) { return '<span class="ll-chip">' + c[0] + ' <b>' + c[1] + '</b></span>'; }).join('');
+    $('ll-why').innerHTML = explain(r).map(function (s) { return '<li>' + s + '</li>'; }).join('');
+
+    var flash = -1;
+    EXP.forEach(function (e, i) { if (!done[i] && e.test(r)) { done[i] = true; flash = i; } });
+    if (!r.ground && (lv.id === 'mlb' || lv.id === 'mile')) {
+      var key = v.ev + '|' + v.la + '|' + v.sp + '|' + v.wind;
+      thin[lv.id] = key;
+      if (thin.mlb && thin.mlb === thin.mile && !done[6]) { done[6] = true; flash = 6; }
+    }
+    renderExp(flash);
+
+    var side = drawSide(lv, r), topv = drawTop(lv, r);
+    animate(r, side, topv);
+  }
+
+  ['ll-ev', 'll-la', 'll-sp', 'll-wind'].forEach(function (id) { $(id).addEventListener('input', updateLabels); });
+  sel.addEventListener('change', function () { updateLabels(); fitGuess(); drawSide(lvl(), null); drawTop(lvl(), null); });
+  $('ll-go').addEventListener('click', go);
+
+  updateLabels(); fitGuess(); renderExp(-1); drawSide(lvl(), null); drawTop(lvl(), null);
+})();
+</script>
+<script src="js/site.js"></script>
+</body>
+</html>

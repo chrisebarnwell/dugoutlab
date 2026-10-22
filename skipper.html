@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skipper: Manage a Game With the Numbers | DugoutLab</title>
+<meta name="description" content="Manage a full baseball or softball game. Every batted ball is decided by real physics, every decision is scored by run expectancy math, and you can ask the numbers before you call the play.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+  .sk-wrap { max-width: 1100px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+  .sk-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1rem; color: var(--ink); }
+  .sk-h { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; margin-bottom: 0.6rem; letter-spacing: -0.01em; }
+  .sk-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--gold); margin-bottom: 0.4rem; }
+  .sk-hint { font-size: 0.82rem; color: var(--ink-faint); line-height: 1.45; }
+  .sk-sel { width: 100%; background: var(--forest-deep); color: var(--ink); border: 1px solid var(--rule); border-radius: 9px; padding: 0.65rem 0.75rem; font: inherit; font-size: 16px; margin-top: 0.3rem; }
+  .sk-btn { background: var(--gold); color: var(--forest); border: none; border-radius: 12px; padding: 0.9rem 1rem; font-size: 1.05rem; font-weight: 700; width: 100%; cursor: pointer; }
+  .sk-btn:hover { background: var(--gold-light); }
+  .sk-btn:disabled { background: var(--forest-deep); color: var(--ink-faint); border: 1.5px dashed var(--rule); cursor: not-allowed; }
+  .sk-btn2 { background: var(--forest-deep); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 10px; padding: 0.65rem 0.8rem; font: inherit; font-size: 0.92rem; font-weight: 600; cursor: pointer; width: 100%; }
+  .sk-btn2:hover { border-color: var(--gold); }
+  .sk-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+  .sk-row > * { flex: 1; }
+  .sk-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+  .sk-pick button { background: var(--forest-deep); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 9px; padding: 0.6rem 0.4rem; font: inherit; font-size: 0.9rem; font-weight: 600; text-align: left; cursor: pointer; }
+  .sk-pick button small { display: block; font-weight: 400; font-size: 0.74rem; color: var(--ink-faint); margin-top: 0.1rem; }
+  .sk-pick button.on { background: var(--gold); border-color: var(--gold); color: var(--forest); }
+  .sk-pick button.on small { color: rgba(10,22,16,0.7); }
+  .sk-pick button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .sk-tog { display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; font-weight: 600; padding: 0.45rem 0; }
+  .sk-tog input { width: 20px; height: 20px; accent-color: var(--gold); }
+  .sk-tog small { font-weight: 400; color: var(--ink-faint); }
+
+  .sk-game { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+  .sk-game > * { min-width: 0; }
+  @media (min-width: 900px) {
+    .sk-game { grid-template-columns: 1fr 360px; grid-template-areas: "board decide" "sit decide" "last ask" "field ask" "log re"; align-items: start; }
+    .sk-board { grid-area: board; } .sk-sit { grid-area: sit; } .sk-decide { grid-area: decide; } .sk-ask { grid-area: ask; }
+    .sk-last { grid-area: last; } .sk-fieldcard { grid-area: field; } .sk-logcard { grid-area: log; } .sk-recard { grid-area: re; }
+  }
+
+  .sk-score { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 0.82rem; }
+  .sk-score th, .sk-score td { padding: 0.3rem 0.35rem; text-align: center; border-bottom: 1px solid var(--rule); }
+  .sk-score th { color: var(--ink-faint); font-weight: 500; font-size: 0.7rem; }
+  .sk-score td:first-child, .sk-score th:first-child { text-align: left; font-family: var(--sans, Inter, sans-serif); font-weight: 600; white-space: nowrap; }
+  .sk-score td.cur { background: rgba(200,134,46,0.18); }
+  .sk-score td.tot { color: var(--gold-light); font-weight: 500; }
+  .sk-score tr.you td:first-child::after { content: " (you)"; color: var(--gold); font-weight: 500; font-size: 0.72rem; }
+  .sk-status { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; font-size: 0.9rem; color: var(--ink-soft); }
+  .sk-status b { color: var(--ink); }
+
+  .sk-sit-grid { display: grid; grid-template-columns: 120px 1fr; gap: 0.75rem; align-items: center; }
+  .sk-sit svg { width: 120px; height: 120px; display: block; }
+  .sk-count { font-family: var(--mono); font-size: 0.9rem; color: var(--ink-soft); margin-top: 0.3rem; }
+  .sk-match { display: grid; gap: 0.5rem; }
+  .sk-pcard { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 9px; padding: 0.55rem 0.7rem; }
+  .sk-pcard .nm { font-weight: 700; font-size: 0.95rem; }
+  .sk-pcard .nm span { font-weight: 400; color: var(--ink-faint); font-size: 0.8rem; }
+  .sk-bars { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-top: 0.35rem; }
+  .sk-bar { font-size: 0.68rem; color: var(--ink-faint); min-width: 44px; }
+  .sk-bar i { display: block; height: 5px; background: var(--rule); border-radius: 3px; margin-top: 2px; overflow: hidden; }
+  .sk-bar i b { display: block; height: 100%; background: var(--gold); }
+  .sk-bar.lo i b { background: #b86b4b; } .sk-bar.hi i b { background: #7ad6a8; }
+  .sk-gas { height: 8px; background: var(--rule); border-radius: 4px; overflow: hidden; margin-top: 0.35rem; }
+  .sk-gas b { display: block; height: 100%; background: #7ad6a8; }
+  .sk-gas.warn b { background: var(--gold); } .sk-gas.bad b { background: #b86b4b; }
+
+  .sk-res { font-family: var(--serif); font-size: 1.6rem; font-weight: 600; line-height: 1.1; letter-spacing: -0.015em; }
+  .sk-res.hit { color: var(--gold-light); } .sk-res.hr { color: var(--gold); font-style: italic; } .sk-res.bad { color: #e0a090; }
+  .sk-sub { font-size: 0.92rem; color: var(--ink-soft); margin-top: 0.25rem; line-height: 1.5; }
+  .sk-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.5rem; }
+  .sk-chip { font-family: var(--mono); font-size: 0.76rem; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 6px; padding: 0.25rem 0.5rem; color: var(--ink-soft); }
+  .sk-chip b { color: var(--ink); font-weight: 500; }
+  .sk-chip.up { border-color: #7ad6a8; color: #7ad6a8; } .sk-chip.dn { border-color: #b86b4b; color: #e0a090; }
+  .sk-why { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+  .sk-why li { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.45; padding: 0.35rem 0 0.35rem 1rem; border-top: 1px solid var(--rule); position: relative; }
+  .sk-why li::before { content: ""; position: absolute; left: 0; top: 0.85rem; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+  .sk-why li b { color: var(--ink); }
+
+  .sk-field { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
+  .sk-field svg { display: block; width: 100%; height: auto; }
+
+  .sk-log { list-style: none; margin: 0; padding: 0; max-height: 420px; overflow: auto; }
+  .sk-log li { font-size: 0.86rem; color: var(--ink-soft); padding: 0.4rem 0; border-bottom: 1px solid var(--rule); line-height: 1.4; }
+  .sk-log li b { color: var(--ink); }
+  .sk-log li.inn { color: var(--gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.7rem; }
+  .sk-log .re { font-family: var(--mono); font-size: 0.74rem; margin-left: 0.3rem; }
+  .sk-log .re.up { color: #7ad6a8; } .sk-log .re.dn { color: #e0a090; }
+
+  .sk-ask-list { list-style: none; margin: 0; padding: 0; }
+  .sk-ask-list li { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; padding: 0.45rem 0; border-bottom: 1px solid var(--rule); font-size: 0.92rem; }
+  .sk-ask-list li:first-child { color: var(--gold-light); font-weight: 600; }
+  .sk-ask-list .n { font-family: var(--mono); white-space: nowrap; }
+  .sk-ask-note { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.5; margin-top: 0.6rem; }
+  .sk-ask-note b { color: var(--ink); }
+
+  .sk-re { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 0.78rem; }
+  .sk-re th, .sk-re td { padding: 0.28rem 0.3rem; text-align: center; border-bottom: 1px solid var(--rule); }
+  .sk-re th { color: var(--ink-faint); font-weight: 500; }
+  .sk-re td:first-child { text-align: left; color: var(--ink-soft); }
+  .sk-re td.now { background: var(--gold); color: var(--forest); font-weight: 500; border-radius: 4px; }
+
+  .sk-report { display: grid; gap: 0.5rem; }
+  .sk-big { font-family: var(--serif); font-size: 2rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; }
+  .sk-stat3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+  .sk-stat { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 8px; padding: 0.55rem; text-align: center; }
+  .sk-stat .n { font-family: var(--mono); font-size: 1.4rem; color: var(--gold-light); line-height: 1.1; }
+  .sk-stat .l { font-size: 0.68rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.15rem; }
+  .sk-dec { list-style: none; margin: 0; padding: 0; }
+  .sk-dec li { font-size: 0.88rem; color: var(--ink-soft); padding: 0.4rem 0; border-top: 1px solid var(--rule); line-height: 1.45; }
+  .sk-dec li b { color: var(--ink); }
+  .sk-notice { background: rgba(200,134,46,0.14); border: 1px solid var(--gold); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.88rem; color: var(--ink); margin-bottom: 0.6rem; line-height: 1.45; }
+  .sk-flash { animation: skflash 0.8s ease; }
+  @keyframes skflash { 0% { background: rgba(200,134,46,0.35); } 100% { background: transparent; } }
+  details.sk-roster summary { cursor: pointer; font-weight: 600; font-size: 0.92rem; padding: 0.3rem 0; }
+  .sk-roster table { width: 100%; border-collapse: collapse; font-size: 0.8rem; font-family: var(--mono); }
+  .sk-roster td, .sk-roster th { padding: 0.25rem 0.3rem; text-align: right; border-bottom: 1px solid var(--rule); }
+  .sk-roster td:first-child, .sk-roster th:first-child { text-align: left; font-family: Inter, sans-serif; }
+  .sk-roster th { color: var(--ink-faint); font-weight: 500; }
+
+  .sk-pick3 { grid-template-columns: 1fr 1fr 1fr; }
+  .sk-pick3 button small { font-size: 0.7rem; }
+  .sk-cb { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; margin: 0.35rem 0 0.4rem; }
+  .sk-cb-c { display: inline-flex; flex-direction: column; align-items: center; min-width: 46px; padding: 0.3rem 0.4rem; border-radius: 8px; background: var(--forest-deep); border: 1.5px solid var(--rule); font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); line-height: 1.25; }
+  .sk-cb-c b { font-size: 0.95rem; color: var(--ink); font-weight: 500; }
+  .sk-cb-c.up { border-color: #7ad6a8; color: #7ad6a8; } .sk-cb-c.dn { border-color: #b86b4b; color: #e0a090; }
+  .sk-cb-c.end { border-style: dashed; }
+  .sk-cb-a { color: var(--ink-faint); font-size: 1.1rem; }
+  .sk-cb-f { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-faint); border: 1px dashed var(--rule); border-radius: 50%; width: 22px; height: 22px; display: inline-grid; place-items: center; }
+  .sk-learn { max-width: 760px; margin: 0 auto; padding: 0 1rem 3rem; }
+  .sk-learn details { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius); padding: 0.9rem 1.1rem; margin-bottom: 0.75rem; }
+  .sk-learn summary { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; cursor: pointer; }
+  .sk-learn p, .sk-learn li { font-size: 1rem; color: var(--ink-soft); line-height: 1.65; }
+  .sk-learn p { margin-top: 0.7rem; }
+  .sk-learn ul { margin: 0.7rem 0 0 1.2rem; }
+  .sk-learn li { margin-bottom: 0.45rem; }
+  .sk-learn strong { color: var(--ink); }
+  .sk-learn pre { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-soft); background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 8px; padding: 0.75rem; overflow-x: auto; margin-top: 0.7rem; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+    <ul class="nav-links">
+    <li><a href="ages.html">My Age Group</a></li>
+    <li><a href="tools.html">Tools</a></li>
+    <li><a href="articles.html">Field Notes</a></li>
+    <li><a href="how-kids-learn.html">Why It Works</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="ages.html">My Age Group</a>
+  <a href="tools.html">Tools</a>
+  <a href="articles.html">Field Notes</a>
+  <a href="how-kids-learn.html">Why It Works</a>
+</div>
+
+<section class="page-hero" style="padding:2.5rem 1.25rem 1.75rem">
+  <div class="page-hero-inner">
+    <div class="eyebrow">New &middot; A manager's game</div>
+    <h1>Skipper</h1>
+    <p>You run the dugout. Real physics decides where every ball goes. Run expectancy math scores every call you make. Stuck? Ask the numbers before you decide.</p>
+  </div>
+</section>
+
+<div class="sk-wrap">
+
+  <div class="sk-card" id="sk-setup">
+    <div class="sk-h">New game</div>
+    <div class="sk-pick" style="grid-template-columns:1fr">
+      <label class="sk-label" for="sk-level" style="margin:0">Field and level</label>
+    </div>
+    <select id="sk-level" class="sk-sel"></select>
+    <div class="sk-hint" id="sk-level-hint" style="margin-top:0.3rem"></div>
+    <div class="sk-label" style="margin-top:0.9rem">Your dugout</div>
+    <div class="sk-pick" id="sk-side">
+      <button type="button" data-v="1" class="on">Home<small>Bat last. Walk-off chances.</small></button>
+      <button type="button" data-v="0">Away<small>Bat first. Set the tone.</small></button>
+    </div>
+    <div class="sk-row">
+      <button class="sk-btn" id="sk-start">Play ball</button>
+    </div>
+    <div class="sk-hint" style="margin-top:0.6rem">Rosters are made up on the spot and graded on the 20 to 80 scouting scale. 50 is average for this level. Nobody here is a real person.</div>
+  </div>
+
+  <div class="sk-game" id="sk-game" hidden>
+
+    <div class="sk-card sk-board">
+      <table class="sk-score" id="sk-score"></table>
+      <div class="sk-status"><span id="sk-inn"></span><span id="sk-cap"></span></div>
+    </div>
+
+    <div class="sk-card sk-sit">
+      <div class="sk-sit-grid">
+        <div>
+          <svg id="sk-diamond" viewBox="0 0 120 120" aria-label="Bases and outs"></svg>
+          <div class="sk-count" id="sk-count"></div>
+        </div>
+        <div class="sk-match" id="sk-match"></div>
+      </div>
+    </div>
+
+    <div class="sk-card sk-decide">
+      <div id="sk-notice"></div>
+      <div class="sk-label" id="sk-dec-label">Your call</div>
+      <div id="sk-dec"></div>
+    </div>
+
+    <div class="sk-card sk-ask" id="sk-askcard" hidden>
+      <div class="sk-h" style="font-size:1rem">What the numbers say</div>
+      <div id="sk-ask"></div>
+    </div>
+
+    <div class="sk-card sk-last" id="sk-lastcard">
+      <div class="sk-res" id="sk-res">Play ball</div>
+      <div class="sk-sub" id="sk-sub">Make your first call.</div>
+      <div class="sk-chips" id="sk-chips"></div>
+      <ul class="sk-why" id="sk-why"></ul>
+      <div id="sk-countbar"></div>
+    </div>
+
+    <div class="sk-card sk-fieldcard">
+      <div class="sk-label">Last ball in play</div>
+      <div class="sk-field"><svg id="sk-top" viewBox="0 0 400 330" aria-label="Field view of the last play"></svg></div>
+    </div>
+
+    <div class="sk-card sk-logcard">
+      <div class="sk-h" style="font-size:1rem">Play by play</div>
+      <ul class="sk-log" id="sk-log"></ul>
+    </div>
+
+    <div class="sk-card sk-recard">
+      <div class="sk-h" style="font-size:1rem">Run expectancy</div>
+      <div class="sk-hint" style="margin-bottom:0.5rem">Average runs scored from here to the end of the inning. Gold cell is right now.</div>
+      <table class="sk-re" id="sk-re"></table>
+      <div class="sk-hint" id="sk-re-note" style="margin-top:0.5rem"></div>
+    </div>
+
+  </div>
+
+  <div class="sk-card" id="sk-final" hidden style="margin-top:0.75rem">
+    <div class="sk-report" id="sk-report"></div>
+  </div>
+
+</div>
+
+<div class="sk-learn">
+  <details>
+    <summary>What you are learning while you play</summary>
+    <ul>
+      <li><strong>Run expectancy.</strong> Every base and out situation is worth a number of runs on average. Every play moves that number. Outs are expensive. A bunt usually trades a base for an out and loses value. The table in the game shows it live.
+        <pre>Real MLB run expectancy, 2010 to 2015 (The Book)
+Runners      0 out   1 out   2 out
+Empty        0.48    0.25    0.10
+1st          0.86    0.51    0.22
+2nd          1.10    0.66    0.32
+1st, 2nd     1.44    0.88    0.43
+3rd          1.35    0.95    0.35
+1st, 3rd     1.78    1.13    0.48
+2nd, 3rd     1.96    1.38    0.58
+Loaded       2.29    1.54    0.75</pre></li>
+      <li><strong>The count.</strong> Every pitch changes the hitter's odds. After 0-1, big leaguers are about 16 percent worse than average. After 2-0, about 35 percent better. After 0-2, about 37 percent worse. That is why "strike one" is the most important pitch. The game's count bar shows the real MLB number after every pitch, and the engine is tuned so its counts land close to those numbers.
+        <pre>MLB wOBA after each count (FanGraphs, 2020)
+.320 is average
+        0 strikes  1 strike  2 strikes
+0 balls   .320      .270      .203
+1 ball    .363      .303      .228
+2 balls   .434      .361      .273
+3 balls   .544      .476      .377</pre></li>
+      <li><strong>Break-even math.</strong> A stolen base is worth trying only if the runner's chance beats the break-even rate for that situation, usually around 70 percent. The game does the division for you and shows the work.</li>
+      <li><strong>Physics decides hits.</strong> Each ball in play gets an exit velocity and launch angle, then flies with drag and spin. Fielders race it. Nothing is a dice roll that says "single."</li>
+      <li><strong>Expected value, not outcomes.</strong> A good call can still fail. A bad call can still work. The report at the end grades your decisions by the math at the time, not by how the ball bounced.</li>
+      <li><strong>Pitch counts and fatigue.</strong> Pitchers lose control and velocity as they tire. Youth levels have a hard pitch cap. Managing the staff is part of the job.</li>
+      <li><strong>The 20 to 80 scale.</strong> Scouts grade players this way. 50 is average, 80 is the best you will ever see, 20 is the lowest. Reading a scout report is reading a number line.</li>
+    </ul>
+  </details>
+  <details>
+    <summary>Where the ideas come from</summary>
+    <p>Earl Weaver managed the Orioles from 1968 to 1982, and again in 1985 and 1986. In <em>Weaver on Strategy</em> (1984) he laid out his laws, including "The easiest way around the bases is with one swing of the bat," "Your most precious possessions on offense are your twenty-seven outs," and "If you play for one run, that's all you'll get." Run expectancy math, worked out decades later in <em>The Book</em>, mostly agrees with him. The other dugout in this game manages the Weaver way: no sacrifice bunts, steals only with fast runners.</p>
+    <p>The 1987 computer game that carried his name was one of the first to put a manager's thinking and real ballpark dimensions into software, and let you ask the manager for advice. That is where "Ask the numbers" comes from.</p>
+  </details>
+  <details>
+    <summary>For coaches and parents</summary>
+    <p>Play it next to them. The learning is in the pause before the call. Good questions: Why is the bunt a negative number here? What would make the steal worth it? Why did the fly out score a run?</p>
+    <p>Do not use this to grade real players or real decisions. The rosters are invented, the physics is simplified, and youth games have far more randomness than any model shows. Use it to build the habit of thinking in expected value, then go play catch.</p>
+  </details>
+
+  <h2 style="font-family:var(--serif);font-size:1.4rem;margin:1.5rem 0 0.6rem">Guidelines &amp; sources this game follows</h2>
+  <ul>
+    <li><strong>Tango, T., Lichtman, M., and Dolphin, A. (2007). The Book: Playing the Percentages in Baseball.</strong> Run expectancy by base and out state, sacrifice bunt and stolen base break-even analysis. The real MLB table is printed above. The in-game table is built from this game's own engine, 1,500 simulated innings from each situation at each level, so that the advice matches the game you are playing.</li>
+    <li><strong>Clemens, B. (2020). The Count Is King (Even After Accounting for Batter Skill).</strong> FanGraphs. MLB wOBA after each ball-strike count, used for the count bar and to tune the engine. <a href="https://blogs.fangraphs.com/the-count-is-king-even-after-accounting-for-batter-skill/">blogs.fangraphs.com</a></li>
+    <li><strong>Associated Press with Sportradar (2025).</strong> MLB hitters swing at 32.1 percent of first pitches and hit .338 when they put the first pitch in play. <a href="https://www.wsls.com/sports/2025/08/29/mlb-hitters-swinging-at-first-pitches-at-highest-rate-since-1988/">AP report</a></li>
+    <li><strong>Weaver, E., with Pluto, T. (1984). Weaver on Strategy.</strong> Weaver's laws of managing, quoted above.</li>
+    <li><strong>Nathan, A. M. The Physics of Baseball</strong> (University of Illinois). Drag, lift, and air density. <a href="https://baseball.physics.illinois.edu/">baseball.physics.illinois.edu</a></li>
+    <li><strong>MLB Statcast glossary.</strong> Exit velocity, launch angle, sweet spot. <a href="https://www.mlb.com/glossary/statcast">mlb.com/glossary/statcast</a></li>
+    <li><strong>Little League Baseball Regular Season Pitching Rules.</strong> Pitch count limits by age (85 per day for ages 11 to 12, 95 for 13 to 16). <a href="https://www.littleleague.org/playing-rules/pitch-count/">littleleague.org/playing-rules/pitch-count</a></li>
+    <li><strong>Lewis, M. (2003). Moneyball.</strong> Outs are the scarce resource. Measure what happens.</li>
+    <li><strong>Lindbergh, B., and Sawchik, T. (2019). The MVP Machine.</strong> How exit velocity and launch angle changed player development.</li>
+  </ul>
+  <p style="font-size:0.9rem;color:var(--ink-soft)"><em>Note on certainty: this is a simplified model. Pitch outcomes, baserunning, errors, and fatigue are rough estimates tuned to look like real games, not measured from youth data. The run expectancy numbers come from this engine, not from youth game data. The count numbers are MLB; youth hitters see more balls and struggle more with two strikes, so the gaps are probably bigger at young ages, but we have no youth data to prove it. "Ask the numbers" runs a few hundred simulations of this game's own engine, so it tells you what the model thinks, not what a real game would do. Treat every number as a lesson in thinking, not a fact about your team.</em></p>
+  <p style="font-size:0.95rem;color:var(--ink-soft)">Want to feel the physics by hand first? Try <a href="launch-lab.html">Launch Lab</a>.</p>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script id="sk-physics">
+var LL = (function () {
+  'use strict';
+  var FT = 3.28084, MPH = 0.44704, G = 9.81, RAD = Math.PI / 180;
+  var BALLS = {
+    baseball: { m: 0.145, d: 0.0737, cd: 0.31 },
+    softball: { m: 0.184, d: 0.097, cd: 0.37 }
+  };
+  // run = fielder speed m/s, ofR/ifR = reaction s, runner = home to first s, reach = catch height m
+  var LEVELS = [
+    { id: 'll', name: 'Little League baseball (60 ft bases)', sport: 'baseball', base: 60, fence: [200, 200, 200], fenceH: 4, rho: 1.2, run: 4.8, ofR: 0.6, ifR: 0.4, runner: 3.8, throwMph: 50, transfer: 1.0, reach: 2.0, typ: [45, 65] },
+    { id: 'sb12', name: '12U softball (60 ft bases)', sport: 'softball', base: 60, fence: [200, 200, 200], fenceH: 4, rho: 1.2, run: 4.8, ofR: 0.6, ifR: 0.4, runner: 3.6, throwMph: 45, transfer: 1.0, reach: 2.0, typ: [40, 60] },
+    { id: 'i13', name: '13U baseball (70 ft bases)', sport: 'baseball', base: 70, fence: [250, 275, 250], fenceH: 6, rho: 1.2, run: 5.5, ofR: 0.55, ifR: 0.35, runner: 4.0, throwMph: 60, transfer: 0.85, reach: 2.2, typ: [55, 75] },
+    { id: 'hssb', name: 'High school softball', sport: 'softball', base: 60, fence: [210, 220, 210], fenceH: 4, rho: 1.2, run: 5.6, ofR: 0.5, ifR: 0.35, runner: 3.2, throwMph: 55, transfer: 0.75, reach: 2.3, typ: [55, 75] },
+    { id: 'hs', name: 'High school baseball (90 ft bases)', sport: 'baseball', base: 90, fence: [325, 390, 325], fenceH: 8, rho: 1.2, run: 6.0, ofR: 0.5, ifR: 0.3, runner: 4.4, throwMph: 75, transfer: 0.7, reach: 2.4, typ: [70, 90] },
+    { id: 'mlb', name: 'Big league park', sport: 'baseball', base: 90, fence: [330, 400, 330], fenceH: 10, rho: 1.2, run: 6.5, ofR: 0.45, ifR: 0.3, runner: 4.3, throwMph: 85, transfer: 0.6, reach: 2.5, typ: [85, 105] },
+    { id: 'mile', name: 'Big league park, a mile high', sport: 'baseball', base: 90, fence: [347, 415, 350], fenceH: 8, rho: 0.98, run: 6.5, ofR: 0.45, ifR: 0.3, runner: 4.3, throwMph: 85, transfer: 0.6, reach: 2.5, typ: [85, 105] }
+  ];
+
+  function xy(d, aDeg) { return { x: d * Math.sin(aDeg * RAD), y: d * Math.cos(aDeg * RAD) }; }
+  function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+  function fenceAt(lv, s) {
+    var t = Math.min(1, Math.abs(s) / 45);
+    var side = s < 0 ? lv.fence[0] : lv.fence[2];
+    return lv.fence[1] + (side - lv.fence[1]) * t;
+  }
+  function spinRpm(la) { return la >= 8 ? 650 + 45 * la : 900; }
+  function cdAt(base, sp) { return sp < 30 ? base + 0.13 : (sp > 40 ? base : base + 0.13 * (40 - sp) / 10); }
+
+  function fielders(lv) {
+    var b = lv.base;
+    var list = [
+      { n: 'P', a: 0, r: 0.72 * b, g: 'IF' },
+      { n: 'C', a: 180, r: 4, g: 'C' },
+      { n: '1B', a: 36, r: 1.2 * b, g: 'IF' },
+      { n: '2B', a: 13, r: 1.55 * b, g: 'IF' },
+      { n: 'SS', a: -13, r: 1.55 * b, g: 'IF' },
+      { n: '3B', a: -36, r: 1.15 * b, g: 'IF' },
+      { n: 'LF', a: -27, r: 0.76 * fenceAt(lv, -27), g: 'OF' },
+      { n: 'CF', a: 0, r: 0.8 * lv.fence[1], g: 'OF' },
+      { n: 'RF', a: 27, r: 0.76 * fenceAt(lv, 27), g: 'OF' }
+    ];
+    list.forEach(function (f) { var p = xy(f.r, f.a); f.x = p.x; f.y = p.y; });
+    return list;
+  }
+
+  // Ball flight with drag + backspin lift, 2D along the spray line. Returns feet and seconds.
+  function flight(ev, la, spray, lv, wind) {
+    var b = BALLS[lv.sport], A = Math.PI * Math.pow(b.d / 2, 2), r = b.d / 2;
+    var v0 = ev * MPH, th = la * RAD;
+    var vx = v0 * Math.cos(th), vz = v0 * Math.sin(th), x = 0, z = 0.9, t = 0;
+    var w = (wind || 0) * MPH * Math.cos(spray * RAD);
+    var omega = spinRpm(la) * 2 * Math.PI / 60;
+    var fenceFt = fenceAt(lv, spray), fenceM = fenceFt / FT, fenceHM = lv.fenceH / FT;
+    var pts = [{ x: 0, z: z * FT, t: 0 }], apex = z, cleared = false, wall = false, hAtFence = null;
+    var dt = 0.004, i = 0, px, pz;
+    while (z > 0 && t < 15) {
+      var rx = vx - w, rz = vz, sp = Math.hypot(rx, rz) || 1e-6;
+      var S = r * omega / sp;
+      var CL = Math.min(0.35, S < 0.1 ? 1.5 * S : 0.09 + 0.6 * S);
+      var k = 0.5 * lv.rho * A * sp * sp / b.m;
+      var cd = cdAt(b.cd, sp);
+      var ax = -k * cd * rx / sp - k * CL * rz / sp;
+      var az = -k * cd * rz / sp + k * CL * rx / sp - G;
+      px = x; pz = z;
+      vx += ax * dt; vz += az * dt; x += vx * dt; z += vz * dt; t += dt; i++;
+      if (z > apex) apex = z;
+      if (hAtFence === null && px < fenceM && x >= fenceM) {
+        hAtFence = z;
+        if (z > fenceHM) { cleared = true; }
+        else { wall = true; x = fenceM; break; }
+      }
+      if (i % 5 === 0) pts.push({ x: x * FT, z: Math.max(0, z) * FT, t: t });
+    }
+    var landX = x;
+    if (!wall && z < 0) { var f = pz / (pz - z); landX = px + (x - px) * f; t = t - dt + dt * f; }
+    var hang = t;
+    if (wall) { hang = t + Math.sqrt(2 * Math.max(0, z) / G); pts.push({ x: fenceFt, z: Math.max(0, z) * FT, t: t }); pts.push({ x: fenceFt, z: 0, t: hang }); }
+    else pts.push({ x: landX * FT, z: 0, t: hang });
+    var vac = v0 * v0 * Math.sin(2 * th) / G * FT;
+    return { pts: pts, dist: landX * FT, hang: hang, apex: apex * FT, cleared: cleared, wall: wall,
+      fenceFt: fenceFt, clearBy: hAtFence === null ? null : hAtFence * FT - lv.fenceH, vac: vac };
+  }
+
+  function heightAt(pts, X) {
+    for (var i = 1; i < pts.length; i++) {
+      if (pts[i].x >= X) {
+        var a = pts[i - 1], c = pts[i], f = (X - a.x) / ((c.x - a.x) || 1e-6);
+        return { z: a.z + (c.z - a.z) * f, t: a.t + (c.t - a.t) * f };
+      }
+    }
+    return null;
+  }
+
+  function resolveAir(ev, la, spray, lv, wind) {
+    var fl = flight(ev, la, spray, lv, wind), fs = fielders(lv), spdFt = lv.run * FT;
+    var res = { ground: false, f: fl, fs: fs };
+    if (fl.cleared) { res.kind = 'hr'; res.label = 'Home run'; res.bases = 4; return res; }
+    // Line drives snagged by an infielder on the way past
+    var best = null;
+    fs.forEach(function (f) {
+      if (f.g !== 'IF') return;
+      var diff = (f.a - spray) * RAD, along = f.r * Math.cos(diff), lat = Math.abs(f.r * Math.sin(diff));
+      if (along <= 0 || along >= fl.dist) return;
+      var h = heightAt(fl.pts, along);
+      if (!h || h.z > lv.reach * FT) return;
+      var can = spdFt * (lv.ld || 1) * Math.max(0, h.t - lv.ifR) + 3;
+      if (lat <= can && (!best || h.t < best.t)) best = { f: f, t: h.t, need: lat, can: can, at: xy(along, spray), line: true };
+    });
+    if (!best && !fl.wall) {
+      var L = xy(fl.dist, spray);
+      fs.forEach(function (f) {
+        var react = f.g === 'OF' ? lv.ofR : lv.ifR;
+        var d = dist(f, L), can = spdFt * (fl.hang < 3.2 && lv.ld ? lv.ld : 1) * Math.max(0, fl.hang - react) + 3;
+        if (d <= can && (!best || (can - d) > (best.can - best.need))) best = { f: f, t: fl.hang, need: d, can: can, at: L };
+      });
+    }
+    if (best) {
+      res.kind = 'out'; res.catch = best; res.bases = 0;
+      res.label = best.line ? 'Line out' : (la > 50 ? 'Pop out' : (best.f.g === 'OF' ? 'Fly out' : 'Caught'));
+      return res;
+    }
+    // Not caught: closest fielder for the explanation
+    var target = fl.wall ? xy(fl.fenceFt, spray) : xy(fl.dist, spray), close = null;
+    fs.forEach(function (f) {
+      var react = f.g === 'OF' ? lv.ofR : lv.ifR, d = dist(f, target), can = spdFt * Math.max(0, fl.hang - react) + 3;
+      if (!close || d - can < close.short) close = { f: f, short: d - can };
+    });
+    res.close = close;
+    var ratio = fl.dist / fl.fenceFt, gap = Math.abs(spray) >= 12 && Math.abs(spray) <= 38;
+    if (fl.wall) { res.bases = 2; res.label = 'Double off the wall'; }
+    else if (ratio > 0.9 && gap && lv.base >= 70) { res.bases = 3; res.label = 'Triple'; }
+    else if (ratio >= 0.75) { res.bases = 2; res.label = 'Double'; }
+    else { res.bases = 1; res.label = 'Single'; }
+    res.kind = 'hit';
+    return res;
+  }
+
+  function resolveGround(ev, la, spray, lv) {
+    var v1 = ev * MPH * Math.cos(la * RAD) * 0.8, a = 2.0, tStop = v1 / a;
+    var bM = lv.base / FT, fs = fielders(lv);
+    function dAt(t) { var tt = Math.min(t, tStop); return v1 * tt - 0.5 * a * tt * tt; }
+    var best = null;
+    fs.forEach(function (f) {
+      if (f.g === 'OF') return;
+      var react = f.g === 'C' ? 0.8 : lv.ifR, F = { x: f.x / FT, y: f.y / FT };
+      for (var t = 0.05; t < tStop + 4; t += 0.02) {
+        var d = dAt(t);
+        if (d > 1.9 * bM) break;
+        var P = xy(d, spray), gap = dist(P, F), can = lv.run * (lv.gb || 1) * Math.max(0, t - react) + 1.0;
+        if (gap <= can) { if (!best || t < best.t) best = { f: f, t: t, at: { x: P.x * FT, y: P.y * FT } }; break; }
+      }
+    });
+    var pts = [], endT = best ? best.t : Math.min(tStop, 6);
+    for (var s = 0; s <= 20; s++) { var tt = endT * s / 20; pts.push({ x: dAt(tt) * FT, z: 0, t: tt }); }
+    if (!best) { var d1 = dAt(tStop) * FT; pts.push({ x: Math.max(d1, lv.base * 2.2), z: 0, t: endT + 1 }); }
+    var res = { ground: true, fs: fs, f: { pts: pts, dist: pts[pts.length - 1].x, hang: endT, apex: 0, fenceFt: fenceAt(lv, spray), vac: null } };
+    if (!best) { res.kind = 'hit'; res.bases = 1; res.label = 'Single through the hole'; return res; }
+    var bag = xy(lv.base, 45), fieldT = best.t + lv.transfer, dBag = dist(best.at, bag), throwT;
+    if (best.f.n === '1B' && dBag < 25) throwT = dBag / (lv.run * FT) - lv.transfer + 0.2;
+    else throwT = dBag / (lv.throwMph * MPH * FT);
+    var total = fieldT + throwT;
+    res.field = best; res.total = total; res.margin = lv.runner - total;
+    if (total < lv.runner) { res.kind = 'out'; res.bases = 0; res.label = 'Ground out'; }
+    else { res.kind = 'infield'; res.bases = 1; res.label = 'Infield single'; }
+    return res;
+  }
+
+  function swing(ev, la, spray, lv, wind) {
+    var r = la < 8 ? resolveGround(ev, la, spray, lv) : resolveAir(ev, la, spray, lv, wind);
+    r.ev = ev; r.la = la; r.spray = spray; r.lv = lv; r.wind = wind;
+    r.hr = r.kind === 'hr'; r.hit = r.bases > 0; r.out = r.bases === 0;
+    return r;
+  }
+
+  return { LEVELS: LEVELS, swing: swing, fenceAt: fenceAt, xy: xy, fielders: fielders, FT: FT };
+})();
+</script>
+<script id="sk-engine">
+var SK = (function () {
+  'use strict';
+  var rand = Math.random;
+  function seed(s) { var a = s >>> 0; rand = function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function rnd() { return rand(); }
+  function gauss() { var u = 1 - rnd(), v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  function clamp(x, a, b) { return x < a ? a : (x > b ? b : x); }
+  function pick(arr) { return arr[Math.floor(rnd() * arr.length)]; }
+  function rating(mean, sd) { return clamp(Math.round((mean || 50) + gauss() * (sd || 12)), 20, 80); }
+
+  var FIRST_B = ['Mateo', 'Eli', 'Jaxon', 'Theo', 'Luca', 'Owen', 'Diego', 'Caleb', 'Miles', 'Ezra', 'Jonah', 'Levi', 'Isaac', 'Nico', 'Beau', 'Cruz', 'Ronan', 'Silas', 'Wyatt', 'Asher', 'Kai', 'Tobias', 'Hudson', 'Emmett', 'Rafael', 'Zane', 'Cole', 'Finn', 'Jude', 'Ty'];
+  var FIRST_S = ['Maya', 'Harper', 'Zoe', 'Nora', 'Lila', 'Ava', 'Riley', 'Quinn', 'Sadie', 'Ivy', 'Ellie', 'Tessa', 'Remi', 'Josie', 'Mila', 'Piper', 'Brynn', 'Kenzie', 'Hazel', 'Nova', 'Emery', 'Reese', 'Lucy', 'Delaney', 'Camila', 'Sloane', 'Aubrey', 'Jade', 'Mackenzie', 'Ruby'];
+  var LAST = ['Alvarez', 'Brooks', 'Chen', 'Dawson', 'Espinoza', 'Foster', 'Greer', 'Hale', 'Ibarra', 'Jenkins', 'Kowalski', 'Lindqvist', 'Moreno', 'Nakamura', 'Okafor', 'Petrov', 'Quinlan', 'Reyes', 'Sato', 'Thompson', 'Underwood', 'Vargas', 'Whitfield', 'Xu', 'Young', 'Zimmerman', 'Abernathy', 'Castillo', 'Delgado', 'Fitzgerald', 'Gallagher', 'Huang', 'Iverson', 'Kaplan', 'Lombardi', 'Mbeki', 'Novak', 'Ortega', 'Pappas', 'Rosenthal'];
+  var TEAM_NAMES = ['River Otters', 'Bay Hawks', 'Pine Ridge Foxes', 'Harbor Herons', 'Canyon Coyotes', 'Lakeside Loons', 'Ironwood Owls', 'Saltmarsh Gators', 'Summit Bears', 'Prairie Wolves', 'Tidewater Terns', 'Redwood Rangers'];
+  var POS = ['C', '1B', '2B', 'SS', '3B', 'LF', 'CF', 'RF', 'DH'];
+
+  // Per-level game rules. err = chance a routine ground out becomes an error. cap = pitch count limit (0 = none).
+  var RULES = {
+    ll: { gb: 0.5, ld: 0.7, innings: 6, err: 0.17, cap: 85, capWhy: 'Little League rule for ages 11 to 12', steal: 0.72, dp: -0.3, strike: 0.56, hbp: 0.02, bud: 30 },
+    sb12: { gb: 0.5, ld: 0.7, innings: 6, err: 0.18, cap: 0, capWhy: '', steal: 0.70, dp: -0.3, strike: 0.56, hbp: 0.02, bud: 30 },
+    i13: { gb: 0.5, ld: 0.65, innings: 7, err: 0.12, cap: 95, capWhy: 'Little League rule for ages 13 to 16', steal: 0.68, dp: -0.2, strike: 0.58, hbp: 0.015, bud: 35 },
+    hssb: { gb: 0.5, ld: 0.65, innings: 7, err: 0.09, cap: 0, capWhy: '', steal: 0.66, dp: -0.15, strike: 0.59, hbp: 0.015, bud: 35 },
+    hs: { gb: 0.5, ld: 0.6, innings: 7, err: 0.07, cap: 105, capWhy: 'a common high school limit; your state sets its own', steal: 0.66, dp: -0.08, strike: 0.60, hbp: 0.012, bud: 40 },
+    mlb: { gb: 0.6, ld: 0.55, innings: 9, err: 0.018, cap: 0, capWhy: '', steal: 0.64, dp: 0, strike: 0.63, hbp: 0.01, bud: 45 },
+    mile: { gb: 0.6, ld: 0.55, innings: 9, err: 0.018, cap: 0, capWhy: '', steal: 0.64, dp: 0, strike: 0.63, hbp: 0.01, bud: 45 }
+  };
+  function rules(lv) { return RULES[lv.id] || RULES.mlb; }
+
+  // Run expectancy, MLB 2010 to 2015 (The Book / Tango). Scaled up for youth as a rough estimate.
+  var RE24 = { '000': [0.481, 0.254, 0.098], '100': [0.859, 0.509, 0.224], '010': [1.100, 0.664, 0.319], '110': [1.437, 0.884, 0.429], '001': [1.350, 0.950, 0.353], '101': [1.784, 1.130, 0.478], '011': [1.964, 1.376, 0.580], '111': [2.292, 1.541, 0.752] };
+  // Built by simulating 1,500 innings from every base and out state with this engine, average players, swing away.
+  var RE_SIM = {"ll":{"100":[1.118,0.597,0.23],"101":[1.937,1.295,0.6],"110":[1.819,1.022,0.549],"111":[2.623,1.774,0.845],"000":[0.621,0.347,0.112],"010":[1.285,0.735,0.385],"001":[1.54,1.11,0.454],"011":[2.191,1.435,0.717]},"sb12":{"100":[1.042,0.539,0.209],"101":[1.992,1.325,0.573],"110":[1.687,1.081,0.505],"111":[2.625,1.773,0.881],"000":[0.603,0.285,0.115],"010":[1.3,0.77,0.357],"001":[1.541,0.93,0.454],"011":[2.156,1.491,0.714]},"i13":{"100":[0.771,0.443,0.177],"101":[1.596,1.076,0.465],"110":[1.38,0.847,0.396],"111":[2.248,1.512,0.812],"000":[0.409,0.211,0.081],"010":[1.017,0.617,0.283],"001":[1.274,0.871,0.313],"011":[1.791,1.284,0.623]},"hssb":{"100":[0.664,0.329,0.16],"101":[1.435,0.945,0.367],"110":[1.137,0.714,0.382],"111":[2.075,1.298,0.633],"000":[0.319,0.137,0.056],"010":[0.865,0.497,0.265],"001":[1.119,0.857,0.307],"011":[1.7,1.143,0.485]},"hs":{"100":[0.72,0.407,0.161],"101":[1.557,0.994,0.397],"110":[1.357,0.772,0.417],"111":[2.131,1.398,0.711],"000":[0.337,0.189,0.049],"010":[0.961,0.594,0.298],"001":[1.217,0.863,0.339],"011":[1.819,1.328,0.575]},"mlb":{"100":[0.677,0.433,0.224],"101":[1.585,1.108,0.46],"110":[1.32,0.829,0.435],"111":[2.075,1.503,0.697],"000":[0.375,0.221,0.079],"010":[1.009,0.595,0.34],"001":[1.219,0.953,0.337],"011":[1.879,1.379,0.601]},"mile":{"100":[0.89,0.533,0.261],"101":[1.795,1.19,0.547],"110":[1.434,0.959,0.523],"111":[2.274,1.637,0.847],"000":[0.51,0.301,0.124],"010":[1.195,0.735,0.379],"001":[1.393,1.009,0.391],"011":[1.991,1.465,0.642]}};
+  function key(bases) { return (bases[0] ? '1' : '0') + (bases[1] ? '1' : '0') + (bases[2] ? '1' : '0'); }
+  function table(lv) { return RE_SIM[lv.id] || RE24; }
+  function re(bases, outs, lv) { if (outs >= 3) return 0; return table(lv)[key(bases)][outs]; }
+
+  function mkPlayer(sport, pos) {
+    var first = pick(sport === 'softball' ? FIRST_S : FIRST_B);
+    return { name: first + ' ' + pick(LAST), pos: pos, con: rating(), pow: rating(), eye: rating(), spd: rating(), fld: rating(), ab: 0, h: 0, bb: 0, k: 0, rbi: 0, r: 0, xb: 0 };
+  }
+  function mkPitcher(lv, role) {
+    var sport = lv.sport, first = pick(sport === 'softball' ? FIRST_S : FIRST_B);
+    var p = { name: first + ' ' + pick(LAST), pos: 'P', role: role, vel: rating(), ctl: rating(), mov: rating(),
+      sta: role === 'SP' ? rating(58, 9) : rating(36, 7), fld: 45, pitches: 0, used: false, outs: 0, ra: 0, k: 0, bb: 0, h: 0 };
+    p.bud = rules(lv).bud + p.sta * 0.9;
+    return p;
+  }
+  function mkTeam(name, lv) {
+    var sport = lv.sport, t = { name: name, lineup: [], pitchers: [], cur: 0 };
+    POS.forEach(function (p) { t.lineup.push(mkPlayer(sport, p)); });
+    t.lineup.sort(function (a, b) { return (b.con + b.eye + b.pow) - (a.con + a.eye + a.pow); });
+    var p = t.lineup.splice(3, 1)[0]; t.lineup.unshift(p); // a solid bat leads off, best three sit 2-3-4
+    t.pitchers.push(mkPitcher(lv, 'SP'), mkPitcher(lv, 'RP'), mkPitcher(lv, 'RP'));
+    t.pitchers[0].used = true;
+    t.fld = t.lineup.reduce(function (s, x) { return s + x.fld; }, 0) / 9;
+    return t;
+  }
+  function fldOf(team, posName) {
+    if (posName === 'P') return team.pitchers[team.cur].fld;
+    for (var i = 0; i < team.lineup.length; i++) if (team.lineup[i].pos === posName) return team.lineup[i].fld;
+    return 50;
+  }
+
+  // Fatigue: pitchers start to fade at 60 percent of their budget and are gassed at 120 percent.
+  function budget(p) { return p.bud || (35 + p.sta * 0.85); }
+  function fatigue(p) { var b = budget(p); return clamp((p.pitches - b * 0.6) / (b * 0.6), 0, 1); }
+  function effP(p) { var f = fatigue(p); return { vel: p.vel - 12 * f, ctl: p.ctl - 20 * f, mov: p.mov - 15 * f, f: f }; }
+
+  // Clone the level so defense quality, batter speed, and infield depth change the physics race.
+  function lvFor(lv, def, batter, infieldIn) {
+    var o = {}; for (var k in lv) o[k] = lv[k];
+    var f = (def.fld - 50) / 50;
+    o.run = lv.run * (1 + 0.12 * f); o.ofR = lv.ofR * (1 - 0.2 * f); o.ifR = lv.ifR * (1 - 0.2 * f) + (infieldIn ? 0.12 : 0);
+    o.transfer = lv.transfer * (1 - 0.15 * f);
+    o.runner = lv.runner - (batter.spd - 50) / 50 * 0.35;
+    o.gb = rules(lv).gb; o.ld = rules(lv).ld;
+    return o;
+  }
+
+  var SW_STRIKE = { normal: 0.66, patient: 0.50, power: 0.70, contact: 0.68, hitrun: 0.92 };
+  var SW_BALL = { normal: 0.28, patient: 0.17, power: 0.33, contact: 0.26, hitrun: 0.62 };
+
+  // One plate appearance, pitch by pitch. Returns the result type and the pitch sequence.
+  // Count knobs, tuned so the MLB level matches FanGraphs wOBA after each count (Clemens, 2020).
+  var CK = { zoneAhead: 0.035, evAhead: 1.6, ev2k: -2.5, swing2k: 0.22, ball2k: 0.12, con2k: 0.04, fullBall: 0.35 };
+  function simPitches(b, e, app, ibb, lv, plan) {
+    var balls = 0, strikes = 0, seq = [], ru = rules(lv);
+    plan = plan || {};
+    if (ibb) return { res: 'IBB', seq: ['B', 'B', 'B', 'B'] };
+    for (var n = 0; n < 30; n++) {
+      var isStrike = rnd() < clamp(ru.strike + (e.ctl - 50) / 200 + CK.zoneAhead * Math.max(0, balls - strikes), 0.3, 0.9);
+      if (!isStrike && rnd() < ru.hbp) { seq.push('H'); return { res: 'HBP', seq: seq }; }
+      if (app === 'bunt') {
+        if (isStrike) {
+          if (rnd() < 0.55 + (b.con - 50) / 200) { seq.push('X'); return { res: 'bunt', seq: seq }; }
+          strikes++; seq.push(strikes >= 3 ? 'K' : 'F'); if (strikes >= 3) return { res: 'K', seq: seq, bunt: true };
+        } else if (rnd() < 0.25 - (b.eye - 50) / 300) {
+          strikes++; seq.push(strikes >= 3 ? 'K' : 'F'); if (strikes >= 3) return { res: 'K', seq: seq, bunt: true };
+        } else { balls++; seq.push('B'); if (balls >= 4) return { res: 'BB', seq: seq }; }
+        continue;
+      }
+      var ps = SW_STRIKE[app], pb = SW_BALL[app] - (b.eye - 50) / 250;
+      var first = balls === 0 && strikes === 0, protect = strikes === 2 && plan.two === 'protect';
+      if (strikes === 2) { ps += CK.swing2k; pb += CK.ball2k; }
+      if (protect) { ps += 0.06; pb += 0.06; }
+      if (first && plan.first === 'ambush') { ps = 0.92; pb = clamp(pb + 0.12, 0.05, 0.9); }
+      if (first && plan.first === 'take') { ps = 0; pb = 0; }
+      if (balls === 3 && strikes === 0) ps *= CK.fullBall;
+      if (balls === 3 && strikes < 2 && app === 'patient') ps = 0.1;
+      var swing = rnd() < (isStrike ? ps : clamp(pb, 0.05, 0.9));
+      if (!swing) {
+        if (isStrike) { strikes++; seq.push(strikes >= 3 ? 'K' : 'S'); if (strikes >= 3) return { res: 'K', seq: seq, looking: true }; }
+        else { balls++; seq.push('B'); if (balls >= 4) return { res: 'BB', seq: seq }; }
+        continue;
+      }
+      var pc = 0.80 + (b.con - 50) / 160 - (e.mov - 50) / 220 - (e.vel - 50) / 320;
+      if (!isStrike) pc -= 0.22;
+      if (app === 'power') pc -= 0.07; else if (app === 'contact') pc += 0.06; else if (app === 'hitrun') pc += 0.03;
+      if (strikes === 2) pc += CK.con2k + (protect ? 0.06 : 0);
+      if (rnd() > clamp(pc, 0.2, 0.97)) { strikes++; seq.push(strikes >= 3 ? 'K' : 'W'); if (strikes >= 3) return { res: 'K', seq: seq, swinging: true }; continue; }
+      var pf = (isStrike ? 0.50 : 0.58) + (protect ? 0.08 : 0); if (app === 'contact') pf -= 0.04;
+      if (rnd() < pf) { if (strikes < 2) strikes++; seq.push('F'); continue; }
+      seq.push('X');
+      return { res: 'inplay', seq: seq, offzone: !isStrike, balls: balls, strikes: strikes, protect: protect, ambush: first && plan.first === 'ambush' };
+    }
+    return { res: 'BB', seq: seq };
+  }
+
+  // Exit velocity and launch angle from the batter's grades, the approach, and the pitch.
+  function battedBall(b, lv, app, offzone, mov, pr) {
+    var lo = lv.typ[0], hi = lv.typ[1], mid = (lo + hi) / 2;
+    var evMean = mid - 6 + (b.pow - 50) / 30 * (hi - lo) / 2;
+    if (pr) { evMean += CK.evAhead * (pr.balls - pr.strikes) + (pr.strikes === 2 ? CK.ev2k : 0) + (pr.protect ? -6 - Math.max(0, b.pow - 50) / 6 : 0); }
+    if (app === 'power') evMean += 3; else if (app === 'contact') evMean -= 3; else if (app === 'hitrun') evMean -= 2;
+    if (offzone) evMean -= 6;
+    var ev = clamp(evMean + gauss() * 11 - (mov - 50) / 20, lo - 22, hi + 10);
+    var laMean = { normal: 11, patient: 11, power: 19, contact: 7, hitrun: 6 }[app];
+    if (pr && pr.protect) laMean -= 3;
+    var la = clamp(laMean + gauss() * 20 + (b.pow - 50) / 15, -40, 75);
+    var spray = clamp(gauss() * 19, -45, 45);
+    return { ev: Math.round(ev), la: Math.round(la), spray: Math.round(spray) };
+  }
+  function buntBall() {
+    return { ev: Math.round(clamp(18 + gauss() * 5, 8, 32)), la: Math.round(clamp(-8 + gauss() * 6, -25, 5)), spray: Math.round(clamp(gauss() * 25, -42, 42)) };
+  }
+  function stealP(r, lv, toBase) { return clamp(rules(lv).steal + (r.spd - 50) / 100 - (toBase === 3 ? 0.12 : 0), 0.2, 0.95); }
+
+  function score(st, runner, ev, dry) { st.runs++; ev.runs++; ev.scored.push(runner); if (!dry) runner.r++; }
+  function sp(x) { return (x.spd - 50) / 120; }
+
+  function walk(st, b, ev, dry) {
+    var r1 = st.bases[0], r2 = st.bases[1], r3 = st.bases[2], nb = [b, null, null];
+    if (r1 && r2 && r3) score(st, r3, ev, dry);
+    if (r1) { nb[1] = r1; nb[2] = r2 ? r2 : (r3 || null); }
+    else { nb[1] = r2 || null; nb[2] = r3 || null; }
+    st.bases = nb;
+  }
+
+  function trySteal(st, lv, toBase, ev, dry) {
+    var runner = toBase === 2 ? st.bases[0] : st.bases[1];
+    if (!runner) return;
+    var p = stealP(runner, lv, toBase);
+    if (rnd() < p) {
+      if (toBase === 2) { st.bases[1] = runner; st.bases[0] = null; } else { st.bases[2] = runner; st.bases[1] = null; }
+      ev.steal = { ok: true, runner: runner, to: toBase, p: p }; if (!dry) runner.xb++;
+    } else {
+      st.outs++; if (toBase === 2) st.bases[0] = null; else st.bases[1] = null;
+      ev.steal = { ok: false, runner: runner, to: toBase, p: p };
+    }
+  }
+
+  function resolveInPlay(st, b, r, lv, d, opts, ev, dry) {
+    var outsBefore = st.outs, two = outsBefore === 2;
+    var r1 = st.bases[0], r2 = st.bases[1], r3 = st.bases[2], nb = [null, null, null];
+    if (r.hr) {
+      [r3, r2, r1].forEach(function (x) { if (x) score(st, x, ev, dry); });
+      score(st, b, ev, dry); st.bases = nb; ev.label = 'Home run'; ev.hit = true; ev.xbh = 4; return;
+    }
+    if (r.kind === 'hit' || r.kind === 'infield') {
+      ev.hit = true; ev.label = r.label;
+      if (r.bases === 3) { [r3, r2, r1].forEach(function (x) { if (x) score(st, x, ev, dry); }); nb[2] = b; ev.xbh = 3; }
+      else if (r.bases === 2) {
+        if (r3) score(st, r3, ev, dry); if (r2) score(st, r2, ev, dry);
+        if (r1) { if (rnd() < 0.42 + sp(r1) + (two ? 0.25 : 0) + (opts.hitrun || opts.steal ? 0.2 : 0)) { score(st, r1, ev, dry); ev.notes.push(r1.name + ' scored all the way from first.'); } else nb[2] = r1; }
+        nb[1] = b; ev.xbh = 2;
+      } else if (r.kind === 'infield') {
+        if (r3) score(st, r3, ev, dry); if (r2) nb[2] = r2; if (r1) nb[1] = r1; nb[0] = b;
+      } else {
+        if (r3) score(st, r3, ev, dry);
+        var held = false;
+        if (r2) { if (rnd() < 0.58 + sp(r2) + (two ? 0.22 : 0) + (opts.hitrun || opts.steal ? 0.2 : 0)) score(st, r2, ev, dry); else { nb[2] = r2; held = true; } }
+        if (r1) { if (!held && rnd() < 0.27 + sp(r1) + (two ? 0.15 : 0) + (opts.hitrun ? 0.45 : 0) + (opts.steal ? 0.3 : 0)) { nb[2] = r1; ev.notes.push(r1.name + ' went first to third.'); } else nb[1] = r1; }
+        nb[0] = b;
+      }
+      st.bases = nb; return;
+    }
+    if (!r.ground) {
+      var cf = r.catch ? r.catch.f : null, of = cf && cf.g === 'OF';
+      if (cf && rnd() < rules(lv).err * 0.45 * (1 - (fldOf(d, cf.n) - 50) / 100)) {
+        ev.error = cf.n; ev.label = 'Dropped, reached on error';
+        ev.notes.push('The ' + cf.n + ' got there and dropped it. ' + (of ? 'Everybody moves up two.' : 'Everybody moves up one.'));
+        if (of) { if (r3) score(st, r3, ev, dry); if (r2) score(st, r2, ev, dry); st.bases = [null, b, r1]; }
+        else { if (r3) score(st, r3, ev, dry); st.bases = [b, r1, r2]; }
+        return;
+      }
+      st.outs++; ev.label = (r.label === 'Caught' ? (ev.ball.la > 50 ? 'Pop out' : 'Fly out') : r.label) + (cf ? ' to ' + cf.n : '');
+      var fly = r.label === 'Fly out', deep = r.f.dist > 0.55 * r.f.fenceFt;
+      if (st.outs < 3) {
+        if (opts.hitrun && r1 && r.label === 'Line out' && rnd() < 0.85) { st.outs++; st.bases[0] = null; ev.notes.push(r1.name + ' was doubled off first. That is the risk in a hit and run.'); }
+        if (st.outs < 3 && fly && r3 && deep && rnd() < 0.80 + sp(r3)) { score(st, r3, ev, dry); st.bases[2] = null; ev.label = 'Sacrifice fly'; ev.notes.push(r3.name + ' tagged and scored. A deep fly with less than two outs is a productive out.'); }
+        if (st.outs < 3 && fly && r2 && !st.bases[2] && r.f.dist > 0.7 * r.f.fenceFt && rnd() < 0.35) { st.bases[2] = r2; st.bases[1] = null; ev.notes.push(r2.name + ' tagged up to third.'); }
+      }
+      return;
+    }
+    var fn = r.field.f.n, quick = r.field.t < 1.6;
+    var pErr = rules(lv).err * (1 - (fldOf(d, fn) - 50) / 100);
+    if (rnd() < pErr) {
+      ev.error = fn; ev.label = 'Reached on error';
+      ev.notes.push('Error by the ' + fn + '. At this level, a ball in play makes the defense prove it.');
+      if (r3) score(st, r3, ev, dry); st.bases = [b, r1, r2]; return;
+    }
+    if (opts.infieldIn && r3 && outsBefore < 2) {
+      st.outs++;
+      if (rnd() < 0.55) { ev.label = 'Out at the plate'; ev.notes.push('Infield in. The ' + fn + ' threw home and got ' + r3.name + '. Batter safe at first.'); st.bases = [b, r1, r2]; }
+      else { ev.label = 'Ground out'; ev.notes.push('Infield in. ' + r3.name + ' held at third. Batter out at first.'); nb[2] = r3; nb[1] = r2 || r1 || null; if (r2 && r1) nb[0] = r1; st.bases = nb; }
+      return;
+    }
+    if (r1 && outsBefore < 2 && quick && ['SS', '2B', '3B', 'P', '1B'].indexOf(fn) >= 0) {
+      var pDP = clamp(0.55 - sp(b) * 1.1 + rules(lv).dp, 0.05, 0.8);
+      if (rnd() < pDP) {
+        st.outs += 2; ev.label = 'Double play'; ev.dp = true;
+        ev.notes.push(fn + ' to second to first. Two outs on one swing, and the runner on first made it possible.');
+        if (r3 && st.outs < 3) score(st, r3, ev, dry); if (r2) nb[2] = r2; st.bases = nb; return;
+      }
+      if (rnd() < 0.45) {
+        st.outs++; ev.label = "Fielder's choice";
+        ev.notes.push('Force at second. ' + r1.name + ' out, ' + b.name + ' safe at first.');
+        if (r3 && st.outs < 3) score(st, r3, ev, dry); st.bases = [b, null, r2 || null]; return;
+      }
+    }
+    st.outs++; ev.label = 'Ground out to ' + fn;
+    if (r3) { if (outsBefore < 2 && rnd() < 0.7) { score(st, r3, ev, dry); ev.notes.push(r3.name + ' scored on the ground out. The run counts because the out was not the third.'); } else nb[2] = r3; }
+    if (r2) { if (!nb[2] && rnd() < (r.spray > 0 ? 0.6 : 0.3)) nb[2] = r2; else nb[1] = r2; }
+    if (r1) { if (!nb[1]) nb[1] = r1; else nb[0] = r1; }
+    st.bases = nb;
+  }
+
+  function resolveBunt(st, b, r, lv, d, ev, dry) {
+    var r1 = st.bases[0], r2 = st.bases[1], r3 = st.bases[2];
+    if (r.kind === 'hit' || r.kind === 'infield') {
+      ev.hit = true; ev.label = 'Bunt single'; if (!dry) b.ab++;
+      if (r3) score(st, r3, ev, dry); st.bases = [b, r1, r2]; ev.notes.push('The defense could not get there. Bunt single.'); return;
+    }
+    var fn = r.field ? r.field.f.n : 'P';
+    if (rnd() < rules(lv).err * 0.9) { ev.error = fn; ev.label = 'Bunt, reached on error'; if (r3) score(st, r3, ev, dry); st.bases = [b, r1, r2]; ev.notes.push('Error by the ' + fn + ' on the bunt. Everybody safe.'); return; }
+    if (r1 && !r2 && r.field && r.field.t < 0.9 && rnd() < 0.3) {
+      st.outs++; ev.label = 'Bunt, lead runner out'; ev.notes.push('The ' + fn + ' got to it fast and took the lead runner at second. The out you paid for bought nothing.');
+      st.bases = [b, null, r3 || null]; return;
+    }
+    st.outs++; ev.label = 'Sacrifice bunt'; if (!dry) b.sac = (b.sac || 0) + 1;
+    if (r3 && st.outs < 3) score(st, r3, ev, dry);
+    st.bases = [null, r1 || null, r2 || null];
+    ev.notes.push('Batter out at first, runners move up. One out traded for one base.');
+  }
+
+  function playPA(st, b, p, d, lv, opts, dry) {
+    var ev = { b: b, p: p, outsBefore: st.outs, basesBefore: st.bases.slice(), runs: 0, scored: [], notes: [], label: '', seq: [], r: null, ball: null, opts: opts };
+    var reBefore = re(st.bases, st.outs, lv);
+    if (opts.steal) {
+      trySteal(st, lv, opts.steal, ev, dry);
+      if (st.outs >= 3) { ev.label = 'Caught stealing'; ev.outs = 1; ev.dRE = 0 - reBefore; return ev; }
+    }
+    var e = effP(p), app = opts.hitrun ? 'hitrun' : (opts.approach || 'normal');
+    var pr = simPitches(b, e, app, opts.ibb, lv, { first: opts.first, two: opts.two });
+    ev.seq = pr.seq; ev.res = pr.res;
+    if (!dry) p.pitches += (pr.res === 'IBB' ? (rules(lv).cap ? 4 : 0) : pr.seq.length);
+    if (pr.res === 'K') {
+      st.outs++; ev.label = pr.looking ? 'Strikeout looking' : (pr.bunt ? 'Struck out bunting' : 'Strikeout');
+      if (!dry) { b.ab++; b.k++; p.k++; }
+      if (opts.hitrun && st.outs < 3 && st.bases[0] && !st.bases[1]) {
+        trySteal(st, lv, 2, ev, dry);
+        ev.notes.push(ev.steal.ok ? 'The runner was going on the pitch and made it to second.' : 'Strike him out, throw him out. The runner was going and got caught.');
+      }
+    } else if (pr.res === 'BB' || pr.res === 'HBP' || pr.res === 'IBB') {
+      walk(st, b, ev, dry); ev.label = pr.res === 'HBP' ? 'Hit by pitch' : (pr.res === 'IBB' ? 'Intentional walk' : 'Walk');
+      if (!dry) { b.bb++; p.bb++; }
+    } else if (pr.res === 'bunt') {
+      ev.ball = buntBall();
+      var lvb = lvFor(lv, d, b, false); lvb.gb = 1.3; lvb.ifR = Math.max(0.15, lvb.ifR - 0.1);
+      ev.r = LL.swing(ev.ball.ev, ev.ball.la, ev.ball.spray, lvb, 0);
+      resolveBunt(st, b, ev.r, lv, d, ev, dry);
+    } else {
+      ev.ball = battedBall(b, lv, app, pr.offzone, e.mov, pr);
+      ev.r = LL.swing(ev.ball.ev, ev.ball.la, ev.ball.spray, lvFor(lv, d, b, opts.infieldIn), 0);
+      if (!dry) b.ab++;
+      resolveInPlay(st, b, ev.r, lv, d, opts, ev, dry);
+    }
+    if (!dry && ev.hit) { b.h++; p.h++; }
+    ev.outs = st.outs - ev.outsBefore;
+    ev.dRE = (re(st.bases, st.outs, lv) + ev.runs) - reBefore;
+    if (!dry) { p.outs += ev.outs; p.ra += ev.runs; if (!ev.error && !ev.dp) b.rbi += ev.runs; }
+    return ev;
+  }
+
+  // Game flow
+  function newGame(o) {
+    var lv = o.lv, sport = lv.sport, ru = rules(lv), names = TEAM_NAMES.slice();
+    for (var i = names.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = names[i]; names[i] = names[j]; names[j] = t; }
+    return { lv: lv, innings: o.innings || ru.innings, teams: [mkTeam(names[0], lv), mkTeam(names[1], lv)], user: o.user, inning: 1, half: 0,
+      st: { outs: 0, bases: [null, null, null], runs: 0 }, score: [0, 0], hits: [0, 0], errs: [0, 0], line: [[0], []], bat: [0, 0],
+      log: [], over: false, decisions: [], def: [{ infieldIn: false }, { infieldIn: false }], last: null, winner: null, notes: [] };
+  }
+  function batting(g) { return g.teams[g.half]; }
+  function fielding(g) { return g.teams[1 - g.half]; }
+  function curBatter(g) { return batting(g).lineup[g.bat[g.half] % 9]; }
+  function curPitcher(g) { var t = fielding(g); return t.pitchers[t.cur]; }
+  function userBats(g) { return g.half === g.user; }
+  function capHit(g, p) { var c = rules(g.lv).cap; return c > 0 && p.pitches >= c; }
+  function nextFresh(t) { for (var i = 0; i < t.pitchers.length; i++) if (!t.pitchers[i].used) return i; return -1; }
+  function changePitcher(g, t, idx) {
+    if (idx < 0) {
+      var em = mkPitcher(g.lv, 'RP'); em.vel = 30; em.ctl = 35; em.mov = 30; em.sta = 25; em.bud = 45; em.name = t.lineup[8].name; em.emergency = true;
+      t.pitchers.push(em); idx = t.pitchers.length - 1;
+    }
+    t.pitchers[idx].used = true; t.cur = idx; return t.pitchers[idx];
+  }
+  function play(g, opts) {
+    if (g.over) return null;
+    var b = curBatter(g), p = curPitcher(g), d = fielding(g);
+    var full = { approach: opts.approach || 'normal', steal: opts.steal || null, hitrun: !!opts.hitrun, ibb: !!opts.ibb, infieldIn: !!g.def[1 - g.half].infieldIn, first: opts.first || null, two: opts.two || null };
+    var ev = playPA(g.st, b, p, d, g.lv, full, false);
+    ev.inning = g.inning; ev.half = g.half; ev.team = g.half; ev.userTeam = g.half === g.user;
+    g.score[g.half] += ev.runs; g.line[g.half][g.line[g.half].length - 1] += ev.runs;
+    if (ev.hit) g.hits[g.half]++; if (ev.error) g.errs[1 - g.half]++;
+    g.bat[g.half]++; g.log.push(ev); g.last = ev;
+    if (g.half === 1 && g.inning >= g.innings && g.score[1] > g.score[0]) { g.over = true; g.winner = 1; ev.walkoff = true; return ev; }
+    if (g.st.outs >= 3) endHalf(g);
+    return ev;
+  }
+  function endHalf(g) {
+    g.st = { outs: 0, bases: [null, null, null], runs: 0 };
+    g.def[0].infieldIn = false; g.def[1].infieldIn = false;
+    if (g.half === 0) {
+      g.half = 1;
+      if (g.inning >= g.innings && g.score[1] > g.score[0]) { g.over = true; g.winner = 1; return; }
+      g.line[1].push(0);
+    } else {
+      if (g.inning >= g.innings && g.score[0] !== g.score[1]) { g.over = true; g.winner = g.score[0] > g.score[1] ? 0 : 1; return; }
+      if (g.inning >= g.innings + 3) { g.over = true; g.winner = -1; return; }
+      g.inning++; g.half = 0; g.line[0].push(0);
+    }
+  }
+
+  // The other dugout manages the Weaver way: no sacrifice bunts, steals only with fast runners.
+  function aiBat(g) {
+    var b = curBatter(g), st = g.st, e = effP(curPitcher(g)), o = { approach: 'normal', steal: null, hitrun: false, first: null, two: b.con < 45 ? 'protect' : null };
+    if (e.ctl >= 62 && b.pow >= 55) o.first = 'ambush';
+    if (e.ctl < 42) o.approach = 'patient';
+    else if (b.pow >= 65 && b.con >= 45) o.approach = 'power';
+    else if (b.con >= 62 && b.pow < 45) o.approach = 'contact';
+    if (st.bases[0] && !st.bases[1] && st.outs < 2 && stealP(st.bases[0], g.lv, 2) >= 0.74) o.steal = 2;
+    return o;
+  }
+  function aiDef(g) {
+    var t = fielding(g), p = t.pitchers[t.cur], note = '';
+    if (fatigue(p) > 0.6 || capHit(g, p)) {
+      var why = capHit(g, p) ? 'hit the pitch cap' : 'is tiring';
+      var np = changePitcher(g, t, nextFresh(t));
+      note = t.name + ': ' + p.name + ' ' + why + '. ' + np.name + ' comes in' + (np.emergency ? ' (nobody fresh, so a position player pitches)' : '') + '.';
+    }
+    var tight = Math.abs(g.score[0] - g.score[1]) <= 1 && g.inning >= g.innings - 1;
+    g.def[1 - g.half].infieldIn = !!(g.st.bases[2] && g.st.outs < 2 && tight);
+    return note;
+  }
+
+  // Ask the numbers: simulate each option many times from this exact situation.
+  function evaluate(g, options, N) {
+    var b = curBatter(g), p = curPitcher(g), d = fielding(g), lv = g.lv, reBefore = re(g.st.bases, g.st.outs, lv);
+    return options.map(function (o) {
+      var sum = 0, sq = 0;
+      for (var i = 0; i < N; i++) {
+        var st = { outs: g.st.outs, bases: g.st.bases.slice(), runs: 0 };
+        var full = { approach: o.opts.approach || 'normal', steal: o.opts.steal || null, hitrun: !!o.opts.hitrun, ibb: !!o.opts.ibb, infieldIn: o.opts.infieldIn !== undefined ? !!o.opts.infieldIn : !!g.def[1 - g.half].infieldIn, first: o.opts.first || null, two: o.opts.two || null };
+        playPA(st, b, p, d, lv, full, true);
+        var v = re(st.bases, st.outs, lv) + st.runs - reBefore; sum += v; sq += v * v;
+      }
+      var m = sum / N;
+      return { id: o.id, label: o.label, ev: m, se: Math.sqrt(Math.max(0, sq / N - m * m) / N) };
+    }).sort(function (x, y) { return y.ev - x.ev; });
+  }
+  function batOptions(g) {
+    var st = g.st, list = [
+      { id: 'normal', label: 'Swing away', opts: { approach: 'normal' } },
+      { id: 'patient', label: 'Work the count', opts: { approach: 'patient' } },
+      { id: 'power', label: 'Swing big', opts: { approach: 'power' } },
+      { id: 'contact', label: 'Contact swing', opts: { approach: 'contact' } },
+      { id: 'ambush', label: 'Plan: ambush the first strike', opts: { approach: 'normal', first: 'ambush' } },
+      { id: 'take', label: 'Plan: take the first pitch', opts: { approach: 'normal', first: 'take' } },
+      { id: 'protect', label: 'Plan: protect with two strikes', opts: { approach: 'normal', two: 'protect' } }
+    ];
+    if (st.outs < 2 && (st.bases[0] || st.bases[1])) list.push({ id: 'bunt', label: 'Sacrifice bunt', opts: { approach: 'bunt' } });
+    if (st.bases[0] && !st.bases[1]) {
+      list.push({ id: 'steal2', label: 'Steal second', opts: { approach: 'normal', steal: 2 } });
+      if (st.outs < 2) list.push({ id: 'hitrun', label: 'Hit and run', opts: { approach: 'normal', hitrun: true } });
+    }
+    if (st.bases[1] && !st.bases[2]) list.push({ id: 'steal3', label: 'Steal third', opts: { approach: 'normal', steal: 3 } });
+    return list;
+  }
+  function defOptions(g) {
+    var st = g.st, list = [{ id: 'pitch', label: 'Pitch to the batter', opts: { approach: 'normal', infieldIn: false } }];
+    if (st.bases[2] && st.outs < 2) list.push({ id: 'in', label: 'Infield in', opts: { approach: 'normal', infieldIn: true } });
+    if (!st.bases[0] && (st.bases[1] || st.bases[2])) list.push({ id: 'ibb', label: 'Intentional walk', opts: { ibb: true } });
+    return list;
+  }
+  function stealMath(g, toBase) {
+    var st = g.st, lv = g.lv, runner = toBase === 2 ? st.bases[0] : st.bases[1];
+    if (!runner) return null;
+    var now = re(st.bases, st.outs, lv), s = st.bases.slice(), f = st.bases.slice();
+    if (toBase === 2) { s[1] = runner; s[0] = null; f[0] = null; } else { s[2] = runner; s[1] = null; f[1] = null; }
+    var reS = re(s, st.outs, lv), reF = re(f, st.outs + 1, lv);
+    return { runner: runner, p: stealP(runner, lv, toBase), now: now, reS: reS, reF: reF, be: (now - reF) / (reS - reF) };
+  }
+
+  function playPAdry(st, b, p, d, lv, plan) { plan = plan || {}; return playPA(st, b, p, d, lv, { approach: 'normal', steal: null, hitrun: false, ibb: false, infieldIn: false, first: plan.first || null, two: plan.two || null }, true); }
+  // MLB wOBA after each count. FanGraphs, Clemens (2020). 0-0 is the league average.
+  var COUNT_WOBA = { '0-0': 0.320, '0-1': 0.270, '1-0': 0.363, '0-2': 0.203, '1-1': 0.303, '1-2': 0.228, '2-0': 0.434, '2-1': 0.361, '2-2': 0.273, '3-0': 0.544, '3-1': 0.476, '3-2': 0.377 };
+  function countPath(seq) {
+    var b = 0, s = 0, out = ['0-0'];
+    for (var i = 0; i < seq.length; i++) {
+      var c = seq[i];
+      if (c === 'B') b++; else if (c === 'S' || c === 'W') s++; else if (c === 'F') { if (s < 2) s++; else { out.push(b + '-' + s + ' F'); continue; } }
+      else break;
+      if (b >= 4 || s >= 3) break;
+      out.push(b + '-' + s);
+    }
+    return out;
+  }
+  return { CK: CK, COUNT_WOBA: COUNT_WOBA, countPath: countPath, playPAdry: playPAdry, LEVELS: LL.LEVELS, rules: rules, RE24: RE24, table: table, re: re, key: key, seed: seed, newGame: newGame, play: play, batting: batting, fielding: fielding,
+    curBatter: curBatter, curPitcher: curPitcher, userBats: userBats, capHit: capHit, nextFresh: nextFresh, changePitcher: changePitcher, aiBat: aiBat, aiDef: aiDef,
+    evaluate: evaluate, batOptions: batOptions, defOptions: defOptions, stealMath: stealMath, fatigue: fatigue, effP: effP, budget: budget, stealP: stealP };
+})();
+</script>
+<script id="sk-ui">
+
+(function () {
+  'use strict';
+  if (typeof document === 'undefined') return;
+  var $ = function (id) { return document.getElementById(id); };
+  var NS = 'http://www.w3.org/2000/svg';
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var G = null, UI = { approach: 'normal', first: null, two: null, steal: null, hitrun: false, ibb: false, anim: null };
+  var APP_LABEL = { normal: 'Swing away', patient: 'Work the count', power: 'Swing big', contact: 'Contact swing', bunt: 'Sacrifice bunt' };
+
+  function r0(n) { return Math.round(n); }
+  function fmtRE(x) { return (x >= 0 ? '+' : '') + x.toFixed(2); }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function el(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+  function txt(parent, x, y, s, attrs) {
+    var a = { x: x, y: y, fill: 'rgba(244,239,230,0.55)', 'font-size': 11, 'font-family': 'Inter, sans-serif' };
+    for (var k in attrs || {}) a[k] = attrs[k];
+    var t = el('text', a, parent); t.textContent = s; return t;
+  }
+  function laType(la) { return la < 10 ? 'ground ball' : (la <= 25 ? 'line drive' : (la <= 50 ? 'fly ball' : 'pop-up')); }
+  function dir(s) { if (Math.abs(s) <= 6) return 'up the middle'; if (s < -30) return 'down the left field line'; if (s > 30) return 'down the right field line'; return s < 0 ? 'to left' : 'to right'; }
+  function grade(v) { return v >= 60 ? 'hi' : (v <= 40 ? 'lo' : ''); }
+  function bar(label, v) { return '<span class="sk-bar ' + grade(v) + '">' + label + ' ' + r0(v) + '<i><b style="width:' + ((v - 20) / 60 * 100) + '%"></b></i></span>'; }
+  function halfName(h) { return h === 0 ? 'Top' : 'Bottom'; }
+  function ordinal(n) { return n + (n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th'); }
+
+  // Scoreboard
+  function renderScore() {
+    var n = Math.max(G.innings, G.line[0].length), h = '<tr><th></th>';
+    for (var i = 1; i <= n; i++) h += '<th>' + i + '</th>';
+    h += '<th>R</th><th>H</th><th>E</th></tr>';
+    for (var t = 0; t < 2; t++) {
+      h += '<tr class="' + (t === G.user ? 'you' : '') + '"><td>' + esc(G.teams[t].name) + '</td>';
+      for (var j = 0; j < n; j++) {
+        var v = G.line[t][j], cur = (!G.over && j === G.inning - 1 && t === G.half) ? ' class="cur"' : '';
+        h += '<td' + cur + '>' + (v === undefined ? (G.over && t === 1 && j === n - 1 && G.line[1].length < n ? 'X' : '') : v) + '</td>';
+      }
+      h += '<td class="tot">' + G.score[t] + '</td><td class="tot">' + G.hits[t] + '</td><td class="tot">' + G.errs[t] + '</td></tr>';
+    }
+    $('sk-score').innerHTML = h;
+    var cap = SK.rules(G.lv).cap;
+    $('sk-inn').innerHTML = G.over ? '<b>Final</b>' : '<b>' + halfName(G.half) + ' ' + ordinal(G.inning) + '</b> &middot; ' + (SK.userBats(G) ? 'You are batting' : 'You are in the field');
+    $('sk-cap').textContent = cap ? 'Pitch cap ' + cap : 'No pitch cap';
+  }
+
+  // Bases and outs
+  function renderDiamond() {
+    var svg = $('sk-diamond'); svg.innerHTML = '';
+    var pts = [[60, 105], [105, 60], [60, 15], [15, 60]];
+    el('path', { d: 'M60 105 L105 60 L60 15 L15 60 Z', fill: 'none', stroke: 'rgba(244,239,230,0.35)', 'stroke-width': 1.5 }, svg);
+    for (var i = 1; i <= 3; i++) {
+      var on = G.st.bases[i - 1], p = pts[i];
+      el('rect', { x: p[0] - 9, y: p[1] - 9, width: 18, height: 18, transform: 'rotate(45 ' + p[0] + ' ' + p[1] + ')', fill: on ? '#C8862E' : '#0a1610', stroke: on ? '#e2a85a' : 'rgba(244,239,230,0.5)', 'stroke-width': 1.5 }, svg);
+    }
+    el('path', { d: 'M52 105 L68 105 L68 111 L60 117 L52 111 Z', fill: '#f4efe6' }, svg);
+    for (var o = 0; o < 3; o++) el('circle', { cx: 44 + o * 16, cy: 90, r: 5, fill: o < G.st.outs ? '#e0a090' : 'none', stroke: 'rgba(244,239,230,0.5)', 'stroke-width': 1.5 }, svg);
+    var names = [];
+    for (var k = 0; k < 3; k++) if (G.st.bases[k]) names.push(ordinal(k + 1) + ': ' + G.st.bases[k].name.split(' ')[0]);
+    $('sk-count').textContent = G.st.outs + ' out' + (G.st.outs === 1 ? '' : 's') + (names.length ? ' | ' + names.join(', ') : ' | Bases empty');
+  }
+
+  function todayLine(b) { var s = b.h + '-' + b.ab; if (b.bb) s += ', ' + b.bb + ' BB'; if (b.k) s += ', ' + b.k + ' K'; if (b.rbi) s += ', ' + b.rbi + ' RBI'; return s; }
+  function gasClass(f) { return f > 0.66 ? 'bad' : (f > 0.33 ? 'warn' : ''); }
+  function pitcherCard(p, team, lv) {
+    var e = SK.effP(p), left = Math.max(0, 1 - p.pitches / SK.budget(p)), cap = SK.rules(lv).cap;
+    return '<div class="sk-pcard"><div class="nm">' + esc(p.name) + ' <span>P, ' + esc(team.name) + (p.emergency ? ', position player' : '') + '</span></div>' +
+      '<div class="sk-bars">' + bar('VEL', e.vel) + bar('CTL', e.ctl) + bar('MOV', e.mov) + bar('STA', p.sta) + '</div>' +
+      '<div class="sk-gas ' + gasClass(1 - left) + '"><b style="width:' + (left * 100) + '%"></b></div>' +
+      '<div class="sk-hint">' + p.pitches + (p.pitches === 1 ? ' pitch' : ' pitches') + (cap ? ' of ' + cap : '') + '. Gas tank ' + r0(left * 100) + '%. ' + (e.f > 0 ? 'Tiring: grades are dropping.' : 'Fresh.') + '</div></div>';
+  }
+  function batterCard(b, team) {
+    return '<div class="sk-pcard"><div class="nm">' + esc(b.name) + ' <span>' + b.pos + ', ' + esc(team.name) + '</span></div>' +
+      '<div class="sk-bars">' + bar('CON', b.con) + bar('POW', b.pow) + bar('EYE', b.eye) + bar('SPD', b.spd) + '</div>' +
+      '<div class="sk-hint">Today: ' + todayLine(b) + '</div></div>';
+  }
+  function rosterTable(t) {
+    var h = '<table><tr><th>Lineup</th><th>CON</th><th>POW</th><th>EYE</th><th>SPD</th><th>FLD</th><th>Today</th></tr>';
+    t.lineup.forEach(function (b, i) { h += '<tr><td>' + (i + 1) + '. ' + esc(b.name) + ' <span style="color:var(--ink-faint)">' + b.pos + '</span></td><td>' + b.con + '</td><td>' + b.pow + '</td><td>' + b.eye + '</td><td>' + b.spd + '</td><td>' + b.fld + '</td><td>' + todayLine(b) + '</td></tr>'; });
+    h += '</table><table style="margin-top:0.4rem"><tr><th>Pitchers</th><th>VEL</th><th>CTL</th><th>MOV</th><th>STA</th><th>Pitches</th></tr>';
+    t.pitchers.forEach(function (p) { h += '<tr><td>' + esc(p.name) + ' <span style="color:var(--ink-faint)">' + p.role + (p.used ? '' : ', fresh') + '</span></td><td>' + p.vel + '</td><td>' + p.ctl + '</td><td>' + p.mov + '</td><td>' + p.sta + '</td><td>' + p.pitches + '</td></tr>'; });
+    return h + '</table>';
+  }
+  function renderMatch() {
+    var b = SK.curBatter(G), p = SK.curPitcher(G);
+    var h = batterCard(b, SK.batting(G)) + pitcherCard(p, SK.fielding(G), G.lv);
+    h += '<details class="sk-roster"><summary>Scout reports (20 to 80 scale, 50 is average)</summary><div class="sk-label" style="margin-top:0.5rem">' + esc(G.teams[G.user].name) + ' (you)</div>' + rosterTable(G.teams[G.user]) +
+      '<div class="sk-label" style="margin-top:0.7rem">' + esc(G.teams[1 - G.user].name) + '</div>' + rosterTable(G.teams[1 - G.user]) + '</details>';
+    $('sk-match').innerHTML = h;
+  }
+
+  // Run expectancy table
+  function renderRE() {
+    var tbl = SK.table(G.lv), k = SK.key(G.st.bases), rows = [['000', 'Empty'], ['100', '1st'], ['010', '2nd'], ['110', '1st, 2nd'], ['001', '3rd'], ['101', '1st, 3rd'], ['011', '2nd, 3rd'], ['111', 'Loaded']];
+    var h = '<tr><th>Runners</th><th>0 out</th><th>1 out</th><th>2 out</th></tr>';
+    rows.forEach(function (r) {
+      h += '<tr><td>' + r[1] + '</td>';
+      for (var o = 0; o < 3; o++) h += '<td class="' + (r[0] === k && o === G.st.outs && !G.over ? 'now' : '') + '">' + tbl[r[0]][o].toFixed(2) + '</td>';
+      h += '</tr>';
+    });
+    $('sk-re').innerHTML = h;
+    $('sk-re-note').textContent = 'Built for this level by simulating 1,500 innings from each spot with this game\'s engine. Real MLB values are in the notes below the game.';
+  }
+
+  // Field view of the last ball in play
+  var topScale, topHome = { x: 200, y: 318 };
+  function tp(x, y) { return { x: topHome.x + x * topScale, y: topHome.y - y * topScale }; }
+  function renderField(ev) {
+    var svg = $('sk-top'); svg.innerHTML = '';
+    var lv = G.lv, F = Math.max(lv.fence[0], lv.fence[1], lv.fence[2]);
+    topScale = 262 / F;
+    var d = 'M' + topHome.x + ' ' + topHome.y;
+    for (var s = -45; s <= 45; s += 3) { var p = LL.xy(LL.fenceAt(lv, s), s), q = tp(p.x, p.y); d += ' L' + q.x.toFixed(1) + ' ' + q.y.toFixed(1); }
+    el('path', { d: d + ' Z', fill: '#1a3024', stroke: '#C8862E', 'stroke-width': 2 }, svg);
+    var b = lv.base, h = tp(0, 0), b1 = LL.xy(b, 45), b2 = LL.xy(b * Math.SQRT2, 0), b3 = LL.xy(b, -45);
+    var p1 = tp(b1.x, b1.y), p2 = tp(b2.x, b2.y), p3 = tp(b3.x, b3.y);
+    el('path', { d: 'M' + h.x + ' ' + h.y + ' L' + p1.x + ' ' + p1.y + ' L' + p2.x + ' ' + p2.y + ' L' + p3.x + ' ' + p3.y + ' Z', fill: 'rgba(200,134,46,0.18)', stroke: 'rgba(244,239,230,0.35)', 'stroke-width': 1 }, svg);
+    [p1, p2, p3].forEach(function (p) { el('rect', { x: p.x - 3, y: p.y - 3, width: 6, height: 6, fill: '#f4efe6' }, svg); });
+    var cf = tp(0, lv.fence[1]); txt(svg, cf.x, cf.y - 6, lv.fence[1] + ' ft', { 'text-anchor': 'middle', fill: '#e2a85a' });
+    var nodes = {};
+    LL.fielders(lv).forEach(function (f) {
+      var p = tp(f.x, f.y), g = el('g', { transform: 'translate(' + p.x + ',' + p.y + ')' }, svg);
+      el('circle', { r: 7, fill: '#0a1610', stroke: 'rgba(244,239,230,0.6)', 'stroke-width': 1.5 }, g);
+      txt(g, 0, 3.5, f.n, { 'text-anchor': 'middle', 'font-size': 8, fill: '#f4efe6', 'font-weight': 600 });
+      nodes[f.n] = { g: g, from: p };
+    });
+    if (!ev || !ev.r) { txt(svg, 200, 200, ev ? ev.label : 'The field', { 'text-anchor': 'middle', 'font-size': 13, fill: 'rgba(244,239,230,0.7)' }); return; }
+    var r = ev.r, end = r.f.pts[r.f.pts.length - 1], ep = LL.xy(end.x, ev.ball.spray), eq = tp(ep.x, ep.y);
+    el('line', { x1: h.x, y1: h.y, x2: eq.x, y2: eq.y, stroke: 'rgba(226,168,90,0.55)', 'stroke-width': 1.5, 'stroke-dasharray': '4 4' }, svg);
+    var who = r.catch ? r.catch.f.n : (r.field ? r.field.f.n : null), at = r.catch ? r.catch.at : (r.field ? r.field.at : null), mover = null;
+    if (who && at) { var c = tp(at.x, at.y); mover = { node: nodes[who], to: c }; el('circle', { cx: c.x, cy: c.y, r: 10, fill: 'none', stroke: ev.hit || ev.error ? '#e2a85a' : '#7ad6a8', 'stroke-width': 1.5, 'stroke-dasharray': '3 3' }, svg); }
+    else if (!r.hr) el('circle', { cx: eq.x, cy: eq.y, r: 8, fill: 'none', stroke: '#e2a85a', 'stroke-width': 2 }, svg);
+    var ball = el('circle', { r: 4.5, cx: h.x, cy: h.y, fill: '#ffffff' }, svg);
+    animate(ev, ball, mover);
+  }
+  function animate(ev, ball, mover) {
+    if (UI.anim) cancelAnimationFrame(UI.anim);
+    var pts = ev.r.f.pts, n = pts.length - 1, dur = reduce ? 0 : Math.min(1800, 400 + ev.r.f.hang * 300), t0 = null;
+    function place(frac) {
+      var fi = frac * n, i = Math.min(n - 1, Math.floor(fi)), f = fi - i, a = pts[i], b = pts[Math.min(n, i + 1)];
+      var x = a.x + (b.x - a.x) * f, z = a.z + (b.z - a.z) * f, g = LL.xy(x, ev.ball.spray), q = tp(g.x, g.y);
+      ball.setAttribute('cx', q.x); ball.setAttribute('cy', q.y); ball.setAttribute('r', 4.5 + Math.min(4, z / 25));
+      if (mover && mover.node) { var fr = Math.min(1, frac * 1.05), m = mover; m.node.g.setAttribute('transform', 'translate(' + (m.node.from.x + (m.to.x - m.node.from.x) * fr) + ',' + (m.node.from.y + (m.to.y - m.node.from.y) * fr) + ')'); }
+    }
+    if (!dur) { place(1); return; }
+    function step(ts) { if (!t0) t0 = ts; var frac = Math.min(1, (ts - t0) / dur); place(frac); if (frac < 1) UI.anim = requestAnimationFrame(step); }
+    UI.anim = requestAnimationFrame(step);
+  }
+
+  // Last play card and log
+  function describe(ev) {
+    var s = '';
+    if (ev.steal) s += (ev.steal.ok ? ev.steal.runner.name + ' stole ' + (ev.steal.to === 2 ? 'second' : 'third') + '. ' : ev.steal.runner.name + ' was caught stealing ' + (ev.steal.to === 2 ? 'second' : 'third') + '. ');
+    if (ev.ball && ev.r) {
+      var r = ev.r;
+      s += (ev.res === 'bunt' ? 'Bunt ' : (laType(ev.ball.la).charAt(0).toUpperCase() + laType(ev.ball.la).slice(1) + ' ')) + dir(ev.ball.spray) + (r.ground ? '' : ', ' + r0(r.f.dist) + ' ft') + '. ';
+    } else if (ev.res === 'K' || ev.res === 'BB' || ev.res === 'HBP') s += ev.seq.length + ' pitches. ';
+    if (ev.runs) s += ev.runs + ' run' + (ev.runs > 1 ? 's' : '') + ' score' + (ev.runs > 1 ? '' : 's') + ' (' + ev.scored.map(function (x) { return x.name.split(' ')[0]; }).join(', ') + '). ';
+    return s;
+  }
+  function physicsWhy(ev) {
+    var out = [], r = ev.r;
+    if (!r) return out;
+    if (ev.ball && !r.ground) out.push('Exit velocity <b>' + ev.ball.ev + ' mph</b> at <b>' + ev.ball.la + '&deg;</b>. Hang time ' + r.f.hang.toFixed(1) + ' s, carried ' + r0(r.f.dist) + ' ft.');
+    if (r.hr) out.push('Cleared the fence at ' + r0(r.f.fenceFt) + ' ft by ' + r0(r.f.clearBy) + ' ft.');
+    else if (r.f.wall) out.push('Off the wall at ' + r0(r.f.fenceFt) + ' ft.');
+    if (r.catch) out.push('<b>' + r.catch.f.n + '</b> needed ' + r0(r.catch.need) + ' ft and could cover about ' + r0(r.catch.can) + ' ft in that time.');
+    else if (r.close && !r.hr && !r.ground) out.push('Closest fielder, <b>' + r.close.f.n + '</b>, was about ' + r0(Math.max(0, r.close.short)) + ' ft short.');
+    if (r.ground && r.field && !ev.hit && !ev.error) out.push('<b>' + r.field.f.n + '</b> fielded it in ' + r.field.t.toFixed(1) + ' s.');
+    if (r.ground && (r.kind === 'hit' || r.kind === 'infield') && ev.res !== 'bunt') out.push(r.kind === 'infield' ? 'The throw lost the race to first.' : 'Found a hole. Nobody could get to it.');
+    return out;
+  }
+  function countBar(ev) {
+    if (!ev.seq || !ev.seq.length || ev.res === 'IBB') return '';
+    var path = SK.countPath(ev.seq), h = '<div class="sk-label" style="margin-top:0.7rem">The count, with MLB value after each one</div><div class="sk-cb">';
+    var seen = {};
+    path.forEach(function (c, i) {
+      var foul = c.indexOf(' F') > 0, k = foul ? c.split(' ')[0] : c;
+      if (foul) { h += '<span class="sk-cb-f" title="Foul with two strikes. Count stays.">F</span>'; return; }
+      var v = SK.COUNT_WOBA[k], cls = v >= 0.34 ? 'up' : (v <= 0.29 ? 'dn' : '');
+      h += (i ? '<span class="sk-cb-a">&rsaquo;</span>' : '') + '<span class="sk-cb-c ' + cls + '"><b>' + k + '</b>' + v.toFixed(3).slice(1) + '</span>';
+    });
+    var end = ev.res === 'K' ? 'K' : (ev.res === 'BB' ? 'BB' : (ev.res === 'HBP' ? 'HBP' : 'In play'));
+    h += '<span class="sk-cb-a">&rsaquo;</span><span class="sk-cb-c end"><b>' + end + '</b>&nbsp;</span></div>';
+    var last = path.filter(function (c) { return c.indexOf(' F') < 0; }).pop();
+    if (last && last !== '0-0') { var d = SK.COUNT_WOBA[last] - 0.320; h += '<div class="sk-hint">Number is MLB wOBA from that count on. .320 is average. At ' + last + ' a big leaguer is ' + (d >= 0 ? 'about ' + r0(d / 0.320 * 100) + '% better' : 'about ' + r0(-d / 0.320 * 100) + '% worse') + ' than average.</div>'; }
+    else h += '<div class="sk-hint">First pitch in play. MLB hitters hit .338 when they put the first pitch in play (2025).</div>';
+    return h;
+  }
+  function renderLast(ev) {
+    var lab = $('sk-res');
+    if (!ev) { lab.textContent = 'Play ball'; lab.className = 'sk-res'; $('sk-sub').textContent = 'Make your first call.'; $('sk-chips').innerHTML = ''; $('sk-why').innerHTML = ''; $('sk-countbar').innerHTML = ''; return; }
+    var mine = ev.userTeam;
+    lab.textContent = ev.label + (ev.walkoff ? '. Walk-off!' : '');
+    lab.className = 'sk-res ' + (ev.hit || ev.error ? (ev.label === 'Home run' ? 'hr' : 'hit') : (mine ? 'bad' : ''));
+    $('sk-sub').textContent = ev.b.name + ' (' + SK.batting(G).name.split(' ')[0] + (ev.team === G.user ? ', you' : '') + '). ' + describe(ev);
+    var chips = [];
+    if (ev.ball) chips.push('EV <b>' + ev.ball.ev + '</b>', 'LA <b>' + ev.ball.la + '&deg;</b>');
+    if (ev.r && !ev.r.ground) chips.push('Dist <b>' + r0(ev.r.f.dist) + ' ft</b>');
+    chips.push('<span class="' + (ev.dRE >= 0 ? 'up' : 'dn') + '">Run expectancy ' + fmtRE(ev.dRE) + '</span>');
+    $('sk-chips').innerHTML = chips.map(function (c) { return '<span class="sk-chip">' + c + '</span>'; }).join('');
+    var why = physicsWhy(ev).concat(ev.notes);
+    $('sk-why').innerHTML = why.map(function (w) { return '<li>' + w + '</li>'; }).join('');
+    $('sk-countbar').innerHTML = countBar(ev);
+  }
+  var logCount = 0, lastInnKey = '';
+  function renderLog() {
+    var ul = $('sk-log');
+    G.notes.forEach(function (n) { var li = document.createElement('li'); li.innerHTML = '<i>' + esc(n) + '</i>'; ul.insertBefore(li, ul.firstChild); });
+    G.notes = [];
+    for (var i = logCount; i < G.log.length; i++) {
+      var ev = G.log[i], k = ev.half + '-' + ev.inning;
+      if (k !== lastInnKey) { var li0 = document.createElement('li'); li0.className = 'inn'; li0.textContent = halfName(ev.half) + ' ' + ordinal(ev.inning) + ', ' + G.teams[ev.half].name + ' batting'; ul.insertBefore(li0, ul.firstChild); lastInnKey = k; }
+      var li = document.createElement('li');
+      li.innerHTML = '<b>' + esc(ev.b.name.split(' ')[1]) + '</b>: ' + esc(ev.label) + '. ' + esc(describe(ev)) + '<span class="re ' + (ev.dRE >= 0 ? 'up' : 'dn') + '">' + fmtRE(ev.dRE) + '</span>';
+      ul.insertBefore(li, ul.firstChild);
+    }
+    logCount = G.log.length;
+  }
+
+  // Decision panel
+  function notice(msg) { $('sk-notice').innerHTML = msg ? '<div class="sk-notice">' + msg + '</div>' : ''; }
+  function stealLine(toBase) {
+    var m = SK.stealMath(G, toBase); if (!m) return '';
+    return 'Needs ' + r0(m.be * 100) + '% to break even. Our read on ' + esc(m.runner.name.split(' ')[0]) + ': about ' + r0(m.p * 100) + '%.';
+  }
+  function renderDecide() {
+    var st = G.st, h = '';
+    if (G.over) { $('sk-dec-label').textContent = 'Game over'; $('sk-dec').innerHTML = '<button class="sk-btn" id="sk-again">New game</button>'; $('sk-again').onclick = reset; return; }
+    if (SK.userBats(G)) {
+      $('sk-dec-label').textContent = 'Your call at the plate';
+      var apps = ['normal', 'patient', 'power', 'contact'], subs = { normal: 'Balanced', patient: 'Take more pitches, walk more', power: 'More lift and velocity, more strikeouts', contact: 'Put it in play, less power' };
+      if (st.outs < 2 && (st.bases[0] || st.bases[1])) { apps.push('bunt'); subs.bunt = 'Give up an out to move runners'; }
+      if (apps.indexOf(UI.approach) < 0) UI.approach = 'normal';
+      h += '<div class="sk-pick" id="sk-app">';
+      apps.forEach(function (a) { h += '<button type="button" data-a="' + a + '" class="' + (UI.approach === a ? 'on' : '') + '">' + APP_LABEL[a] + '<small>' + subs[a] + '</small></button>'; });
+      h += '</div>';
+      if (UI.approach !== 'bunt') {
+        h += '<div class="sk-label" style="margin-top:0.75rem">First pitch plan</div><div class="sk-pick sk-pick3" id="sk-first">';
+        [[null, 'Normal', 'Swing at good pitches'], ['ambush', 'Ambush', 'Attack the first strike. MLB: .338 in play'], ['take', 'Take one', 'Never swing. Runs up the pitch count']].forEach(function (o) {
+          h += '<button type="button" data-v="' + (o[0] || '') + '" class="' + (UI.first === o[0] ? 'on' : '') + '">' + o[1] + '<small>' + o[2] + '</small></button>';
+        });
+        h += '</div><div class="sk-label" style="margin-top:0.75rem">With two strikes</div><div class="sk-pick" id="sk-two">';
+        [[null, 'Keep swinging', 'Full swing, more power'], ['protect', 'Protect', 'Choke up, fewer Ks, less pop']].forEach(function (o) {
+          h += '<button type="button" data-v="' + (o[0] || '') + '" class="' + (UI.two === o[0] ? 'on' : '') + '">' + o[1] + '<small>' + o[2] + '</small></button>';
+        });
+        h += '</div>';
+      }
+      var canSteal2 = st.bases[0] && !st.bases[1], canSteal3 = st.bases[1] && !st.bases[2];
+      if (!canSteal2 && UI.steal === 2) UI.steal = null; if (!canSteal3 && UI.steal === 3) UI.steal = null;
+      if (!(canSteal2 && st.outs < 2)) UI.hitrun = false;
+      if (canSteal2) h += '<label class="sk-tog"><input type="checkbox" id="sk-steal2" ' + (UI.steal === 2 ? 'checked' : '') + '> Send the runner to second <small>' + stealLine(2) + '</small></label>';
+      if (canSteal3) h += '<label class="sk-tog"><input type="checkbox" id="sk-steal3" ' + (UI.steal === 3 ? 'checked' : '') + '> Send the runner to third <small>' + stealLine(3) + '</small></label>';
+      if (canSteal2 && st.outs < 2) h += '<label class="sk-tog"><input type="checkbox" id="sk-hitrun" ' + (UI.hitrun ? 'checked' : '') + '> Hit and run <small>Runner goes, batter must swing</small></label>';
+      h += '<div class="sk-row"><button class="sk-btn2" id="sk-ask-btn">Ask the numbers</button><button class="sk-btn" id="sk-play">Play the at-bat</button></div>';
+      h += '<div class="sk-row"><button class="sk-btn2" id="sk-auto">Auto-play the rest of this half</button></div>';
+      $('sk-dec').innerHTML = h;
+      Array.prototype.forEach.call($('sk-app').children, function (btn) { btn.onclick = function () { UI.approach = btn.getAttribute('data-a'); if (UI.approach === 'bunt') UI.hitrun = false; renderDecide(); }; });
+      if ($('sk-first')) Array.prototype.forEach.call($('sk-first').children, function (btn) { btn.onclick = function () { UI.first = btn.getAttribute('data-v') || null; renderDecide(); }; });
+      if ($('sk-two')) Array.prototype.forEach.call($('sk-two').children, function (btn) { btn.onclick = function () { UI.two = btn.getAttribute('data-v') || null; renderDecide(); }; });
+      if ($('sk-steal2')) $('sk-steal2').onchange = function (e) { UI.steal = e.target.checked ? 2 : null; if (UI.steal) UI.hitrun = false; renderDecide(); };
+      if ($('sk-steal3')) $('sk-steal3').onchange = function (e) { UI.steal = e.target.checked ? 3 : null; renderDecide(); };
+      if ($('sk-hitrun')) $('sk-hitrun').onchange = function (e) { UI.hitrun = e.target.checked; if (UI.hitrun) { UI.steal = null; if (UI.approach === 'bunt') UI.approach = 'normal'; } renderDecide(); };
+      $('sk-play').onclick = function () { userPlay(); };
+      $('sk-ask-btn').onclick = askBat;
+      $('sk-auto').onclick = autoHalf;
+    } else {
+      $('sk-dec-label').textContent = 'Your call in the field';
+      var t = SK.fielding(G), p = SK.curPitcher(G), capped = SK.capHit(G, p), fresh = SK.nextFresh(t);
+      if (capped) notice(esc(p.name) + ' has reached the pitch cap (' + SK.rules(G.lv).capWhy + '). ' + (fresh >= 0 ? 'Pick a new pitcher.' : 'Nobody is fresh, so a position player will pitch.'));
+      h += '<div class="sk-label">Pitcher</div><select class="sk-sel" id="sk-pitcher">';
+      t.pitchers.forEach(function (x, i) {
+        var left = Math.max(0, r0((1 - x.pitches / SK.budget(x)) * 100));
+        h += '<option value="' + i + '" ' + (i === t.cur ? 'selected' : '') + (x.used && i !== t.cur ? ' disabled' : '') + '>' + esc(x.name) + ' (' + x.role + ', ' + (i === t.cur ? 'in the game, ' : (x.used ? 'already used, ' : 'fresh, ')) + 'gas ' + left + '%)</option>';
+      });
+      h += '</select><div class="sk-hint">Once a pitcher leaves, they cannot come back.</div>';
+      if (st.bases[2] && st.outs < 2) h += '<label class="sk-tog" style="margin-top:0.5rem"><input type="checkbox" id="sk-in" ' + (G.def[1 - G.half].infieldIn ? 'checked' : '') + '> Infield in <small>Cut off the run at home, give up more hits</small></label>';
+      if (!st.bases[0] && (st.bases[1] || st.bases[2])) h += '<label class="sk-tog"><input type="checkbox" id="sk-ibb" ' + (UI.ibb ? 'checked' : '') + '> Intentional walk <small>Set up a force, face the next batter</small></label>';
+      h += '<div class="sk-row"><button class="sk-btn2" id="sk-ask-btn">Ask the numbers</button><button class="sk-btn" id="sk-play"' + (capped && fresh >= 0 ? ' disabled' : '') + '>Pitch</button></div>';
+      h += '<div class="sk-row"><button class="sk-btn2" id="sk-auto">Auto-play the rest of this half</button></div>';
+      $('sk-dec').innerHTML = h;
+      $('sk-pitcher').onchange = function (e) {
+        var i = +e.target.value, old = SK.curPitcher(G);
+        if (i === t.cur) return;
+        var np = SK.changePitcher(G, t, i);
+        G.notes.push('You bring in ' + np.name + ' for ' + old.name + ' after ' + old.pitches + ' pitches.');
+        G.decisions.push({ inning: G.inning, half: G.half, kind: 'pitch', label: 'Pitching change: ' + np.name + ' for ' + old.name + ' at ' + old.pitches + ' pitches', fat: SK.fatigue(old), capped: capped });
+        notice(''); renderAll();
+      };
+      if ($('sk-in')) $('sk-in').onchange = function (e) { G.def[1 - G.half].infieldIn = e.target.checked; };
+      if ($('sk-ibb')) $('sk-ibb').onchange = function (e) { UI.ibb = e.target.checked; };
+      $('sk-play').onclick = function () { if (capped && fresh < 0) { SK.changePitcher(G, t, -1); G.notes.push('Nobody fresh. ' + SK.curPitcher(G).name + ' pitches as a position player.'); } userPitch(); };
+      $('sk-ask-btn').onclick = askDef;
+      $('sk-auto').onclick = autoHalf;
+    }
+  }
+
+  // Ask the numbers
+  function showAsk(rows, note, lowerBetter) {
+    var h = '<ul class="sk-ask-list">';
+    rows.forEach(function (r) { h += '<li><span>' + esc(r.label) + '</span><span class="n">' + fmtRE(r.ev) + ' runs</span></li>'; });
+    h += '</ul><div class="sk-ask-note">' + note + ' Each option was simulated 400 times from this exact spot. Differences under 0.05 are noise' + (lowerBetter ? '. You are in the field, so lower is better for you' : '') + '.</div>';
+    $('sk-ask').innerHTML = h; $('sk-askcard').hidden = false; $('sk-askcard').classList.remove('sk-flash'); void $('sk-askcard').offsetWidth; $('sk-askcard').classList.add('sk-flash');
+  }
+  function askBat() {
+    var rows = SK.evaluate(G, SK.batOptions(G), 400), notes = [], st = G.st, lv = G.lv;
+    var now = SK.re(st.bases, st.outs, lv);
+    if (st.outs < 2 && (st.bases[0] || st.bases[1])) {
+      var after = st.bases.slice(); if (after[1] && !after[2]) { after[2] = after[1]; after[1] = null; } if (after[0] && !after[1]) { after[1] = after[0]; after[0] = null; }
+      notes.push('<b>Bunt math:</b> run expectancy now ' + now.toFixed(2) + '. After a perfect sacrifice it is ' + SK.re(after, st.outs + 1, lv).toFixed(2) + '. The out costs more than the base is worth, unless one run is all you need.');
+    }
+    if (st.bases[0] && !st.bases[1]) notes.push('<b>Steal math:</b> ' + stealLine(2));
+    if (st.bases[1] && !st.bases[2]) notes.push('<b>Steal math:</b> ' + stealLine(3));
+    var b = SK.curBatter(G);
+    var p = SK.curPitcher(G), ep = SK.effP(p);
+    notes.push('<b>Count math:</b> MLB hitters are 16% worse than average after falling behind 0-1 and 13% better after getting ahead 1-0. ' + (ep.ctl >= 60 ? 'This pitcher throws strikes (control ' + r0(ep.ctl) + '), so taking the first one usually means 0-1.' : (ep.ctl <= 42 ? 'This pitcher is wild right now (control ' + r0(ep.ctl) + '). Taking a pitch is more likely to get you 1-0.' : 'This pitcher is average at throwing strikes.')) + (SK.rules(G.lv).cap ? ' Taking also runs up the pitch count toward the cap.' : ''));
+    notes.push('<b>This batter:</b> contact ' + b.con + ', power ' + b.pow + ', eye ' + b.eye + '. ' + (b.pow >= 60 ? 'Power grades this high reward lift.' : (b.con >= 60 ? 'Contact is the strength. Put it in play.' : (b.eye >= 60 ? 'Good eye. Working the count plays to it.' : 'No standout grade. Swing away is usually fine.'))));
+    showAsk(rows, notes.join(' '), false);
+  }
+  function askDef() {
+    var rows = SK.evaluate(G, SK.defOptions(G), 400), b = SK.curBatter(G), p = SK.curPitcher(G), e = SK.effP(p), notes = [];
+    notes.push('<b>Pitcher:</b> gas tank ' + r0(Math.max(0, 1 - p.pitches / SK.budget(p)) * 100) + '%.' + (e.f > 0.5 ? ' Control and velocity are well down. A fresh arm is usually worth more than loyalty.' : (e.f > 0 ? ' Starting to tire.' : ' Still fresh.')));
+    if (G.st.bases[2] && G.st.outs < 2) notes.push('<b>Infield in</b> only pays when that one run matters more than the extra hits it allows: late, close games.');
+    showAsk(rows, notes.join(' '), true);
+  }
+
+  // Playing
+  function gradeDecision(opts, label) {
+    var options = SK.batOptions(G), rows = SK.evaluate(G, options, 300), chosen = null;
+    rows.forEach(function (r) { if (r.id === label) chosen = r; });
+    if (!chosen) return;
+    G.decisions.push({ inning: G.inning, half: G.half, kind: 'bat', label: chosen.label, ev: chosen.ev, best: rows[0].label, bestEv: rows[0].ev, agree: chosen.ev >= rows[0].ev - 0.05, situation: G.st.outs + ' out, ' + basesText() });
+  }
+  function basesText() { var k = SK.key(G.st.bases); return { '000': 'bases empty', '100': 'runner on first', '010': 'runner on second', '110': 'first and second', '001': 'runner on third', '101': 'first and third', '011': 'second and third', '111': 'bases loaded' }[k]; }
+  function userPlay() {
+    var bunt = UI.approach === 'bunt';
+    var opts = { approach: UI.approach, steal: UI.steal, hitrun: UI.hitrun, first: bunt ? null : UI.first, two: bunt ? null : UI.two };
+    var id = UI.hitrun ? 'hitrun' : (UI.steal ? 'steal' + UI.steal : UI.approach);
+    if (id === 'bunt' || id === 'hitrun' || id.indexOf('steal') === 0) gradeDecision(opts, id);
+    else if (id !== 'normal' || opts.first || opts.two) G.decisions.push({ inning: G.inning, half: G.half, kind: 'style', label: APP_LABEL[UI.approach] });
+    var ev = SK.play(G, opts);
+    UI.steal = null; UI.hitrun = false; if (UI.approach === 'bunt') UI.approach = 'normal';
+    afterPlay(ev);
+  }
+  function userPitch() {
+    if (UI.ibb) G.decisions.push({ inning: G.inning, half: G.half, kind: 'ibb', label: 'Intentional walk to ' + SK.curBatter(G).name, situation: G.st.outs + ' out, ' + basesText() });
+    if (G.def[1 - G.half].infieldIn && G.st.bases[2] && G.st.outs < 2) G.decisions.push({ inning: G.inning, half: G.half, kind: 'in', label: 'Infield in', situation: G.st.outs + ' out, ' + basesText() + ', ' + (G.inning >= G.innings - 1 && Math.abs(G.score[0] - G.score[1]) <= 1 ? 'late and close' : 'not a late, close spot') });
+    var opts = SK.aiBat(G); opts.ibb = UI.ibb; UI.ibb = false;
+    var ev = SK.play(G, opts);
+    afterPlay(ev);
+  }
+  function autoHalf() {
+    var half = G.half, inning = G.inning, guard = 0, ev = null;
+    while (!G.over && G.half === half && G.inning === inning && guard++ < 60) {
+      if (SK.userBats(G)) { var n = SK.aiDef(G); if (n) G.notes.push(n); ev = SK.play(G, { approach: 'normal' }); }
+      else {
+        var t = SK.fielding(G), p = SK.curPitcher(G);
+        if (SK.capHit(G, p)) { var np = SK.changePitcher(G, t, SK.nextFresh(t)); G.notes.push('Pitch cap. ' + np.name + ' comes in for ' + p.name + '.'); }
+        ev = SK.play(G, SK.aiBat(G));
+      }
+    }
+    UI.steal = null; UI.hitrun = false; UI.ibb = false;
+    afterPlay(ev);
+  }
+  function afterPlay(ev) {
+    $('sk-askcard').hidden = true; notice('');
+    if (!G.over && SK.userBats(G)) { var n = SK.aiDef(G); if (n) G.notes.push(n); }
+    renderAll(); renderLast(ev); renderField(ev);
+    if (G.over) renderReport();
+  }
+  function renderAll() { renderScore(); renderDiamond(); renderMatch(); renderRE(); renderLog(); renderDecide(); }
+
+  // End of game report
+  function renderReport() {
+    var you = G.user, won = G.winner === you, tie = G.winner === -1, h = '';
+    h += '<div class="sk-label">Final</div><div class="sk-big">' + (tie ? 'Tie game' : (won ? 'You won' : 'You lost')) + ', ' + G.score[you] + ' to ' + G.score[1 - you] + '</div>';
+    var calls = G.decisions.filter(function (d) { return d.kind === 'bat'; }), styles = G.decisions.filter(function (d) { return d.kind === 'style'; }).length, agreed = calls.filter(function (d) { return d.agree; }).length;
+    var big = null; G.log.forEach(function (e) { if (e.userTeam && (!big || Math.abs(e.dRE) > Math.abs(big.dRE))) big = e; });
+    h += '<div class="sk-stat3"><div class="sk-stat"><div class="n">' + calls.length + '</div><div class="l">Strategy calls</div></div><div class="sk-stat"><div class="n">' + agreed + '</div><div class="l">Numbers agreed</div></div><div class="sk-stat"><div class="n">' + G.decisions.filter(function (d) { return d.kind !== 'bat' && d.kind !== 'style'; }).length + '</div><div class="l">Field moves</div></div></div>';
+    h += '<div class="sk-hint">Strategy calls are bunts, steals, and hit and runs. One counts as agreed when its expected runs were within 0.05 of the best option at that moment. Good calls can fail and bad calls can work. The grade is about the thinking, not the bounce.' + (styles ? ' You also changed the hitting approach ' + styles + ' time' + (styles > 1 ? 's' : '') + '; those are style calls and too close to grade.' : '') + '</div>';
+    if (big) h += '<div class="sk-ask-note"><b>Your biggest swing:</b> ' + halfName(big.half) + ' ' + ordinal(big.inning) + ', ' + esc(big.b.name) + ', ' + esc(big.label) + ' (' + fmtRE(big.dRE) + ' runs).</div>';
+    if (G.decisions.length) {
+      h += '<div class="sk-label" style="margin-top:0.6rem">Your calls, graded by the math at the time</div><ul class="sk-dec">';
+      G.decisions.forEach(function (d) {
+        if (d.kind === 'style') return;
+        var line = '<b>' + halfName(d.half) + ' ' + ordinal(d.inning) + ':</b> ' + esc(d.label) + (d.situation ? ' (' + esc(d.situation) + ')' : '') + '. ';
+        if (d.kind === 'bat') line += d.agree ? 'Numbers liked it (' + fmtRE(d.ev) + ').' : 'Numbers preferred ' + esc(d.best) + ' (' + fmtRE(d.bestEv) + ' vs ' + fmtRE(d.ev) + ').';
+        else if (d.kind === 'pitch') line += d.capped ? 'Forced by the pitch cap.' : (d.fat > 0.4 ? 'Good timing: the pitcher was fading.' : 'Early. The pitcher still had gas, which is fine if you had a reason.');
+        else if (d.kind === 'ibb') line += 'Walks add a runner. Worth it only when the next batter is clearly weaker or a force play matters.';
+        else if (d.kind === 'in') line += 'Trades hits for a shot at the run at home.';
+        h += '<li>' + line + '</li>';
+      });
+      h += '</ul>';
+    } else h += '<div class="sk-ask-note">You swung away all game and let the pitcher ride. That is a legitimate style. Next game, try one bunt and one steal and watch what the numbers say.</div>';
+    h += '<div class="sk-row"><button class="sk-btn" id="sk-again2">Play another</button></div>';
+    $('sk-report').innerHTML = h; $('sk-final').hidden = false; $('sk-again2').onclick = reset;
+    $('sk-final').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  // Setup
+  var sel = $('sk-level'), side = 1;
+  SK.LEVELS.forEach(function (lv, i) { var o = document.createElement('option'); o.value = i; o.textContent = lv.name; sel.appendChild(o); });
+  function levelHint() {
+    var lv = SK.LEVELS[+sel.value], ru = SK.rules(lv);
+    $('sk-level-hint').textContent = ru.innings + ' innings. Fences ' + lv.fence[0] + ' / ' + lv.fence[1] + ' / ' + lv.fence[2] + ' ft. ' + (ru.cap ? 'Pitch cap ' + ru.cap + ' (' + ru.capWhy + ').' : 'No pitch cap.') + (lv.rho < 1.1 ? ' Thin air carries.' : '');
+  }
+  sel.addEventListener('change', levelHint); levelHint();
+  Array.prototype.forEach.call($('sk-side').children, function (btn) { btn.onclick = function () { side = +btn.getAttribute('data-v'); Array.prototype.forEach.call($('sk-side').children, function (b) { b.classList.toggle('on', b === btn); }); }; });
+  function start() {
+    G = SK.newGame({ lv: SK.LEVELS[+sel.value], user: side });
+    UI.approach = 'normal'; UI.first = null; UI.two = null; UI.steal = null; UI.hitrun = false; UI.ibb = false; logCount = 0; lastInnKey = ''; $('sk-log').innerHTML = '';
+    $('sk-setup').hidden = true; $('sk-game').hidden = false; $('sk-final').hidden = true; $('sk-askcard').hidden = true;
+    renderAll(); renderLast(null); renderField(null);
+    $('sk-game').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  }
+  function reset() { $('sk-game').hidden = true; $('sk-final').hidden = true; $('sk-setup').hidden = false; $('sk-setup').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); }
+  $('sk-start').onclick = start;
+})();
+</script>
+<script src="js/site.js"></script>
+</body>
+</html>
