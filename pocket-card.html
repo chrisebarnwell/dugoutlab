@@ -79,13 +79,18 @@
 
   #pc-print { display: none; }
   @media print {
-    @page { size: letter; margin: 0.25in; }
-    body { background: #fff !important; padding: 0 !important; }
+    @page { size: letter; margin: 0; }
+    html, body { margin: 0 !important; background: #fff !important; padding: 0 !important; }
     body > *:not(#pc-print) { display: none !important; }
     #pc-print { display: block; }
     .pc-page { display: grid; grid-template-columns: repeat(2, 4in); justify-content: center; break-after: page; page-break-after: always; }
     .pc-page:last-child { break-after: auto; page-break-after: auto; }
-    .pc-page.dug { row-gap: 0; }
+    .pc-page.dug { row-gap: 0; padding-top: 0.3in; }
+    /* Pocket cards: exact quarter sheets. One cut down the middle, one across. */
+    .pc-page.quad { width: 8.5in; height: 10.96in; overflow: hidden; grid-template-columns: 4.25in 4.25in; grid-template-rows: 5.48in 5.48in; justify-content: start; }
+    .pc-page.quad .pc-card { width: 4.25in; height: 5.48in; border: 0; padding: 0.3in 0.32in 0.26in; }
+    .pc-page.quad .pc-card:nth-child(odd) { border-right: 1px dashed #9a9a9a; }
+    .pc-page.quad .pc-card:nth-child(-n+2) { border-bottom: 1px dashed #9a9a9a; }
     .pc-card, .pc-dug { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
   @media (max-width: 560px) { .pc-row { grid-template-columns: 1fr 5rem; } }
@@ -124,7 +129,7 @@
   <div class="pc-wrap">
 
     <ol class="pc-steps">
-      <li><b>1</b><span>Print the cards. Four to a page. Each one fits a 4x6 laminating pouch.</span></li>
+      <li><b>1</b><span>Print the cards. Four to a page. Cut once down the middle and once across.</span></li>
       <li><b>2</b><span>Players circle the spot, draw the flight from the side, and finish the sentence. Kids who can't write yet tell you, and you write it.</span></li>
       <li><b>3</b><span>Laminate two. One goes in the back pocket. One hangs on the dugout fence, every game.</span></li>
       <li><b>4</b><span>Before each at-bat: touch the pocket, see it, say it, hit.</span></li>
@@ -362,7 +367,7 @@
     var names = roster(), items = [];
     if (names.length) items = names.map(function (n) { return { name: n }; });
     else for (var i = 0; i < Number($('bl-count').value); i++) items.push({});
-    printPages(items, 4, cardHTML);
+    printPages(items, 4, cardHTML, 'quad');
   });
 
   /* ── Fill in ── */
@@ -447,7 +452,7 @@
     $('team').scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
   $('ed-new').addEventListener('click', reset);
-  $('pr-pocket').addEventListener('click', function () { if (team.length) printPages(team, 4, cardHTML); });
+  $('pr-pocket').addEventListener('click', function () { if (team.length) printPages(team, 4, cardHTML, 'quad'); });
   $('pr-dugout').addEventListener('click', function () { if (team.length) printPages(team, 6, dugHTML, 'dug'); });
 
   reset(); renderTeam();
