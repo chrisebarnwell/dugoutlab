@@ -65,6 +65,23 @@
   .pc-card .c-line .kid { font-weight: 600; }
   .pc-card .c-foot { margin-top: auto; font-size: 6.5pt; color: #888; display: flex; justify-content: space-between; }
 
+  /* Baseball card size: 2.5 x 3.5, fits a standard card sleeve */
+  .pc-mini { width: 2.5in; height: 3.5in; background: #fff; color: #1b1b1b; font-family: Helvetica, Arial, sans-serif; padding: 0.1in 0.11in 0.08in; display: flex; flex-direction: column; outline: 0.5px solid #9a9a9a; overflow: hidden; box-sizing: border-box; }
+  .pc-mini .m-head { display: flex; gap: 0.06in; align-items: flex-end; }
+  .pc-mini .m-head div { border-bottom: 1px solid #555; min-height: 0.2in; font-weight: 700; font-size: 9pt; line-height: 1; padding-bottom: 0.02in; white-space: nowrap; overflow: hidden; }
+  .pc-mini .m-head .nm { flex: 1; }
+  .pc-mini .m-head .no { width: 0.42in; }
+  .pc-mini .m-head small { display: block; font-size: 5pt; font-weight: 400; color: #666; margin-bottom: 0.02in; }
+  .pc-mini .m-q { font-size: 8.5pt; font-weight: 700; margin-top: 0.05in; letter-spacing: -0.01em; }
+  .pc-mini .m-top { height: 1.22in; margin-top: 0.03in; display: flex; justify-content: center; }
+  .pc-mini .m-top svg { height: 100%; width: auto; display: block; }
+  .pc-mini .m-side svg { width: 100%; height: auto; display: block; }
+  .pc-mini .m-say { margin-top: 0.03in; font-size: 7pt; line-height: 1.3; border-top: 1px solid #8a8a8a; padding-top: 0.03in; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; }
+  .pc-mini .m-say .pre { color: #6b6b6b; font-size: 6pt; }
+  .pc-mini .m-say .kid { font-weight: 600; }
+  .pc-mini .m-blank { border-bottom: 1px solid #8a8a8a; height: 0.2in; }
+  .pc-mini .m-foot { margin-top: auto; font-size: 5pt; color: #888; display: flex; justify-content: space-between; }
+
   /* Dugout sheet card */
   .pc-dug { width: 4in; height: 3.45in; background: #fff; color: #1b1b1b; font-family: Helvetica, Arial, sans-serif; padding: 0.14in 0.18in; border: 1px solid #bbb; display: flex; flex-direction: column; overflow: hidden; }
   .pc-dug .d-head { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.5px solid #222; padding-bottom: 0.03in; }
@@ -91,7 +108,9 @@
     .pc-page.quad .pc-card { width: 4.25in; height: 5.48in; border: 0; padding: 0.3in 0.32in 0.26in; }
     .pc-page.quad .pc-card:nth-child(odd) { border-right: 1px dashed #9a9a9a; }
     .pc-page.quad .pc-card:nth-child(-n+2) { border-bottom: 1px dashed #9a9a9a; }
-    .pc-card, .pc-dug { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    /* Baseball card size: 9 per sheet, 3 x 3 grid */
+    .pc-page.nine { width: 8.5in; height: 10.96in; overflow: hidden; grid-template-columns: repeat(3, 2.5in); grid-template-rows: repeat(3, 3.5in); justify-content: center; align-content: center; }
+    .pc-card, .pc-mini, .pc-dug { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
   @media (max-width: 560px) { .pc-row { grid-template-columns: 1fr 5rem; } }
 </style>
@@ -158,7 +177,9 @@
       </div>
       <div class="pc-actions">
         <button type="button" class="btn btn-primary btn-lg" id="bl-print">Print cards</button>
+        <button type="button" class="btn btn-outline btn-lg" id="bl-print-mini">Print baseball card size</button>
       </div>
+      <p class="pc-note">Baseball card size is 2.5 x 3.5, nine to a page. It slides into a standard card sleeve or top loader for the back pocket.</p>
       <p class="pc-note">For the dugout copy, put four finished cards on any copier and laminate the copies.</p>
       <div class="pc-preview-h">What prints</div>
       <div class="pc-preview" id="bl-preview"></div>
@@ -197,6 +218,7 @@
       <div class="pc-team" id="team"></div>
       <div class="pc-actions">
         <button type="button" class="btn btn-primary" id="pr-pocket">Print pocket cards</button>
+        <button type="button" class="btn btn-outline" id="pr-mini">Print baseball card size</button>
         <button type="button" class="btn btn-outline" id="pr-dugout">Print dugout sheet</button>
       </div>
       <p class="pc-note">Cards are saved in this phone's browser. Nothing is sent to DugoutLab.</p>
@@ -327,6 +349,19 @@
       '<div class="c-foot"><span>See it. Say it. Hit.</span><span>dugoutlab.com</span></div>' +
     '</div>';
   }
+  function miniHTML(c) {
+    c = c || {};
+    var say = String(c.say || '').trim();
+    return '<div class="pc-mini">' +
+      '<div class="m-head"><div class="nm"><small>Name</small>' + esc(c.name) + '</div><div class="no"><small>Number</small>' + esc(c.num) + '</div></div>' +
+      '<div class="m-q">Where are you going to hit it?</div>' +
+      '<div class="m-top">' + topSVG(c.spot) + '</div>' +
+      '<div class="m-side">' + sideSVG(c.strokes) + '</div>' +
+      (say ? '<div class="m-say"><span class="pre">' + PRE + ' </span><span class="kid">' + esc(say) + '</span></div>'
+           : '<div class="m-say"><span class="pre">' + PRE + '</span></div><div class="m-blank"></div><div class="m-blank"></div>') +
+      '<div class="m-foot"><span>See it. Say it. Hit.</span><span>dugoutlab.com</span></div>' +
+    '</div>';
+  }
   function dugHTML(c) {
     return '<div class="pc-dug">' +
       '<div class="d-head"><b>' + esc(c.name || 'Player') + '</b><span>' + (c.num ? '#' + esc(c.num) : '') + '</span></div>' +
@@ -363,6 +398,17 @@
   function roster() { return $('bl-roster').value.split(/\n+/).map(function (s) { return s.trim().slice(0, 24); }).filter(Boolean); }
   $('bl-roster').addEventListener('input', function () { $('bl-count-wrap').hidden = roster().length > 0; });
   $('bl-preview').innerHTML = cardHTML({});
+  function blankItems() {
+    var names = roster(), items = [];
+    if (names.length) items = names.map(function (n) { return { name: n }; });
+    else for (var i = 0; i < Number($('bl-count').value); i++) items.push({});
+    return items;
+  }
+  $('bl-print-mini').addEventListener('click', function () {
+    var items = blankItems();
+    if (!roster().length) while (items.length % 9) items.push({});
+    printPages(items, 9, miniHTML, 'nine');
+  });
   $('bl-print').addEventListener('click', function () {
     var names = roster(), items = [];
     if (names.length) items = names.map(function (n) { return { name: n }; });
@@ -453,6 +499,7 @@
   });
   $('ed-new').addEventListener('click', reset);
   $('pr-pocket').addEventListener('click', function () { if (team.length) printPages(team, 4, cardHTML, 'quad'); });
+  $('pr-mini').addEventListener('click', function () { if (team.length) printPages(team, 9, miniHTML, 'nine'); });
   $('pr-dugout').addEventListener('click', function () { if (team.length) printPages(team, 6, dugHTML, 'dug'); });
 
   reset(); renderTeam();
