@@ -43,7 +43,12 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS pitch_teams_acct ON pitch_teams(account_id)`,
   `CREATE INDEX IF NOT EXISTS pitch_kids_acct ON pitch_kids(account_id)`,
   `CREATE INDEX IF NOT EXISTS pitch_sessions_kid ON pitch_sessions(kid_id, date)`,
-  `CREATE TABLE IF NOT EXISTS coach_trials (account_id TEXT PRIMARY KEY, started INTEGER NOT NULL, ends INTEGER NOT NULL)`
+  `CREATE TABLE IF NOT EXISTS coach_trials (account_id TEXT PRIMARY KEY, started INTEGER NOT NULL, ends INTEGER NOT NULL)`,
+  /* Arena: team battles and tournaments. Players are nicknames an adult typed, or their own hitters. */
+  `CREATE TABLE IF NOT EXISTS events (
+    id TEXT PRIMARY KEY, account_id TEXT NOT NULL, type TEXT NOT NULL, name TEXT NOT NULL,
+    data TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'live', winner TEXT NOT NULL DEFAULT '', created INTEGER NOT NULL, updated INTEGER NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS events_acct ON events(account_id, updated)`
 ];
 
 /* ---------- Pitch Tracker premium gate ----------
@@ -70,6 +75,9 @@ function pubKid(env, acct, k) {
 }
 
 const ZONE_PTS = { mid: 30, lg: 20, rg: 20, ll: 10, rl: 10, miss: 0 };
+/* Contact type per ball: line drive, ground ball, fly ball, pop up. Data only, never changes points. */
+const CONTACTS = ['ld', 'gb', 'fb', 'pu'];
+const SOURCES = ['tee', 'toss', 'machine', 'live'];
 function levelOK(l) { return /^(bb|sb)(6|7|8|9|10|11|12|13|14|15|16|17|18)u$/.test(String(l || '')); }
 function json(data, status) {
   return new Response(JSON.stringify(data), { status: status || 200, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
@@ -86,7 +94,8 @@ const MJOIN = `SELECT m.*, ha.nickname AS a_name, ha.account_id AS a_acct, COALE
 /* Columns added after a table first shipped. Each runs once per worker; "duplicate column" means it is already there. */
 const MIGRATIONS = [
   `ALTER TABLE pitch_sessions ADD COLUMN types TEXT NOT NULL DEFAULT ''`,
-  `ALTER TABLE pitch_sessions ADD COLUMN locs TEXT NOT NULL DEFAULT ''`
+  `ALTER TABLE pitch_sessions ADD COLUMN locs TEXT NOT NULL DEFAULT ''`,
+  `ALTER TABLE rounds ADD COLUMN source TEXT NOT NULL DEFAULT ''`
 ];
 let migrated = false;
 async function ensure(db) {
@@ -111,7 +120,8 @@ function scoreBalls(balls) {
     if (zone !== 'miss') { liners++; streak++; if (streak >= 3) pts += 10; } else streak = 0;
     if (streak > best) best = streak;
     score += pts;
-    out.push({ zone, call, pts });
+    const contact = zone !== 'miss' && CONTACTS.indexOf(b.contact) >= 0 ? b.contact : null;
+    out.push({ zone, call, pts, contact });
   }
   return { score, liners, called, best, balls: out };
 }
@@ -443,6 +453,14 @@ export async function onRequest(ctx) {
       return json({ match: m });
     }
 
+    if (route === 'event' && method === 'GET') {
+      await ensure(db);
+      const e = await db.prepare('SELECT id, type, name, data, status, winner, created, updated FROM events WHERE id = ?').bind(clean(url.searchParams.get('id'), 40)).first();
+      if (!e) return bad('No such event', 404);
+      e.data = JSON.parse(e.data);
+      return json({ event: e });
+    }
+
     const me = await auth(db, token);
     if (!me) return bad('Sign in first', 401);
 
@@ -603,6 +621,7 @@ export async function onRequest(ctx) {
         await db.prepare('DELETE FROM pitch_sessions WHERE account_id = ?').bind(me.id).run();
         await db.prepare('DELETE FROM pitch_kids WHERE account_id = ?').bind(me.id).run();
         await db.prepare('DELETE FROM pitch_teams WHERE account_id = ?').bind(me.id).run();
+        await db.prepare('DELETE FROM events WHERE account_id = ?').bind(me.id).run();
         await db.prepare('DELETE FROM subscribers WHERE email = ?').bind(me.email).run();
         await db.prepare('DELETE FROM accounts WHERE id = ?').bind(me.id).run();
         return json({ ok: true });
@@ -657,8 +676,10 @@ export async function onRequest(ctx) {
       if (!h) return bad('Pick a hitter', 403);
       const s = scoreBalls(body.balls);
       const rid = id(), matchId = body.match_id ? clean(body.match_id, 40) : null;
-      await db.prepare('INSERT INTO rounds (id,hitter_id,mode,level,score,liners,called,best_streak,balls,match_id,created) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
-        .bind(rid, h.id, mode, h.level, s.score, s.liners, s.called, s.best, JSON.stringify(s.balls), matchId, now).run();
+      const source = SOURCES.indexOf(body.source) >= 0 ? body.source : '';
+      await ensure(db);
+      await db.prepare('INSERT INTO rounds (id,hitter_id,mode,level,score,liners,called,best_streak,balls,match_id,source,created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)')
+        .bind(rid, h.id, mode, h.level, s.score, s.liners, s.called, s.best, JSON.stringify(s.balls), matchId, source, now).run();
       let match = null;
       if (matchId) {
         const m = await db.prepare('SELECT * FROM matches WHERE id = ?').bind(matchId).first();
@@ -678,6 +699,47 @@ export async function onRequest(ctx) {
       const rank = await db.prepare('SELECT COUNT(*) + 1 AS rank FROM rounds WHERE level = ? AND score > ?').bind(h.level, s.score).first();
       const total = await db.prepare('SELECT COUNT(*) AS n FROM rounds WHERE level = ?').bind(h.level).first();
       return json({ round: { id: rid, score: s.score, liners: s.liners, called: s.called, best_streak: s.best, balls: s.balls }, rank: rank.rank, of: total.n, match });
+    }
+
+    if (route === 'stats' && method === 'GET') {
+      /* Every round for one of your hitters, newest first. The page does the math. */
+      await ensure(db);
+      const h = await ownHitter(db, me, url.searchParams.get('hitter'));
+      if (!h) return bad('Pick your hitter', 403);
+      const rows = (await db.prepare('SELECT id, mode, score, liners, called, best_streak, balls, source, created FROM rounds WHERE hitter_id = ? ORDER BY created DESC LIMIT 200').bind(h.id).all()).results;
+      rows.forEach(r => { try { r.balls = JSON.parse(r.balls); } catch (e) { r.balls = []; } });
+      const best = await db.prepare('SELECT MAX(score) AS best FROM rounds WHERE level = ?').bind(h.level).first();
+      return json({ hitter: { id: h.id, nickname: h.nickname, level: h.level }, rounds: rows, level_best: best ? best.best : null });
+    }
+
+    if (route === 'event' && method === 'POST') {
+      /* Create or update a team battle or tournament. Saved as one JSON blob; it never touches the leaderboard. */
+      await ensure(db);
+      const type = body.type === 'bracket' ? 'bracket' : (body.type === 'battle' ? 'battle' : null);
+      if (!type) return bad('Pick team battle or tournament');
+      const name = clean(body.name, 60) || (type === 'battle' ? 'Team Battle' : 'Tournament');
+      const raw = JSON.stringify(body.data || {});
+      if (raw.length > 60000) return bad('That event is too big to save');
+      const status = body.status === 'done' ? 'done' : 'live';
+      const winner = clean(body.winner, 40);
+      if (body.id) {
+        const e = await db.prepare('SELECT id FROM events WHERE id = ? AND account_id = ?').bind(clean(body.id, 40), me.id).first();
+        if (!e) return bad('Not your event', 403);
+        await db.prepare('UPDATE events SET name = ?, data = ?, status = ?, winner = ?, updated = ? WHERE id = ?').bind(name, raw, status, winner, now, e.id).run();
+        return json({ event: { id: e.id, status } });
+      }
+      const live = await db.prepare("SELECT COUNT(*) AS n FROM events WHERE account_id = ? AND created > ?").bind(me.id, now - 86400000).first();
+      if (live.n >= 40) return bad('That is a lot of events today. Try again tomorrow.', 429);
+      const eid = id();
+      await db.prepare('INSERT INTO events (id,account_id,type,name,data,status,winner,created,updated) VALUES (?,?,?,?,?,?,?,?,?)')
+        .bind(eid, me.id, type, name, raw, status, winner, now, now).run();
+      return json({ event: { id: eid, status } });
+    }
+
+    if (route === 'events' && method === 'GET') {
+      await ensure(db);
+      const rows = (await db.prepare('SELECT id, type, name, status, winner, created, updated FROM events WHERE account_id = ? ORDER BY updated DESC LIMIT 30').bind(me.id).all()).results;
+      return json({ rows });
     }
 
     if (route === 'players') {

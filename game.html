@@ -34,6 +34,11 @@
 .menu button span { color: var(--ink-faint); font-size: 0.82rem; }
 .menu button i { font-style: normal; color: var(--gold); font-size: 1.3rem; }
 .menu button.locked { opacity: 0.55; }
+.menu a.menu-a { text-align: left; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: var(--radius); padding: 1rem 1.1rem; color: var(--ink); display: flex; justify-content: space-between; align-items: center; gap: 1rem; text-decoration: none; }
+.menu a.menu-a:hover { border-color: var(--gold); }
+.menu a.menu-a b { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; display: block; }
+.menu a.menu-a span { color: var(--ink-faint); font-size: 0.82rem; }
+.menu a.menu-a i { font-style: normal; color: var(--gold); font-size: 1.3rem; }
 .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 1rem; }
 .stat { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.7rem 0.4rem; text-align: center; }
 .stat b { display: block; font-family: var(--serif); font-size: 1.6rem; color: var(--gold); line-height: 1; }
@@ -83,6 +88,12 @@
 .chk input { width: 22px; height: 22px; flex: 0 0 22px; accent-color: var(--gold); margin-top: 1px; }
 .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-size: 0.85rem; color: var(--ink-faint); }
 .topbar b { color: var(--ink); }
+.kind-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.35rem; margin-bottom: 0.6rem; }
+.kind-row button { background: transparent; border: 1.5px solid var(--rule); color: var(--ink-soft); border-radius: 9px; padding: 0.6rem 0.2rem; font-family: var(--sans); font-size: 0.8rem; font-weight: 600; min-height: 44px; }
+.kind-row button.on { background: var(--ink); color: var(--forest-deep); border-color: var(--ink); }
+.src-row { display: flex; gap: 0.3rem; align-items: center; margin-bottom: 0.7rem; font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
+.src-row button { background: transparent; border: 1px solid var(--rule); color: var(--ink-soft); border-radius: 999px; padding: 0.3rem 0.7rem; font-size: 0.78rem; font-family: var(--sans); text-transform: none; letter-spacing: 0; }
+.src-row button.on { border-color: var(--gold); color: var(--gold-light); }
 .topbar button { background: none; border: 1px solid var(--rule); color: var(--ink-soft); border-radius: 999px; padding: 0.3rem 0.8rem; font-size: 0.78rem; font-family: var(--sans); }
 @media (max-width: 480px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
 </style>
@@ -169,6 +180,9 @@
         <button type="button" id="m-solo"><div><b>Play a round</b><span>10 balls. Beat your best.</span></div><i>&#8594;</i></button>
         <button type="button" id="m-chal"><div><b>Challenge</b><span>Send a challenge link, or pick a player. Both play 10. Best score wins.</span></div><i>&#8594;</i></button>
         <button type="button" id="m-h2h"><div><b>Head-to-head</b><span id="m-h2h-sub">Coach mode. Two hitters alternate, live on one phone.</span></div><i>&#8594;</i></button>
+        <a class="menu-a" href="arena.html#battle"><div><b>Team Battle</b><span>Two teams, pass the phone, inning by inning.</span></div><i>&#8594;</i></a>
+        <a class="menu-a" href="arena.html#bracket"><div><b>Tournament</b><span>4 to 16 hitters. Bracket builds itself. Crown a champ.</span></div><i>&#8594;</i></a>
+        <a class="menu-a" href="arena.html#stats"><div><b>My stats</b><span>Spray chart, contact mix, called-shot rate, trend.</span></div><i>&#8594;</i></a>
         <button type="button" id="m-lb"><div><b>Leaderboard</b><span>This week and all time, by level.</span></div><i>&#8594;</i></button>
         <button type="button" id="m-invite"><div><b>Invite to play</b><span>Send the game to a teammate.</span></div><i>&#8599;</i></button>
       </div>
@@ -223,9 +237,11 @@
     <div class="g-card">
       <div class="vs hidden" id="r-vs"><div class="side" id="r-va"><b></b><i>0</i></div><div class="x">VS</div><div class="side" id="r-vb"><b></b><i>0</i></div></div>
       <div class="scoreboard"><div class="who"><small id="r-mode">Solo round</small><span id="r-who"></span></div><div class="pts" id="r-pts">0</div></div>
+      <div class="src-row" id="r-src">Pitch <button type="button" data-s="tee">Tee</button><button type="button" data-s="toss">Toss</button><button type="button" data-s="machine">Machine</button><button type="button" data-s="live">Live</button></div>
       <div class="dots" id="r-dots"></div>
       <div class="call-bar"><span id="r-call-txt">Call your shot for <b>double</b>, or just hit.</span><span id="r-ball">Ball 1 of 10</span></div>
       <div class="pill-row" id="r-calls" style="margin-bottom:0.6rem"><button type="button" class="wz-opt" data-c="ll">Call left line</button><button type="button" class="wz-opt" data-c="lg">Call left gap</button><button type="button" class="wz-opt" data-c="mid">Call middle</button><button type="button" class="wz-opt" data-c="rg">Call right gap</button><button type="button" class="wz-opt" data-c="rl">Call right line</button></div>
+      <div class="kind-row" id="r-kind"><button type="button" data-k="ld" class="on">Liner</button><button type="button" data-k="gb">Grounder</button><button type="button" data-k="fb">Fly ball</button><button type="button" data-k="pu">Pop up</button></div>
       <div class="net">
         <div class="net-grid">
           <button type="button" class="zone line" data-z="ll"><b>10</b>Left line</button>
@@ -235,7 +251,7 @@
         <div class="net-grid" style="margin-top:0.5rem"><div></div><button type="button" class="zone" data-z="rg"><b>20</b>Right gap</button><div></div></div>
         <div class="miss-row"><button type="button" class="miss" data-z="miss">Miss</button><button type="button" class="miss" id="r-undo">Undo</button><button type="button" class="miss" id="r-quit">Quit</button></div>
       </div>
-      <div class="g-note">Tap the target the ball hit. Miss means it hit nothing. Call a target first and hit it for double points.</div>
+      <div class="g-note">Tap the target the ball hit. Miss means it hit nothing. Call a target first and hit it for double points. Liner is set by default; tap Grounder, Fly ball, or Pop up first if it was one. That feeds your stats, never your score.</div>
     </div>
   </div>
 
@@ -536,12 +552,21 @@
   /* ---------- round ---------- */
   var R = null;
   function fresh() { return { balls: [], call: null, score: 0, streak: 0 }; }
+  var KIND = 'ld', SRC = '';
+  try { SRC = localStorage.getItem('dl_hw_src') || ''; } catch (e) {}
+  function drawKind() {
+    Array.prototype.forEach.call($('r-kind').querySelectorAll('button'), function (b) { b.classList.toggle('on', b.getAttribute('data-k') === KIND); });
+    Array.prototype.forEach.call($('r-src').querySelectorAll('button'), function (b) { b.classList.toggle('on', b.getAttribute('data-s') === SRC); });
+  }
+  Array.prototype.forEach.call($('r-kind').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { KIND = b.getAttribute('data-k'); drawKind(); }); });
+  Array.prototype.forEach.call($('r-src').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { SRC = SRC === b.getAttribute('data-s') ? '' : b.getAttribute('data-s'); try { localStorage.setItem('dl_hw_src', SRC); } catch (e) {} drawKind(); }); });
   function startRound(o) {
     R = { mode: o.mode, match_id: o.match_id || null, label: o.label, h2h: o.mode === 'h2h', a: o.a, b: o.b, turn: 'a', A: fresh(), B: fresh() };
     show('s-round'); $('r-mode').textContent = R.label;
     setTimeout(function () { $('s-round').scrollIntoView({ block: 'start' }); window.scrollBy(0, -8); }, 30);
     $('r-vs').classList.toggle('hidden', !R.h2h);
     if (R.h2h) { $('r-va').querySelector('b').textContent = R.a.name; $('r-vb').querySelector('b').textContent = R.b.name; }
+    KIND = 'ld'; drawKind();
     drawRound();
   }
   function cur() { return R.h2h ? (R.turn === 'a' ? R.A : R.B) : R.A; }
@@ -573,7 +598,8 @@
     if (hitCall) { pts *= 2; tag = 'CALLED IT'; }
     if (zone !== 'miss') { c.streak++; if (c.streak >= 3) { pts += 10; tag += ' \u00B7 streak ' + c.streak; } } else c.streak = 0;
     c.score += pts;
-    c.balls.push({ zone: zone, call: call });
+    c.balls.push({ zone: zone, call: call, contact: zone === 'miss' ? null : KIND });
+    KIND = 'ld'; drawKind();
     pop(zone === 'miss' ? 'MISS' : '+' + pts, tag);
     if (R.h2h) {
       if (R.A.balls.length >= 10 && R.B.balls.length >= 10) { drawRound(); return finish(); }
@@ -606,9 +632,9 @@
     $('res-vs').classList.toggle('hidden', !R.h2h);
     var posts = [];
     if (R.h2h) {
-      posts.push(api('round', { mode: 'h2h', balls: R.A.balls, match_id: R.match_id, hitter_id: R.a.id }));
-      posts.push(api('round', { mode: 'h2h', balls: R.B.balls, match_id: R.match_id, hitter_id: R.b.id }));
-    } else posts.push(api('round', { mode: R.mode, balls: R.A.balls, match_id: R.match_id, hitter_id: S.player.id }));
+      posts.push(api('round', { mode: 'h2h', balls: R.A.balls, match_id: R.match_id, hitter_id: R.a.id, source: SRC }));
+      posts.push(api('round', { mode: 'h2h', balls: R.B.balls, match_id: R.match_id, hitter_id: R.b.id, source: SRC }));
+    } else posts.push(api('round', { mode: R.mode, balls: R.A.balls, match_id: R.match_id, hitter_id: S.player.id, source: SRC }));
     $('res-score').textContent = R.h2h ? (R.A.score > R.B.score ? R.a.name : R.B.score > R.A.score ? R.b.name : 'Tie') : R.A.score;
     $('res-sub').textContent = 'Saving\u2026';
     var c = R.h2h ? (R.A.score >= R.B.score ? R.A : R.B) : R.A, ld = 0, cl = 0, st = 0, best = 0;

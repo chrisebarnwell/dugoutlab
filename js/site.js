@@ -166,7 +166,7 @@ document.addEventListener('keydown', function(e) {
 (function () {
   var page = window.location.pathname.split('/').pop() || 'index.html';
   var FIELD = ['pitch-tracker.html', 'lineup.html', 'pods.html', 'practice.html', 'practice-example.html',
-               'game.html', 'field-layout.html', 'strike-zone.html', 'cage-targets.html', 'games.html'];
+               'game.html', 'arena.html', 'field-layout.html', 'strike-zone.html', 'cage-targets.html', 'games.html'];
   if (FIELD.indexOf(page) < 0 || !('wakeLock' in navigator)) return;
   var lock = null;
   function grab() {
