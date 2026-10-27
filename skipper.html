@@ -152,6 +152,28 @@
     .sk-strip .o i.on { background: #e0a090; border-color: #e0a090; }
     .sk-game .sk-last, .sk-game .sk-fieldcard { display: none; }
   }
+  .sk-count-big { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 0.2rem; }
+  .sk-count-big b { font-family: var(--mono); font-size: 2rem; color: var(--gold-light); font-weight: 500; margin-right: 0.3rem; }
+  .sk-lastpitch { background: var(--forest-deep); border: 1px solid var(--rule); border-left: 4px solid var(--gold); border-radius: 8px; padding: 0.5rem 0.7rem; font-size: 0.95rem; margin-bottom: 0.6rem; }
+  .sk-lastpitch b { color: var(--gold-light); }
+  .sk-pgrid { width: 100%; border-collapse: separate; border-spacing: 4px; margin: 0 -4px 0.4rem; table-layout: fixed; }
+  .sk-pgrid th { font-size: 0.72rem; color: var(--ink-faint); font-weight: 600; text-align: center; padding: 0 0.1rem; line-height: 1.2; }
+  .sk-pgrid tr th:first-child { text-align: left; width: 26%; color: var(--ink); font-size: 0.8rem; }
+  .sk-pgrid td button { width: 100%; min-height: 52px; background: var(--forest-deep); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 9px; font-family: var(--mono); padding: 0.3rem 0.2rem; cursor: pointer; }
+  .sk-pgrid td button b { display: block; font-size: 1.05rem; font-weight: 500; }
+  .sk-pgrid td button small { display: block; font-size: 0.66rem; color: var(--ink-faint); }
+  .sk-pgrid td button.on { background: var(--gold); border-color: var(--gold); color: var(--forest); }
+  .sk-pgrid td button.on small { color: rgba(10,22,16,0.75); }
+  .sk-odds { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 9px; padding: 0.6rem 0.7rem; margin-bottom: 0.2rem; }
+  .sk-odds-h { font-weight: 700; margin-bottom: 0.4rem; }
+  .sk-obar { display: flex; height: 14px; border-radius: 7px; overflow: hidden; margin-bottom: 0.45rem; }
+  .sk-obar i, .sk-okey i { display: block; }
+  .sk-obar .s, .sk-okey .s { background: #7ad6a8; } .sk-obar .w, .sk-okey .w { background: #3fa877; }
+  .sk-obar .f, .sk-okey .f { background: #8a9a90; } .sk-obar .x, .sk-okey .x { background: #e2a85a; } .sk-obar .b, .sk-okey .b { background: #b86b4b; }
+  .sk-okey { display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 0.3rem; }
+  .sk-okey span { display: inline-flex; align-items: center; gap: 0.3rem; }
+  .sk-okey i { width: 10px; height: 10px; border-radius: 3px; }
+  .sk-warn { font-size: 0.84rem; color: #e2a85a; margin-top: 0.35rem; line-height: 1.4; }
   .sk-learn { max-width: 760px; margin: 0 auto; padding: 0 1rem 3rem; }
   .sk-learn details { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius); padding: 0.9rem 1.1rem; margin-bottom: 0.75rem; }
   .sk-learn summary { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; cursor: pointer; }
@@ -305,6 +327,7 @@ Loaded       2.29    1.54    0.75</pre></li>
 1 ball    .363      .303      .228
 2 balls   .434      .361      .273
 3 balls   .544      .476      .377</pre></li>
+      <li><strong>Calling pitches.</strong> In the field you can pick a plan for the batter or call every pitch yourself: the pitch type and where it goes. Each choice shows its odds before you throw. The same pitch over and over gets timed and hit. A changeup works best right after a fastball. Painting the edge beats grooving one down the middle, until you fall behind and have to throw a strike. In this game's tests, mixing pitches and throwing strikes at three balls allowed about 10 percent less damage than regular pitching, but it costs more pitches. Breaking balls are not offered at the 12U levels in this game.</li>
       <li><strong>Break-even math.</strong> A stolen base is worth trying only if the runner's chance beats the break-even rate for that situation, usually around 70 percent. The game does the division for you and shows the work.</li>
       <li><strong>Physics decides hits.</strong> Each ball in play gets an exit velocity and launch angle, then flies with drag and spin. Fielders race it. Nothing is a dice roll that says "single."</li>
       <li><strong>Expected value, not outcomes.</strong> A good call can still fail. A bad call can still work. The report at the end grades your decisions by the math at the time, not by how the ball bounced.</li>
@@ -335,7 +358,7 @@ Loaded       2.29    1.54    0.75</pre></li>
     <li><strong>Lewis, M. (2003). Moneyball.</strong> Outs are the scarce resource. Measure what happens.</li>
     <li><strong>Lindbergh, B., and Sawchik, T. (2019). The MVP Machine.</strong> How exit velocity and launch angle changed player development.</li>
   </ul>
-  <p style="font-size:0.9rem;color:var(--ink-soft)"><em>Note on certainty: this is a simplified model. Pitch outcomes, baserunning, errors, and fatigue are rough estimates tuned to look like real games, not measured from youth data. The run expectancy numbers come from this engine, not from youth game data. The count numbers are MLB; youth hitters see more balls and struggle more with two strikes, so the gaps are probably bigger at young ages, but we have no youth data to prove it. "Ask the numbers" runs a few hundred simulations of this game's own engine, so it tells you what the model thinks, not what a real game would do. Treat every number as a lesson in thinking, not a fact about your team.</em></p>
+  <p style="font-size:0.9rem;color:var(--ink-soft)"><em>Note on certainty: this is a simplified model. Pitch outcomes, pitch types and locations, baserunning, errors, and fatigue are rough estimates tuned to look like real games, not measured from youth data. The run expectancy numbers come from this engine, not from youth game data. The count numbers are MLB; youth hitters see more balls and struggle more with two strikes, so the gaps are probably bigger at young ages, but we have no youth data to prove it. "Ask the numbers" runs a few hundred simulations of this game's own engine, so it tells you what the model thinks, not what a real game would do. Treat every number as a lesson in thinking, not a fact about your team.</em></p>
   <p style="font-size:0.95rem;color:var(--ink-soft)">Want to feel the physics by hand first? Try <a href="launch-lab.html">Launch Lab</a>.</p>
 </div>
 
@@ -635,59 +658,111 @@ var SK = (function () {
   // One plate appearance, pitch by pitch. Returns the result type and the pitch sequence.
   // Count knobs, tuned so the MLB level matches FanGraphs wOBA after each count (Clemens, 2020).
   var CK = { zoneAhead: 0.035, evAhead: 1.6, ev2k: -2.5, swing2k: 0.22, ball2k: 0.12, con2k: 0.04, fullBall: 0.35 };
-  function simPitches(b, e, app, ibb, lv, plan) {
-    var balls = 0, strikes = 0, seq = [], ru = rules(lv);
+  // Pitch types and locations the user can call one pitch at a time. Rough model, tuned by feel, not measured.
+  var PTYPES = {
+    fb: { name: 'Fastball', z: 0.03, wh: -0.03, ev: 1.5, la: 0 },
+    ch: { name: 'Changeup', z: -0.04, wh: 0.05, ev: -2.5, la: -4 },
+    br: { name: 'Breaking ball', z: -0.08, wh: 0.05, ev: -2, la: -2, chase: 0.06, hbp: 1.6, hang: 3.5 }
+  };
+  var PLOCS = { zone: { name: 'In the zone', pz: 0.88, ev: 2 }, edge: { name: 'On the edge', pz: 0.52, ev: -2, sw: -0.05, con: -0.04 }, chase: { name: 'Chase it', pz: 0.12, ev: 0 } };
+  // General approach for a whole at-bat when you do not call each pitch.
+  var PAPPS = { normal: { z: 0, ev: 0, con: 0 }, attack: { z: 0.07, ev: 1.5, con: 0.01 }, corners: { z: -0.07, ev: -1.2, con: -0.02 }, punch: { z: 0, ev: 0, con: 0, z2: -0.12, wh2: 0.035 } };
+  function pitchTypesFor(lv) { return (lv.id === 'll' || lv.id === 'sb12') ? ['fb', 'ch'] : ['fb', 'ch', 'br']; }
+
+  // Probabilities for the next pitch. Used both to throw it and to show the odds.
+  function pitchModel(S, b, e, app, plan, lv, choice, papp) {
+    var ru = rules(lv), balls = S.balls, strikes = S.strikes, pa = PAPPS[papp || 'normal'] || PAPPS.normal;
+    var m = { hbp: ru.hbp, evAdj: pa.ev, laAdj: 0, conAdj: pa.con, whAdj: 0 };
+    if (choice) {
+      var T = PTYPES[choice.type] || PTYPES.fb, L = PLOCS[choice.loc] || PLOCS.zone, ctl = (e.ctl - 50) / 250;
+      m.pz = choice.loc === 'chase' ? clamp(L.pz + (50 - e.ctl) / 300 + T.z / 2, 0.04, 0.4) : clamp(L.pz + ctl + T.z, 0.2, 0.97);
+      m.evAdj = T.ev + L.ev + (choice.loc === 'zone' && T.hang ? T.hang : 0); m.laAdj = T.la; m.whAdj = T.wh + (choice.type === 'fb' ? (e.vel - 50) / 400 : (e.mov - 50) / 300);
+      m.swAdj = L.sw || 0; m.conAdj = L.con || 0; m.chase = (T.chase || 0) + (choice.loc === 'chase' && strikes === 2 ? 0.08 : 0); m.hbp = ru.hbp * (T.hbp || 1);
+      var rep = S.prevType === choice.type ? Math.min(2, S.rep + 1) : 0;
+      m.whAdj -= 0.04 * rep; m.evAdj += 1.2 * rep; m.rep = rep;
+      // A changeup works off the fastball. Without one before it, the hitter's timing is not fooled.
+      if (choice.type === 'ch' && S.prevType !== 'fb') { m.whAdj -= 0.06; m.evAdj += 2.5; m.noSetup = true; }
+    } else {
+      m.pz = clamp(ru.strike + (e.ctl - 50) / 200 + CK.zoneAhead * Math.max(0, balls - strikes) + pa.z + (strikes === 2 && pa.z2 ? pa.z2 : 0), 0.3, 0.9);
+      if (strikes === 2 && pa.wh2) m.whAdj = pa.wh2;
+      m.swAdj = 0; m.chase = strikes === 2 && pa.wh2 ? 0.05 : 0;
+    }
+    var ps = SW_STRIKE[app] + m.swAdj, pb = SW_BALL[app] - (b.eye - 50) / 250 + m.chase;
+    var first = balls === 0 && strikes === 0, protect = strikes === 2 && plan.two === 'protect';
+    if (strikes === 2) { ps += CK.swing2k; pb += CK.ball2k; }
+    if (protect) { ps += 0.06; pb += 0.06; }
+    if (first && plan.first === 'ambush') { ps = 0.92; pb = clamp(pb + 0.12, 0.05, 0.9); }
+    if (first && plan.first === 'take') { ps = 0; pb = 0; }
+    if (balls === 3 && strikes === 0) ps *= CK.fullBall;
+    if (balls === 3 && strikes < 2 && app === 'patient') ps = 0.1;
+    m.ps = clamp(ps, 0, 1); m.pb = clamp(pb, first && plan.first === 'take' ? 0 : 0.05, 0.9);
+    var pc = 0.80 + (b.con - 50) / 160 - (e.mov - 50) / 220 - (e.vel - 50) / 320 + m.conAdj - m.whAdj;
+    if (app === 'power') pc -= 0.07; else if (app === 'contact') pc += 0.06; else if (app === 'hitrun') pc += 0.03;
+    if (strikes === 2) pc += CK.con2k + (protect ? 0.06 : 0);
+    m.pcZ = clamp(pc, 0.2, 0.97); m.pcO = clamp(pc - 0.22, 0.2, 0.97);
+    var pfb = protect ? 0.08 : 0; if (app === 'contact') pfb -= 0.04;
+    m.pfZ = 0.50 + pfb; m.pfO = 0.58 + pfb; m.protect = protect; m.first = first;
+    return m;
+  }
+  // Outcome odds for display: ball, called strike, whiff, foul, in play, hit by pitch.
+  function pitchOdds(S, b, e, app, plan, lv, choice, papp) {
+    var m = pitchModel(S, b, e, app, plan, lv, choice, papp), z = m.pz, o = 1 - z;
+    var hbp = o * m.hbp, oo = o - hbp;
+    var called = z * (1 - m.ps), ball = oo * (1 - m.pb);
+    var swZ = z * m.ps, swO = oo * m.pb;
+    var whiff = swZ * (1 - m.pcZ) + swO * (1 - m.pcO);
+    var foul = swZ * m.pcZ * m.pfZ + swO * m.pcO * m.pfO;
+    var inplay = swZ * m.pcZ * (1 - m.pfZ) + swO * m.pcO * (1 - m.pfO);
+    return { strike: called + whiff + foul, ball: ball + hbp, called: called, whiff: whiff, foul: foul, inplay: inplay, hbp: hbp, evAdj: m.evAdj, rep: m.rep || 0 };
+  }
+  // Throw one pitch. S holds balls, strikes, seq. Returns null while the at-bat goes on.
+  function pitchStep(S, b, e, app, plan, lv, choice, papp) {
+    if (app === 'bunt') {
+      var isS = rnd() < clamp(rules(lv).strike + (e.ctl - 50) / 200, 0.3, 0.9);
+      if (!isS && rnd() < rules(lv).hbp) { S.seq.push('H'); return { res: 'HBP', seq: S.seq }; }
+      if (isS) {
+        if (rnd() < 0.55 + (b.con - 50) / 200) { S.seq.push('X'); return { res: 'bunt', seq: S.seq }; }
+        S.strikes++; S.seq.push(S.strikes >= 3 ? 'K' : 'F'); if (S.strikes >= 3) return { res: 'K', seq: S.seq, bunt: true };
+      } else if (rnd() < 0.25 - (b.eye - 50) / 300) {
+        S.strikes++; S.seq.push(S.strikes >= 3 ? 'K' : 'F'); if (S.strikes >= 3) return { res: 'K', seq: S.seq, bunt: true };
+      } else { S.balls++; S.seq.push('B'); if (S.balls >= 4) return { res: 'BB', seq: S.seq }; }
+      return null;
+    }
+    var m = pitchModel(S, b, e, app, plan, lv, choice, papp);
+    if (choice) { S.rep = m.rep; S.prevType = choice.type; }
+    S.lastType = choice ? choice.type : null; S.lastLoc = choice ? choice.loc : null;
+    var isStrike = rnd() < m.pz;
+    if (!isStrike && rnd() < m.hbp) { S.seq.push('H'); return { res: 'HBP', seq: S.seq }; }
+    var swing = rnd() < (isStrike ? m.ps : m.pb);
+    if (!swing) {
+      if (isStrike) { S.strikes++; S.seq.push(S.strikes >= 3 ? 'K' : 'S'); if (S.strikes >= 3) return { res: 'K', seq: S.seq, looking: true }; }
+      else { S.balls++; S.seq.push('B'); if (S.balls >= 4) return { res: 'BB', seq: S.seq }; }
+      return null;
+    }
+    if (rnd() > (isStrike ? m.pcZ : m.pcO)) { S.strikes++; S.seq.push(S.strikes >= 3 ? 'K' : 'W'); if (S.strikes >= 3) return { res: 'K', seq: S.seq, swinging: true }; return null; }
+    if (rnd() < (isStrike ? m.pfZ : m.pfO)) { if (S.strikes < 2) S.strikes++; S.seq.push('F'); return null; }
+    S.seq.push('X');
+    return { res: 'inplay', seq: S.seq, offzone: !isStrike, balls: S.balls, strikes: S.strikes, protect: m.protect, ambush: m.first && plan.first === 'ambush', evAdj: m.evAdj, laAdj: m.laAdj };
+  }
+  function simPitches(b, e, app, ibb, lv, plan, papp) {
     plan = plan || {};
     if (ibb) return { res: 'IBB', seq: ['B', 'B', 'B', 'B'] };
-    for (var n = 0; n < 30; n++) {
-      var isStrike = rnd() < clamp(ru.strike + (e.ctl - 50) / 200 + CK.zoneAhead * Math.max(0, balls - strikes), 0.3, 0.9);
-      if (!isStrike && rnd() < ru.hbp) { seq.push('H'); return { res: 'HBP', seq: seq }; }
-      if (app === 'bunt') {
-        if (isStrike) {
-          if (rnd() < 0.55 + (b.con - 50) / 200) { seq.push('X'); return { res: 'bunt', seq: seq }; }
-          strikes++; seq.push(strikes >= 3 ? 'K' : 'F'); if (strikes >= 3) return { res: 'K', seq: seq, bunt: true };
-        } else if (rnd() < 0.25 - (b.eye - 50) / 300) {
-          strikes++; seq.push(strikes >= 3 ? 'K' : 'F'); if (strikes >= 3) return { res: 'K', seq: seq, bunt: true };
-        } else { balls++; seq.push('B'); if (balls >= 4) return { res: 'BB', seq: seq }; }
-        continue;
-      }
-      var ps = SW_STRIKE[app], pb = SW_BALL[app] - (b.eye - 50) / 250;
-      var first = balls === 0 && strikes === 0, protect = strikes === 2 && plan.two === 'protect';
-      if (strikes === 2) { ps += CK.swing2k; pb += CK.ball2k; }
-      if (protect) { ps += 0.06; pb += 0.06; }
-      if (first && plan.first === 'ambush') { ps = 0.92; pb = clamp(pb + 0.12, 0.05, 0.9); }
-      if (first && plan.first === 'take') { ps = 0; pb = 0; }
-      if (balls === 3 && strikes === 0) ps *= CK.fullBall;
-      if (balls === 3 && strikes < 2 && app === 'patient') ps = 0.1;
-      var swing = rnd() < (isStrike ? ps : clamp(pb, 0.05, 0.9));
-      if (!swing) {
-        if (isStrike) { strikes++; seq.push(strikes >= 3 ? 'K' : 'S'); if (strikes >= 3) return { res: 'K', seq: seq, looking: true }; }
-        else { balls++; seq.push('B'); if (balls >= 4) return { res: 'BB', seq: seq }; }
-        continue;
-      }
-      var pc = 0.80 + (b.con - 50) / 160 - (e.mov - 50) / 220 - (e.vel - 50) / 320;
-      if (!isStrike) pc -= 0.22;
-      if (app === 'power') pc -= 0.07; else if (app === 'contact') pc += 0.06; else if (app === 'hitrun') pc += 0.03;
-      if (strikes === 2) pc += CK.con2k + (protect ? 0.06 : 0);
-      if (rnd() > clamp(pc, 0.2, 0.97)) { strikes++; seq.push(strikes >= 3 ? 'K' : 'W'); if (strikes >= 3) return { res: 'K', seq: seq, swinging: true }; continue; }
-      var pf = (isStrike ? 0.50 : 0.58) + (protect ? 0.08 : 0); if (app === 'contact') pf -= 0.04;
-      if (rnd() < pf) { if (strikes < 2) strikes++; seq.push('F'); continue; }
-      seq.push('X');
-      return { res: 'inplay', seq: seq, offzone: !isStrike, balls: balls, strikes: strikes, protect: protect, ambush: first && plan.first === 'ambush' };
-    }
-    return { res: 'BB', seq: seq };
+    var S = { balls: 0, strikes: 0, seq: [], prevType: null, rep: 0 };
+    for (var n = 0; n < 30; n++) { var r = pitchStep(S, b, e, app, plan, lv, null, papp); if (r) return r; }
+    return { res: 'BB', seq: S.seq };
   }
 
   // Exit velocity and launch angle from the batter's grades, the approach, and the pitch.
   function battedBall(b, lv, app, offzone, mov, pr) {
     var lo = lv.typ[0], hi = lv.typ[1], mid = (lo + hi) / 2;
     var evMean = mid - 6 + (b.pow - 50) / 30 * (hi - lo) / 2;
-    if (pr) { evMean += CK.evAhead * (pr.balls - pr.strikes) + (pr.strikes === 2 ? CK.ev2k : 0) + (pr.protect ? -6 - Math.max(0, b.pow - 50) / 6 : 0); }
+    if (pr) { evMean += CK.evAhead * (pr.balls - pr.strikes) + (pr.strikes === 2 ? CK.ev2k : 0) + (pr.protect ? -6 - Math.max(0, b.pow - 50) / 6 : 0) + (pr.evAdj || 0); }
     if (app === 'power') evMean += 3; else if (app === 'contact') evMean -= 3; else if (app === 'hitrun') evMean -= 2;
     if (offzone) evMean -= 6;
     var ev = clamp(evMean + gauss() * 11 - (mov - 50) / 20, lo - 22, hi + 10);
     var laMean = { normal: 11, patient: 11, power: 19, contact: 7, hitrun: 6 }[app];
     if (pr && pr.protect) laMean -= 3;
+    if (pr && pr.laAdj) laMean += pr.laAdj;
     var la = clamp(laMean + gauss() * 20 + (b.pow - 50) / 15, -40, 75);
     var spray = clamp(gauss() * 19, -45, 45);
     return { ev: Math.round(ev), la: Math.round(la), spray: Math.round(spray) };
@@ -815,7 +890,7 @@ var SK = (function () {
     ev.notes.push('Batter out at first, runners move up. One out traded for one base.');
   }
 
-  function playPA(st, b, p, d, lv, opts, dry) {
+  function playPA(st, b, p, d, lv, opts, dry, prDone) {
     var ev = { b: b, p: p, outsBefore: st.outs, basesBefore: st.bases.slice(), runs: 0, scored: [], notes: [], label: '', seq: [], r: null, ball: null, opts: opts };
     var reBefore = re(st.bases, st.outs, lv);
     if (opts.steal) {
@@ -823,7 +898,7 @@ var SK = (function () {
       if (st.outs >= 3) { ev.label = 'Caught stealing'; ev.outs = 1; ev.dRE = 0 - reBefore; return ev; }
     }
     var e = effP(p), app = opts.hitrun ? 'hitrun' : (opts.approach || 'normal');
-    var pr = simPitches(b, e, app, opts.ibb, lv, { first: opts.first, two: opts.two });
+    var pr = prDone || simPitches(b, e, app, opts.ibb, lv, { first: opts.first, two: opts.two }, opts.papp);
     ev.seq = pr.seq; ev.res = pr.res;
     if (!dry) p.pitches += (pr.res === 'IBB' ? (rules(lv).cap ? 4 : 0) : pr.seq.length);
     if (pr.res === 'K') {
@@ -880,7 +955,11 @@ var SK = (function () {
     if (g.over) return null;
     var b = curBatter(g), p = curPitcher(g), d = fielding(g);
     var full = { approach: opts.approach || 'normal', steal: opts.steal || null, hitrun: !!opts.hitrun, ibb: !!opts.ibb, infieldIn: !!g.def[1 - g.half].infieldIn, first: opts.first || null, two: opts.two || null };
+    full.papp = opts.papp || null;
     var ev = playPA(g.st, b, p, d, g.lv, full, false);
+    return postPA(g, ev);
+  }
+  function postPA(g, ev) {
     ev.inning = g.inning; ev.half = g.half; ev.team = g.half; ev.userTeam = g.half === g.user;
     g.score[g.half] += ev.runs; g.line[g.half][g.line[g.half].length - 1] += ev.runs;
     if (ev.hit) g.hits[g.half]++; if (ev.error) g.errs[1 - g.half]++;
@@ -888,6 +967,36 @@ var SK = (function () {
     if (g.half === 1 && g.inning >= g.innings && g.score[1] > g.score[0]) { g.over = true; g.winner = 1; ev.walkoff = true; return ev; }
     if (g.st.outs >= 3) endHalf(g);
     return ev;
+  }
+  // Call each pitch: begin an at-bat, throw pitches one at a time, the at-bat ends itself.
+  function beginPA(g, opts) {
+    var b = curBatter(g), lv = g.lv;
+    var full = { approach: opts.approach || 'normal', steal: null, hitrun: !!opts.hitrun, ibb: false, infieldIn: !!g.def[1 - g.half].infieldIn, first: opts.first || null, two: opts.two || null };
+    var pa = { opts: full, b: b, outsBefore: g.st.outs, basesBefore: g.st.bases.slice(), reBefore: re(g.st.bases, g.st.outs, lv), S: { balls: 0, strikes: 0, seq: [], prevType: null, rep: 0 }, steal: null };
+    if (opts.steal) {
+      var tmp = { notes: [] }; trySteal(g.st, lv, opts.steal, tmp, false); pa.steal = tmp.steal;
+      if (g.st.outs >= 3) {
+        var ev = { b: b, p: curPitcher(g), outsBefore: pa.outsBefore, basesBefore: pa.basesBefore, runs: 0, scored: [], notes: [], label: 'Caught stealing', seq: [], r: null, ball: null, opts: full, steal: pa.steal, outs: 1, dRE: -pa.reBefore };
+        g.pa = null; return postPA(g, ev);
+      }
+    }
+    g.pa = pa; return null;
+  }
+  function paOdds(g, choice) {
+    var pa = g.pa, e = effP(curPitcher(g)), app = pa.opts.hitrun ? 'hitrun' : pa.opts.approach;
+    return pitchOdds(pa.S, pa.b, e, app, { first: pa.opts.first, two: pa.opts.two }, g.lv, choice, null);
+  }
+  function throwPitch(g, choice) {
+    var pa = g.pa, p = curPitcher(g), e = effP(p), app = pa.opts.hitrun ? 'hitrun' : pa.opts.approach;
+    var pr = pitchStep(pa.S, pa.b, e, app, { first: pa.opts.first, two: pa.opts.two }, g.lv, choice, null);
+    var last = pa.S.seq[pa.S.seq.length - 1];
+    if (!pr) { p.pitches++; return { done: false, code: last, balls: pa.S.balls, strikes: pa.S.strikes }; }
+    var d = fielding(g), ev = playPA(g.st, pa.b, p, d, g.lv, pa.opts, false, pr);
+    ev.steal = pa.steal; ev.outsBefore = pa.outsBefore; ev.basesBefore = pa.basesBefore; ev.outs = g.st.outs - pa.outsBefore;
+    ev.dRE = (re(g.st.bases, g.st.outs, g.lv) + ev.runs) - pa.reBefore; ev.called = true;
+    p.pitches -= (pr.seq.length - 1); // earlier pitches were already counted one at a time
+    g.pa = null;
+    return { done: true, code: last, ev: postPA(g, ev) };
   }
   function endHalf(g) {
     g.st = { outs: 0, bases: [null, null, null], runs: 0 };
@@ -932,7 +1041,7 @@ var SK = (function () {
       var sum = 0, sq = 0;
       for (var i = 0; i < N; i++) {
         var st = { outs: g.st.outs, bases: g.st.bases.slice(), runs: 0 };
-        var full = { approach: o.opts.approach || 'normal', steal: o.opts.steal || null, hitrun: !!o.opts.hitrun, ibb: !!o.opts.ibb, infieldIn: o.opts.infieldIn !== undefined ? !!o.opts.infieldIn : !!g.def[1 - g.half].infieldIn, first: o.opts.first || null, two: o.opts.two || null };
+        var full = { approach: o.opts.approach || 'normal', steal: o.opts.steal || null, hitrun: !!o.opts.hitrun, ibb: !!o.opts.ibb, infieldIn: o.opts.infieldIn !== undefined ? !!o.opts.infieldIn : !!g.def[1 - g.half].infieldIn, first: o.opts.first || null, two: o.opts.two || null, papp: o.opts.papp || null };
         playPA(st, b, p, d, lv, full, true);
         var v = re(st.bases, st.outs, lv) + st.runs - reBefore; sum += v; sq += v * v;
       }
@@ -959,7 +1068,12 @@ var SK = (function () {
     return list;
   }
   function defOptions(g) {
-    var st = g.st, list = [{ id: 'pitch', label: 'Pitch to the batter', opts: { approach: 'normal', infieldIn: false } }];
+    var st = g.st, ai = aiBat(g), list = [
+      { id: 'pitch', label: 'Regular pitching', opts: Object.assign({}, ai, { papp: null, infieldIn: false }) },
+      { id: 'attack', label: 'Attack the zone', opts: Object.assign({}, ai, { papp: 'attack', infieldIn: false }) },
+      { id: 'corners', label: 'Work the corners', opts: Object.assign({}, ai, { papp: 'corners', infieldIn: false }) },
+      { id: 'punch', label: 'Go for the strikeout', opts: Object.assign({}, ai, { papp: 'punch', infieldIn: false }) }
+    ];
     if (st.bases[2] && st.outs < 2) list.push({ id: 'in', label: 'Infield in', opts: { approach: 'normal', infieldIn: true } });
     if (!st.bases[0] && (st.bases[1] || st.bases[2])) list.push({ id: 'ibb', label: 'Intentional walk', opts: { ibb: true } });
     return list;
@@ -987,7 +1101,7 @@ var SK = (function () {
     }
     return out;
   }
-  return { CK: CK, COUNT_WOBA: COUNT_WOBA, countPath: countPath, playPAdry: playPAdry, LEVELS: LL.LEVELS, rules: rules, RE24: RE24, table: table, re: re, key: key, seed: seed, newGame: newGame, play: play, batting: batting, fielding: fielding,
+  return { PTYPES: PTYPES, PLOCS: PLOCS, PAPPS: PAPPS, pitchTypesFor: pitchTypesFor, beginPA: beginPA, paOdds: paOdds, throwPitch: throwPitch, CK: CK, COUNT_WOBA: COUNT_WOBA, countPath: countPath, playPAdry: playPAdry, LEVELS: LL.LEVELS, rules: rules, RE24: RE24, table: table, re: re, key: key, seed: seed, newGame: newGame, play: play, batting: batting, fielding: fielding,
     curBatter: curBatter, curPitcher: curPitcher, userBats: userBats, capHit: capHit, nextFresh: nextFresh, changePitcher: changePitcher, aiBat: aiBat, aiDef: aiDef,
     evaluate: evaluate, batOptions: batOptions, defOptions: defOptions, stealMath: stealMath, fatigue: fatigue, effP: effP, budget: budget, stealP: stealP };
 })();
@@ -1001,7 +1115,7 @@ var SK = (function () {
   var NS = 'http://www.w3.org/2000/svg';
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var phone = window.matchMedia('(max-width: 900px)');
-  var G = null, UI = { approach: 'normal', first: null, two: null, steal: null, hitrun: false, ibb: false, anim: null };
+  var G = null, UI = { approach: 'normal', first: null, two: null, steal: null, hitrun: false, ibb: false, anim: null, papp: null, pt: 'fb', pl: 'zone', lastPitch: '' };
   var APP_LABEL = { normal: 'Swing away', patient: 'Work the count', power: 'Swing big', contact: 'Contact swing', bunt: 'Sacrifice bunt' };
 
   function r0(n) { return Math.round(n); }
@@ -1270,19 +1384,27 @@ var SK = (function () {
       $('sk-ask-btn').onclick = askBat;
       $('sk-auto').onclick = autoHalf;
     } else {
+      if (G.pa) { renderCalling(); return; }
       $('sk-dec-label').textContent = 'Your call in the field';
-      var t = SK.fielding(G), p = SK.curPitcher(G), capped = SK.capHit(G, p), fresh = SK.nextFresh(t);
+      var t = SK.fielding(G), p = SK.curPitcher(G), capped = SK.capHit(G, p), fresh = SK.nextFresh(t), fat = SK.fatigue(p), ep = SK.effP(p);
       if (capped) notice(esc(p.name) + ' has reached the pitch cap (' + SK.rules(G.lv).capWhy + '). ' + (fresh >= 0 ? 'Pick a new pitcher.' : 'Nobody is fresh, so a position player will pitch.'));
+      else if (fat > 0.35) notice('<b>' + esc(p.name) + ' is tiring.</b> Control is down to ' + r0(ep.ctl) + ' from ' + p.ctl + ', velocity ' + r0(ep.vel) + ' from ' + p.vel + '. Tired arms give up more hits. ' + (fresh >= 0 ? 'You have a fresh arm in the pen.' : 'Nobody fresh is left.'));
       h += '<div class="sk-label">Pitcher</div><select class="sk-sel" id="sk-pitcher">';
       t.pitchers.forEach(function (x, i) {
         var left = Math.max(0, r0((1 - x.pitches / SK.budget(x)) * 100));
         h += '<option value="' + i + '" ' + (i === t.cur ? 'selected' : '') + (x.used && i !== t.cur ? ' disabled' : '') + '>' + esc(x.name) + ' (' + x.role + ', ' + (i === t.cur ? 'in the game, ' : (x.used ? 'already used, ' : 'fresh, ')) + 'gas ' + left + '%)</option>';
       });
       h += '</select><div class="sk-hint">Once a pitcher leaves, they cannot come back.</div>';
+      h += '<div class="sk-label" style="margin-top:0.75rem">Pitching plan for this batter</div><div class="sk-pick" id="sk-papp">';
+      [[null, 'Regular', 'Pitch like normal'], ['attack', 'Attack the zone', 'Fewer walks, more contact'], ['corners', 'Work the corners', 'Weaker contact, more walks'], ['punch', 'Go for the K', 'Chase pitches with two strikes']].forEach(function (o) {
+        h += '<button type="button" data-v="' + (o[0] || '') + '" class="' + (UI.papp === o[0] ? 'on' : '') + '">' + o[1] + '<small>' + o[2] + '</small></button>';
+      });
+      h += '</div>';
       if (st.bases[2] && st.outs < 2) h += '<label class="sk-tog" style="margin-top:0.5rem"><input type="checkbox" id="sk-in" ' + (G.def[1 - G.half].infieldIn ? 'checked' : '') + '> Infield in <small>Cut off the run at home, give up more hits</small></label>';
       if (!st.bases[0] && (st.bases[1] || st.bases[2])) h += '<label class="sk-tog"><input type="checkbox" id="sk-ibb" ' + (UI.ibb ? 'checked' : '') + '> Intentional walk <small>Set up a force, face the next batter</small></label>';
-      h += '<div class="sk-row"><button class="sk-btn2" id="sk-ask-btn">Ask the numbers</button><button class="sk-btn" id="sk-play"' + (capped && fresh >= 0 ? ' disabled' : '') + '>Pitch</button></div>';
-      h += '<div class="sk-row"><button class="sk-btn2" id="sk-auto">Auto-play the rest of this half</button></div>';
+      var dis = capped && fresh >= 0 ? ' disabled' : '';
+      h += '<div class="sk-row"><button class="sk-btn2" id="sk-call"' + dis + '>Call each pitch</button><button class="sk-btn" id="sk-play"' + dis + '>Pitch the at-bat</button></div>';
+      h += '<div class="sk-row"><button class="sk-btn2" id="sk-ask-btn">Ask the numbers</button><button class="sk-btn2" id="sk-auto">Auto-play this half</button></div>';
       $('sk-dec').innerHTML = h;
       $('sk-pitcher').onchange = function (e) {
         var i = +e.target.value, old = SK.curPitcher(G);
@@ -1292,12 +1414,87 @@ var SK = (function () {
         G.decisions.push({ inning: G.inning, half: G.half, kind: 'pitch', label: 'Pitching change: ' + np.name + ' for ' + old.name + ' at ' + old.pitches + ' pitches', fat: SK.fatigue(old), capped: capped });
         notice(''); renderAll(); saveGame();
       };
+      Array.prototype.forEach.call($('sk-papp').children, function (btn) { btn.onclick = function () { UI.papp = btn.getAttribute('data-v') || null; renderDecide(); }; });
       if ($('sk-in')) $('sk-in').onchange = function (e) { G.def[1 - G.half].infieldIn = e.target.checked; };
-      if ($('sk-ibb')) $('sk-ibb').onchange = function (e) { UI.ibb = e.target.checked; };
-      $('sk-play').onclick = function () { if (capped && fresh < 0) { SK.changePitcher(G, t, -1); G.notes.push('Nobody fresh. ' + SK.curPitcher(G).name + ' pitches as a position player.'); } userPitch(); };
+      if ($('sk-ibb')) $('sk-ibb').onchange = function (e) { UI.ibb = e.target.checked; renderDecide(); };
+      function emergency() { if (capped && fresh < 0) { SK.changePitcher(G, t, -1); G.notes.push('Nobody fresh. ' + SK.curPitcher(G).name + ' pitches as a position player.'); } }
+      $('sk-play').onclick = function () { emergency(); userPitch(); };
+      $('sk-call').onclick = function () {
+        emergency();
+        if (UI.ibb) { userPitch(); return; }
+        logFieldCalls();
+        var ev = SK.beginPA(G, SK.aiBat(G));
+        UI.lastPitch = ''; UI.pt = 'fb'; UI.pl = 'zone';
+        if (ev) { afterPlay(ev); return; }
+        if (G.pa.steal) UI.lastPitch = G.pa.steal.ok ? G.pa.steal.runner.name + ' stole a base first.' : G.pa.steal.runner.name + ' was caught stealing first.';
+        renderAll(); saveGame();
+        if (phone.matches) $('sk-decidecard').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      };
       $('sk-ask-btn').onclick = askDef;
       $('sk-auto').onclick = autoHalf;
     }
+  }
+
+  // Call each pitch
+  var CODE = { B: 'Ball', S: 'Called strike', W: 'Swing and miss', F: 'Foul', K: 'Strike three', X: 'In play', H: 'Hit by pitch' };
+  function pct(x) { return r0(x * 100) + '%'; }
+  function renderCalling() {
+    var pa = G.pa, S = pa.S, b = pa.b, types = SK.pitchTypesFor(G.lv), locs = ['zone', 'edge', 'chase'], h = '';
+    if (types.indexOf(UI.pt) < 0) UI.pt = 'fb';
+    $('sk-dec-label').textContent = 'You call the pitch';
+    h += '<div class="sk-count-big"><span><b>' + S.balls + '-' + S.strikes + '</b> count</span><span>' + esc(b.name.split(' ')[0]) + ', pitch ' + (S.seq.length + 1) + '</span></div>';
+    var wo = SK.COUNT_WOBA[S.balls + '-' + S.strikes];
+    h += '<div class="sk-hint" style="margin-bottom:0.4rem">MLB hitters from this count: ' + wo.toFixed(3).slice(1) + ' (.320 is average). ' + (wo >= 0.34 ? 'They are ahead. A ball here hurts.' : (wo <= 0.29 ? 'You are ahead. You can expand the zone.' : 'Even count.')) + '</div>';
+    if (UI.lastPitch) h += '<div class="sk-lastpitch">' + UI.lastPitch + '</div>';
+    h += '<div class="sk-label">Tap a pitch. Big number: chance it is not a ball. Small: swing and miss.</div><table class="sk-pgrid"><tr><th></th>';
+    locs.forEach(function (l) { h += '<th>' + SK.PLOCS[l].name + '</th>'; });
+    h += '</tr>';
+    types.forEach(function (t) {
+      h += '<tr><th>' + SK.PTYPES[t].name + '</th>';
+      locs.forEach(function (l) {
+        var o = SK.paOdds(G, { type: t, loc: l });
+        h += '<td><button type="button" data-t="' + t + '" data-l="' + l + '" class="' + (UI.pt === t && UI.pl === l ? 'on' : '') + '"><b>' + pct(1 - o.ball) + '</b><small>miss ' + pct(o.whiff) + '</small></button></td>';
+      });
+      h += '</tr>';
+    });
+    h += '</table>';
+    var o = SK.paOdds(G, { type: UI.pt, loc: UI.pl }), warn = [];
+    if (o.rep) warn.push('Same pitch again. The hitter is starting to time it.');
+    if (UI.pt === 'ch' && S.prevType !== 'fb') warn.push('A changeup works best right after a fastball.');
+    if (UI.pl === 'zone' && S.strikes === 2) warn.push('Two strikes: you do not have to give in. A chase pitch can get the K.');
+    if (UI.pl === 'chase' && S.balls === 3) warn.push('Three balls: a chase pitch probably walks him.');
+    h += '<div class="sk-odds"><div class="sk-odds-h">' + SK.PTYPES[UI.pt].name + ', ' + SK.PLOCS[UI.pl].name.toLowerCase() + '</div>' +
+      '<div class="sk-obar"><i class="s" style="width:' + (o.called * 100) + '%"></i><i class="w" style="width:' + (o.whiff * 100) + '%"></i><i class="f" style="width:' + (o.foul * 100) + '%"></i><i class="x" style="width:' + (o.inplay * 100) + '%"></i><i class="b" style="width:' + (o.ball * 100) + '%"></i></div>' +
+      '<div class="sk-okey"><span><i class="s"></i>Called strike ' + pct(o.called) + '</span><span><i class="w"></i>Swing and miss ' + pct(o.whiff) + '</span><span><i class="f"></i>Foul ' + pct(o.foul) + '</span><span><i class="x"></i>In play ' + pct(o.inplay) + '</span><span><i class="b"></i>Ball ' + pct(o.ball) + '</span></div>' +
+      '<div class="sk-hint">If they hit it: ' + (o.evAdj <= -1.5 ? 'weaker contact than usual.' : (o.evAdj >= 1.5 ? 'harder contact than usual.' : 'normal contact.')) + '</div>' +
+      (warn.length ? '<div class="sk-warn">' + warn.join(' ') + '</div>' : '') + '</div>';
+    h += '<div class="sk-row"><button class="sk-btn" id="sk-throw">Throw it</button></div>';
+    h += '<div class="sk-row"><button class="sk-btn2" id="sk-finish">Let the pitcher finish this at-bat</button></div>';
+    $('sk-dec').innerHTML = h;
+    Array.prototype.forEach.call(document.querySelectorAll('.sk-pgrid button'), function (btn) { btn.onclick = function () { UI.pt = btn.getAttribute('data-t'); UI.pl = btn.getAttribute('data-l'); renderCalling(); }; });
+    $('sk-throw').onclick = function () { throwOne({ type: UI.pt, loc: UI.pl }); };
+    $('sk-finish').onclick = function () { var r; do { r = SK.throwPitch(G, null); } while (!r.done); finishCalled(r.ev); };
+  }
+  function throwOne(choice) {
+    var before = G.pa.S.strikes, r = SK.throwPitch(G, choice);
+    var desc = SK.PTYPES[choice.type].name + ' ' + SK.PLOCS[choice.loc].name.toLowerCase() + ': <b>' + CODE[r.code] + '</b>';
+    if (r.code === 'F' && before === 2) desc += ' (count stays)';
+    if (!r.done) {
+      UI.lastPitch = desc + '. Now ' + r.balls + '-' + r.strikes + '.';
+      renderAll(); saveGame();
+      var lp = document.querySelector('.sk-lastpitch'); if (lp) { lp.classList.remove('sk-flash'); void lp.offsetWidth; lp.classList.add('sk-flash'); }
+      return;
+    }
+    UI.lastPitch = '';
+    finishCalled(r.ev);
+  }
+  function finishCalled(ev) {
+    G.decisions.push({ inning: ev.inning, half: ev.half, kind: 'called', label: 'You called the pitches to ' + ev.b.name + ': ' + ev.label + ' in ' + ev.seq.length + ' pitches' });
+    afterPlay(ev);
+  }
+  function logFieldCalls() {
+    if (UI.papp) G.decisions.push({ inning: G.inning, half: G.half, kind: 'style', label: 'Pitching plan' });
+    if (G.def[1 - G.half].infieldIn && G.st.bases[2] && G.st.outs < 2) G.decisions.push({ inning: G.inning, half: G.half, kind: 'in', label: 'Infield in', situation: G.st.outs + ' out, ' + basesText() + ', ' + (G.inning >= G.innings - 1 && Math.abs(G.score[0] - G.score[1]) <= 1 ? 'late and close' : 'not a late, close spot') });
   }
 
   // Ask the numbers
@@ -1326,6 +1523,7 @@ var SK = (function () {
   function askDef() {
     var rows = SK.evaluate(G, SK.defOptions(G), 400), b = SK.curBatter(G), p = SK.curPitcher(G), e = SK.effP(p), notes = [];
     notes.push('<b>Pitcher:</b> gas tank ' + r0(Math.max(0, 1 - p.pitches / SK.budget(p)) * 100) + '%.' + (e.f > 0.5 ? ' Control and velocity are well down. A fresh arm is usually worth more than loyalty.' : (e.f > 0 ? ' Starting to tire.' : ' Still fresh.')));
+    notes.push('<b>Calling pitches:</b> mix speeds, a changeup right after a fastball, expand the zone when you are ahead, throw strikes when you are behind. Never the same pitch three times in a row.');
     if (G.st.bases[2] && G.st.outs < 2) notes.push('<b>Infield in</b> only pays when that one run matters more than the extra hits it allows: late, close games.');
     showAsk(rows, notes.join(' '), true);
   }
@@ -1350,8 +1548,8 @@ var SK = (function () {
   }
   function userPitch() {
     if (UI.ibb) G.decisions.push({ inning: G.inning, half: G.half, kind: 'ibb', label: 'Intentional walk to ' + SK.curBatter(G).name, situation: G.st.outs + ' out, ' + basesText() });
-    if (G.def[1 - G.half].infieldIn && G.st.bases[2] && G.st.outs < 2) G.decisions.push({ inning: G.inning, half: G.half, kind: 'in', label: 'Infield in', situation: G.st.outs + ' out, ' + basesText() + ', ' + (G.inning >= G.innings - 1 && Math.abs(G.score[0] - G.score[1]) <= 1 ? 'late and close' : 'not a late, close spot') });
-    var opts = SK.aiBat(G); opts.ibb = UI.ibb; UI.ibb = false;
+    logFieldCalls();
+    var opts = SK.aiBat(G); opts.ibb = UI.ibb; opts.papp = UI.papp; UI.ibb = false;
     var ev = SK.play(G, opts);
     afterPlay(ev);
   }
@@ -1361,8 +1559,10 @@ var SK = (function () {
       if (SK.userBats(G)) { var n = SK.aiDef(G); if (n) G.notes.push(n); ev = SK.play(G, { approach: 'normal' }); }
       else {
         var t = SK.fielding(G), p = SK.curPitcher(G);
+        if (G.pa) { var r; do { r = SK.throwPitch(G, null); } while (!r.done); ev = r.ev; continue; }
         if (SK.capHit(G, p)) { var np = SK.changePitcher(G, t, SK.nextFresh(t)); G.notes.push('Pitch cap. ' + np.name + ' comes in for ' + p.name + '.'); }
-        ev = SK.play(G, SK.aiBat(G));
+        else if (SK.fatigue(p) > 0.6 && SK.nextFresh(t) >= 0) { var np2 = SK.changePitcher(G, t, SK.nextFresh(t)); G.notes.push('Auto-play: ' + p.name + ' was tired, so ' + np2.name + ' comes in.'); }
+        var ao = SK.aiBat(G); ao.papp = UI.papp; ev = SK.play(G, ao);
       }
     }
     UI.steal = null; UI.hitrun = false; UI.ibb = false;
@@ -1423,6 +1623,7 @@ var SK = (function () {
       h += '<div class="sk-label" style="margin-top:0.6rem">Your calls, graded by the math at the time</div><ul class="sk-dec">';
       G.decisions.forEach(function (d) {
         if (d.kind === 'style') return;
+        if (d.kind === 'called') { h += '<li><b>' + halfName(d.half) + ' ' + ordinal(d.inning) + ':</b> ' + esc(d.label) + '.</li>'; return; }
         var line = '<b>' + halfName(d.half) + ' ' + ordinal(d.inning) + ':</b> ' + esc(d.label) + (d.situation ? ' (' + esc(d.situation) + ')' : '') + '. ';
         if (d.kind === 'bat') line += d.agree ? 'Numbers liked it (' + fmtRE(d.ev) + ').' : 'Numbers preferred ' + esc(d.best) + ' (' + fmtRE(d.bestEv) + ' vs ' + fmtRE(d.ev) + ').';
         else if (d.kind === 'pitch') line += d.capped ? 'Forced by the pitch cap.' : (d.fat > 0.4 ? 'Good timing: the pitcher was fading.' : 'Early. The pitcher still had gas, which is fine if you had a reason.');
@@ -1518,7 +1719,7 @@ var SK = (function () {
   function start() { begin(SK.newGame({ lv: SK.LEVELS[+sel.value], user: side })); saveGame(); }
   function begin(g) {
     G = g;
-    UI.approach = 'normal'; UI.first = null; UI.two = null; UI.steal = null; UI.hitrun = false; UI.ibb = false; logCount = 0; lastInnKey = ''; $('sk-log').innerHTML = '';
+    UI.approach = 'normal'; UI.first = null; UI.two = null; UI.steal = null; UI.hitrun = false; UI.ibb = false; UI.papp = null; UI.lastPitch = ''; logCount = 0; lastInnKey = ''; $('sk-log').innerHTML = '';
     $('sk-setup').hidden = true; $('sk-game').hidden = false; $('sk-strip').hidden = false; $('sk-final').hidden = true; $('sk-askcard').hidden = true;
     renderAll(); renderLast(null); renderField(null);
     if (G.log.length) { $('sk-res').textContent = 'Welcome back'; $('sk-sub').textContent = 'Picking up where you left off. The play by play has the whole game so far.'; }
