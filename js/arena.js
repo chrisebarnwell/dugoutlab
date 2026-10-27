@@ -283,9 +283,20 @@
     $('kv-brk').innerHTML = bracketHtml(LIVE.cfg, st);
     $('kv-msg').textContent = '';
     $('kv-share').classList.toggle('hidden', !AUTH.token);
+    /* Hands-free: with the camera on, the next match starts itself. */
+    clearInterval(bracketView.t);
+    if (CAM && CAM.on() && st.next) {
+      var n = 5;
+      bracketView.t = setInterval(function () {
+        if ($('s-kview').classList.contains('hidden')) return clearInterval(bracketView.t);
+        n--; $('kv-next').textContent = 'Next match in ' + n;
+        if (n <= 0) { clearInterval(bracketView.t); $('kv-next').textContent = 'Play next match'; P.reset(); play(); }
+      }, 1000);
+      $('kv-next').textContent = 'Next match in ' + n;
+    } else $('kv-next').textContent = 'Play next match';
   }
-  $('kv-next').addEventListener('click', function () { P.reset(); play(); });
-  $('kv-quit').addEventListener('click', home);
+  $('kv-next').addEventListener('click', function () { clearInterval(bracketView.t); $('kv-next').textContent = 'Play next match'; P.reset(); play(); });
+  $('kv-quit').addEventListener('click', function () { clearInterval(bracketView.t); home(); });
   $('kv-share').addEventListener('click', function () {
     sync(true).then(function () {
       if (!LIVE.eventId) { $('kv-msg').textContent = 'Could not save yet. Check your signal.'; return; }
@@ -317,6 +328,7 @@
   function play() {
     if (!LIVE) return home();
     show('s-play');
+    if (CAM && CAM.wantAuto && !CAM.on()) { CAM.wantAuto = false; CAM.start(); }
     drawPlay();
   }
   function drawPlay() {
@@ -353,6 +365,7 @@
     if (P.call) ball.call = P.call;
     if (zone !== 'miss') ball.contact = P.kind;
     log.push(ball);
+    LAST = ball;
     var last;
     if (LIVE.kind === 'battle') last = battleReplay(LIVE.cfg, LIVE.log).last;
     else { var res = matchReplay(LIVE.cfg.per, log); last = res.last; }
@@ -372,8 +385,24 @@
     }
     drawPlay();
   }
-  all('.zone').forEach(function (z) { z.addEventListener('click', function () { record(z.getAttribute('data-z')); }); });
-  document.querySelector('.misc [data-z=miss]').addEventListener('click', function () { record('miss'); });
+  all('.zone').forEach(function (z) { z.addEventListener('click', function () { LAST = null; record(z.getAttribute('data-z')); LAST = null; }); });
+  /* Auto camera: it calls record() itself. A wrong call is fixed in place; the log replays, so score and turn order follow. */
+  var LAST = null, CAM = null;
+  if (root.HWCam) CAM = root.HWCam.mount({
+    host: $('p-cam'), card: document.querySelector('#s-play .a-card'),
+    active: function () { return !!LIVE && !$('s-play').classList.contains('hidden'); },
+    onShot: function (zone, contact) { P.kind = contact || 'ld'; record(zone); },
+    onFix: function (zone, contact) {
+      if (!LAST || !LIVE) return;
+      LAST.zone = zone; if (zone === 'miss') delete LAST.contact; else LAST.contact = LAST.contact || contact || 'ld';
+      keep(); sync();
+      pop(zone === 'miss' ? 'MISS' : ZN[zone].toUpperCase(), 'fixed');
+      if (!$('s-play').classList.contains('hidden')) drawPlay();
+      else if (!$('s-done').classList.contains('hidden')) done();
+      else if (!$('s-kview').classList.contains('hidden')) bracketView();
+    }
+  });
+  document.querySelector('.misc [data-z=miss]').addEventListener('click', function () { LAST = null; record('miss'); LAST = null; });
   all('#p-calls button').forEach(function (b) { b.addEventListener('click', function () { var c = b.getAttribute('data-c'); P.call = P.call === c ? null : c; drawPlay(); if (P.call) pop(ZN[c].toUpperCase(), 'called'); }); });
   all('#p-kind button').forEach(function (b) { b.addEventListener('click', function () { P.kind = b.getAttribute('data-k'); drawPlay(); }); });
   $('p-undo').addEventListener('click', function () {
