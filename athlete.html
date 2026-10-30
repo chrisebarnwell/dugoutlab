@@ -204,7 +204,7 @@
   .tick { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; font-size: 0.92rem; color: var(--ink2); cursor: pointer; }
   .tick input { width: 22px; height: 22px; accent-color: var(--acc); flex: 0 0 22px; margin-top: 1px; }
   .figslot { margin-top: 14px; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 12px; padding: 4px 8px; }
-  .figslot.frames { padding: 0; aspect-ratio: 1 / 1; max-height: 260px; margin-left: auto; margin-right: auto; background-size: 200% 100%; background-repeat: no-repeat; background-position: 0 0; animation: flip 2.4s steps(1) infinite; }
+  .figslot.frames { padding: 0; aspect-ratio: 1 / 2; max-height: 300px; overflow: hidden; margin-left: auto; margin-right: auto; background-size: 200% 100%; background-repeat: no-repeat; background-position: 0 0; animation: flip 2.4s steps(1) infinite; }
   @keyframes flip { 0% { background-position: 0 0; } 50% { background-position: 100% 0; } }
   @media (prefers-reduced-motion: reduce) { .figslot.frames { animation: none; } }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
@@ -507,8 +507,16 @@
   function bestTest(a, t) { var b = null; testHist(a).forEach(function (e) { var v = e.data.results[t.id]; if (v == null) return; if (b == null || (t.better === 'down' ? v < b : v > b)) b = v; }); return b; }
   function hasDemo(id) { return (window.DL_DEMOS || []).indexOf(id) >= 0; }
   function demoBtn(id) { return hasDemo(id) ? '<button type="button" class="btn-sm noprint" data-demo="' + esc(id) + '" style="margin-top:12px">&#9654; Watch</button>' : ''; }
-  function figSlot(id) { return (window.DL_FRAMES || []).indexOf(id) >= 0 && !hasDemo(id) ? '<div class="figslot frames" role="img" aria-label="Start and end position" style="background-image:url(assets/moves/' + esc(id) + '.png)"></div>' : ''; }
-  function mountFigs() {}
+  function figSlot(id) { return (window.DL_FRAMES || []).indexOf(id) >= 0 && !hasDemo(id) ? '<div class="figslot frames" role="img" aria-label="Start and end position" data-src="assets/moves/' + esc(id) + '.webp"></div>' : ''; }
+  function mountFigs() {
+    each(M.querySelectorAll('.frames[data-src]'), function (el) {
+      if (el.style.backgroundImage) return;
+      var src = el.getAttribute('data-src'), im = new Image();
+      im.onload = function () { el.style.aspectRatio = (im.naturalWidth / 2) + ' / ' + im.naturalHeight; el.style.backgroundImage = 'url(' + src + ')'; };
+      im.onerror = function () { el.parentNode && el.parentNode.removeChild(el); };
+      im.src = src;
+    });
+  }
   function wireDemos() { mountFigs(); each(M.querySelectorAll('[data-demo]'), function (b) { b.addEventListener('click', function () { var id = b.getAttribute('data-demo'); openSheet('<video src="assets/moves/' + esc(id) + '.mp4" playsinline autoplay muted loop controls style="width:100%;border-radius:12px;background:#000"></video><button type="button" class="cta ghost" id="dm-x" style="justify-content:center">Close</button>'); $('dm-x').addEventListener('click', closeSheet); }); }); }
   function blockDone(a) { var bs = a.queue.blockStart || '0000'; return a.entries.filter(function (e) { return e.kind === 'session' && e.data.done && e.date >= bs; }).length; }
   function nextIdx(a, plan) { return (a.live ? a.live.idx : a.queue.next) % plan.sessions.length; }
