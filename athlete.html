@@ -302,6 +302,7 @@
 <script src="js/site.js"></script>
 <script src="js/athlete-rules.js"></script>
 <script src="js/athlete-parse.js"></script>
+<script src="js/athlete-demos.js"></script>
 <script>
 (function () {
   'use strict';
@@ -496,6 +497,13 @@
   function weekSum(a, plan) { return R.summarizeEntries(a.entries, a.queue.weekStart, null, plan.days); }
   function due(a, plan) { return daysBetween(a.queue.weekStart, today()) >= 7 || weekSum(a, plan).done >= plan.days; }
   function streak(a) { var d = {}; a.entries.forEach(function (e) { if (e.kind === 'session' && e.data && e.data.done) d[e.date] = 1; }); var n = 0, x = today(); if (!d[x]) x = P.addDays(x, -1); while (d[x]) { n++; x = P.addDays(x, -1); } return n; }
+  function testDue(a) { return !a.live && !a.entries.some(function (e) { return e.kind === 'test' && e.data.blockNo === a.state.blockNo; }); }
+  function testHist(a) { return a.entries.filter(function (e) { return e.kind === 'test' && !e.data.skipped; }); }
+  function lastTest(a, id) { var h = testHist(a); for (var i = h.length - 1; i >= 0; i--) if (h[i].data.results[id] != null) return { v: h[i].data.results[id], block: h[i].data.blockNo }; return null; }
+  function bestTest(a, t) { var b = null; testHist(a).forEach(function (e) { var v = e.data.results[t.id]; if (v == null) return; if (b == null || (t.better === 'down' ? v < b : v > b)) b = v; }); return b; }
+  function hasDemo(id) { return (window.DL_DEMOS || []).indexOf(id) >= 0; }
+  function demoBtn(id) { return hasDemo(id) ? '<button type="button" class="btn-sm noprint" data-demo="' + esc(id) + '" style="margin-top:12px">&#9654; Watch</button>' : ''; }
+  function wireDemos() { each(M.querySelectorAll('[data-demo]'), function (b) { b.addEventListener('click', function () { var id = b.getAttribute('data-demo'); openSheet('<video src="assets/moves/' + esc(id) + '.mp4" playsinline autoplay muted loop controls style="width:100%;border-radius:12px;background:#000"></video><button type="button" class="cta ghost" id="dm-x" style="justify-content:center">Close</button>'); $('dm-x').addEventListener('click', closeSheet); }); }); }
   function blockDone(a) { var bs = a.queue.blockStart || '0000'; return a.entries.filter(function (e) { return e.kind === 'session' && e.data.done && e.date >= bs; }).length; }
   function nextIdx(a, plan) { return (a.live ? a.live.idx : a.queue.next) % plan.sessions.length; }
 
@@ -517,7 +525,11 @@
       '<p class="sub">' + (done ? 'Session ' + esc(last.data.tag) + ' is in the books. That is the whole job: come back tomorrow.' : 'A little better. A lot of play. Come back tomorrow. That is the work.') + '</p>' +
       flags.map(function (f) { return '<div class="flag">' + esc(f) + '</div>'; }).join('') +
       (S.account ? '' : '<div class="flag"><b>Only saved on this phone.</b> Clearing the browser erases it. <button type="button" id="t-si" style="color:var(--gold-light);font-weight:700;text-decoration:underline">Back it up with your email</button></div>') +
-      '<div class="hero"><div class="row"><div class="pill"><i></i>' + (a.live ? 'In progress' : 'Today\'s session') + '</div><div class="count">' + pad2(blockDone(a)) + '<small> / ' + pad2(plan.days * 4) + '</small></div></div>' +
+      (testDue(a) ? '<div class="hero"><div class="row"><div class="pill"><i></i>Test day</div><div class="count">B' + pad2(plan.blockNo) + '</div></div>' +
+        '<div class="eb">Jump &middot; Speed &middot; Strength &middot; Balance</div><div class="big">Test Day</div><div class="tag">' + (testHist(a).length ? 'Beat your number.' : 'Set your baseline.') + '</div>' +
+        '<p class="sub" style="margin-top:14px">Six quick tests, about 10 minutes. ' + esc(a.profile.nickname) + ' only competes with ' + esc(a.profile.nickname) + '. Then Session ' + s.tag + ' is next.</p>' +
+        '<button type="button" class="cta" id="t-test">Start test day' + ICON.up + '</button><button type="button" class="link" id="t-tskip" style="color:var(--ink-faint)">Skip tests this block</button></div>' : '') +
+      '<div class="hero' + (testDue(a) ? ' hidden' : '') + '"><div class="row"><div class="pill"><i></i>' + (a.live ? 'In progress' : 'Today\'s session') + '</div><div class="count">' + pad2(blockDone(a)) + '<small> / ' + pad2(plan.days * 4) + '</small></div></div>' +
       '<div class="eb">' + esc(s.blocks.map(function (b) { return b.key === 'warm' ? 'Warm-up' : b.key === 'move' ? 'Move' : b.key === 'strength' ? 'Strength' : 'Play'; }).join(' · ')) + '</div>' +
       '<div class="big">Session ' + s.tag + '</div><div class="tag">' + esc(plan.week.name) + '.</div>' +
       '<p class="sub" style="margin-top:14px">' + esc(plan.week.note) + '</p>' +
@@ -535,6 +547,8 @@
       '<div class="stats"><div class="stat"><b>' + streak(a) + '</b><i>day streak</i></div><div class="stat"><b>' + a.entries.filter(function (e) { return e.kind === 'session' && e.data.done; }).length + '</b><i>sessions</i></div><div class="stat"><b>v' + a.state.version + '</b><i>plan</i></div></div>' +
       '<div class="card"><div class="eb">Today\'s finish line</div><div class="h2" style="margin-top:10px">Show up. Move well. Come back tomorrow.</div></div>' + foot();
     $('t-go').addEventListener('click', function () { go('train'); });
+    if ($('t-test')) $('t-test').addEventListener('click', function () { viewTest(a); });
+    if ($('t-tskip')) $('t-tskip').addEventListener('click', function () { a.entries.push({ id: uid(), date: today(), kind: 'test', data: { blockNo: a.state.blockNo, skipped: true, results: {} }, created: Date.now() }); touch(a); go('today'); });
     if ($('t-si')) $('t-si').addEventListener('click', function () { signin(); });
     $('t-ci').addEventListener('click', function () { checkin(a); });
     $('t-log').addEventListener('click', function () { go('log'); });
@@ -571,7 +585,7 @@
         var nudge = l ? 'Match it with quieter, cleaner reps. Beat yourself, not anyone else.' : 'Find an easy, clean number. It becomes the baseline. Next time you compare to it.';
         html += '<div class="ex' + (all ? ' complete' : '') + '" data-k="' + esc(k) + '" data-unit="' + d.unit + '" data-label="' + esc(d.label || '') + '" data-rest="' + REST[b.key] + '">' +
           '<div class="ex-h"><div class="num">' + pad2(n) + '</div><div><div class="eb">' + esc(b.key === 'warm' ? 'Warm-up' : b.key === 'move' ? 'Move' : b.key === 'strength' ? 'Strength' : 'Play') + ' &middot; ' + esc(gearOf(it)) + '</div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + (REST[b.key] ? ' &middot; ' + REST[b.key] + 's rest' : '') + '</div></div></div>' +
-          (it.cue ? '<p class="ex-cue">' + esc(it.cue) + '</p>' : '') +
+          (it.cue ? '<p class="ex-cue">' + esc(it.cue) + '</p>' : '') + demoBtn(it.id) +
           (d.unit === 'reps' || d.unit === 'sec' ? '<div class="last"><div class="eb">Last session</div><p>' + esc(lastTxt) + '</p><p class="acc">' + esc(nudge) + '</p></div>' : '') +
           '<div class="sets"><div class="sets-h"><span>SET</span><span>' + (d.unit === 'reps' ? 'REPS' + (d.each ? ' EACH SIDE' : '') : d.unit === 'sec' ? 'SECONDS' : 'TARGET') + '</span><span>DONE</span></div>' +
           rows.map(function (r, i) { return setRow(d, r, i); }).join('') + '</div>' +
@@ -583,6 +597,7 @@
     $('finish').classList.remove('hidden');
     $('tr-quit').addEventListener('click', function () { go('today'); });
     wireSets(a);
+    wireDemos();
     wake();
   }
   function gearOf(it) { var n = it.name.toLowerCase(); return /water bag/.test(n) ? 'Water bag' : /medicine/.test(n) ? 'Med ball' : /band/.test(n) ? 'Band' : /dumbbell/.test(n) ? 'Light dumbbell' : /box|step/.test(n) ? 'Step' : /bar\b/.test(n) ? 'Bar' : /rope/.test(n) ? 'Rope' : 'Bodyweight'; }
@@ -659,6 +674,42 @@
   $('rest-mute').addEventListener('click', function () { S.mute = !S.mute; save(); $('rest-mute').style.opacity = S.mute ? 0.35 : 1; });
   function wake() { try { if ('wakeLock' in navigator) navigator.wakeLock.request('screen').catch(function () {}); } catch (e) {} }
 
+  /* ---------- TEST DAY ---------- */
+  function fmt(t, v) { return v == null ? '-' : (t.dec ? Number(v).toFixed(t.dec) : v) + ' ' + t.unit; }
+  function viewTest(a) {
+    var T = R.testsFor(a.profile), n = 0;
+    shell(true); $('finish').classList.add('hidden');
+    M.innerHTML = '<div class="row"><span class="eb acc">Test day &middot; Block ' + pad2(a.state.blockNo) + '</span><button type="button" class="btn-sm" id="ts-x">Later</button></div>' +
+      '<div class="h1">' + (testHist(a).length ? 'Beat your number.' : 'Set your baseline.') + '</div><p class="sub">Warm up first (any session warm-up). Then one card at a time. Leave a box blank to skip it. Nobody else\'s number matters.</p>' +
+      T.map(function (t) {
+        n++; var l = lastTest(a, t.id), b = bestTest(a, t);
+        return '<div class="ex"><div class="ex-h"><div class="num">' + pad2(n) + '</div><div><div class="eb">Test &middot; ' + esc(t.unit) + '</div><div class="ex-n">' + esc(t.name) + '</div></div></div>' +
+          '<p class="ex-cue">' + esc(t.how) + '</p>' + demoBtn('test-' + t.id) +
+          (t.skip ? '<div class="last"><p>' + esc(t.skip) + '</p></div>' :
+          '<div class="last"><div class="eb">Last test</div><p>' + (l ? 'Block ' + l.block + ': ' + esc(fmt(t, l.v)) + (b != null && b !== l.v ? ' &middot; best ' + esc(fmt(t, b)) : '') : 'First time. Whatever you get is the baseline.') + '</p><p class="acc">' + esc(t.cue) + '</p></div>' +
+          '<div class="sets"><div class="sets-h"><span></span><span>' + esc(t.unit.toUpperCase()) + '</span><span></span></div><div class="set"><div class="n"></div><input type="number" inputmode="decimal" step="' + (t.dec ? '0.01' : '1') + '" min="0" max="' + (t.cap || 999) + '" data-t="' + t.id + '" placeholder="?"><div></div></div></div>') + '</div>';
+      }).join('') + '<div class="err" id="ts-err"></div><button type="button" class="cta" id="ts-save">Save test day ' + ICON.check + '</button>' + foot();
+    wireDemos();
+    $('ts-x').addEventListener('click', function () { go('today'); });
+    $('ts-save').addEventListener('click', function () {
+      var res = {}, got = 0, pbs = [];
+      each(M.querySelectorAll('input[data-t]'), function (inp) {
+        if (inp.value === '') return; var t = T.filter(function (x) { return x.id === inp.getAttribute('data-t'); })[0], v = parseFloat(inp.value);
+        if (isNaN(v) || v < 0) return; if (t.cap) v = Math.min(t.cap, v); v = t.dec ? Math.round(v * 100) / 100 : Math.round(v);
+        var b = bestTest(a, t); if (b != null && (t.better === 'down' ? v < b : v > b)) pbs.push(t.name);
+        res[t.id] = v; got++;
+      });
+      if (!got) { $('ts-err').textContent = 'Enter at least one result, or tap Later.'; return; }
+      a.entries.push({ id: uid(), date: today(), kind: 'test', data: { blockNo: a.state.blockNo, results: res, pbs: pbs }, created: Date.now() });
+      touch(a);
+      openSheet('<div class="eb acc">Test day banked</div><div class="h2" style="margin-top:8px">' + (pbs.length ? pbs.length + (pbs.length === 1 ? ' new personal best.' : ' new personal bests.') : (testHist(a).length > 1 ? 'Numbers saved. Next block, beat them.' : 'Baseline set.')) + '</div>' +
+        (pbs.length ? '<p class="muted" style="margin-top:8px">' + pbs.map(esc).join(', ') + '</p>' : '<p class="muted" style="margin-top:8px">Every number here is ' + esc(a.profile.nickname) + '\'s own mark to beat.</p>') +
+        '<button type="button" class="cta" id="ts-ok">Back to today ' + ICON.arrow + '</button>');
+      $('ts-ok').addEventListener('click', function () { closeSheet(); go('today'); });
+    });
+    jump();
+  }
+
   /* ---------- LOG ---------- */
   var LG = null;
   function viewLog(a) {
@@ -718,8 +769,19 @@
     M.innerHTML = '<div class="eb acc">Progress</div><div class="h1">Beat yourself.</div><p class="sub">Only compared to ' + esc(a.profile.nickname) + '\'s own past. Never to anyone else.</p>' +
       '<div class="stats"><div class="stat"><b>' + sess.length + '</b><i>sessions</i></div><div class="stat"><b>' + streak(a) + '</b><i>day streak</i></div><div class="stat"><b>' + (sess.length ? Math.round(100 * feels.easy / sess.length) : 0) + '%</b><i>felt easy</i></div></div>' +
       '<div class="card"><div class="row"><span class="eb">Sessions by week</span><span class="muted">done / planned</span></div><div class="bars">' + rows.map(function (r) { var pc = r.p ? Math.round(100 * Math.min(1, r.d / r.p)) : 0; return '<div class="bar"><span class="' + (r.cur ? 'cur' : '') + '" style="height:' + Math.max(4, pc) + '%"></span><i>' + esc(r.l) + ' ' + r.d + '/' + r.p + '</i></div>'; }).join('') + '</div></div>' +
+      testsCard(a) +
       '<div class="card"><div class="eb">Personal bests</div>' + (Object.keys(best).length ? Object.keys(best).filter(function (k) { return names[k]; }).map(function (k) { return '<div class="pb"><span>' + esc(names[k]) + '</span><b>' + best[k] + '</b></div>'; }).join('') : '<p class="muted" style="margin-top:8px">Log your first session. Every number you enter becomes a mark to beat.</p>') + '</div>' +
       '<div class="card"><div class="eb">Plan history</div>' + (a.history.length ? a.history.slice().reverse().slice(0, 8).map(function (h) { return '<div class="hist"><b>v' + h.version + ' &middot; ' + esc(nice(h.date)) + '</b>' + (h.summary ? ' &middot; ' + esc(h.summary.line) : '') + (h.changes.length ? '<br>' + h.changes.map(function (c) { return esc(c.text); }).join('<br>') : '') + '</div>'; }).join('') : '<p class="muted" style="margin-top:8px">Version 1. Every change shows up here with the reason.</p>') + '</div>' + foot();
+  }
+
+  function testsCard(a) {
+    var h = testHist(a); if (!h.length) return '<div class="card"><div class="eb">Test day</div><p class="muted" style="margin-top:8px">Test day opens every block. The first one sets the baseline.</p></div>';
+    return '<div class="card"><div class="row"><span class="eb">Test day</span><span class="muted">first &rarr; latest</span></div>' + R.TESTS.map(function (t) {
+      var vals = h.filter(function (e) { return e.data.results[t.id] != null; }).map(function (e) { return e.data.results[t.id]; });
+      if (!vals.length) return '';
+      var first = vals[0], last = vals[vals.length - 1], d = t.better === 'down' ? first - last : last - first, up = d > 0;
+      return '<div class="pb"><span>' + esc(t.name) + '</span><span>' + (vals.length > 1 ? '<span class="muted">' + esc(fmt(t, first)) + ' &rarr; </span>' : '') + '<b>' + esc(fmt(t, last)) + '</b>' + (vals.length > 1 && d !== 0 ? ' <span style="color:' + (up ? 'var(--gold-light)' : 'var(--ink-faint)') + '">' + (up ? '&#9650;' : '&#9660;') + '</span>' : '') + '</span></div>';
+    }).join('') + '</div>';
   }
 
   /* ---------- PLAN ---------- */
