@@ -1,0 +1,49 @@
+name: Practice Library sync
+
+on:
+  schedule:
+    - cron: "7 7 * * *"   # nightly, about 3am ET
+  workflow_dispatch:       # "Run workflow" button in the GitHub app
+    inputs:
+      force:
+        description: "Allow a big drop in live rows (only if on purpose)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pull Sheet, check rules, build data files
+        id: sync
+        env:
+          PRACTICES_CSV_URL: ${{ vars.PRACTICES_CSV_URL }}
+          PRACTICE_BLOCKLIST: ${{ secrets.PRACTICE_BLOCKLIST }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          set +e
+          python3 .github/scripts/sync_practices.py
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Commit if changed
+        run: |
+          if [ -n "$(git status --porcelain data/)" ]; then
+            git config user.name "dugoutlab-bot"
+            git config user.email "dugoutlab-bot@users.noreply.github.com"
+            git add data/practices.json data/practice-library.csv
+            git commit -m "Practice Library: sync from Sheet"
+            git push
+          fi
+
+      - name: Fail if anything was rejected or stopped (GitHub emails you)
+        if: steps.sync.outputs.code != '0'
+        run: exit 1

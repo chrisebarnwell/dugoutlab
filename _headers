@@ -1,3 +1,7 @@
 /ar/*
   Content-Type: model/vnd.usdz+zip
   Cache-Control: public, max-age=3600
+
+/data/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=300
