@@ -370,10 +370,12 @@
       '<p class="sub">Eight quick questions. A plan built from our guidelines: bodyweight first, land and stick, play on purpose. Log every set, check in once a week, and the plan adjusts with a reason you can read.</p>' +
       '<div class="hero"><div class="pill"><i></i>How it works</div><div class="big" style="font-size:2.4rem">Answer.<br>Move. Log.<br>Check in.</div>' +
       '<div class="meta"><span>' + ICON.clock + '10 to 30 min</span><span>' + ICON.moves + 'Bodyweight first</span><span>' + ICON.bolt + 'No throwing work</span></div>' +
-      '<button type="button" class="cta" id="go-new">Build a plan ' + ICON.up + '</button></div>' +
+      '<button type="button" class="cta" id="go-new">Build a plan ' + ICON.up + '</button>' +
+      (S.account ? '' : '<button type="button" class="cta ghost" id="go-back" style="margin-top:10px;justify-content:center">Already have a plan? Sign in</button>') + '</div>' +
       '<div class="card"><p class="muted">Growth spurts and sore spots are things you report. The plan listens and holds. It never diagnoses and never clears anyone to play. Saved on this phone first; sign in later to back it up. First names or nicknames only.</p></div>' +
       foot();
     $('go-new').addEventListener('click', function () { editingId = null; startWizard(null); });
+    if ($('go-back')) $('go-back').addEventListener('click', function () { signin(function () { list().length ? go('today') : startScreen(); }); });
     jump();
   }
   function foot() { return '<p class="foot noprint">Educational, not medical advice. <a href="development.html">Development Guide</a> &middot; <a href="privacy.html">Privacy</a></p>'; }
@@ -465,6 +467,10 @@
       '<div class="wiz-nav"><div class="in2"><button type="button" class="cta ghost" id="r-edit">Edit</button><button type="button" class="cta" id="r-go">Save &amp; start</button></div></div>';
     $('r-edit').addEventListener('click', function () { step = 0; renderStep(); });
     $('r-go').addEventListener('click', function () {
+      if (!S.account && !editingId) { signin(commit, true); return; }
+      commit();
+    });
+    function commit() {
       var a;
       if (editingId && S.athletes[editingId]) {
         a = S.athletes[editingId]; var ch = diff(a.profile, W); a.profile = W;
@@ -477,7 +483,7 @@
         S.athletes[a.localId] = a;
       }
       S.current = a.localId; editingId = null; touch(a); go('today');
-    });
+    }
     jump();
   }
   function diff(a, b) {
@@ -510,6 +516,7 @@
       '<div class="h1">' + (done ? 'Banked it.' : 'Make today fun.') + '</div>' +
       '<p class="sub">' + (done ? 'Session ' + esc(last.data.tag) + ' is in the books. That is the whole job: come back tomorrow.' : 'A little better. A lot of play. Come back tomorrow. That is the work.') + '</p>' +
       flags.map(function (f) { return '<div class="flag">' + esc(f) + '</div>'; }).join('') +
+      (S.account ? '' : '<div class="flag"><b>Only saved on this phone.</b> Clearing the browser erases it. <button type="button" id="t-si" style="color:var(--gold-light);font-weight:700;text-decoration:underline">Back it up with your email</button></div>') +
       '<div class="hero"><div class="row"><div class="pill"><i></i>' + (a.live ? 'In progress' : 'Today\'s session') + '</div><div class="count">' + pad2(blockDone(a)) + '<small> / ' + pad2(plan.days * 4) + '</small></div></div>' +
       '<div class="eb">' + esc(s.blocks.map(function (b) { return b.key === 'warm' ? 'Warm-up' : b.key === 'move' ? 'Move' : b.key === 'strength' ? 'Strength' : 'Play'; }).join(' · ')) + '</div>' +
       '<div class="big">Session ' + s.tag + '</div><div class="tag">' + esc(plan.week.name) + '.</div>' +
@@ -528,6 +535,7 @@
       '<div class="stats"><div class="stat"><b>' + streak(a) + '</b><i>day streak</i></div><div class="stat"><b>' + a.entries.filter(function (e) { return e.kind === 'session' && e.data.done; }).length + '</b><i>sessions</i></div><div class="stat"><b>v' + a.state.version + '</b><i>plan</i></div></div>' +
       '<div class="card"><div class="eb">Today\'s finish line</div><div class="h2" style="margin-top:10px">Show up. Move well. Come back tomorrow.</div></div>' + foot();
     $('t-go').addEventListener('click', function () { go('train'); });
+    if ($('t-si')) $('t-si').addEventListener('click', function () { signin(); });
     $('t-ci').addEventListener('click', function () { checkin(a); });
     $('t-log').addEventListener('click', function () { go('log'); });
   }
@@ -731,7 +739,7 @@
     $('p-ci').addEventListener('click', function () { checkin(a); });
     $('p-edit').addEventListener('click', function () { editingId = a.localId; startWizard(a.profile); });
     $('p-bk').textContent = !S.account ? 'Saved on this phone only. Sign in (email only) to back it up and open it on another phone.' : (a.cloudId ? (a.dirty ? 'Changes waiting to back up.' : 'Backed up ' + new Date(a.synced || a.updated).toLocaleString() + '.') : 'Not backed up yet.');
-    if ($('p-in')) $('p-in').addEventListener('click', signin);
+    if ($('p-in')) $('p-in').addEventListener('click', function () { signin(); });
     if ($('p-sync')) $('p-sync').addEventListener('click', function () { a.dirty = true; sync(a, true); });
     if ($('p-out')) $('p-out').addEventListener('click', function () { S.account = null; save(); go('plan'); });
     $('p-print').addEventListener('click', function () { window.print(); });
@@ -820,15 +828,17 @@
       }));
     }).then(function () { list().forEach(function (a) { if (a.dirty) sync(a); }); if (!S.current && list().length) S.current = list()[0].localId; save(); });
   }
-  function signin() {
+  function signin(after, gate) {
     var mode = 'up'; try { if (localStorage.getItem('dl_last_email')) mode = 'in'; } catch (e) {}
     function draw() {
-      openSheet('<div class="eb acc">Email only</div><div class="h2" style="margin-top:8px">' + (mode === 'in' ? 'Welcome back.' : 'Back it up.') + '</div><p class="muted" style="margin-top:6px">One sign-in for every DugoutLab tool. Same account as the Pitch Tracker.</p>' +
+      openSheet('<div class="eb acc">Email only</div><div class="h2" style="margin-top:8px">' + (mode === 'in' ? 'Welcome back.' : 'Back it up.') + '</div><p class="muted" style="margin-top:6px">' + (gate ? 'Saves the plan to your account, so clearing the browser or switching phones never loses it. Email only, no password.' : 'One sign-in for every DugoutLab tool. Same account as the Pitch Tracker.') + '</p>' +
         '<input type="email" class="in" id="si-e" placeholder="you@email.com" autocomplete="email" inputmode="email" maxlength="120" style="margin-top:14px">' +
         (mode === 'up' ? '<input type="text" class="in" id="si-n" placeholder="Your first name" maxlength="40" style="margin-top:10px"><label class="tick"><input type="checkbox" id="si-a"> <span>I am the parent or legal guardian, or an adult coach, and I am 18 or older.</span></label>' : '') +
         '<input type="text" class="hp" id="si-hp" tabindex="-1" autocomplete="off" aria-hidden="true"><div class="err" id="si-err"></div>' +
         '<button type="button" class="cta" id="si-go">' + (mode === 'in' ? 'Sign in' : 'Sign up') + ICON.arrow + '</button>' +
-        '<p class="muted" style="margin-top:14px;text-align:center">' + (mode === 'in' ? 'New here? ' : 'Have an account? ') + '<button type="button" id="si-sw" style="color:var(--acc);font-weight:700">' + (mode === 'in' ? 'Sign up' : 'Sign in') + '</button></p>');
+        '<p class="muted" style="margin-top:14px;text-align:center">' + (mode === 'in' ? 'New here? ' : 'Have an account? ') + '<button type="button" id="si-sw" style="color:var(--acc);font-weight:700">' + (mode === 'in' ? 'Sign up' : 'Sign in') + '</button></p>' +
+        (gate ? '<p class="muted" style="margin-top:6px;text-align:center"><button type="button" id="si-skip" style="color:var(--ink-faint);text-decoration:underline">Skip. Save on this phone only.</button></p>' : ''));
+      if ($('si-skip')) $('si-skip').addEventListener('click', function () { closeSheet(); if (after) after(); });
       try { var le = localStorage.getItem('dl_last_email'); if (le) $('si-e').value = le; } catch (e) {}
       $('si-sw').addEventListener('click', function () { mode = mode === 'in' ? 'up' : 'in'; draw(); });
       $('si-go').addEventListener('click', function () {
@@ -840,7 +850,7 @@
             if (!r.ok) throw new Error(j.error || 'Could not sign in.');
             if (!j.token) { mode = 'up'; draw(); $('si-err').textContent = 'Almost there. Add your name to finish the account.'; return; }
             S.account = { token: j.token, name: j.account ? j.account.name : '' }; try { localStorage.setItem('dl_last_email', email); } catch (e) {}
-            list().forEach(function (a) { a.dirty = true; }); save(); closeSheet(); pull().then(function () { go(TAB); });
+            list().forEach(function (a) { a.dirty = true; }); save(); closeSheet(); pull().then(function () { if (after) after(); else go(TAB); });
           }); }).catch(function (e) { $('si-err').textContent = e.message; b.disabled = false; });
       });
     }
