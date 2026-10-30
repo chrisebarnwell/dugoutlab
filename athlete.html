@@ -203,6 +203,8 @@
   .rev li input, .rev li select { background: var(--card); border: 1px solid var(--line2); border-radius: 8px; padding: 9px 10px; font-size: 0.95rem; max-width: 140px; }
   .tick { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; font-size: 0.92rem; color: var(--ink2); cursor: pointer; }
   .tick input { width: 22px; height: 22px; accent-color: var(--acc); flex: 0 0 22px; margin-top: 1px; }
+  .figslot { margin-top: 14px; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 12px; padding: 4px 8px; }
+  .figslot svg { display: block; max-height: 160px; margin: 0 auto; }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
   .foot { text-align: center; margin-top: 30px; font-size: 0.8rem; color: var(--ink3); line-height: 1.7; }
   .foot a { color: var(--ink2); }
@@ -303,6 +305,7 @@
 <script src="js/athlete-rules.js"></script>
 <script src="js/athlete-parse.js"></script>
 <script src="js/athlete-demos.js"></script>
+<script src="js/athlete-figure.js"></script>
 <script>
 (function () {
   'use strict';
@@ -503,7 +506,9 @@
   function bestTest(a, t) { var b = null; testHist(a).forEach(function (e) { var v = e.data.results[t.id]; if (v == null) return; if (b == null || (t.better === 'down' ? v < b : v > b)) b = v; }); return b; }
   function hasDemo(id) { return (window.DL_DEMOS || []).indexOf(id) >= 0; }
   function demoBtn(id) { return hasDemo(id) ? '<button type="button" class="btn-sm noprint" data-demo="' + esc(id) + '" style="margin-top:12px">&#9654; Watch</button>' : ''; }
-  function wireDemos() { each(M.querySelectorAll('[data-demo]'), function (b) { b.addEventListener('click', function () { var id = b.getAttribute('data-demo'); openSheet('<video src="assets/moves/' + esc(id) + '.mp4" playsinline autoplay muted loop controls style="width:100%;border-radius:12px;background:#000"></video><button type="button" class="cta ghost" id="dm-x" style="justify-content:center">Close</button>'); $('dm-x').addEventListener('click', closeSheet); }); }); }
+  function figSlot(id) { return window.DL_FIG && DL_FIG.has(id) && !hasDemo(id) ? '<div class="figslot" data-fig="' + esc(id) + '"></div>' : ''; }
+  function mountFigs() { each(M.querySelectorAll('[data-fig]'), function (el) { if (el.firstChild) return; var f = DL_FIG.svg(el.getAttribute('data-fig')); if (f) el.appendChild(f); }); }
+  function wireDemos() { mountFigs(); each(M.querySelectorAll('[data-demo]'), function (b) { b.addEventListener('click', function () { var id = b.getAttribute('data-demo'); openSheet('<video src="assets/moves/' + esc(id) + '.mp4" playsinline autoplay muted loop controls style="width:100%;border-radius:12px;background:#000"></video><button type="button" class="cta ghost" id="dm-x" style="justify-content:center">Close</button>'); $('dm-x').addEventListener('click', closeSheet); }); }); }
   function blockDone(a) { var bs = a.queue.blockStart || '0000'; return a.entries.filter(function (e) { return e.kind === 'session' && e.data.done && e.date >= bs; }).length; }
   function nextIdx(a, plan) { return (a.live ? a.live.idx : a.queue.next) % plan.sessions.length; }
 
@@ -585,7 +590,7 @@
         var nudge = l ? 'Match it with quieter, cleaner reps. Beat yourself, not anyone else.' : 'Find an easy, clean number. It becomes the baseline. Next time you compare to it.';
         html += '<div class="ex' + (all ? ' complete' : '') + '" data-k="' + esc(k) + '" data-unit="' + d.unit + '" data-label="' + esc(d.label || '') + '" data-rest="' + REST[b.key] + '">' +
           '<div class="ex-h"><div class="num">' + pad2(n) + '</div><div><div class="eb">' + esc(b.key === 'warm' ? 'Warm-up' : b.key === 'move' ? 'Move' : b.key === 'strength' ? 'Strength' : 'Play') + ' &middot; ' + esc(gearOf(it)) + '</div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + (REST[b.key] ? ' &middot; ' + REST[b.key] + 's rest' : '') + '</div></div></div>' +
-          (it.cue ? '<p class="ex-cue">' + esc(it.cue) + '</p>' : '') + demoBtn(it.id) +
+          figSlot(it.id) + (it.cue ? '<p class="ex-cue">' + esc(it.cue) + '</p>' : '') + demoBtn(it.id) +
           (d.unit === 'reps' || d.unit === 'sec' ? '<div class="last"><div class="eb">Last session</div><p>' + esc(lastTxt) + '</p><p class="acc">' + esc(nudge) + '</p></div>' : '') +
           '<div class="sets"><div class="sets-h"><span>SET</span><span>' + (d.unit === 'reps' ? 'REPS' + (d.each ? ' EACH SIDE' : '') : d.unit === 'sec' ? 'SECONDS' : 'TARGET') + '</span><span>DONE</span></div>' +
           rows.map(function (r, i) { return setRow(d, r, i); }).join('') + '</div>' +
@@ -633,9 +638,10 @@
   function trainPreview(a, plan) {
     var s = plan.sessions[a.queue.next % plan.sessions.length], n = 0;
     M.innerHTML = '<div class="eb acc">Up next &middot; ' + s.minutes + ' min</div><div class="h1">Session ' + s.tag + '</div><p class="sub">' + esc(s.name) + '. ' + esc(plan.week.note) + '</p>' +
-      s.blocks.map(function (b) { return '<div class="blk-h"><b>' + esc(b.name) + '</b><span></span><em>' + b.minutes + ' min</em></div>' + b.items.map(function (it) { n++; return '<div class="ex"><div class="ex-h"><div class="num">' + pad2(n) + '</div><div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + '</div></div></div></div>'; }).join(''); }).join('') +
+      s.blocks.map(function (b) { return '<div class="blk-h"><b>' + esc(b.name) + '</b><span></span><em>' + b.minutes + ' min</em></div>' + b.items.map(function (it) { n++; return '<div class="ex"><div class="ex-h"><div class="num">' + pad2(n) + '</div><div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + '</div></div></div>' + figSlot(it.id) + '</div>'; }).join(''); }).join('') +
       '<button type="button" class="cta" id="tr-start">Start session ' + s.tag + ICON.up + '</button>' +
       '<button type="button" class="cta ghost" id="tr-skip" style="margin-top:10px;justify-content:center">Skip this one</button>' + foot();
+    mountFigs();
     $('tr-start').addEventListener('click', function () { startLive(a, plan); viewTrain(a); jump(); });
     $('tr-skip').addEventListener('click', function () {
       a.entries.push({ id: uid(), date: today(), kind: 'session', data: { done: false, tag: s.tag, name: s.name, feel: null, version: a.state.version }, created: Date.now() });
@@ -684,7 +690,7 @@
       T.map(function (t) {
         n++; var l = lastTest(a, t.id), b = bestTest(a, t);
         return '<div class="ex"><div class="ex-h"><div class="num">' + pad2(n) + '</div><div><div class="eb">Test &middot; ' + esc(t.unit) + '</div><div class="ex-n">' + esc(t.name) + '</div></div></div>' +
-          '<p class="ex-cue">' + esc(t.how) + '</p>' + demoBtn('test-' + t.id) +
+          figSlot('test-' + t.id) + '<p class="ex-cue">' + esc(t.how) + '</p>' + demoBtn('test-' + t.id) +
           (t.skip ? '<div class="last"><p>' + esc(t.skip) + '</p></div>' :
           '<div class="last"><div class="eb">Last test</div><p>' + (l ? 'Block ' + l.block + ': ' + esc(fmt(t, l.v)) + (b != null && b !== l.v ? ' &middot; best ' + esc(fmt(t, b)) : '') : 'First time. Whatever you get is the baseline.') + '</p><p class="acc">' + esc(t.cue) + '</p></div>' +
           '<div class="sets"><div class="sets-h"><span></span><span>' + esc(t.unit.toUpperCase()) + '</span><span></span></div><div class="set"><div class="n"></div><input type="number" inputmode="decimal" step="' + (t.dec ? '0.01' : '1') + '" min="0" max="' + (t.cap || 999) + '" data-t="' + t.id + '" placeholder="?"><div></div></div></div>') + '</div>';
