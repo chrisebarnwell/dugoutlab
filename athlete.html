@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Athlete Plan | DugoutLab</title>
+<meta name="description" content="Eight quick questions build a youth baseball or softball athlete plan from DugoutLab's guidelines: bodyweight first, land and stick, play on purpose. Log sessions, check in weekly, and the plan adjusts with a reason you can read.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+  .ap-wrap { max-width: 680px; margin: 0 auto; padding: 1.25rem 1rem 4rem; }
+  .ap-hero { padding: 2rem 1rem 1.25rem; }
+  .ap-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.2rem 1.1rem; margin-bottom: 0.9rem; }
+  .ap-eb { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.45rem; }
+  .ap-h { font-family: var(--serif); font-size: 1.45rem; font-weight: 600; line-height: 1.15; letter-spacing: -0.015em; margin-bottom: 0.5rem; }
+  .ap-p { color: var(--ink-soft); font-size: 1rem; line-height: 1.55; }
+  .ap-note { color: var(--ink-faint); font-size: 0.85rem; line-height: 1.5; margin-top: 0.6rem; }
+  .ap-opts { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .ap-opt { min-height: 46px; padding: 0.55rem 1rem; border: 1.5px solid var(--rule); border-radius: 10px; background: transparent; color: var(--ink-soft); font: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+  .ap-opt:hover { border-color: var(--gold); color: var(--gold-light); }
+  .ap-opt.on { background: var(--gold); color: var(--forest); border-color: var(--gold); }
+  .ap-opt.locked { opacity: 0.4; border-style: dashed; cursor: not-allowed; }
+  .ap-q { margin-bottom: 1.1rem; }
+  .ap-q-label { font-family: var(--serif); font-size: 1.12rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.55rem; }
+  .ap-q-hint { color: var(--ink-faint); font-size: 0.85rem; margin: -0.3rem 0 0.55rem; line-height: 1.45; }
+  .ap-in { width: 100%; background: var(--forest-deep); border: 1px solid var(--rule); color: var(--ink); border-radius: 8px; padding: 0.75rem 0.8rem; font-family: var(--sans); font-size: 1rem; }
+  .ap-in:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+  textarea.ap-in { min-height: 110px; resize: vertical; line-height: 1.5; }
+  .ap-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.9rem; }
+  .ap-row .btn { flex: 1; justify-content: center; }
+  .ap-prog { height: 6px; background: var(--forest-deep); border-radius: 999px; overflow: hidden; margin: 0 0 1rem; border: 1px solid var(--rule); }
+  .ap-prog span { display: block; height: 100%; background: var(--gold); transition: width 0.25s; }
+  .ap-step { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.5rem; }
+  .ap-err { color: var(--gold-light); font-size: 0.92rem; min-height: 1.2em; margin-top: 0.4rem; }
+  .ap-banner { border-radius: 12px; padding: 1rem 1.1rem; color: #0a1610; margin-bottom: 0.9rem; }
+  .ap-banner b { display: block; font-family: var(--serif); font-size: 1.4rem; line-height: 1.1; }
+  .ap-banner span { font-size: 0.9rem; opacity: 0.85; }
+  .ap-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.9rem; }
+  .ap-stat { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.65rem 0.5rem; text-align: center; }
+  .ap-stat b { display: block; font-family: var(--mono); font-size: 1.3rem; color: var(--ink); line-height: 1.1; }
+  .ap-stat i { font-style: normal; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+  .ap-sess { border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; margin-bottom: 0.7rem; background: var(--forest3); }
+  .ap-sess-h { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 0.9rem; background: var(--forest-deep); }
+  .ap-sess-h b { font-family: var(--serif); font-size: 1.1rem; }
+  .ap-sess-h span { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.1em; }
+  .ap-blk { display: flex; border-top: 1px solid var(--rule); }
+  .ap-blk-t { min-width: 58px; flex: 0 0 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 3px solid var(--c, var(--gold)); background: var(--forest-deep); padding: 0.6rem 0.3rem; }
+  .ap-blk-t b { font-family: var(--mono); font-size: 1rem; }
+  .ap-blk-t i { font-style: normal; font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); }
+  .ap-blk-b { flex: 1; padding: 0.6rem 0.85rem 0.7rem; min-width: 0; }
+  .ap-blk-n { font-size: 0.64rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c, var(--gold)); margin-bottom: 0.25rem; }
+  .ap-item { display: flex; justify-content: space-between; gap: 0.6rem; font-size: 0.92rem; line-height: 1.4; padding: 0.22rem 0; border-top: 1px dashed rgba(244,239,230,0.08); }
+  .ap-item:first-of-type { border-top: 0; }
+  .ap-item .d { font-family: var(--mono); font-size: 0.82rem; color: var(--gold-light); white-space: nowrap; }
+  .ap-item .cue { display: block; font-size: 0.8rem; color: var(--ink-faint); }
+  .ap-check { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.45rem 0; border-top: 1px dashed rgba(244,239,230,0.08); cursor: pointer; }
+  .ap-check input { width: 24px; height: 24px; flex: 0 0 24px; accent-color: var(--gold); margin-top: 2px; }
+  .ap-check.done .n { text-decoration: line-through; color: var(--ink-faint); }
+  .ap-check .cue { display: block; font-size: 0.8rem; color: var(--ink-faint); }
+  .ap-check .d { margin-left: 0.35rem; }
+  .ap-why { list-style: none; display: grid; gap: 0.5rem; }
+  .ap-why li { background: var(--forest-deep); border: 1px solid var(--rule); border-left: 3px solid var(--gold); border-radius: 8px; padding: 0.6rem 0.8rem; font-size: 0.92rem; line-height: 1.45; color: var(--ink-soft); }
+  .ap-why li b { color: var(--ink); }
+  .ap-why li small { display: block; color: var(--ink-faint); font-size: 0.78rem; margin-top: 0.2rem; }
+  .ap-flag { background: rgba(200,134,46,0.12); border: 1px solid rgba(200,134,46,0.4); border-radius: 10px; padding: 0.7rem 0.9rem; font-size: 0.92rem; line-height: 1.45; margin-bottom: 0.6rem; }
+  .ap-bars { display: flex; align-items: flex-end; gap: 0.45rem; height: 72px; padding: 0.3rem 0; }
+  .ap-bar { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .ap-bar span { width: 100%; background: var(--gold); border-radius: 4px 4px 0 0; min-height: 3px; }
+  .ap-bar span.cur { background: var(--gold-light); outline: 1px dashed var(--gold); }
+  .ap-bar i { font-style: normal; font-family: var(--mono); font-size: 0.62rem; color: var(--ink-faint); margin-top: 0.25rem; white-space: nowrap; }
+  .ap-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+  .ap-chip { border: 1px solid var(--rule); background: transparent; color: var(--ink-soft); border-radius: 999px; padding: 0.35rem 0.85rem; font-size: 0.85rem; font-family: var(--sans); font-weight: 600; cursor: pointer; }
+  .ap-chip.on { background: var(--ink); color: var(--forest); border-color: var(--ink); }
+  .ap-rev { list-style: none; display: grid; gap: 0.4rem; }
+  .ap-rev li { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; align-items: center; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 8px; padding: 0.5rem 0.7rem; font-size: 0.92rem; }
+  .ap-rev li.assumed { border-color: rgba(200,134,46,0.5); }
+  .ap-rev li.unknown { border-style: dashed; }
+  .ap-rev li .lab { color: var(--ink-soft); }
+  .ap-rev li .lab small { display: block; font-size: 0.72rem; color: var(--gold-light); letter-spacing: 0.08em; text-transform: uppercase; }
+  .ap-rev li input, .ap-rev li select { background: var(--forest2); border: 1px solid var(--rule); color: var(--ink); border-radius: 6px; padding: 0.35rem 0.5rem; font: inherit; font-size: 0.9rem; max-width: 120px; }
+  .ap-timer { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 12px; padding: 0.6rem 0.8rem; margin-bottom: 0.8rem; position: sticky; top: 70px; z-index: 5; }
+  .ap-timer b { font-family: var(--mono); font-size: 1.6rem; letter-spacing: 0.04em; }
+  .ap-timer .t-acts { display: flex; gap: 0.4rem; }
+  .ap-hist { font-size: 0.9rem; color: var(--ink-soft); border-top: 1px dashed var(--rule); padding: 0.5rem 0; }
+  .ap-hist b { color: var(--ink); }
+  .ap-small { background: none; border: 0; padding: 0; color: var(--ink-faint); font: inherit; font-size: 0.85rem; text-decoration: underline; cursor: pointer; }
+  .ap-small:hover { color: var(--gold); }
+  .ap-top { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem; font-size: 0.9rem; color: var(--ink-faint); flex-wrap: wrap; }
+  .ap-top b { color: var(--ink); }
+  .ap-win { background: linear-gradient(135deg, rgba(200,134,46,0.22), rgba(200,134,46,0.06)); border: 1px solid rgba(200,134,46,0.5); border-radius: 12px; padding: 0.9rem 1rem; margin-bottom: 0.9rem; font-family: var(--serif); font-size: 1.15rem; line-height: 1.3; }
+  details.ap-src { margin-top: 0.8rem; }
+  details.ap-src summary { cursor: pointer; color: var(--gold); font-weight: 600; font-size: 0.92rem; }
+  details.ap-src ol { padding-left: 1.2rem; color: var(--ink-faint); font-size: 0.82rem; line-height: 1.5; margin-top: 0.5rem; }
+  details.ap-src li { margin-bottom: 0.3rem; }
+  .ap-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  @media (max-width: 420px) { .ap-stats { grid-template-columns: repeat(3, 1fr); } .ap-stat b { font-size: 1.1rem; } }
+  @media print {
+    .nav, .mobile-menu, .footer, .fieldbar, .ap-hero, .ap-row, .ap-top, .ap-chips, .ap-timer, .noprint { display: none !important; }
+    body { background: #fff; color: #000; }
+    .ap-wrap { max-width: none; padding: 0; }
+    .ap-card, .ap-sess, .ap-blk-t, .ap-sess-h, .ap-why li, .ap-stat { background: #fff !important; color: #000 !important; border-color: #bbb !important; }
+    .ap-h, .ap-p, .ap-item, .ap-item .d, .ap-blk-t b, .ap-sess-h b, .ap-why li b, .ap-stat b { color: #000 !important; }
+    .ap-sess, .ap-card { break-inside: avoid; page-break-inside: avoid; }
+    .ap-banner { color: #000 !important; border: 1px solid #999; background: #f3f3f3 !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="stages.html">The 4 Stages</a></li>
+    <li><a href="framework.html">Practice Framework</a></li>
+    <li><a href="articles.html">Articles</a></li>
+    <li><a href="training.html">Training</a></li>
+    <li><a href="coach-dad.html">Coach Dad</a></li>
+    <li><a href="lineup.html">Lineup Builder</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="stages.html">The 4 Stages</a><a href="framework.html">Practice Framework</a><a href="articles.html">Articles</a><a href="training.html">Training</a><a href="coach-dad.html">Coach Dad</a><a href="lineup.html">Lineup Builder</a><a href="about.html">About</a>
+</div>
+
+<div class="page-hero ap-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="training.html">&#8592; Training</a></div>
+    <div class="eyebrow">Athlete Plan</div>
+    <h1>Train the athlete before the sport.</h1>
+    <p>Eight quick questions build a plan from our guidelines: bodyweight first, land and stick, play on purpose. Log what actually happened, check in once a week, and the plan adjusts with a reason you can read.</p>
+  </div>
+</div>
+
+<div class="ap-wrap" id="app">
+
+  <!-- ========== START ========== -->
+  <section id="s-start">
+    <div class="ap-card">
+      <div class="ap-eb">How it works</div>
+      <div class="ap-h">Answer. Move. Log. Check in.</div>
+      <p class="ap-p">The plan comes from the <a href="development.html">Development Guide</a> and nothing else. No throwing work, ever. Growth spurts and sore spots are things you report; the plan listens and holds. It never diagnoses and never clears anyone to play.</p>
+      <div class="ap-row">
+        <button type="button" class="btn btn-primary btn-lg" id="start-new">Build a plan</button>
+        <button type="button" class="btn btn-forest btn-lg hidden" id="start-open">Open my athletes</button>
+      </div>
+      <p class="ap-note">Saved in this browser first. Sign in (email only) to back it up and pick it up on another phone. First names or nicknames only, age not birthday.</p>
+    </div>
+  </section>
+
+  <!-- ========== WIZARD ========== -->
+  <section id="s-wiz" class="hidden">
+    <div class="ap-step"><span id="wz-step">Step 1 of 8</span><span id="wz-title">Who</span></div>
+    <div class="ap-prog"><span id="wz-bar" style="width:12%"></span></div>
+    <div class="ap-card" id="wz-card"></div>
+    <div class="ap-err" id="wz-err"></div>
+    <div class="ap-row">
+      <button type="button" class="btn btn-forest" id="wz-back">Back</button>
+      <button type="button" class="btn btn-primary" id="wz-next">Next</button>
+    </div>
+  </section>
+
+  <!-- ========== RESULT ========== -->
+  <section id="s-result" class="hidden">
+    <div id="res-body"></div>
+    <div class="ap-row noprint">
+      <button type="button" class="btn btn-forest" id="res-edit">Change answers</button>
+      <button type="button" class="btn btn-primary btn-lg" id="res-go">Save and start</button>
+    </div>
+    <p class="ap-note noprint">Educational, not medical advice. A starting point from general guidelines, not a personalized prescription. Around a growth spurt or with any pain, have a professional look first.</p>
+  </section>
+
+  <!-- ========== TODAY ========== -->
+  <section id="s-today" class="hidden">
+    <div class="ap-chips" id="ath-chips"></div>
+    <div id="today-body"></div>
+  </section>
+
+  <!-- ========== SESSION ========== -->
+  <section id="s-session" class="hidden">
+    <div class="ap-top"><span><b id="ss-name"></b> <span id="ss-sub"></span></span><button type="button" class="ap-small" id="ss-quit">Back to today</button></div>
+    <div class="ap-timer noprint">
+      <div><div class="ap-eb" style="margin:0" id="tm-label">Block timer</div><b id="tm-clock">0:00</b></div>
+      <div class="t-acts"><button type="button" class="btn btn-forest btn-sm" id="tm-start">Start</button><button type="button" class="btn btn-forest btn-sm" id="tm-next">Next block</button><button type="button" class="btn btn-forest btn-sm" id="tm-mute" title="Sound">Sound on</button></div>
+    </div>
+    <div id="ss-body"></div>
+    <div class="ap-card">
+      <div class="ap-q-label">How did it feel?</div>
+      <div class="ap-opts" id="ss-feel"></div>
+      <div class="ap-q" style="margin-top:0.9rem"><input type="text" class="ap-in" id="ss-note" placeholder="Anything to note? (optional)" maxlength="200"></div>
+      <div class="ap-err" id="ss-err"></div>
+      <div class="ap-row">
+        <button type="button" class="btn btn-forest" id="ss-skip">Skip this one</button>
+        <button type="button" class="btn btn-primary btn-lg" id="ss-done">Done. Save it.</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== LOG (text or dictation) ========== -->
+  <section id="s-log" class="hidden">
+    <div class="ap-top"><span><b>Log an update</b></span><button type="button" class="ap-small" id="lg-quit">Back to today</button></div>
+    <div class="ap-card">
+      <div class="ap-q-label">Say what happened.</div>
+      <p class="ap-q-hint">Type it, or tap the microphone on your keyboard and talk. Example: "She played three games this weekend, pitched Saturday, and her arm feels tired today."</p>
+      <textarea class="ap-in" id="lg-text" placeholder="Played two games Saturday, did session A, felt easy..."></textarea>
+      <div class="ap-err" id="lg-err"></div>
+      <div class="ap-row"><button type="button" class="btn btn-primary" id="lg-parse">Read it back to me</button></div>
+    </div>
+    <div class="ap-card hidden" id="lg-review">
+      <div class="ap-eb">Here is what I understood</div>
+      <p class="ap-q-hint">Fix anything that is off. Gold border means I guessed. Dashed means unknown and stays unknown unless you fill it in.</p>
+      <ul class="ap-rev" id="lg-fields"></ul>
+      <div id="lg-questions"></div>
+      <div id="lg-unmatched"></div>
+      <label class="ap-check noprint" id="lg-apply-row" style="margin-top:0.8rem"><input type="checkbox" id="lg-apply" checked> <span class="n">Update the plan with anything reported here (growth spurt, discomfort). The plan will say why it changed.</span></label>
+      <div class="ap-row">
+        <button type="button" class="btn btn-forest" id="lg-redo">Start over</button>
+        <button type="button" class="btn btn-primary btn-lg" id="lg-save">Looks right. Save it.</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== WEEKLY CHECK-IN ========== -->
+  <section id="s-checkin" class="hidden">
+    <div class="ap-top"><span><b>Weekly check-in</b></span><button type="button" class="ap-small" id="ci-quit">Not now</button></div>
+    <div id="ci-body"></div>
+  </section>
+
+  <!-- ========== SIGN IN ========== -->
+  <section id="s-signin" class="hidden">
+    <div class="ap-top"><span><b>Back it up</b></span><button type="button" class="ap-small" id="si-quit">Back</button></div>
+    <div class="ap-card">
+      <div class="ap-eb">Email only</div>
+      <div class="ap-h">One sign-in for every DugoutLab tool.</div>
+      <p class="ap-p">Backs up each athlete to your account so you can open it on another phone. Same account as the Pitch Tracker and the Hit Window.</p>
+      <div class="ap-q" style="margin-top:0.9rem"><input type="email" class="ap-in" id="si-email" placeholder="you@email.com" autocomplete="email" inputmode="email" maxlength="120"></div>
+      <div class="ap-q su-only"><input type="text" class="ap-in" id="si-name" placeholder="Your first name" maxlength="40"></div>
+      <input type="text" class="ap-hp" id="si-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="ap-check su-only"><input type="checkbox" id="si-adult"> <span class="n">I am the parent or legal guardian, or an adult coach, and I am 18 or older.</span></label>
+      <div class="ap-err" id="si-err"></div>
+      <div class="ap-row"><button type="button" class="btn btn-primary btn-lg" id="si-go">Sign up and back up</button></div>
+      <p class="ap-note"><span id="si-swap-t">Already have an account?</span> <button type="button" class="ap-small" id="si-swap">Sign in</button></p>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="training.html">Training</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+<script src="js/athlete-rules.js"></script>
+<script src="js/athlete-parse.js"></script>
+<script>
+(function () {
+  'use strict';
+  var R = window.DL_RULES, P = window.DL_PARSE;
+  var KEY = 'dl_athlete_v1', ACCT_KEYS = ['dl_pitch', 'dl_game2'];
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function each(list, fn) { Array.prototype.forEach.call(list, fn); }
+  function uid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36); }
+  function today() { return P.ymd(new Date()); }
+  function nice(s) { var d = new Date(s + 'T12:00:00'); return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()] + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ' ' + d.getDate(); }
+  function daysBetween(a, b) { return Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 86400000); }
+
+  /* ---------- store (local first) ---------- */
+  var S = { v: 1, current: null, account: null, athletes: {} };
+  function load() {
+    try { var j = JSON.parse(localStorage.getItem(KEY) || 'null'); if (j && j.athletes) S = j; } catch (e) {}
+    if (!S.account) { ACCT_KEYS.forEach(function (k) { try { var a = JSON.parse(localStorage.getItem(k) || 'null'); if (a && a.token && !S.account) S.account = { token: a.token, name: a.account ? a.account.name : '' }; } catch (e) {} }); }
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  function cur() { return S.current ? S.athletes[S.current] : null; }
+  function list() { return Object.keys(S.athletes).map(function (k) { return S.athletes[k]; }).sort(function (a, b) { return a.created - b.created; }); }
+  function planOf(a) { return R.buildPlan(a.profile, a.state); }
+  function touch(a) { a.updated = Date.now(); a.dirty = true; save(); sync(a); }
+
+  /* ---------- screens ---------- */
+  var SCREENS = ['s-start', 's-wiz', 's-result', 's-today', 's-session', 's-log', 's-checkin', 's-signin'];
+  function show(id) { SCREENS.forEach(function (s) { $(s).classList.toggle('hidden', s !== id); }); document.querySelector('.ap-hero').classList.toggle('hidden', id !== 's-start' && id !== 's-wiz' && id !== 's-result'); jump(); }
+  function jump() { try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, 0); } }
+
+  /* ---------- wizard ---------- */
+  var W = null, step = 0;
+  var STEPS = [
+    { t: 'Who', render: function (p) {
+      return q('First name or nickname', '<input type="text" class="ap-in" id="w-nick" maxlength="24" placeholder="e.g. Brooklyn" value="' + esc(p.nickname) + '">', 'No last names. Just enough to tell kids apart.') +
+        q('Age', opts('age', range(6, 18), p.age)) +
+        q('Sport', opts('sport', R.OPTIONS.sport, p.sport));
+    }, read: function (p) { p.nickname = String($('w-nick').value || '').trim(); }, ok: function (p) { if (p.nickname.length < 2) return 'Add a first name or nickname'; if (!p.age) return 'Pick an age'; if (!p.sport) return 'Pick a sport'; } },
+    { t: 'Position', render: function (p) {
+      return q('Where do they play? Tap all that apply.', opts('positions', R.OPTIONS.position, p.positions, true), 'Young kids: "Everywhere" is the right answer.') +
+        q('Training experience', opts('exp', R.OPTIONS.exp, p.exp), 'Any kind of planned training, not just baseball or softball.');
+    }, ok: function (p) { if (!p.positions.length) return 'Pick at least one spot'; if (!p.exp) return 'Pick one'; } },
+    { t: 'Season', render: function (p) {
+      return q('Where is the season right now?', opts('season', R.OPTIONS.season, p.season), 'In-season and tournament weeks get a smaller plan on purpose.') +
+        q('What matters most right now?', opts('goal', R.OPTIONS.goal, p.goal), 'Every plan trains all of it. This sets the tone of the week notes.');
+    }, ok: function (p) { if (!p.season) return 'Pick one'; if (!p.goal) return 'Pick one'; } },
+    { t: 'Growth', render: function (p) {
+      return q('Growth spurt?', opts('spurt', R.OPTIONS.spurt, p.spurt), 'Signs: a fast height jump, a new shoe size, new clumsiness, sore knees or heels. This is something you report, not a diagnosis or a maturity test. It only turns the jumping volume down.');
+    }, ok: function (p) { if (!p.spurt) return 'Pick one'; } },
+    { t: 'Workload', render: function (p) {
+      return q('Team practices in a normal week', opts('practices', range(0, 5, '5+'), p.workload.practices)) +
+        q('Games in a normal week', opts('games', range(0, 5, '5+'), p.workload.games)) +
+        q('Playing another sport right now?', opts('otherSport', [[true, 'Yes'], [false, 'No']], p.workload.otherSport), 'Good. The plan counts it as real work and leaves room for it.') +
+        q('Pitches or catches regularly?', opts('throws', [[true, 'Yes'], [false, 'No']], p.workload.throws), 'Logged as workload only. This plan has no throwing work by design.');
+    }, ok: function (p) { var w = p.workload; if (w.practices == null || w.games == null || w.otherSport == null || w.throws == null) return 'Answer all four'; } },
+    { t: 'Time', render: function (p) {
+      return q('Days a week', opts('days', R.OPTIONS.days, p.days), 'Pick the number you will actually do. Two real days beat four imaginary ones.') +
+        q('Minutes a session', opts('minutes', R.OPTIONS.minutes, p.minutes));
+    }, ok: function (p) { if (!p.days) return 'Pick days'; if (!p.minutes) return 'Pick minutes'; } },
+    { t: 'Gear', render: function (p) {
+      var g = R.GEAR.map(function (x) { var locked = !R.gearAllowed(p, x.id); return [x.id, x.label + (locked ? ' (locked)' : ''), locked]; });
+      return q('What do you actually have? Tap all that apply, or none.', opts('gear', g, p.gear, true), 'Nothing is fine. Bodyweight, a step, a wall. Light dumbbells unlock at 13 and up with no growth spurt reported. No barbell in this plan on purpose.');
+    } },
+    { t: 'Right now', render: function (p) {
+      return q('Anything sore or bothering them right now?', opts('discomfort', R.OPTIONS.discomfort, p.discomfort), 'Reported, not diagnosed. The plan holds that part until it clears. If it lasts, have a professional look.') +
+        q('Who runs the sessions?', opts('who', R.OPTIONS.who, p.who));
+    }, ok: function (p) { if (!p.discomfort) return 'Pick one'; if (!p.who) return 'Pick one'; } }
+  ];
+  function range(a, b, lastLabel) { var o = []; for (var i = a; i <= b; i++) o.push([i, i === b && lastLabel ? lastLabel : String(i)]); return o; }
+  function q(label, body, hint) { return '<div class="ap-q"><div class="ap-q-label">' + label + '</div>' + (hint ? '<p class="ap-q-hint">' + hint + '</p>' : '') + body + '</div>'; }
+  function opts(key, list, val, multi) {
+    return '<div class="ap-opts" data-key="' + key + '"' + (multi ? ' data-multi="1"' : '') + '>' + list.map(function (o) {
+      var on = multi ? (val || []).indexOf(o[0]) >= 0 : (val != null && String(val) === String(o[0]));
+      return '<button type="button" class="ap-opt' + (on ? ' on' : '') + (o[2] ? ' locked' : '') + '" data-v="' + esc(o[0]) + '"' + (o[2] ? ' disabled' : '') + '>' + esc(o[1]) + '</button>';
+    }).join('') + '</div>';
+  }
+  function blankProfile() { return { nickname: '', age: null, sport: null, positions: [], exp: null, season: null, goal: null, spurt: null, workload: { practices: null, games: null, otherSport: null, throws: null }, days: null, minutes: null, gear: [], discomfort: null, who: null }; }
+  function setVal(p, key, v) {
+    var W_ = { practices: 'workload', games: 'workload', otherSport: 'workload', throws: 'workload' };
+    if (v === 'true') v = true; else if (v === 'false') v = false; else if (/^\d+$/.test(v)) v = +v;
+    if (W_[key]) p.workload[key] = v; else p[key] = v;
+  }
+  function renderStep() {
+    var st = STEPS[step];
+    $('wz-step').textContent = 'Step ' + (step + 1) + ' of ' + STEPS.length; $('wz-title').textContent = st.t;
+    $('wz-bar').style.width = Math.round(((step + 1) / STEPS.length) * 100) + '%';
+    $('wz-card').innerHTML = st.render(W); $('wz-err').textContent = '';
+    $('wz-back').textContent = step === 0 ? 'Cancel' : 'Back'; $('wz-next').textContent = step === STEPS.length - 1 ? 'Build the plan' : 'Next';
+    each($('wz-card').querySelectorAll('.ap-opts'), function (box) {
+      var key = box.getAttribute('data-key'), multi = box.getAttribute('data-multi');
+      each(box.querySelectorAll('.ap-opt'), function (b) {
+        b.addEventListener('click', function () {
+          if (b.disabled) return;
+          var v = b.getAttribute('data-v');
+          if (multi) {
+            var arr = key === 'gear' ? W.gear : W.positions, vv = v;
+            if (key === 'positions' && vv === 'everywhere') { arr.length = 0; }
+            if (key === 'positions' && vv !== 'everywhere') { var ix = arr.indexOf('everywhere'); if (ix >= 0) arr.splice(ix, 1); }
+            var i = arr.indexOf(vv); if (i >= 0) arr.splice(i, 1); else arr.push(vv);
+            if (key === 'positions' && !arr.length && vv === 'everywhere') arr.push('everywhere');
+            each(box.querySelectorAll('.ap-opt'), function (x) { x.classList.toggle('on', arr.indexOf(x.getAttribute('data-v')) >= 0); });
+          } else {
+            setVal(W, key, v);
+            each(box.querySelectorAll('.ap-opt'), function (x) { x.classList.remove('on'); }); b.classList.add('on');
+            if (key === 'age' || key === 'spurt') { /* gear locks depend on these; nothing to redraw on this step */ }
+          }
+        });
+      });
+    });
+    var nick = $('w-nick'); if (nick) setTimeout(function () { try { nick.focus(); } catch (e) {} }, 50);
+  }
+  $('wz-back').addEventListener('click', function () { if (step === 0) { show(list().length ? 's-today' : 's-start'); if (list().length) renderToday(); return; } STEPS[step].read && STEPS[step].read(W); step -= 1; renderStep(); });
+  $('wz-next').addEventListener('click', function () {
+    var st = STEPS[step]; if (st.read) st.read(W);
+    var err = st.ok ? st.ok(W) : null; if (err) { $('wz-err').textContent = err; return; }
+    if (step < STEPS.length - 1) { step += 1; renderStep(); return; }
+    W.gear = W.gear.filter(function (g) { return R.gearAllowed(W, g); });
+    renderResult(); show('s-result');
+  });
+  function startWizard(existing) {
+    W = existing ? JSON.parse(JSON.stringify(existing)) : blankProfile(); step = 0; renderStep(); show('s-wiz');
+  }
+
+  /* ---------- result ---------- */
+  var editingId = null;
+  function whyList(items, limit) {
+    return '<ul class="ap-why">' + items.slice(0, limit || 99).map(function (w) { return '<li><b>' + esc(w.text.split('.')[0]) + '.</b> ' + esc(w.text.split('.').slice(1).join('.').trim()) + '<small>Source: ' + w.sources.map(function (s) { return esc(R.SOURCES[s].split('.')[0]); }).join('; ') + '</small></li>'; }).join('') + '</ul>';
+  }
+  function sourcesBlock(plan) {
+    var used = {}; plan.why.forEach(function (w) { w.sources.forEach(function (s) { used[s] = 1; }); }); used.wulf2016 = 1;
+    return '<details class="ap-src"><summary>Guidelines and sources this plan follows</summary><ol>' + Object.keys(used).map(function (k) { return '<li>' + esc(R.SOURCES[k]) + '</li>'; }).join('') + '</ol></details>';
+  }
+  function sessionCard(s, i, opts) {
+    opts = opts || {};
+    return '<div class="ap-sess"><div class="ap-sess-h"><b>' + s.tag + '. ' + esc(s.name) + '</b><span>' + s.minutes + ' MIN' + (opts.next ? ' &middot; NEXT UP' : '') + '</span></div>' +
+      s.blocks.map(function (b) {
+        return '<div class="ap-blk" style="--c:' + b.color + '"><div class="ap-blk-t"><b>' + b.minutes + '</b><i>min</i></div><div class="ap-blk-b"><div class="ap-blk-n">' + esc(b.name) + '</div>' +
+          b.items.map(function (it) { return '<div class="ap-item"><span>' + esc(it.name) + (opts.cues && it.cue ? '<span class="cue">' + esc(it.cue) + '</span>' : '') + '</span><span class="d">' + esc(it.dose) + '</span></div>'; }).join('') + '</div></div>';
+      }).join('') + '</div>';
+  }
+  function renderResult() {
+    var plan = R.buildPlan(W, editingId ? S.athletes[editingId].state : null), st = plan.stage;
+    $('res-body').innerHTML =
+      '<div class="ap-banner" style="background:' + st.color + '"><span>' + esc(W.nickname) + ', age ' + W.age + ' &middot; ' + esc(R.label('sport', W.sport)) + '</span><b>' + esc(st.name) + '</b><span>' + esc(st.focus) + ' &middot; ages ' + esc(st.ages) + '</span></div>' +
+      '<div class="ap-card"><div class="ap-eb">The pathway</div><p class="ap-p">' + esc(st.goal) + '</p>' +
+      '<div class="ap-stats" style="margin-top:0.9rem"><div class="ap-stat"><b>' + plan.days + '</b><i>days a week</i></div><div class="ap-stat"><b>' + plan.minutes + '</b><i>minutes</i></div><div class="ap-stat"><b>' + (plan.gear.length || 'BW') + '</b><i>' + (plan.gear.length ? 'gear items' : 'bodyweight') + '</i></div></div>' +
+      '<div class="ap-eb">Why this plan</div>' + whyList(plan.why, 4) + (plan.why.length > 4 ? '<details class="ap-src"><summary>All ' + plan.why.length + ' reasons</summary>' + whyList(plan.why.slice(4)) + '</details>' : '') + '</div>' +
+      '<div class="ap-card"><div class="ap-eb">Week 1 of 4: ' + esc(plan.week.name) + '</div><p class="ap-q-hint">' + esc(plan.week.note) + ' Rotate the sessions on non-consecutive days. Each one is its own win.</p>' +
+      plan.sessions.map(function (s, i) { return sessionCard(s, i, { cues: true }); }).join('') + sourcesBlock(plan) + '</div>';
+  }
+  $('res-edit').addEventListener('click', function () { step = 0; renderStep(); show('s-wiz'); });
+  $('res-go').addEventListener('click', function () {
+    var a;
+    if (editingId && S.athletes[editingId]) {
+      a = S.athletes[editingId]; var before = a.profile; a.profile = W;
+      a.history.push({ version: a.state.version, date: today(), weekNo: a.state.weekNo, blockNo: a.state.blockNo, changes: [{ rule: 'edit', text: 'Answers updated by you (' + diffProfile(before, W).join(', ') + ').', sources: ['ours'] }], flags: [], summary: null });
+      a.state.version += 1;
+    } else {
+      a = { localId: uid(), cloudId: null, rev: 0, created: Date.now(), updated: Date.now(), profile: W,
+        state: { tier: R.DEFAULTS.tierFor[W.exp] || 0, weekNo: 1, blockNo: 1, version: 1, easyStreak: 0, holdWeeks: 0, lastCheckin: null },
+        queue: { next: 0, weekStart: today() }, history: [], entries: [] };
+      S.athletes[a.localId] = a;
+    }
+    S.current = a.localId; editingId = null; touch(a); renderToday(); show('s-today');
+  });
+  function diffProfile(a, b) {
+    var out = []; ['age', 'sport', 'exp', 'season', 'goal', 'spurt', 'days', 'minutes', 'discomfort', 'who'].forEach(function (k) { if (String(a[k]) !== String(b[k])) out.push(k + ': ' + R.label(k, b[k])); });
+    if (JSON.stringify(a.gear) !== JSON.stringify(b.gear)) out.push('gear'); if (JSON.stringify(a.workload) !== JSON.stringify(b.workload)) out.push('workload');
+    return out.length ? out : ['no changes'];
+  }
+
+  /* ---------- today ---------- */
+  function weekSummary(a, plan) { return R.summarizeEntries(a.entries, a.queue.weekStart, null, plan.days); }
+  function checkinDue(a, plan) { var ws = weekSummary(a, plan); return daysBetween(a.queue.weekStart, today()) >= 7 || ws.done >= plan.days; }
+  function streak(a) {
+    var days = {}; a.entries.forEach(function (e) { if (e.kind === 'session' && e.data && e.data.done) days[e.date] = 1; });
+    var n = 0, d = today(); if (!days[d]) d = P.addDays(d, -1);
+    while (days[d]) { n += 1; d = P.addDays(d, -1); } return n;
+  }
+  function bars(a, plan) {
+    var rows = a.history.filter(function (h) { return h.summary; }).slice(-5).map(function (h) { return { label: 'W' + h.weekNo, done: h.summary.done, planned: h.summary.planned }; });
+    var ws = weekSummary(a, plan); rows.push({ label: 'now', done: ws.done, planned: plan.days, cur: true });
+    return '<div class="ap-bars">' + rows.map(function (r) { var pct = r.planned ? Math.round(100 * Math.min(1, r.done / r.planned)) : 0; return '<div class="ap-bar"><span class="' + (r.cur ? 'cur' : '') + '" style="height:' + Math.max(4, pct) + '%"></span><i>' + esc(r.label) + ' ' + r.done + '/' + r.planned + '</i></div>'; }).join('') + '</div>';
+  }
+  function renderChips() {
+    var L = list();
+    $('ath-chips').innerHTML = L.map(function (a) { return '<button type="button" class="ap-chip' + (a.localId === S.current ? ' on' : '') + '" data-id="' + a.localId + '">' + esc(a.profile.nickname) + '</button>'; }).join('') + '<button type="button" class="ap-chip" id="chip-add">+ Add athlete</button>';
+    each($('ath-chips').querySelectorAll('[data-id]'), function (b) { b.addEventListener('click', function () { S.current = b.getAttribute('data-id'); save(); renderToday(); }); });
+    $('chip-add').addEventListener('click', function () { editingId = null; startWizard(null); });
+  }
+  function renderToday() {
+    var a = cur(); if (!a) { show('s-start'); return; }
+    renderChips();
+    var plan = planOf(a), ws = weekSummary(a, plan), due = checkinDue(a, plan), next = plan.sessions[a.queue.next % plan.sessions.length];
+    var last = a.entries.length ? a.entries[a.entries.length - 1] : null, win = '';
+    if (last && last.kind === 'session' && last.data.done && last.date === today()) win = '<div class="ap-win">Session ' + esc(last.data.tag) + ' in the books today. That is the whole job: come back tomorrow.</div>';
+    var flags = (a.history.length ? a.history[a.history.length - 1].flags : []) || [];
+    $('today-body').innerHTML = win +
+      '<div class="ap-banner" style="background:' + plan.stage.color + '"><span>' + esc(a.profile.nickname) + ' &middot; ' + esc(plan.stage.name) + ' &middot; plan v' + a.state.version + '</span><b>Week ' + plan.weekNo + ' of 4: ' + esc(plan.week.name) + '</b><span>' + esc(plan.week.note) + '</span></div>' +
+      '<div class="ap-stats"><div class="ap-stat"><b>' + ws.done + '/' + plan.days + '</b><i>this week</i></div><div class="ap-stat"><b>' + streak(a) + '</b><i>day streak</i></div><div class="ap-stat"><b>' + a.entries.filter(function (e) { return e.kind === 'session' && e.data.done; }).length + '</b><i>sessions ever</i></div></div>' +
+      flags.map(function (f) { return '<div class="ap-flag">' + esc(f) + '</div>'; }).join('') +
+      (due ? '<div class="ap-card" style="border-color:var(--gold)"><div class="ap-eb">Check-in due</div><div class="ap-h">How did the week go?</div><p class="ap-p">Two minutes. Carry forward what you told me, change what changed, and next week builds itself.</p><div class="ap-row"><button type="button" class="btn btn-primary btn-lg" id="t-checkin">Weekly check-in</button></div></div>' : '') +
+      '<div class="ap-card"><div class="ap-eb">Next up</div>' + sessionCard(next, a.queue.next, { next: true }) +
+      '<div class="ap-row"><button type="button" class="btn btn-primary btn-lg" id="t-start">Start session ' + next.tag + '</button><button type="button" class="btn btn-forest" id="t-log">Log an update</button></div>' +
+      (due ? '' : '<p class="ap-note">Missed a day? Nothing breaks. The next session waits for you. <button type="button" class="ap-small" id="t-checkin2">Check in early</button></p>') + '</div>' +
+      '<div class="ap-card"><div class="ap-eb">Progress</div>' + bars(a, plan) +
+      '<div class="ap-eb" style="margin-top:0.8rem">Plan history</div>' + (a.history.length ? a.history.slice().reverse().slice(0, 6).map(function (h) { return '<div class="ap-hist"><b>v' + h.version + ' &middot; ' + esc(nice(h.date)) + '</b>' + (h.summary ? ' &middot; ' + esc(h.summary.line) : '') + (h.changes.length ? '<br>' + h.changes.map(function (c) { return esc(c.text); }).join('<br>') : '') + '</div>'; }).join('') : '<p class="ap-q-hint">Version 1. Changes show up here with the reason.</p>') +
+      '<details class="ap-src"><summary>Why this plan looks the way it does</summary>' + whyList(plan.why) + '</details>' + sourcesBlock(plan) + '</div>' +
+      '<div class="ap-card noprint"><div class="ap-eb">Backup</div><p class="ap-p" id="t-backup"></p><div class="ap-row">' +
+      (S.account ? '<button type="button" class="btn btn-forest btn-sm" id="t-sync">Back up now</button><button type="button" class="btn btn-forest btn-sm" id="t-signout">Sign out</button>' : '<button type="button" class="btn btn-primary btn-sm" id="t-signin">Sign in to back up</button>') +
+      '<button type="button" class="btn btn-forest btn-sm" id="t-export">Export JSON</button><button type="button" class="btn btn-forest btn-sm" id="t-import">Import JSON</button><input type="file" id="t-file" accept="application/json" class="hidden"></div>' +
+      '<p class="ap-note"><button type="button" class="ap-small" id="t-edit">Change answers</button> &middot; <button type="button" class="ap-small" id="t-print">Print this week</button> &middot; <button type="button" class="ap-small" id="t-delete">Delete ' + esc(a.profile.nickname) + '</button></p></div>';
+    backupLine(a);
+    $('t-start').addEventListener('click', function () { startSession(a, plan, a.queue.next % plan.sessions.length); });
+    $('t-log').addEventListener('click', function () { openLog(); });
+    if ($('t-checkin')) $('t-checkin').addEventListener('click', function () { openCheckin(); });
+    if ($('t-checkin2')) $('t-checkin2').addEventListener('click', function () { openCheckin(); });
+    if ($('t-signin')) $('t-signin').addEventListener('click', function () { show('s-signin'); });
+    if ($('t-sync')) $('t-sync').addEventListener('click', function () { a.dirty = true; sync(a, true); });
+    if ($('t-signout')) $('t-signout').addEventListener('click', function () { S.account = null; save(); renderToday(); });
+    $('t-export').addEventListener('click', function () { var blob = new Blob([JSON.stringify(a, null, 2)], { type: 'application/json' }); var u = URL.createObjectURL(blob), t = document.createElement('a'); t.href = u; t.download = 'dugoutlab-athlete-' + a.profile.nickname.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + today() + '.json'; document.body.appendChild(t); t.click(); t.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 1000); });
+    $('t-import').addEventListener('click', function () { $('t-file').click(); });
+    $('t-file').addEventListener('change', function () {
+      var f = $('t-file').files[0]; if (!f) return; var rd = new FileReader();
+      rd.onload = function () { try { var j = JSON.parse(rd.result); if (!j || !j.profile || !j.state) throw new Error('x'); j.localId = j.localId && !S.athletes[j.localId] ? j.localId : uid(); j.cloudId = null; j.rev = 0; j.entries = j.entries || []; j.history = j.history || []; j.queue = j.queue || { next: 0, weekStart: today() }; S.athletes[j.localId] = j; S.current = j.localId; touch(j); renderToday(); } catch (e) { alert('That file is not a DugoutLab athlete export.'); } };
+      rd.readAsText(f);
+    });
+    $('t-edit').addEventListener('click', function () { editingId = a.localId; startWizard(a.profile); });
+    $('t-print').addEventListener('click', function () { window.print(); });
+    $('t-delete').addEventListener('click', function () {
+      if (!confirm('Delete ' + a.profile.nickname + ' and every log? This cannot be undone.')) return;
+      if (S.account && a.cloudId) api('plan/delete', { id: a.cloudId }).catch(function () {});
+      delete S.athletes[a.localId]; var L = list(); S.current = L.length ? L[0].localId : null; save();
+      if (S.current) renderToday(); else show('s-start');
+    });
+  }
+
+  /* ---------- session ---------- */
+  var SS = null, timer = { secs: 0, left: 0, on: false, h: null, block: 0, mute: false };
+  function startSession(a, plan, idx) {
+    var s = plan.sessions[idx]; SS = { a: a, plan: plan, idx: idx, s: s, feel: null, done: {} };
+    $('ss-name').textContent = 'Session ' + s.tag + ': ' + s.name; $('ss-sub').textContent = s.minutes + ' min';
+    $('ss-body').innerHTML = s.blocks.map(function (b, bi) {
+      return '<div class="ap-sess"><div class="ap-blk" style="--c:' + b.color + '"><div class="ap-blk-t"><b>' + b.minutes + '</b><i>min</i></div><div class="ap-blk-b"><div class="ap-blk-n">' + esc(b.name) + ' <button type="button" class="ap-small" data-tb="' + bi + '">time it</button></div>' +
+        b.items.map(function (it, ii) { return '<label class="ap-check"><input type="checkbox" data-c="' + bi + '-' + ii + '"> <span><span class="n">' + esc(it.name) + '</span> <span class="d" style="font-family:var(--mono);font-size:0.82rem;color:var(--gold-light)">' + esc(it.dose) + '</span>' + (it.cue ? '<span class="cue">' + esc(it.cue) + '</span>' : '') + '</span></label>'; }).join('') + '</div></div></div>';
+    }).join('');
+    each($('ss-body').querySelectorAll('input[data-c]'), function (c) { c.addEventListener('change', function () { c.closest('.ap-check').classList.toggle('done', c.checked); }); });
+    each($('ss-body').querySelectorAll('[data-tb]'), function (b) { b.addEventListener('click', function () { setBlock(+b.getAttribute('data-tb')); }); });
+    $('ss-feel').innerHTML = R.OPTIONS.feel.map(function (o) { return '<button type="button" class="ap-opt" data-v="' + o[0] + '">' + o[1] + '</button>'; }).join('');
+    each($('ss-feel').querySelectorAll('.ap-opt'), function (b) { b.addEventListener('click', function () { SS.feel = b.getAttribute('data-v'); each($('ss-feel').querySelectorAll('.ap-opt'), function (x) { x.classList.remove('on'); }); b.classList.add('on'); }); });
+    $('ss-note').value = ''; $('ss-err').textContent = '';
+    setBlock(0); show('s-session'); wake();
+  }
+  function setBlock(bi) { stopTimer(); timer.block = bi; var b = SS.s.blocks[bi]; timer.secs = b.minutes * 60; timer.left = timer.secs; $('tm-label').textContent = b.name; drawClock(); $('tm-start').textContent = 'Start'; }
+  function drawClock() { var m = Math.floor(timer.left / 60), s = timer.left % 60; $('tm-clock').textContent = m + ':' + (s < 10 ? '0' : '') + s; }
+  function stopTimer() { if (timer.h) clearInterval(timer.h); timer.h = null; timer.on = false; }
+  function beep() { if (timer.mute) return; try { var C = window.AudioContext || window.webkitAudioContext, c = new C(), o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.frequency.value = 880; g.gain.value = 0.15; o.start(); setTimeout(function () { o.stop(); c.close(); }, 350); } catch (e) {} }
+  $('tm-start').addEventListener('click', function () {
+    if (timer.on) { stopTimer(); $('tm-start').textContent = 'Resume'; return; }
+    if (timer.left <= 0) timer.left = timer.secs;
+    timer.on = true; $('tm-start').textContent = 'Pause';
+    timer.h = setInterval(function () { timer.left -= 1; drawClock(); if (timer.left <= 0) { stopTimer(); beep(); $('tm-start').textContent = 'Start'; if (timer.block < SS.s.blocks.length - 1) setBlock(timer.block + 1); } }, 1000);
+  });
+  $('tm-next').addEventListener('click', function () { setBlock((timer.block + 1) % SS.s.blocks.length); });
+  $('tm-mute').addEventListener('click', function () { timer.mute = !timer.mute; $('tm-mute').textContent = timer.mute ? 'Sound off' : 'Sound on'; });
+  $('ss-quit').addEventListener('click', function () { stopTimer(); renderToday(); show('s-today'); });
+  function finishSession(done) {
+    var a = SS.a, s = SS.s;
+    if (done && !SS.feel) { $('ss-err').textContent = 'Tap how it felt.'; return; }
+    var checked = $('ss-body').querySelectorAll('input[data-c]:checked').length, total = $('ss-body').querySelectorAll('input[data-c]').length;
+    a.entries.push({ id: uid(), date: today(), kind: 'session', data: { done: !!done, tag: s.tag, name: s.name, feel: SS.feel, items: checked + '/' + total, note: String($('ss-note').value || '').trim().slice(0, 200), version: a.state.version }, created: Date.now() });
+    a.queue.next = (SS.idx + 1) % SS.plan.sessions.length;
+    stopTimer(); touch(a); renderToday(); show('s-today');
+  }
+  $('ss-done').addEventListener('click', function () { finishSession(true); });
+  $('ss-skip').addEventListener('click', function () { finishSession(false); });
+  function wake() { try { if ('wakeLock' in navigator) navigator.wakeLock.request('screen').catch(function () {}); } catch (e) {} }
+
+  /* ---------- log (text or dictation) ---------- */
+  var LG = null;
+  function openLog() { $('lg-text').value = ''; $('lg-err').textContent = ''; $('lg-review').classList.add('hidden'); show('s-log'); setTimeout(function () { try { $('lg-text').focus(); } catch (e) {} }, 60); }
+  $('lg-quit').addEventListener('click', function () { renderToday(); show('s-today'); });
+  $('lg-redo').addEventListener('click', function () { $('lg-review').classList.add('hidden'); $('lg-text').focus(); });
+  $('lg-parse').addEventListener('click', function () {
+    var t = String($('lg-text').value || '').trim(); if (t.length < 3) { $('lg-err').textContent = 'Say a little more.'; return; }
+    LG = P.parse(t, { today: today() }); $('lg-err').textContent = '';
+    if (!LG.fields.filter(function (f) { return f.key !== 'date'; }).length) { $('lg-err').textContent = 'I did not catch anything I know how to log (games, practices, pitched, caught, sore spots, growth, a session done, how it felt, another sport). Try again or add a note at the session.'; return; }
+    $('lg-fields').innerHTML = LG.fields.map(function (f, i) {
+      var ctl;
+      if (f.kind === 'bool') ctl = '<select data-i="' + i + '"><option value="true"' + (f.value ? ' selected' : '') + '>Yes</option><option value="false"' + (!f.value ? ' selected' : '') + '>No</option></select>';
+      else if (f.kind === 'choice') ctl = '<select data-i="' + i + '">' + f.options.map(function (o) { return '<option value="' + esc(o) + '"' + (String(o) === String(f.value) ? ' selected' : '') + '>' + esc(R.label(f.key === 'feel' ? 'feel' : 'discomfort', o) || o) + '</option>'; }).join('') + '</select>';
+      else if (f.kind === 'num') ctl = '<input type="number" inputmode="numeric" min="0" max="200" data-i="' + i + '" value="' + (f.value == null ? '' : f.value) + '" placeholder="?">';
+      else if (f.kind === 'date') ctl = '<input type="date" data-i="' + i + '" value="' + esc(f.value) + '">';
+      else ctl = '<input type="text" data-i="' + i + '" value="' + esc(f.value) + '">';
+      return '<li class="' + f.status + '"><span class="lab">' + esc(f.label) + (f.key === 'date' ? '<small>' + esc(LG.dateNote) + '</small>' : f.status !== 'recognized' ? '<small>' + f.status + '</small>' : '') + '</span>' + ctl + '</li>';
+    }).join('');
+    $('lg-questions').innerHTML = LG.questions.map(function (qq) { return '<div class="ap-flag">' + esc(qq.prompt) + '</div>'; }).join('');
+    $('lg-unmatched').innerHTML = LG.unmatched.length ? '<p class="ap-q-hint" style="margin-top:0.6rem">Not understood, kept as a note: ' + LG.unmatched.map(function (u) { return '"' + esc(u) + '"'; }).join(', ') + '</p>' : '';
+    var reportable = LG.fields.some(function (f) { return (f.key === 'discomfort') || (f.key === 'growth' && f.value); });
+    $('lg-apply-row').classList.toggle('hidden', !reportable);
+    $('lg-review').classList.remove('hidden');
+  });
+  $('lg-save').addEventListener('click', function () {
+    var a = cur(); if (!a || !LG) return;
+    var data = {}, date = today();
+    each($('lg-fields').querySelectorAll('[data-i]'), function (el) {
+      var f = LG.fields[+el.getAttribute('data-i')], v = el.value;
+      if (f.kind === 'bool') v = v === 'true'; else if (f.kind === 'num') v = v === '' ? null : +v;
+      if (f.key === 'date') { if (/^\d{4}-\d{2}-\d{2}$/.test(v)) date = v; return; }
+      data[f.key] = v;
+    });
+    data.text = LG.text; if (LG.unmatched.length) data.unmatched = LG.unmatched;
+    a.entries.push({ id: uid(), date: date, kind: 'update', data: data, created: Date.now() });
+    if (data.sessionDone) {
+      var plan = planOf(a), tag = data.sessionTag || plan.sessions[a.queue.next % plan.sessions.length].tag, idx = Math.max(0, plan.sessions.map(function (s) { return s.tag; }).indexOf(tag));
+      a.entries.push({ id: uid(), date: date, kind: 'session', data: { done: true, tag: tag, name: plan.sessions[idx].name, feel: data.feel || null, items: 'logged by text', note: '', version: a.state.version }, created: Date.now() });
+      a.queue.next = (idx + 1) % plan.sessions.length;
+    }
+    if ($('lg-apply').checked && !$('lg-apply-row').classList.contains('hidden')) {
+      var ch = [], before = a.profile;
+      if (data.discomfort && data.discomfort !== (before.discomfort || 'none')) { a.profile.discomfort = data.discomfort; ch.push(R.why(data.discomfort === 'none' ? 'hold' : data.discomfort)); if (data.discomfort === 'none') ch[ch.length - 1].text = 'Discomfort cleared from a logged update. The plan comes back to the normal dose.'; }
+      if (data.growth && before.spurt !== 'yes') { a.profile.spurt = 'yes'; ch.push(R.why('spurt')); }
+      if (ch.length) { a.history.push({ version: a.state.version, date: date, weekNo: a.state.weekNo, blockNo: a.state.blockNo, changes: ch, flags: [], summary: null }); a.state.version += 1; }
+    }
+    touch(a); renderToday(); show('s-today');
+  });
+
+  /* ---------- weekly check-in ---------- */
+  var CI = null;
+  function openCheckin() {
+    var a = cur(), plan = planOf(a), ws = weekSummary(a, plan), p = a.profile;
+    CI = { spurt: p.spurt, discomfort: p.discomfort || 'none', season: p.season, games: p.workload.games, practices: p.workload.practices, otherSport: !!p.workload.otherSport, pitched: null, note: '' };
+    var carried = 'Last time you said: ' + R.label('spurt', p.spurt).toLowerCase() + ' on a growth spurt, ' + R.label('discomfort', p.discomfort || 'none').toLowerCase() + ' bothering them, ' + R.label('season', p.season).toLowerCase() + ', ' + p.workload.games + ' games and ' + p.workload.practices + ' practices a week.';
+    $('ci-body').innerHTML =
+      '<div class="ap-card"><div class="ap-eb">This week</div><div class="ap-h">' + ws.done + ' of ' + plan.days + ' sessions done.</div><p class="ap-p">' + (ws.feels.hard ? ws.feels.hard + ' felt hard. ' : '') + (ws.feels.easy ? ws.feels.easy + ' felt easy. ' : '') + (ws.feels.ok ? ws.feels.ok + ' felt just right. ' : '') + (ws.done ? '' : 'No sessions logged. That is information, not failure.') + '</p><p class="ap-note">' + esc(carried) + ' Change anything that changed.</p></div>' +
+      '<div class="ap-card">' +
+      q('Growth spurt?', opts('spurt', R.OPTIONS.spurt, CI.spurt)) +
+      q('Anything sore or bothering them?', opts('discomfort', R.OPTIONS.discomfort, CI.discomfort), 'Reported, not diagnosed.') +
+      q('Season', opts('season', R.OPTIONS.season, CI.season)) +
+      q('Games this week', opts('games', range(0, 5, '5+'), CI.games)) +
+      q('Practices this week', opts('practices', range(0, 5, '5+'), CI.practices)) +
+      q('Another sport this week?', opts('otherSport', [[true, 'Yes'], [false, 'No']], CI.otherSport)) +
+      q('Pitched this week?', opts('pitched', [[true, 'Yes'], [false, 'No']], CI.pitched), 'Logged as reported. Pitch counts and rest days live in the Pitch Tracker.') +
+      '<div class="ap-q"><div class="ap-q-label">Anything else? (optional)</div><input type="text" class="ap-in" id="ci-note" placeholder="Type or dictate a line" maxlength="300"></div>' +
+      '<div class="ap-err" id="ci-err"></div><div class="ap-row"><button type="button" class="btn btn-primary btn-lg" id="ci-review">Review the week</button></div></div>';
+    each($('ci-body').querySelectorAll('.ap-opts'), function (box) {
+      var key = box.getAttribute('data-key');
+      each(box.querySelectorAll('.ap-opt'), function (b) { b.addEventListener('click', function () { var v = b.getAttribute('data-v'); CI[key] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? +v : v; each(box.querySelectorAll('.ap-opt'), function (x) { x.classList.remove('on'); }); b.classList.add('on'); }); });
+    });
+    $('ci-review').addEventListener('click', function () {
+      if (CI.pitched == null) { $('ci-err').textContent = 'Pitched this week: yes or no.'; return; }
+      CI.note = String($('ci-note').value || '').trim();
+      var c = { spurt: CI.spurt, discomfort: CI.discomfort, season: CI.season, games: CI.games, practices: CI.practices, otherSport: CI.otherSport, pitched: CI.pitched, date: today() };
+      if (CI.note) { var pr = P.parse(CI.note, { today: today() }); pr.fields.forEach(function (f) { if (f.key === 'discomfort' && f.value !== 'none' && c.discomfort === 'none') c.discomfort = f.value; if (f.key === 'growth' && f.value) c.spurt = 'yes'; if (f.key === 'pitched' && f.value) c.pitched = true; }); }
+      var out = R.reviewWeek(a.profile, a.state, ws, c);
+      CI.out = out; CI.c = c;
+      $('ci-body').innerHTML =
+        '<div class="ap-card"><div class="ap-eb">Week ' + a.state.weekNo + ' summary</div><div class="ap-h">' + esc(out.summary.line) + '</div>' +
+        (CI.note ? '<p class="ap-note">Your note: "' + esc(CI.note) + '"</p>' : '') + '</div>' +
+        '<div class="ap-card"><div class="ap-eb">Changes for next week</div>' + (out.changes.length ? whyList(out.changes) : '<p class="ap-p">No changes. Same plan, next week of the wave.</p>') +
+        out.flags.map(function (f) { return '<div class="ap-flag" style="margin-top:0.6rem">' + esc(f) + '</div>'; }).join('') +
+        '<div class="ap-stats" style="margin-top:0.9rem"><div class="ap-stat"><b>' + out.profile.days + '</b><i>days</i></div><div class="ap-stat"><b>' + out.profile.minutes + '</b><i>minutes</i></div><div class="ap-stat"><b>W' + out.state.weekNo + '</b><i>next week</i></div></div>' +
+        '<div class="ap-row"><button type="button" class="btn btn-forest" id="ci-back">Back</button><button type="button" class="btn btn-primary btn-lg" id="ci-apply">Start next week</button></div></div>';
+      $('ci-back').addEventListener('click', openCheckin);
+      $('ci-apply').addEventListener('click', function () {
+        a.entries.push({ id: uid(), date: today(), kind: 'checkin', data: { answers: CI.c, note: CI.note, summary: out.summary }, created: Date.now() });
+        a.history.push({ version: out.state.version, date: today(), weekNo: out.state.weekNo, blockNo: out.state.blockNo, changes: out.changes, flags: out.flags, summary: { planned: ws.planned, done: ws.done, line: out.summary.line, weekNo: a.state.weekNo } });
+        a.profile = out.profile; a.state = out.state; a.queue = { next: 0, weekStart: today() };
+        touch(a); renderToday(); show('s-today');
+      });
+      jump();
+    });
+    show('s-checkin');
+  }
+  $('ci-quit').addEventListener('click', function () { renderToday(); show('s-today'); });
+
+  /* ---------- account + sync ---------- */
+  function api(path, body) {
+    var opt = body ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(Object.assign({ token: S.account ? S.account.token : '' }, body)) } : { method: 'GET' };
+    var u = '/api/' + path + (body ? '' : (path.indexOf('?') > -1 ? '&' : '?') + 'token=' + encodeURIComponent(S.account ? S.account.token : ''));
+    return fetch(u, opt).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) { var e = new Error(j.error || 'Something broke. Try again.'); e.status = r.status; e.body = j; throw e; } return j; }); });
+  }
+  function backupLine(a) {
+    var el = $('t-backup'); if (!el) return;
+    if (!S.account) { el.textContent = 'Saved in this browser only. Sign in to back it up.'; return; }
+    el.textContent = (S.account.name ? 'Signed in as ' + S.account.name + '. ' : 'Signed in. ') + (a.cloudId ? (a.dirty ? 'Changes not backed up yet.' : 'Backed up ' + new Date(a.synced || a.updated).toLocaleString() + '.') : 'Not backed up yet.');
+  }
+  var syncing = {};
+  function payload(a) { return { profile: a.profile, state: a.state, queue: a.queue, history: a.history, entries: a.entries, created: a.created, localId: a.localId }; }
+  function sync(a, loud) {
+    if (!S.account || !a.dirty || syncing[a.localId]) return;
+    syncing[a.localId] = true;
+    api('plan/put', { id: a.cloudId || undefined, rev: a.rev || 0, data: payload(a) }).then(function (j) {
+      a.cloudId = j.id; a.rev = j.rev; a.dirty = false; a.synced = Date.now(); save(); backupLine(a);
+    }).catch(function (e) {
+      if (e.status === 409 && e.body && e.body.athlete) { resolveConflict(a, e.body.athlete); return; }
+      if (e.status === 401) { S.account = null; save(); if (loud) alert('Sign in again to back up.'); renderToday(); return; }
+      if (loud) alert(e.message);
+    }).then(function () { syncing[a.localId] = false; });
+  }
+  function resolveConflict(a, remote) {
+    var keepMine = confirm('"' + a.profile.nickname + '" was changed on another device.\n\nOK = keep THIS device and overwrite the cloud copy.\nCancel = take the CLOUD copy and drop unsynced changes here.');
+    if (keepMine) { a.rev = remote.rev; a.dirty = true; sync(a, true); }
+    else { adopt(a.localId, remote); renderToday(); }
+  }
+  function adopt(localId, remote) {
+    var d = remote.data || {}, a = S.athletes[localId] || { localId: localId, created: d.created || Date.now() };
+    a.profile = d.profile; a.state = d.state; a.queue = d.queue || { next: 0, weekStart: today() }; a.history = d.history || []; a.entries = d.entries || [];
+    a.cloudId = remote.id; a.rev = remote.rev; a.dirty = false; a.synced = Date.now(); a.updated = remote.updated;
+    S.athletes[localId] = a; save(); return a;
+  }
+  function pullAll() {
+    if (!S.account) return Promise.resolve();
+    return api('plan/list').then(function (j) {
+      if (j.account && j.account.name) S.account.name = j.account.name;
+      var known = {}; list().forEach(function (a) { if (a.cloudId) known[a.cloudId] = a; });
+      return Promise.all(j.athletes.map(function (r) {
+        var local = known[r.id];
+        if (local && local.rev >= r.rev) return null;
+        if (local && local.dirty) return null; /* local work first; the next put will raise the conflict */
+        return api('plan/get?id=' + encodeURIComponent(r.id)).then(function (g) { adopt(local ? local.localId : (g.athlete.data && g.athlete.data.localId && !S.athletes[g.athlete.data.localId] ? g.athlete.data.localId : uid()), g.athlete); });
+      }));
+    }).then(function () { list().forEach(function (a) { if (a.dirty) sync(a); }); if (!S.current && list().length) S.current = list()[0].localId; save(); });
+  }
+
+  var SI = 'up';
+  function siMode(m) { SI = m; each(document.querySelectorAll('.su-only'), function (el) { el.classList.toggle('hidden', m === 'in'); }); $('si-go').textContent = m === 'in' ? 'Sign in and back up' : 'Sign up and back up'; $('si-swap-t').textContent = m === 'in' ? 'New here?' : 'Already have an account?'; $('si-swap').textContent = m === 'in' ? 'Sign up' : 'Sign in'; $('si-err').textContent = ''; }
+  $('si-swap').addEventListener('click', function () { siMode(SI === 'in' ? 'up' : 'in'); });
+  $('si-quit').addEventListener('click', function () { renderToday(); show('s-today'); });
+  try { var lastE = localStorage.getItem('dl_last_email'); if (lastE) { $('si-email').value = lastE; siMode('in'); } } catch (e) {}
+  $('si-go').addEventListener('click', function () {
+    var b = $('si-go'), email = String($('si-email').value || '').trim().toLowerCase(); b.disabled = true; $('si-err').textContent = '';
+    function done(j) { S.account = { token: j.token, name: j.account ? j.account.name : '' }; try { localStorage.setItem('dl_last_email', email); } catch (e) {} save(); list().forEach(function (a) { a.dirty = true; }); pullAll().then(function () { renderToday(); show('s-today'); }); }
+    function fail(e) { $('si-err').textContent = e.message; }
+    var req = SI === 'in'
+      ? fetch('/api/signin', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: email, website: $('si-hp').value }) })
+      : ($('si-adult').checked ? fetch('/api/signup', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: $('si-name').value, email: email, role: 'parent', adult: true, app: 'athlete', website: $('si-hp').value }) }) : null);
+    if (!req) { $('si-err').textContent = 'Check the box to confirm you are the adult signing up.'; b.disabled = false; return; }
+    req.then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Could not sign in.'); if (!j.token) { siMode('up'); throw new Error('Almost there. Add your name to finish the account.'); } done(j); }); })
+      .catch(fail).then(function () { b.disabled = false; });
+  });
+
+  /* ---------- boot ---------- */
+  load();
+  $('start-new').addEventListener('click', function () { editingId = null; startWizard(null); });
+  $('start-open').addEventListener('click', function () { renderToday(); show('s-today'); });
+  if (list().length) { $('start-open').classList.remove('hidden'); if (!S.current) S.current = list()[0].localId; renderToday(); show('s-today'); }
+  else show('s-start');
+  if (S.account) pullAll().then(function () { if (list().length && $('s-today').classList.contains('hidden') && $('s-start') && !$('s-start').classList.contains('hidden')) { renderToday(); show('s-today'); } else if (!$('s-today').classList.contains('hidden')) renderToday(); }).catch(function () {});
+  window.addEventListener('online', function () { list().forEach(function (a) { if (a.dirty) sync(a); }); });
+})();
+</script>
+<script src="js/email-gate.js" data-mode="page"></script>
+</body>
+</html>

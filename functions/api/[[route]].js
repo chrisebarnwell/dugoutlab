@@ -370,7 +370,7 @@ export async function onRequest(ctx) {
       const a = { id: id(), email, name, role, plan: 'free', token: tok(), consent_at: now, created: now };
       await db.prepare('INSERT INTO accounts (id,email,name,role,plan,token,consent_at,created) VALUES (?,?,?,?,?,?,?,?)')
         .bind(a.id, a.email, a.name, a.role, a.plan, a.token, a.consent_at, a.created).run();
-      ctx.waitUntil(mirrorEmail(env, a, body.app === 'pitch' ? 'pitch' : 'game'));
+      ctx.waitUntil(mirrorEmail(env, a, body.app === 'pitch' ? 'pitch' : body.app === 'athlete' ? 'athlete' : 'game'));
       return json({ account: pubAcct(a), token: a.token, returning: false });
     }
 
@@ -622,6 +622,8 @@ export async function onRequest(ctx) {
         await db.prepare('DELETE FROM pitch_kids WHERE account_id = ?').bind(me.id).run();
         await db.prepare('DELETE FROM pitch_teams WHERE account_id = ?').bind(me.id).run();
         await db.prepare('DELETE FROM events WHERE account_id = ?').bind(me.id).run();
+        /* Athlete Plan rows live in functions/api/plan. The table may not exist yet on a fresh database. */
+        try { await db.prepare('DELETE FROM athletes WHERE account_id = ?').bind(me.id).run(); } catch (e) { /* no athletes table yet */ }
         await db.prepare('DELETE FROM subscribers WHERE email = ?').bind(me.email).run();
         await db.prepare('DELETE FROM accounts WHERE id = ?').bind(me.id).run();
         return json({ ok: true });
