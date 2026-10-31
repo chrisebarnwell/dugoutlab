@@ -156,7 +156,7 @@ var DL_SECTION = (function () {
   var I = {
     home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>',
     lineup: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1.2"/><circle cx="4" cy="12" r="1.2"/><circle cx="4" cy="18" r="1.2"/>',
-    train: '<circle cx="15" cy="4.5" r="2"/><path d="M13.5 8.5l-2.5 5 3.5 2.5-1 5.5M11 13.5l-3.5 2-2.5-1M8 10l3-2 4 .5 2.5 3"/>',
+    train: '<circle cx="17.5" cy="5" r="2.2"/><path d="M5.5 11.5l3.5-3 4.5 1 4 1M13.5 9.5l-3.5 6M10 15.5l-5.5 3M10 15.5l4.5 1.5 1 4.5"/>',
     practice: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/>',
     tools: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'
   };
