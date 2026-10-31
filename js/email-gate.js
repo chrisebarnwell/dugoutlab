@@ -1,12 +1,13 @@
 /* DugoutLab email gate.
-   One email unlocks every tool. Saved to D1 "subscribers" via /api/subscribe (source "gate-<page>").
-   <script src="js/email-gate.js" data-mode="page"></script>   gates the whole page on load
-   <script src="js/email-gate.js" data-mode="links"></script>  gates only links or buttons marked data-gate (a PDF, a Build button)
+   Rule (2026-10-31): never on page load. The tool is always usable first.
+   The gate asks only when someone keeps something: print, a download link, or anything marked data-gate.
+   It can always be closed ("Not now"), and closing never blocks the action they asked for.
+   <script src="js/email-gate.js" data-mode="actions"></script>
+   Saved to D1 "subscribers" via /api/subscribe (source "gate-<page>").
    Anyone signed in to the Hit Window or Pitch Tracker is already in. */
 (function () {
-  var me = document.currentScript;
-  var mode = (me && me.getAttribute('data-mode')) || 'page';
-  var KEY = 'dl_email_ok';
+      var KEY = 'dl_email_ok';
+  var skipped = false;
 
   function ok() {
     try {
@@ -46,16 +47,15 @@
     wrap.innerHTML =
       '<div class="dl-gate-box">' +
         '<div class="dl-gate-eb">One quick thing</div>' +
-        '<div class="dl-gate-h" id="dl-gate-h">Your email unlocks every tool.</div>' +
-        '<p class="dl-gate-p">Pop it in once and every DugoutLab tool is open. No password, no card.</p>' +
+        '<div class="dl-gate-h" id="dl-gate-h">Want the next tool when it is ready?</div>' +
+        '<p class="dl-gate-p">Drop your email and we will send an occasional new tool or guide. No password, no card.</p>' +
         '<input type="email" id="dl-gate-email" placeholder="you@email.com" autocomplete="email" inputmode="email" maxlength="120">' +
         '<input type="text" class="hp" id="dl-gate-hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
         '<label id="dl-gate-adult-row"><input type="checkbox" id="dl-gate-adult"> <span>I\'m 18 or older (a coach or parent).</span></label>' +
         '<div class="dl-gate-err" id="dl-gate-err"></div>' +
-        '<button type="button" class="dl-gate-btn" id="dl-gate-go">Unlock the tools</button>' +
+        '<button type="button" class="dl-gate-btn" id="dl-gate-go">Continue</button>' +
         '<div class="dl-gate-note" style="font-size:0.95rem;color:rgba(244,239,230,0.72)"><span id="dl-gate-swap-t">Already signed up?</span> <button type="button" class="dl-gate-x" style="margin:0;color:#e2a85a;font-weight:600;font-size:0.95rem" id="dl-gate-swap">Sign in</button></div>' +
-        '<div class="dl-gate-note">We send an occasional new tool or guide.</div>' +
-        (canClose ? '<button type="button" class="dl-gate-x" id="dl-gate-x">Not now</button>' : '<div class="dl-gate-note">Just reading? <a href="articles.html">The articles are open to everyone.</a></div>') +
+                (canClose ? '<button type="button" class="dl-gate-x" id="dl-gate-x">Not now, just continue</button>' : '') +
       '</div>';
     document.body.appendChild(wrap);
     document.body.classList.add('dl-gated');
@@ -63,9 +63,9 @@
     var signin = false;
     function setIn(v) {
       signin = v;
-      document.getElementById('dl-gate-h').textContent = v ? 'Welcome back.' : 'Your email unlocks every tool.';
+      document.getElementById('dl-gate-h').textContent = v ? 'Welcome back.' : 'Want the next tool when it is ready?';
       document.getElementById('dl-gate-adult-row').style.display = v ? 'none' : '';
-      document.getElementById('dl-gate-go').textContent = v ? 'Sign in' : 'Unlock the tools';
+      document.getElementById('dl-gate-go').textContent = v ? 'Sign in' : 'Continue';
       document.getElementById('dl-gate-swap-t').textContent = v ? 'New here?' : 'Already signed up?';
       document.getElementById('dl-gate-swap').textContent = v ? 'Sign up' : 'Sign in';
       document.getElementById('dl-gate-err').textContent = '';
@@ -75,7 +75,9 @@
     setTimeout(function () { try { input.focus(); } catch (e) {} }, 50);
 
     function close() { wrap.parentNode && wrap.parentNode.removeChild(wrap); document.body.classList.remove('dl-gated'); }
-    if (canClose) document.getElementById('dl-gate-x').addEventListener('click', close);
+    /* "Not now" closes the gate and still does what they asked. Asked once per visit. */
+    if (canClose) document.getElementById('dl-gate-x').addEventListener('click', function () { skipped = true; close(); if (after) after(); });
+    wrap.addEventListener('click', function (e) { if (e.target === wrap) { skipped = true; close(); if (after) after(); } });
 
     function go() {
       var err = document.getElementById('dl-gate-err'), b = document.getElementById('dl-gate-go');
@@ -92,7 +94,7 @@
           .catch(function () { mark(email); close(); if (after) after(); });
       }
       if (!document.getElementById('dl-gate-adult').checked) { err.textContent = 'Check the box to confirm you are 18 or older.'; return; }
-      b.disabled = true; b.textContent = 'Unlocking...';
+      b.disabled = true; b.textContent = 'One sec...';
       fetch('/api/subscribe', {
         method: 'POST', headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ email: email, source: 'gate-' + page(), website: document.getElementById('dl-gate-hp').value })
@@ -103,7 +105,7 @@
         });
       }).catch(function (e) {
         /* A bad address stays on the gate. A network or server hiccup lets them in rather than punishing them. */
-        if (/look right/i.test(e.message)) { err.textContent = e.message; b.disabled = false; b.textContent = 'Unlock the tools'; return; }
+        if (/look right/i.test(e.message)) { err.textContent = e.message; b.disabled = false; b.textContent = 'Continue'; return; }
         mark(email); close(); if (after) after();
       });
     }
@@ -112,25 +114,20 @@
   }
 
   function start() {
-    if (mode === 'links') {
-      Array.prototype.forEach.call(document.querySelectorAll('a[data-gate]'), function (a) {
-        a.addEventListener('click', function (e) {
-          if (ok()) return;
-          e.preventDefault();
-          build(function () { var t = document.createElement('a'); t.href = a.href; if (a.hasAttribute('download')) t.setAttribute('download', a.getAttribute('download') || ''); document.body.appendChild(t); t.click(); t.remove(); }, true);
-        });
-      });
-      /* Buttons marked data-gate: the gate runs first (capture phase). Once unlocked, the click is replayed. */
-      Array.prototype.forEach.call(document.querySelectorAll('button[data-gate]'), function (b) {
-        b.addEventListener('click', function (e) {
-          if (ok()) return;
-          e.preventDefault(); e.stopImmediatePropagation();
-          build(function () { b.click(); }, true);
-        }, true);
-      });
-      return;
-    }
-    if (!ok()) build(null, false);
+    function pass() { return ok() || skipped; }
+    /* Print (any button that calls window.print) */
+    var realPrint = window.print ? window.print.bind(window) : null;
+    if (realPrint) window.print = function () { if (pass()) return realPrint(); build(realPrint, true); };
+    /* Download links and anything marked data-gate */
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest && e.target.closest('a[download], a[data-gate], button[data-gate]');
+      if (!el || pass()) return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      build(function () {
+        if (el.tagName === 'A') { var t = document.createElement('a'); t.href = el.href; if (el.hasAttribute('download')) t.setAttribute('download', el.getAttribute('download') || ''); document.body.appendChild(t); t.click(); t.remove(); }
+        else el.click();
+      }, true);
+    }, true);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();

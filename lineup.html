@@ -53,9 +53,13 @@
   color: var(--ink);
 }
 .step-pip.done::after {
-  content: ' ✓';
-  color: var(--gold);
-  font-weight: 700;
+  content: '';
+  display: inline-block;
+  width: 5px; height: 9px;
+  margin-left: 7px;
+  border: solid var(--gold);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translateY(-2px);
 }
 
 .wizard-card {
@@ -540,6 +544,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
   <ul class="nav-links">
     <li><a href="ages.html">My Age Group</a></li>
     <li><a href="tools.html">Tools</a></li>
+    <li><a href="training.html">Train</a></li>
     <li><a href="articles.html">Field Notes</a></li>
     <li><a href="how-kids-learn.html">Why It Works</a></li>
   </ul>
@@ -550,6 +555,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 <div class="mobile-menu" id="mobile-menu">
   <a href="ages.html">My Age Group</a>
   <a href="tools.html">Tools</a>
+  <a href="training.html">Train</a>
   <a href="articles.html">Field Notes</a>
   <a href="how-kids-learn.html">Why It Works</a>
 </div>
@@ -840,7 +846,8 @@ select option { background: var(--forest-deep); color: var(--ink); }
         <li><a href="practice.html">Practice in a Pinch</a></li>
         <li><a href="framework.html">Practice Framework</a></li>
         <li><a href="lineup.html">Lineup Builder</a></li>
-        <li><a href="training.html">Training</a></li>
+        <li><a href="athlete.html">Athlete Plan</a></li>
+        <li><a href="training.html">Train</a></li>
       </ul>
     </div>
     <div class="footer-links">
@@ -860,7 +867,6 @@ select option { background: var(--forest-deep); color: var(--ink); }
   </div>
 </footer>
 
-<script src="js/email-gate.js" data-mode="page"></script>
 <script src="js/roster-import.js"></script>
 <script>
   /* Roster import: replace the rows with the uploaded names. Keep a tier if the name was already there. */

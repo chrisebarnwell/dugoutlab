@@ -120,41 +120,60 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// ── Active nav link ────────────────────────────────────────────────
-(function() {
-  var page = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(function(a) {
-    var href = a.getAttribute('href') || '';
-    if (href === page || (page === 'index.html' && href === '/') ||
-        (page === '' && href === 'index.html')) {
-      a.classList.add('active');
-    }
+// ── You are here: light the current section in every menu ─────────
+// One map: each page belongs to one top-nav section. Top nav, hamburger
+// and footer all light the same way, so the site reads as one site.
+var DL_SECTION = (function () {
+  var path = window.location.pathname;
+  var page = path.split('/').pop() || 'index.html';
+  if (page.indexOf('.') < 0) page += '.html';
+  if (path.indexOf('/articles/') >= 0 || page === 'articles.html') return { page: page, section: 'articles.html' };
+  var TRAIN = ['training.html', 'athlete.html', 'stage-finder.html', 'development.html'];
+  var AGES = ['ages.html', 'stages.html'];
+  var WHY = ['how-kids-learn.html'];
+  var TOOLS = ['tools.html', 'lineup.html', 'pods.html', 'pitch-tracker.html', 'practice.html', 'framework.html',
+    'progression.html', 'practice-example.html', 'games.html', 'situations.html', 'situation.html', 'field-layout.html',
+    'strike-zone.html', 'cage-targets.html', 'arena.html', 'game.html', 'pocket-card.html', 'launch-lab.html',
+    'skipper.html', 'coach-dad.html', 'coach-dad-stay-loose.html'];
+  var sec = TRAIN.indexOf(page) >= 0 ? 'training.html' : AGES.indexOf(page) >= 0 ? 'ages.html' :
+    WHY.indexOf(page) >= 0 ? 'how-kids-learn.html' : TOOLS.indexOf(page) >= 0 ? 'tools.html' : '';
+  return { page: page, section: sec };
+})();
+(function () {
+  function file(a) { return (a.getAttribute('href') || '').split('/').pop().split('#')[0]; }
+  document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(function (a) {
+    if (DL_SECTION.section && file(a) === DL_SECTION.section) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
+  });
+  document.querySelectorAll('.footer-links a').forEach(function (a) {
+    if (file(a) === DL_SECTION.page) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
   });
 })();
 
 // ── Field bar: thumb-reach tool tabs on phones ─────────────────────
 (function () {
   if (document.body.hasAttribute('data-nobar') || document.querySelector('.fieldbar')) return;
-  var page = window.location.pathname.split('/').pop() || 'index.html';
+  var page = DL_SECTION.page;
   var I = {
     home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>',
     lineup: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1.2"/><circle cx="4" cy="12" r="1.2"/><circle cx="4" cy="18" r="1.2"/>',
-    pitch: '<circle cx="12" cy="12" r="8.5"/><path d="M7.5 5.5c2 3.5 2 9.5 0 13M16.5 5.5c-2 3.5-2 9.5 0 13"/>',
+    train: '<path d="M5 19c3-1 4-3 5-6s3-6 9-7"/><circle cx="19" cy="6" r="2.2"/><path d="M4 13l3 3M8 9l3 3"/>',
     practice: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/>',
     tools: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'
   };
   var tabs = [
     ['index.html', 'Home', 'home'],
     ['lineup.html', 'Lineup', 'lineup'],
-    ['pitch-tracker.html', 'Pitches', 'pitch'],
     ['practice.html', 'Practice', 'practice'],
+    ['training.html', 'Train', 'train'],
     ['tools.html', 'Tools', 'tools']
   ];
   var nav = document.createElement('nav');
   nav.className = 'fieldbar';
   nav.setAttribute('aria-label', 'Quick tools');
   nav.innerHTML = tabs.map(function (t) {
-    var on = t[0] === page || (t[0] === 'lineup.html' && page === 'pods.html');
+    var on = t[0] === page || (t[0] === 'lineup.html' && page === 'pods.html') ||
+      (t[0] === 'training.html' && DL_SECTION.section === 'training.html') ||
+      (t[0] === 'tools.html' && DL_SECTION.section === 'tools.html' && ['lineup.html', 'pods.html', 'practice.html'].indexOf(page) < 0);
     return '<a href="/' + t[0] + '"' + (on ? ' class="on" aria-current="page"' : '') + '>' +
       '<svg viewBox="0 0 24 24" aria-hidden="true">' + I[t[2]] + '</svg><span>' + t[1] + '</span></a>';
   }).join('');
