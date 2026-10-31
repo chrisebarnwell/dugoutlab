@@ -16,6 +16,7 @@
   <ul class="nav-links">
     <li><a href="ages.html">My Age Group</a></li>
     <li><a href="tools.html">Tools</a></li>
+    <li><a href="training.html">Train</a></li>
     <li><a href="articles.html">Field Notes</a></li>
     <li><a href="how-kids-learn.html">Why It Works</a></li>
   </ul>
@@ -24,6 +25,7 @@
 <div class="mobile-menu" id="mobile-menu">
   <a href="ages.html">My Age Group</a>
   <a href="tools.html">Tools</a>
+  <a href="training.html">Train</a>
   <a href="articles.html">Field Notes</a>
   <a href="how-kids-learn.html">Why It Works</a>
 </div>
@@ -81,7 +83,7 @@
         <div id="fw-mixlegend" style="display:flex;flex-wrap:wrap;gap:1rem;font-size:0.72rem;color:var(--text-light);margin-bottom:1.5rem"></div>
         <div id="fw-blocks" style="display:grid;gap:0.6rem;margin-bottom:1.25rem"></div>
         <p style="font-size:0.78rem;color:var(--text-light);line-height:1.55;margin-bottom:1.1rem">Our starting point, not a tested prescription. The percentages are our judgment, not research findings. Warm-up counts as play time when the warm-up is a game. Adjust for what your team needs this week.</p>
-        <button class="btn btn-primary btn-sm" onclick="fwPrint()">Print / Save the blueprint</button>
+        <button class="btn btn-primary btn-sm" data-gate onclick="fwPrint()">Print / Save the blueprint</button>
       </div>
     </div>
 
@@ -154,7 +156,8 @@
         <li><a href="practice.html">Practice in a Pinch</a></li>
         <li><a href="framework.html">Practice Framework</a></li>
         <li><a href="lineup.html">Lineup Builder</a></li>
-        <li><a href="training.html">Training</a></li>
+        <li><a href="athlete.html">Athlete Plan</a></li>
+        <li><a href="training.html">Train</a></li>
       </ul>
     </div>
     <div class="footer-links">
@@ -178,7 +181,7 @@
 .fw-q-label { color:var(--gold); font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.5rem; }
 </style>
 
-<script src="js/email-gate.js" data-mode="page"></script>
+<script src="js/email-gate.js" data-mode="actions"></script>
 <script src="js/site.js"></script>
 <script>
 (function(){
@@ -281,7 +284,7 @@
         +'<td style="padding:9px 11px;border:1px solid #888"><b>'+x.name.replace('&amp;','&')+'</b><div style="font-size:11px;color:#444;margin-top:2px">'+x.desc+'</div>'
         +'<div style="margin-top:6px;border:1px dashed #aaa;border-radius:4px;height:26px"></div></td></tr>';
     }).join('');
-    var html='<!DOCTYPE html><html><head><title>Practice Blueprint | DugoutLab</title></head>'
+    var html='<!DOCTYPE html><html><head><title>Practice Framework | DugoutLab</title></head>'
       +'<body style="font-family:Helvetica,Arial,sans-serif;color:#111;max-width:720px;margin:24px auto;padding:0 18px">'
       +'<div style="border:2px solid #333;padding:6px 14px;display:inline-block;font-weight:bold;letter-spacing:1px">DUGOUTLAB &middot; PRACTICE BLUEPRINT</div>'
       +'<h1 style="font-size:21px;margin:16px 0 2px">'+b.label+' &middot; '+sk.label+' &middot; '+sp.label+' &middot; '+L+'-minute practice</h1>'
