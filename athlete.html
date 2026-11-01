@@ -186,6 +186,65 @@
   .pb { display: flex; justify-content: space-between; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); font-size: 0.95rem; }
   .pb:first-of-type { border-top: 0; }
   .pb b { font-weight: 700; color: var(--acc2); font-variant-numeric: tabular-nums; }
+  /* dashboard */
+  .sheet { max-height: 88vh; overflow-y: auto; }
+  .sx { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); font-size: 1.3rem; line-height: 1; color: var(--ink2); }
+  .hero.win { display: block; width: 100%; text-align: left; color: var(--ink); }
+  .hero.win .big { font-size: clamp(1.9rem, 8.5vw, 2.6rem); }
+  .hero.win .tag { font-size: clamp(1.05rem, 4.6vw, 1.3rem); }
+  .also { display: flex; flex-direction: column; gap: 4px; margin-top: 16px; font-size: 0.85rem; color: var(--ink2); }
+  .ring-row { display: flex; align-items: center; gap: 14px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .pring { --p: 0; width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; background: conic-gradient(var(--gold) calc(var(--p) * 1%), rgba(244,239,230,0.1) 0); }
+  .pring span { width: 42px; height: 42px; border-radius: 50%; background: #1a3024; display: grid; place-items: center; font-family: var(--mono); font-size: 0.72rem; }
+  .kgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .kt { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px 14px; text-align: left; min-height: 92px; display: flex; flex-direction: column; justify-content: space-between; transition: border-color 0.15s; }
+  .kt:active, .kt:hover, .tile:hover, .mrow:hover, .drow:hover, .hotc:hover { border-color: var(--accline); }
+  .kt b { font-family: var(--serif); font-size: 2rem; font-weight: 600; line-height: 1; }
+  .kt b small { font-size: 1rem; color: var(--ink3); }
+  .kt i { font-style: normal; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink3); margin-top: 10px; }
+  .fbar { display: flex; height: 14px; border-radius: 7px; overflow: hidden; gap: 2px; margin-top: 10px; background: rgba(244,239,230,0.06); }
+  .fbar span { min-width: 0; } .fe, i.fe { background: var(--grn2); } .fo, i.fo { background: var(--gold); } .fh, i.fh { background: #a35a3c; }
+  .cal-wrap { display: flex; gap: 6px; margin-top: 16px; }
+  .cal-d { display: grid; grid-template-rows: repeat(7, 1fr); gap: 4px; }
+  .cal-d i { font-style: normal; font-family: var(--mono); font-size: 0.55rem; color: var(--ink3); line-height: 1; display: flex; align-items: center; }
+  .cal { flex: 1; display: grid; grid-template-rows: repeat(7, 1fr); grid-auto-flow: column; gap: 4px; }
+  .cal-c { aspect-ratio: 1; border-radius: 4px; background: rgba(244,239,230,0.06); min-width: 0; }
+  .cal-c.c-s, .leg i.c-s { background: var(--gold); }
+  .cal-c.c-t, .leg i.c-t { background: #7ad6a8; }
+  .cal-c.c-u, .leg i.c-u { background: var(--grn2); }
+  .cal-c.c-now { outline: 2px solid var(--ink); outline-offset: 1px; }
+  .cal-c.c-fut { opacity: 0.25; cursor: default; }
+  .leg { display: flex; gap: 16px; margin-top: 12px; font-size: 0.75rem; color: var(--ink3); }
+  .leg i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .hotc { display: flex; flex-direction: column; gap: 6px; width: 100%; text-align: left; color: var(--ink); border-color: var(--accline); background: linear-gradient(135deg, rgba(200,134,46,0.12), var(--card) 70%); }
+  .tgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .tile { border: 1px solid var(--line); border-radius: 14px; padding: 12px; text-align: left; display: flex; flex-direction: column; gap: 6px; background: var(--bg2); }
+  .tile .eb { font-size: 0.56rem; letter-spacing: 0.12em; }
+  .tile b { font-family: var(--serif); font-size: 1.4rem; font-weight: 600; line-height: 1; }
+  .tile small, .mb small { font-size: 0.75rem; color: var(--ink3); font-weight: 600; }
+  .tile small.up, .mb small.up { color: var(--gold-light); }
+  .spk { display: block; overflow: visible; }
+  .mrow { display: grid; grid-template-columns: 1fr 70px 56px; align-items: center; gap: 10px; width: 100%; padding: 12px 0; border-top: 1px solid var(--line); text-align: left; }
+  .mrow:first-of-type { border-top: 0; }
+  .mn { font-size: 0.95rem; font-weight: 600; line-height: 1.25; }
+  .mn small { display: block; font-size: 0.75rem; color: var(--ink3); font-weight: 500; margin-top: 2px; }
+  .mb { text-align: right; font-weight: 700; color: var(--acc2); font-variant-numeric: tabular-nums; display: flex; flex-direction: column; }
+  .drow { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; padding: 13px 0; border-top: 1px solid var(--line); text-align: left; font-size: 0.93rem; }
+  .dcard { border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-top: 14px; background: var(--bg2); }
+  .dcard .muted { margin-top: 4px; }
+  .note { font-family: var(--serif); font-style: italic; color: var(--ink2); margin-top: 10px; }
+  .cue { font-family: var(--serif); font-style: italic; font-size: 1.1rem; color: var(--gold-light); margin-top: 6px; }
+  .kpis { display: grid; gap: 8px; margin-top: 16px; } .kpis.k3 { grid-template-columns: repeat(3, 1fr); }
+  .kpis div { background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 12px 8px; text-align: center; }
+  .kpis b { display: block; font-family: var(--serif); font-size: 1.3rem; font-weight: 600; line-height: 1.1; }
+  .kpis i { font-style: normal; font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink3); display: block; margin-top: 6px; }
+  .bigchart { margin-top: 16px; background: var(--bg2); border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
+  .bigchart svg { width: 100%; height: 130px; }
+  .pbtag { font-style: normal; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; background: var(--acc); color: #0F1F18; border-radius: 4px; padding: 2px 5px; margin-left: 6px; }
+  .wrow { display: grid; grid-template-columns: 1fr 90px 36px; align-items: center; gap: 10px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 0.88rem; }
+  .wbar { height: 8px; border-radius: 4px; background: rgba(244,239,230,0.08); overflow: hidden; }
+  .wbar span { display: block; height: 100%; background: var(--grn2); } .wbar span.full { background: var(--gold); }
+  .wrow b { text-align: right; font-variant-numeric: tabular-nums; }
   .hist { padding: 14px 0; border-top: 1px solid var(--line); font-size: 0.92rem; color: var(--ink2); line-height: 1.5; }
   .hist b { color: var(--ink); }
   .banner { border-radius: 18px; padding: 20px; color: #0a1610; margin-top: 14px; }
@@ -776,20 +835,161 @@
   }
 
   /* ---------- PROGRESS ---------- */
+  /* ---------- PROGRESS (player dashboard, every tile drills in) ---------- */
+  function doneSess(a) { return a.entries.filter(function (e) { return e.kind === 'session' && e.data && e.data.done; }); }
+  function bestStreak(a) {
+    var d = {}; doneSess(a).forEach(function (e) { d[e.date] = 1; });
+    var ks = Object.keys(d).sort(), best = 0, run = 0, prev = null;
+    ks.forEach(function (k) { run = prev && P.addDays(prev, 1) === k ? run + 1 : 1; best = Math.max(best, run); prev = k; });
+    return best;
+  }
+  function monOf(s) { var d = new Date(s + 'T12:00:00'); return P.addDays(s, -((d.getDay() + 6) % 7)); }
+  function weekStreak(a, need) {
+    var c = {}; doneSess(a).forEach(function (e) { var m = monOf(e.date); c[m] = (c[m] || 0) + 1; });
+    var m = monOf(today()), n = 0;
+    if ((c[m] || 0) >= need) n++;
+    m = P.addDays(m, -7);
+    while ((c[m] || 0) >= need) { n++; m = P.addDays(m, -7); }
+    return n;
+  }
+  function moveName(k) { var id = k.split(':').slice(1).join(':'); var m = (R.LIB || []).filter(function (x) { return x.id === id; })[0]; return m ? m.name : id; }
+  function moveHist(a, k) {
+    var o = []; doneSess(a).forEach(function (e) {
+      var rows = e.data.sets && e.data.sets[k]; if (!rows) return;
+      var dn = rows.filter(function (r) { return r.done; }); if (!dn.length) return;
+      var vs = dn.filter(function (r) { return r.v != null; }).map(function (r) { return r.v; });
+      o.push({ date: e.date, best: vs.length ? Math.max.apply(null, vs) : null, sets: dn.length, vals: vs });
+    });
+    return o;
+  }
+  function unitOf(plan, k) { var u = ''; plan.sessions.forEach(function (s) { s.blocks.forEach(function (b) { b.items.forEach(function (it) { if (keyOf(b, it) === k) { var d = parseDose(it.dose); u = d.unit === 'sec' ? 'sec' : d.unit === 'reps' ? 'reps' : ''; } }); }); }); return u; }
+  function spark(vals, down, w, h, big) {
+    w = w || 96; h = h || 30;
+    if (!vals.length) return '';
+    if (vals.length === 1) return '<svg class="spk" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '"><circle cx="' + (w - 4) + '" cy="' + (h / 2) + '" r="3.5" fill="var(--gold)"/></svg>';
+    var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals), rg = mx - mn || 1, pd = big ? 10 : 4;
+    var pts = vals.map(function (v, i) { var y = (v - mn) / rg; if (down) y = 1 - y; return [pd + i * (w - 2 * pd) / (vals.length - 1), h - pd - y * (h - 2 * pd)]; });
+    var line = pts.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+    var area = 'M' + pts[0][0].toFixed(1) + ',' + (h - pd) + ' L' + line.split(' ').join(' L') + ' L' + pts[pts.length - 1][0].toFixed(1) + ',' + (h - pd) + ' Z';
+    var last = pts[pts.length - 1];
+    return '<svg class="spk" viewBox="0 0 ' + w + ' ' + h + '" width="' + (big ? '100%' : w) + '" height="' + (big ? 'auto' : h) + '" preserveAspectRatio="none">' +
+      '<path d="' + area + '" fill="rgba(200,134,46,0.14)"/><polyline points="' + line + '" fill="none" stroke="var(--gold)" stroke-width="' + (big ? 2.5 : 1.8) + '" stroke-linejoin="round" stroke-linecap="round"/>' +
+      (big ? pts.map(function (p) { return '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3" fill="var(--forest2)" stroke="var(--gold)" stroke-width="2"/>'; }).join('') : '') +
+      '<circle cx="' + last[0].toFixed(1) + '" cy="' + last[1].toFixed(1) + '" r="' + (big ? 5 : 3.5) + '" fill="var(--gold-light)"/></svg>';
+  }
+  var FEEL = { easy: 'Easy', ok: 'Just right', hard: 'Hard' };
+  function sessRow(e) { return '<button type="button" class="drow" data-day="' + e.date + '"><span><b>Session ' + esc(e.data.tag) + '</b> &middot; ' + esc(nice(e.date)) + '</span><span class="muted">' + esc(FEEL[e.data.feel] || '') + (e.data.items ? ' &middot; ' + esc(e.data.items) : '') + ' &rsaquo;</span></button>'; }
+  function sheetHead(eb, h) { return '<div class="row"><div class="eb acc">' + eb + '</div><button type="button" class="sx" id="sx" aria-label="Close">&times;</button></div><div class="h2" style="margin-top:8px">' + h + '</div>'; }
+  function wireSheet(a) {
+    if ($('sx')) $('sx').addEventListener('click', closeSheet);
+    each($('sheet-body').querySelectorAll('[data-day]'), function (b) { b.addEventListener('click', function () { dayDrill(a, b.getAttribute('data-day')); }); });
+    each($('sheet-body').querySelectorAll('[data-move]'), function (b) { b.addEventListener('click', function () { moveDrill(a, b.getAttribute('data-move')); }); });
+  }
+  function dayDrill(a, d) {
+    var es = a.entries.filter(function (e) { return e.date === d && !(e.kind === 'session' && !e.data.done); });
+    var body = es.map(function (e) {
+      if (e.kind === 'session') return '<div class="dcard"><div class="row"><b>Session ' + esc(e.data.tag) + '</b><span class="chip on" style="pointer-events:none">' + esc(FEEL[e.data.feel] || 'Done') + '</span></div>' +
+        '<p class="muted">' + esc(e.data.name || '') + (e.data.minutes ? ' &middot; ' + e.data.minutes + ' min' : '') + (e.data.items ? ' &middot; ' + esc(e.data.items) + ' sets' : '') + '</p>' +
+        (e.data.sets ? Object.keys(e.data.sets).filter(function (k) { return e.data.sets[k].some(function (r) { return r.done; }); }).map(function (k) { var v = e.data.sets[k].filter(function (r) { return r.done; }).map(function (r) { return r.v != null ? r.v : '&#10003;'; }); return '<button type="button" class="drow" data-move="' + esc(k) + '"><span>' + esc(moveName(k)) + '</span><span class="muted">' + v.join(' &middot; ') + ' &rsaquo;</span></button>'; }).join('') : '') +
+        (e.data.note ? '<p class="note">&ldquo;' + esc(e.data.note) + '&rdquo;</p>' : '') + '</div>';
+      if (e.kind === 'test') return '<div class="dcard"><b>Test day' + (e.data.skipped ? ' (skipped)' : '') + '</b>' + R.TESTS.filter(function (t) { return e.data.results[t.id] != null; }).map(function (t) { return '<div class="pb"><span>' + esc(t.name) + '</span><b>' + esc(fmt(t, e.data.results[t.id])) + '</b></div>'; }).join('') + '</div>';
+      if (e.kind === 'update') return '<div class="dcard"><b>Update</b><p class="muted">' + esc(e.data.text || '') + '</p></div>';
+      if (e.kind === 'checkin') return '<div class="dcard"><b>Weekly check-in</b><p class="muted">' + esc((e.data.summary && e.data.summary.line) || e.data.note || 'Done') + '</p></div>';
+      return '';
+    }).join('');
+    openSheet(sheetHead(esc(nice(d)), es.length ? 'What happened' : 'A rest day') + (body || '<p class="muted" style="margin-top:10px">Rest is part of the plan. Play counts too.</p>'));
+    wireSheet(a);
+  }
+  function moveDrill(a, k) {
+    var plan = planOf(a), h = moveHist(a, k), u = unitOf(plan, k), vals = h.filter(function (x) { return x.best != null; }).map(function (x) { return x.best; });
+    var best = vals.length ? Math.max.apply(null, vals) : null, first = vals[0], last = vals[vals.length - 1];
+    var m = (R.LIB || []).filter(function (x) { return x.id === k.split(':').slice(1).join(':'); })[0];
+    openSheet(sheetHead('Move', esc(moveName(k))) +
+      (m && m.cue ? '<p class="cue">' + esc(m.cue) + '</p>' : '') +
+      '<div class="kpis k3"><div><b>' + (best != null ? best : h.length) + '</b><i>' + (best != null ? 'best ' + u : 'times done') + '</i></div><div><b>' + h.length + '</b><i>sessions</i></div><div><b>' + (vals.length > 1 ? (last - first > 0 ? '+' : '') + (last - first) : '-') + '</b><i>since first</i></div></div>' +
+      (vals.length > 1 ? '<div class="bigchart">' + spark(vals, false, 320, 120, true) + '</div>' : '<p class="muted" style="margin-top:12px">Log a number on this move twice and the line shows up.</p>') +
+      '<div class="eb" style="margin-top:18px">Every time</div>' + h.slice().reverse().map(function (x) { return '<button type="button" class="drow" data-day="' + x.date + '"><span>' + esc(nice(x.date)) + (x.best != null && x.best === best ? ' <em class="pbtag">PB</em>' : '') + '</span><span class="muted">' + (x.vals.length ? x.vals.join(' &middot; ') : x.sets + ' sets') + ' &rsaquo;</span></button>'; }).join(''));
+    wireSheet(a);
+  }
+  function testDrill(a, id) {
+    var t = R.TESTS.filter(function (x) { return x.id === id; })[0], h = testHist(a).filter(function (e) { return e.data.results[id] != null; });
+    var vals = h.map(function (e) { return e.data.results[id]; }), b = bestTest(a, t), first = vals[0], last = vals[vals.length - 1];
+    var d = vals.length > 1 ? (t.better === 'down' ? first - last : last - first) : 0;
+    openSheet(sheetHead('Test day', esc(t.name)) + '<p class="cue">' + esc(t.cue) + '</p>' +
+      '<div class="kpis k3"><div><b>' + esc(fmt(t, last)) + '</b><i>latest</i></div><div><b>' + esc(fmt(t, b)) + '</b><i>best</i></div><div><b>' + (vals.length > 1 ? (d > 0 ? '&#9650; ' : d < 0 ? '&#9660; ' : '') + (t.dec ? Math.abs(d).toFixed(t.dec) : Math.abs(d)) : '-') + '</b><i>since first</i></div></div>' +
+      (vals.length > 1 ? '<div class="bigchart">' + spark(vals, t.better === 'down', 320, 120, true) + '</div>' : '<p class="muted" style="margin-top:12px">Baseline set. Next block draws the line.</p>') +
+      '<div class="eb" style="margin-top:18px">By block</div>' + h.slice().reverse().map(function (e) { var v = e.data.results[id]; return '<button type="button" class="drow" data-day="' + e.date + '"><span>Block ' + pad2(e.data.blockNo) + ' &middot; ' + esc(nice(e.date)) + (v === b ? ' <em class="pbtag">PB</em>' : '') + '</span><span><b>' + esc(fmt(t, v)) + '</b> &rsaquo;</span></button>'; }).join('') +
+      '<details class="src"><summary>How to test it</summary><p class="muted" style="margin-top:8px">' + esc(t.how) + '</p></details>');
+    wireSheet(a);
+  }
   function viewProgress(a) {
-    var plan = planOf(a), ws = weekSum(a, plan), sess = a.entries.filter(function (e) { return e.kind === 'session' && e.data.done; });
-    var rows = a.history.filter(function (h) { return h.summary; }).slice(-5).map(function (h) { return { l: 'W' + h.summary.weekNo, d: h.summary.done, p: h.summary.planned }; });
-    rows.push({ l: 'Now', d: ws.done, p: plan.days, cur: true });
-    var best = {}, names = {};
-    plan.sessions.forEach(function (s) { s.blocks.forEach(function (b) { b.items.forEach(function (it) { names[keyOf(b, it)] = it.name; }); }); });
-    sess.forEach(function (e) { if (!e.data.sets) return; Object.keys(e.data.sets).forEach(function (k) { e.data.sets[k].forEach(function (r) { if (r.done && r.v != null && (best[k] == null || r.v > best[k])) best[k] = r.v; }); }); });
+    var plan = planOf(a), ws = weekSum(a, plan), sess = doneSess(a), st = streak(a), bst = bestStreak(a), wks = weekStreak(a, plan.days);
     var feels = { easy: 0, ok: 0, hard: 0 }; sess.forEach(function (e) { if (feels[e.data.feel] != null) feels[e.data.feel]++; });
-    M.innerHTML = '<div class="eb acc">Progress</div><div class="h1">Beat yourself.</div><p class="sub">Only compared to ' + esc(a.profile.nickname) + '\'s own past. Never to anyone else.</p>' +
-      '<div class="stats"><div class="stat"><b>' + sess.length + '</b><i>sessions</i></div><div class="stat"><b>' + streak(a) + '</b><i>day streak</i></div><div class="stat"><b>' + (sess.length ? Math.round(100 * feels.easy / sess.length) : 0) + '%</b><i>felt easy</i></div></div>' +
-      '<div class="card"><div class="row"><span class="eb">Sessions by week</span><span class="muted">done / planned</span></div><div class="bars">' + rows.map(function (r) { var pc = r.p ? Math.round(100 * Math.min(1, r.d / r.p)) : 0; return '<div class="bar"><span class="' + (r.cur ? 'cur' : '') + '" style="height:' + Math.max(4, pc) + '%"></span><i>' + esc(r.l) + ' ' + r.d + '/' + r.p + '</i></div>'; }).join('') + '</div></div>' +
-      testsCard(a) +
-      '<div class="card"><div class="eb">Personal bests</div>' + (Object.keys(best).length ? Object.keys(best).filter(function (k) { return names[k]; }).map(function (k) { return '<div class="pb"><span>' + esc(names[k]) + '</span><b>' + best[k] + '</b></div>'; }).join('') : '<p class="muted" style="margin-top:8px">Log your first session. Every number you enter becomes a mark to beat.</p>') + '</div>' +
-      '<div class="card"><div class="eb">Plan history</div>' + (a.history.length ? a.history.slice().reverse().slice(0, 8).map(function (h) { return '<div class="hist"><b>v' + h.version + ' &middot; ' + esc(nice(h.date)) + '</b>' + (h.summary ? ' &middot; ' + esc(h.summary.line) : '') + (h.changes.length ? '<br>' + h.changes.map(function (c) { return esc(c.text); }).join('<br>') : '') + '</div>'; }).join('') : '<p class="muted" style="margin-top:8px">Version 1. Every change shows up here with the reason.</p>') + '</div>' + foot();
+    var bd = blockDone(a), bt = plan.days * 4, trained = {}; sess.forEach(function (e) { trained[e.date] = 1; });
+    /* next win */
+    var wins = [];
+    if (a.live) wins.push(['Finish Session ' + plan.sessions[a.live.idx].tag, 'It is saved right where you left it.', 'train']);
+    if (testDue(a)) wins.push([testHist(a).length ? 'Beat your test numbers' : 'Set your baseline', 'Test day is open this block. About 10 minutes.', 'test']);
+    var left = Math.max(0, plan.days - ws.done);
+    if (left) wins.push([left === 1 ? 'One session banks the week' : left + ' sessions bank the week', 'Hit it and the week streak goes to ' + (wks + (ws.done >= plan.days ? 0 : 1)) + '.', 'train']);
+    else wins.push(['Week banked', 'Everything else this week is a bonus. Go play.', null]);
+    if (st && !trained[today()]) wins.push(['Keep the ' + st + '-day run alive', 'Any session today makes it ' + (st + 1) + '.', 'train']);
+    var w0 = wins[0];
+    /* calendar: 12 weeks, Mon start */
+    var start = P.addDays(monOf(today()), -77), kinds = {};
+    a.entries.forEach(function (e) { if (e.kind === 'session' && !e.data.done) return; var k = kinds[e.date] || {}; k[e.kind] = 1; kinds[e.date] = k; });
+    var cells = '';
+    for (var c = 0; c < 84; c++) {
+      var dd = P.addDays(start, c), k = kinds[dd] || {}, fut = dd > today();
+      var cls = k.session ? 'c-s' : k.test ? 'c-t' : (k.update || k.checkin) ? 'c-u' : '';
+      cells += '<button type="button" class="cal-c ' + cls + (dd === today() ? ' c-now' : '') + (fut ? ' c-fut' : '') + '"' + (fut ? ' disabled' : ' data-day="' + dd + '"') + ' aria-label="' + esc(nice(dd)) + '"></button>';
+    }
+    /* tests */
+    var th = testHist(a), tests = R.TESTS.map(function (t) {
+      var vals = th.filter(function (e) { return e.data.results[t.id] != null; }).map(function (e) { return e.data.results[t.id]; });
+      if (!vals.length) return '';
+      var f = vals[0], l = vals[vals.length - 1], d = t.better === 'down' ? f - l : l - f;
+      return '<button type="button" class="tile" data-test="' + t.id + '"><span class="eb">' + esc(t.name.replace(' in 20 seconds', '').replace(' in 30 seconds', '')) + '</span><b>' + esc(fmt(t, l)) + '</b>' + spark(vals, t.better === 'down') +
+        '<small class="' + (d > 0 ? 'up' : '') + '">' + (vals.length > 1 ? (d > 0 ? '&#9650; ' : d < 0 ? '&#9660; ' : '') + (d === 0 ? 'Same as first' : (t.dec ? Math.abs(d).toFixed(t.dec) : Math.abs(d)) + ' ' + t.unit) : 'Baseline') + '</small></button>';
+    }).join('');
+    /* moves */
+    var keys = {}; sess.forEach(function (e) { if (e.data.sets) Object.keys(e.data.sets).forEach(function (k) { keys[k] = 1; }); });
+    var moves = Object.keys(keys).map(function (k) { var h = moveHist(a, k), v = h.filter(function (x) { return x.best != null; }).map(function (x) { return x.best; }); return { k: k, n: h.length, vals: v, best: v.length ? Math.max.apply(null, v) : null, gain: v.length > 1 ? v[v.length - 1] - v[0] : 0 }; })
+      .filter(function (m) { return m.n; }).sort(function (x, y) { return (y.vals.length > 1) - (x.vals.length > 1) || y.gain - x.gain || y.n - x.n; });
+    var hot = moves.filter(function (m) { return m.gain > 0; })[0];
+    var mvRow = function (m) { return '<button type="button" class="mrow" data-move="' + esc(m.k) + '"><span class="mn">' + esc(moveName(m.k)) + '<small>' + m.n + (m.n === 1 ? ' session' : ' sessions') + '</small></span>' + spark(m.vals, false, 70, 26) + '<span class="mb">' + (m.best != null ? m.best : '&#10003;') + (m.gain > 0 ? '<small class="up">+' + m.gain + '</small>' : '') + '</span></button>'; };
+    var fs = sess.length || 1;
+    M.innerHTML = '<div class="eb acc">Dashboard</div><div class="h1">Beat yourself.</div><p class="sub">Every number here is ' + esc(a.profile.nickname) + ' against ' + esc(a.profile.nickname) + '. Tap anything to dig in.</p>' +
+      '<button type="button" class="hero win" id="d-win"' + (w0[2] ? '' : ' disabled') + '><div class="row"><div class="pill"><i></i>Next win</div><div class="count">' + pad2(bd) + '<small> / ' + pad2(bt) + '</small></div></div>' +
+      '<div class="big">' + esc(w0[0]) + '</div><div class="tag">' + esc(w0[1]) + '</div>' +
+      (wins.length > 1 ? '<div class="also">' + wins.slice(1, 3).map(function (w) { return '<span>Then: ' + esc(w[0]) + '</span>'; }).join('') + '</div>' : '') +
+      '<div class="ring-row"><div class="pring" style="--p:' + Math.round(100 * Math.min(1, bd / (bt || 1))) + '"><span>' + Math.round(100 * Math.min(1, bd / (bt || 1))) + '%</span></div><p class="muted">Block ' + pad2(plan.blockNo) + ' done. Week ' + pad2(plan.weekNo) + ' of 04.</p></div></button>' +
+      '<div class="kgrid">' +
+        '<button type="button" class="kt" data-k="sess"><b>' + sess.length + '</b><i>sessions</i></button>' +
+        '<button type="button" class="kt" data-k="streak"><b>' + st + '<small> / ' + bst + '</small></b><i>day streak / best</i></button>' +
+        '<button type="button" class="kt" data-k="weeks"><b>' + wks + '</b><i>weeks on plan</i></button>' +
+        '<button type="button" class="kt" data-k="feel"><div class="fbar"><span style="flex:' + feels.easy + '" class="fe"></span><span style="flex:' + feels.ok + '" class="fo"></span><span style="flex:' + feels.hard + '" class="fh"></span>' + (sess.length ? '' : '<span style="flex:1"></span>') + '</div><i>how it felt</i></button>' +
+      '</div>' +
+      '<div class="card"><div class="row"><span class="eb">Last 12 weeks</span><span class="muted">tap a day</span></div><div class="cal-wrap"><div class="cal-d"><i>M</i><i></i><i>W</i><i></i><i>F</i><i></i><i>S</i></div><div class="cal">' + cells + '</div></div>' +
+        '<div class="leg"><span><i class="c-s"></i>Session</span><span><i class="c-t"></i>Test day</span><span><i class="c-u"></i>Update</span></div></div>' +
+      (hot ? '<button type="button" class="card hotc" data-move="' + esc(hot.k) + '"><span class="eb acc">Most improved</span><span class="h2">' + esc(moveName(hot.k)) + '</span><span class="muted">Up ' + hot.gain + ' from the first time. That is the work showing up.</span></button>' : '') +
+      '<div class="card"><div class="row"><span class="eb">Test day</span><span class="muted">first &rarr; latest</span></div>' + (tests ? '<div class="tgrid">' + tests + '</div>' : '<p class="muted" style="margin-top:8px">Test day opens every block. The first one sets the baseline.</p>') + '</div>' +
+      '<div class="card"><div class="row"><span class="eb">Moves</span><span class="muted">best set</span></div>' + (moves.length ? moves.slice(0, 6).map(mvRow).join('') + (moves.length > 6 ? '<details class="src"><summary>All ' + moves.length + ' moves</summary>' + moves.slice(6).map(mvRow).join('') + '</details>' : '') : '<p class="muted" style="margin-top:8px">Log your first session. Every number you enter becomes a mark to beat.</p>') + '</div>' +
+      '<div class="card"><details class="src" style="margin-top:0"><summary>Plan history</summary>' + (a.history.length ? a.history.slice().reverse().slice(0, 8).map(function (h) { return '<div class="hist"><b>v' + h.version + ' &middot; ' + esc(nice(h.date)) + '</b>' + (h.summary ? ' &middot; ' + esc(h.summary.line) : '') + (h.changes.length ? '<br>' + h.changes.map(function (c) { return esc(c.text); }).join('<br>') : '') + '</div>'; }).join('') : '<p class="muted" style="margin-top:8px">Version 1. Every change shows up here with its reason.</p>') + '</details></div>' + foot();
+    if (w0[2]) $('d-win').addEventListener('click', function () { w0[2] === 'test' ? viewTest(a) : go('train'); });
+    each(M.querySelectorAll('.cal [data-day]'), function (b) { b.addEventListener('click', function () { dayDrill(a, b.getAttribute('data-day')); }); });
+    each(M.querySelectorAll('[data-test]'), function (b) { b.addEventListener('click', function () { testDrill(a, b.getAttribute('data-test')); }); });
+    each(M.querySelectorAll('[data-move]'), function (b) { b.addEventListener('click', function () { moveDrill(a, b.getAttribute('data-move')); }); });
+    each(M.querySelectorAll('.kt'), function (b) { b.addEventListener('click', function () {
+      var k = b.getAttribute('data-k'), rev = sess.slice().reverse();
+      if (k === 'sess') openSheet(sheetHead('All sessions', sess.length + ' banked') + (rev.map(sessRow).join('') || '<p class="muted" style="margin-top:10px">None yet. Session A is waiting.</p>'));
+      if (k === 'streak') openSheet(sheetHead('Streak', st ? st + ' days and counting' : 'Start a new run today') + '<div class="kpis k3"><div><b>' + st + '</b><i>now</i></div><div><b>' + bst + '</b><i>best ever</i></div><div><b>' + Object.keys(trained).length + '</b><i>days trained</i></div></div><p class="muted" style="margin-top:14px">Missing a day breaks nothing in the plan. The streak is just a game. Weeks on plan is the number that matters.</p>' + rev.slice(0, 10).map(sessRow).join(''));
+      if (k === 'weeks') { var c = {}; sess.forEach(function (e) { var m = monOf(e.date); c[m] = (c[m] || 0) + 1; }); var rows = ''; for (var i = 0; i < 8; i++) { var m = P.addDays(monOf(today()), -7 * i), n = c[m] || 0; rows += '<div class="wrow"><span>' + (i ? 'Week of ' + esc(nice(m)) : 'This week') + '</span><div class="wbar"><span style="width:' + Math.min(100, Math.round(100 * n / plan.days)) + '%" class="' + (n >= plan.days ? 'full' : '') + '"></span></div><b>' + n + '/' + plan.days + '</b></div>'; } openSheet(sheetHead('Weeks on plan', wks + (wks === 1 ? ' week' : ' weeks') + ' in a row') + '<p class="muted" style="margin-top:8px">A week counts when ' + plan.days + ' sessions get done. Two real days beat four imaginary ones.</p>' + rows); }
+      if (k === 'feel') openSheet(sheetHead('How it felt', sess.length ? 'Mostly ' + esc(FEEL[Object.keys(feels).sort(function (x, y) { return feels[y] - feels[x]; })[0]]).toLowerCase() : 'No sessions yet') +
+        '<div class="kpis k3"><div><b>' + Math.round(100 * feels.easy / fs) + '%</b><i>easy</i></div><div><b>' + Math.round(100 * feels.ok / fs) + '%</b><i>just right</i></div><div><b>' + Math.round(100 * feels.hard / fs) + '%</b><i>hard</i></div></div>' +
+        '<p class="muted" style="margin-top:14px">Mostly easy for two weeks? The check-in can nudge it up. Mostly hard? It eases off. The plan listens.</p>' + rev.slice(0, 12).map(sessRow).join(''));
+      wireSheet(a);
+    }); });
   }
 
   function testsCard(a) {
