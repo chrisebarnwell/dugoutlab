@@ -79,10 +79,14 @@ text, so primary buttons look identical everywhere.
 
 ## Brand elements
 
-- **The mark:** the gold slab D with a home-plate counter
-  (`assets/brand/mark.svg`, `favicon.svg`, `apple-touch-icon.png`,
+- **The mark (Field Geometry):** cream diamond and bases, gold outfield arc, gold
+  mound, on forest with a faint graph-paper grid. `dugoutlab-icon.svg` (512,
+  full grid and drafting lines), `dugoutlab-icon-compact.svg` (64, coarse
+  grid, heavier strokes; also `mark.svg` for nav and footer), `favicon.svg`
+  (16 to 32, solid diamond, no grid). PNGs: `icon-16/32/64/180/192/512.png`,
+  `apple-touch-icon.png` (full-bleed). `site.webmanifest` at the root.
   `logo.svg` on forest, `logo-cream.svg` on cream, `mark-forest.svg` for
-  one-color print).
+  one-color print. No lettering, stitching, shields, or flasks in the mark.
 - **Diamond geometry:** a rotated gold square marks steps, bullets, and the
   TL;DR. `field-lines.svg` puts faint base paths behind heroes.
 - **Scorebook details:** ruled paper on the homepage practice card, mono
