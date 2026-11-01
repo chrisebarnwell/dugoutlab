@@ -124,6 +124,24 @@
   .setacts { display: flex; gap: 18px; margin-top: 8px; font-weight: 600; font-size: 0.82rem; color: var(--ink3); }
   .setacts button { display: inline-flex; align-items: center; gap: 6px; }
   .setacts svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+  .stack { position: relative; margin-top: 12px; padding-bottom: 4px; }
+  .stack .ex { position: relative; margin-top: -16px; cursor: default; box-shadow: 0 -10px 22px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.04); background: linear-gradient(180deg, #213a2b 0%, var(--card) 60px); transition: margin 0.32s cubic-bezier(.2,.8,.2,1), transform 0.32s cubic-bezier(.2,.8,.2,1), box-shadow 0.32s, border-color 0.32s; }
+  .stack .ex:first-child { margin-top: 0; }
+  .stack .ex-h { cursor: pointer; padding-bottom: 14px; -webkit-tap-highlight-color: transparent; }
+  .stack .ex:not(.open) { padding-bottom: 2px; }
+  .stack .ex:not(.open) .lastln { display: none; }
+  .stack .ex:not(.open):hover { transform: translateY(-3px); }
+  .ex-b { display: none; }
+  .stack .ex.open { margin-top: 14px; margin-bottom: 18px; transform: scale(1.02); border-color: var(--accline); box-shadow: 0 22px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(200,134,46,0.18); z-index: 5; }
+  .stack .ex.open:first-child { margin-top: 4px; }
+  .stack .ex.open .ex-b { display: block; animation: dealdown 0.32s cubic-bezier(.2,.8,.2,1); }
+  @keyframes dealdown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+  .stack .ex.complete:not(.open) { background: linear-gradient(180deg, #1c3125 0%, var(--card) 60px); }
+  .stack .ex.complete:not(.open) .ex-n { color: var(--ink2); }
+  .ex-p { margin-left: auto; flex-shrink: 0; font-family: var(--mono); font-size: 0.75rem; color: var(--ink3); border: 1px solid var(--line2); border-radius: 999px; padding: 4px 10px; display: inline-flex; align-items: center; }
+  .ex-p svg { width: 14px; height: 14px; stroke: var(--acc); fill: none; stroke-width: 3; }
+  .ex.complete .ex-p { border-color: var(--accline); }
+  @media (prefers-reduced-motion: reduce) { .stack .ex, .stack .ex.open .ex-b { transition: none; animation: none; } }
   .blk-h { margin-top: 22px; display: flex; align-items: center; gap: 10px; }
   .blk-h b { font-family: var(--mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
   .blk-h span { flex: 1; height: 1px; background: var(--line2); }
@@ -662,26 +680,44 @@
     if (!a.live || a.live.version !== a.state.version || !plan.sessions[a.live.idx]) { a.live = null; return trainPreview(a, plan); }
     var s = plan.sessions[a.live.idx], n = 0, html = '<div class="row"><span class="eb acc">Session ' + s.tag + ' &middot; ' + s.minutes + ' min</span><button type="button" class="btn-sm" id="tr-quit">Pause</button></div><div class="h1">' + esc(s.name) + '</div>';
     s.blocks.forEach(function (b, bi) {
-      html += '<div class="blk-h"><b>' + esc(b.name) + '</b><span></span><em>' + b.minutes + ' min' + (REST[b.key] ? ' &middot; ' + REST[b.key] + 's rest' : '') + '</em></div>';
+      html += '<div class="blk-h"><b>' + esc(b.name) + '</b><span></span><em>' + b.minutes + ' min' + (REST[b.key] ? ' &middot; ' + REST[b.key] + 's rest' : '') + '</em></div><div class="stack">';
       b.items.forEach(function (it, ii) {
         n++; var code = b.name.charAt(0) + (ii + 1), k = keyOf(b, it), d = parseDose(it.dose), rows = a.live.sets[k] || [], l = lastFor(a, k), all = rows.length && rows.every(function (r) { return r.done; });
         var lastTxt = l ? 'Last time (' + nice(l.date) + '): ' + l.sets.filter(function (r) { return r.done; }).map(function (r) { return r.v != null ? r.v : 'done'; }).join(', ') + (d.unit === 'sec' ? ' sec' : d.unit === 'reps' ? ' reps' : '') + '.' : 'First time on this one.';
         html += '<div class="ex' + (all ? ' complete' : '') + '" data-k="' + esc(k) + '" data-unit="' + d.unit + '" data-label="' + esc(d.label || '') + '" data-rest="' + REST[b.key] + '">' +
-          '<div class="ex-h"><div class="num">' + code + '</div><div><div class="eb">' + esc(b.key === 'warm' ? 'Prep' : b.key === 'move' ? 'Power' : b.key === 'strength' ? 'Strength' : 'Compete') + ' &middot; ' + esc(gearOf(it)) + '</div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + (REST[b.key] ? ' &middot; ' + REST[b.key] + 's rest' : '') + '</div>' + (l && (d.unit === 'reps' || d.unit === 'sec') ? '<div class="lastln">' + esc(lastTxt.replace('Last time ', 'Last ')) + '</div>' : '') + '</div></div>' +
+          '<div class="ex-h"><div class="num">' + code + '</div><div><div class="eb">' + esc(b.key === 'warm' ? 'Prep' : b.key === 'move' ? 'Power' : b.key === 'strength' ? 'Strength' : 'Compete') + ' &middot; ' + esc(gearOf(it)) + '</div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + (REST[b.key] ? ' &middot; ' + REST[b.key] + 's rest' : '') + '</div>' + (l && (d.unit === 'reps' || d.unit === 'sec') ? '<div class="lastln">' + esc(lastTxt.replace('Last time ', 'Last ')) + '</div>' : '') + '</div><span class="ex-p">' + prog(rows) + '</span></div><div class="ex-b">' +
           figSlot(it.id) + (it.cue ? '<p class="ex-cue">' + esc(it.cue) + '</p>' : '') + demoBtn(it.id) +
           
           '<div class="sets"><div class="sets-h"><span>SET</span><span>' + (d.unit === 'reps' ? 'REPS' + (d.each ? ' EACH SIDE' : '') : d.unit === 'sec' ? 'SECONDS' : 'TARGET') + '</span><span>DONE</span></div>' +
           rows.map(function (r, i) { return setRow(d, r, i); }).join('') + '</div>' +
-          (d.unit === 'reps' || d.unit === 'sec' ? '<div class="setacts"><button type="button" data-add>' + ICON.plus + 'Add set</button><button type="button" data-rm>Remove last</button></div>' : '') + '</div>';
+          (d.unit === 'reps' || d.unit === 'sec' ? '<div class="setacts"><button type="button" data-add>' + ICON.plus + 'Add set</button><button type="button" data-rm>Remove last</button></div>' : '') + '</div></div>';
       });
+      html += '</div>';
     });
     html += '<p class="foot">Stop any move that hurts. Sore is information, not a challenge.</p>';
     M.innerHTML = html;
     $('finish').classList.remove('hidden');
     $('tr-quit').addEventListener('click', function () { go('today'); });
     wireSets(a);
+    each(M.querySelectorAll('.stack .ex-h'), function (h) { h.addEventListener('click', function () { var c = h.parentNode; if (c.classList.contains('open')) { c.classList.remove('open'); } else openCard(c, true); save(); }); });
+    var keep = a.live.open && M.querySelector('.stack .ex[data-k="' + a.live.open + '"]');
+    openCard(keep && !keep.classList.contains('complete') ? keep : nextOpen(null), false);
     wireDemos();
     wake();
+  }
+  function prog(rows) { var dn = rows.filter(function (r) { return r.done; }).length; return dn === rows.length && rows.length ? ICON.check : dn + '/' + rows.length; }
+  function openCard(card, scroll) {
+    each(M.querySelectorAll('.stack .ex.open'), function (c) { if (c !== card) c.classList.remove('open'); });
+    if (!card) return;
+    card.classList.add('open'); if (a_live()) a_live().open = card.getAttribute('data-k');
+    if (scroll) setTimeout(function () { var y = card.getBoundingClientRect().top + window.pageYOffset - 90; window.scrollTo({ top: y, behavior: 'smooth' }); }, 60);
+  }
+  function a_live() { var a = cur(); return a && a.live; }
+  function nextOpen(after) {
+    var all = Array.prototype.slice.call(M.querySelectorAll('.stack .ex')), i = after ? all.indexOf(after) : -1;
+    for (var j = i + 1; j < all.length; j++) if (!all[j].classList.contains('complete')) return all[j];
+    for (j = 0; j < all.length; j++) if (!all[j].classList.contains('complete')) return all[j];
+    return null;
   }
   function gearOf(it) { var n = it.name.toLowerCase(); return /water bag/.test(n) ? 'Water bag' : /medicine/.test(n) ? 'Med ball' : /band/.test(n) ? 'Band' : /dumbbell/.test(n) ? 'Light dumbbell' : /box|step/.test(n) ? 'Step' : /bar\b/.test(n) ? 'Bar' : /rope/.test(n) ? 'Rope' : 'Bodyweight'; }
   function setRow(d, r, i) {
@@ -695,6 +731,7 @@
         var d = { unit: card.getAttribute('data-unit'), label: card.getAttribute('data-label') };
         card.querySelector('.sets').innerHTML = card.querySelector('.sets-h').outerHTML + rows.map(function (r, i) { return setRow(d, r, i); }).join('');
         card.classList.toggle('complete', rows.every(function (r) { return r.done; }));
+        var pg = card.querySelector('.ex-p'); if (pg) pg.innerHTML = prog(rows);
         bind();
       }
       function bind() {
@@ -704,7 +741,7 @@
           if (r.done && r.v == null && (card.getAttribute('data-unit') === 'reps' || card.getAttribute('data-unit') === 'sec')) { var prev = rows.filter(function (x) { return x.v != null; })[0]; r.v = prev ? prev.v : null; }
           save(); redraw();
           if (r.done && rest) startRest(rest);
-          if (r.done && rows.every(function (x) { return x.done; })) { var nx = card.nextElementSibling; while (nx && !nx.classList.contains('ex')) nx = nx.nextElementSibling; if (nx) setTimeout(function () { nx.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 250); }
+          if (r.done && rows.every(function (x) { return x.done; })) setTimeout(function () { card.classList.remove('open'); var nx = nextOpen(card); if (nx) openCard(nx, true); save(); }, 450);
         }); });
       }
       bind();
