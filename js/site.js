@@ -9,6 +9,12 @@ function toggleMenu() {
   if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
 }
 
+// Escape closes the phone menu and returns focus to its button
+document.addEventListener('keydown', function (e) {
+  var m = document.getElementById('mobile-menu');
+  if (e.key === 'Escape' && m && m.classList.contains('open')) { toggleMenu(); var b = document.getElementById('menu-btn'); if (b) b.focus(); }
+});
+
 // Close mobile menu on outside click
 document.addEventListener('click', function(e) {
   var menu = document.getElementById('mobile-menu');
@@ -348,4 +354,13 @@ DL.track = function (name) {
     var d = new Date().toISOString().slice(0, 10), last = localStorage.getItem('dl_seen');
     if (last !== d) { if (last) DL.track('return_visit'); localStorage.setItem('dl_seen', d); }
   } catch (e) {}
+})();
+// TL;DR seen: counted once per page view when the summary is actually on screen.
+(function () {
+  var t = document.querySelector('.tldr');
+  if (!t || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (es) {
+    if (es[0].isIntersecting) { DL.track('tldr_seen'); io.disconnect(); }
+  }, { threshold: 0.6 });
+  io.observe(t);
 })();

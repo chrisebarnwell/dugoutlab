@@ -19,8 +19,8 @@
 .pp-opts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .pp-opt { min-height: 48px; min-width: 64px; padding: 0.5rem 1rem; border: 1.5px solid var(--border); border-radius: 12px; background: var(--forest2); color: var(--ink); font: inherit; font-size: 1rem; font-weight: 600; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
 .pp-opt:hover { border-color: var(--gold); }
-.pp-opt.active { background: var(--brand-forest); color: #F7F3E9; border-color: var(--brand-forest); }
-.pp-opt.active::before { content: ""; display: inline-block; width: 7px; height: 7px; background: var(--fill); transform: rotate(45deg); margin-right: 0.5rem; vertical-align: 0.12em; }
+.pp-opt.active { background: var(--select-bg); color: var(--select-ink); border-color: var(--select-bg); }
+.pp-opt.active::before { content: ""; display: inline-block; width: 7px; height: 7px; background: var(--select-ink); transform: rotate(45deg); margin-right: 0.5rem; vertical-align: 0.12em; }
 .pp-sticky { position: sticky; bottom: 0; background: linear-gradient(to top, var(--bg) 70%, transparent); padding: 0.9rem 0 0.5rem; margin-top: 0.4rem; z-index: 5; }
 .pp-sticky[hidden] { display: none; }
 .pp-sticky .btn { width: 100%; justify-content: center; }
