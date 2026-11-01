@@ -58,6 +58,12 @@
 }
 .step-pip:hover { color: var(--ink-soft); background: var(--forest2); }
 .step-pip:last-child { border-right: none; }
+@media (max-width: 560px) {
+  .step-bar { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .step-pip { border-bottom: 1px solid var(--rule); min-height: 44px; font-size: 0.62rem; padding: 0.55rem 0.15rem; overflow-wrap: anywhere; }
+  .step-pip:nth-child(4n) { border-right: none; }
+  .step-pip:nth-child(n+5) { border-bottom: none; }
+}
 .step-pip.active {
   background: var(--fill);
   color: var(--forest);
@@ -547,7 +553,8 @@ select option { background: var(--forest-deep); color: var(--ink); }
 .mode-tab .mt-k { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
 .mode-tab .mt-t { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; margin: 0.2rem 0; }
 .mode-tab .mt-d { font-size: 0.84rem; color: var(--ink-soft); line-height: 1.45; }
-@media (max-width: 768px) { .mode-switch { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .mode-switch { grid-template-columns: 1fr; } .roster-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .roster-grid { grid-template-columns: 1fr; } .player-row { min-height: 48px; } .player-row input[type="text"] { min-width: 0; font-size: 16px; } .remove-btn { min-width: 36px; min-height: 36px; } }
 @media print { .mode-switch { display: none !important; } }
 </style>
 </head>

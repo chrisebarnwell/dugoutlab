@@ -275,7 +275,7 @@
     var saved = JSON.parse(localStorage.getItem('dl_practices_v1') || '[]');
     if (saved.length) {
       var el = document.getElementById('home-back');
-      el.textContent = 'Welcome back. Open "' + saved[0].title + '"';
+      el.textContent = 'Welcome back. Open "' + saved[0].title.replace(/-/g, '\u2011') + '"';
       el.hidden = false;
     }
   } catch (e) {}
