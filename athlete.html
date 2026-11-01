@@ -262,6 +262,12 @@
   .rev li input, .rev li select { background: var(--card); border: 1px solid var(--line2); border-radius: 8px; padding: 9px 10px; font-size: 0.95rem; max-width: 140px; }
   .tick { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; font-size: 0.92rem; color: var(--ink2); cursor: pointer; }
   .tick input { width: 22px; height: 22px; accent-color: var(--acc); flex: 0 0 22px; margin-top: 1px; }
+  .figdd { margin-top: 12px; }
+  .figdd summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--acc); padding: 8px 12px; border: 1px solid var(--accline); border-radius: 999px; }
+  .figdd summary::-webkit-details-marker { display: none; }
+  .figdd summary::before { content: "+"; font-size: 0.9rem; line-height: 1; }
+  .figdd[open] summary::before { content: "\2212"; }
+  .figdd[open] summary { color: var(--ink2); border-color: var(--line2); }
   .figslot { margin-top: 14px; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 12px; padding: 4px 8px; }
   .figslot.frames { padding: 0; aspect-ratio: 1 / 2; max-height: 300px; overflow: hidden; margin-left: auto; margin-right: auto; background-size: 200% 100%; background-repeat: no-repeat; background-position: 0 0; animation: flip 2.4s steps(1) infinite; }
   @keyframes flip { 0% { background-position: 0 0; } 50% { background-position: 100% 0; } }
@@ -569,13 +575,16 @@
   function bestTest(a, t) { var b = null; testHist(a).forEach(function (e) { var v = e.data.results[t.id]; if (v == null) return; if (b == null || (t.better === 'down' ? v < b : v > b)) b = v; }); return b; }
   function hasDemo(id) { return (window.DL_DEMOS || []).indexOf(id) >= 0; }
   function demoBtn(id) { return hasDemo(id) ? '<button type="button" class="btn-sm noprint" data-demo="' + esc(id) + '" style="margin-top:12px">&#9654; Watch</button>' : ''; }
-  function figSlot(id) { return (window.DL_FRAMES || []).indexOf(id) >= 0 && !hasDemo(id) ? '<div class="figslot frames" role="img" aria-label="Start and end position" data-src="assets/moves/' + esc(id) + '.webp"></div>' : ''; }
+  function figSlot(id) { return (window.DL_FRAMES || []).indexOf(id) >= 0 && !hasDemo(id) ? '<details class="figdd noprint"><summary>Show the movement</summary><div class="figslot frames" role="img" aria-label="Start and end position" data-src="assets/moves/' + esc(id) + '.webp"></div></details>' : ''; }
   function mountFigs() {
-    each(M.querySelectorAll('.frames[data-src]'), function (el) {
+    each(M.querySelectorAll('details.figdd'), function (dd) { dd.addEventListener('toggle', function () { if (dd.open) loadFig(dd.querySelector('.frames[data-src]')); }); });
+  }
+  function loadFig(el) {
+    [el].forEach(function (el) { if (!el) return;
       if (el.style.backgroundImage) return;
       var src = el.getAttribute('data-src'), im = new Image();
       im.onload = function () { el.style.aspectRatio = (im.naturalWidth / 2) + ' / ' + im.naturalHeight; el.style.backgroundImage = 'url(' + src + ')'; };
-      im.onerror = function () { el.parentNode && el.parentNode.removeChild(el); };
+      im.onerror = function () { var d = el.closest('details'); (d || el).parentNode && (d || el).parentNode.removeChild(d || el); };
       im.src = src;
     });
   }
