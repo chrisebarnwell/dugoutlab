@@ -48,8 +48,17 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS events (
     id TEXT PRIMARY KEY, account_id TEXT NOT NULL, type TEXT NOT NULL, name TEXT NOT NULL,
     data TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'live', winner TEXT NOT NULL DEFAULT '', created INTEGER NOT NULL, updated INTEGER NOT NULL)`,
-  `CREATE INDEX IF NOT EXISTS events_acct ON events(account_id, updated)`
+  `CREATE INDEX IF NOT EXISTS events_acct ON events(account_id, updated)`,
+  /* Product counts: daily totals per event and page. No account, no IP, no cookie, no row per visitor. */
+  `CREATE TABLE IF NOT EXISTS metrics (
+    day TEXT NOT NULL, name TEXT NOT NULL, page TEXT NOT NULL, n INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (day, name, page))`
 ];
+
+/* Only these events are counted. Anything else is ignored, so the table cannot be filled with junk. */
+const METRIC_EVENTS = new Set(['practice_built', 'practice_saved', 'practice_printed', 'practice_shared', 'practice_reflected',
+  'practice_reopened', 'practice_run', 'practice_shared_open', 'lineup_demo', 'lineup_built', 'tldr_seen', 'return_visit',
+  'home_cta_practice', 'home_cta_lineup', 'home_signup']);
 
 /* ---------- Pitch Tracker premium gate ----------
    Feature flag: Pages env var PITCH_PREMIUM_GATE = "on" locks coach tools to plan 'pro'.
@@ -97,7 +106,7 @@ const MIGRATIONS = [
   `ALTER TABLE pitch_sessions ADD COLUMN locs TEXT NOT NULL DEFAULT ''`,
   `ALTER TABLE rounds ADD COLUMN source TEXT NOT NULL DEFAULT ''`
 ];
-let migrated = false;
+let migrated = false, metricsReady = false;
 async function ensure(db) {
   for (const s of SCHEMA) await db.prepare(s).run();
   if (migrated) return;
@@ -396,6 +405,16 @@ export async function onRequest(ctx) {
       await ensure(db);
       const r = await db.prepare('INSERT OR IGNORE INTO subscribers (email,source,created) VALUES (?,?,?)').bind(email, source, now).run();
       if (r.meta && r.meta.changes) ctx.waitUntil(mirrorSub(env, email, source));
+      return json({ ok: true });
+    }
+
+    if (route === 'metric' && method === 'POST') {
+      const name = clean(body.e, 40), page = clean(body.p, 40).replace(/[^a-z0-9-]/g, '') || 'index';
+      if (!METRIC_EVENTS.has(name)) return json({ ok: true });
+      if (!metricsReady) { await db.prepare(SCHEMA[SCHEMA.length - 1]).run(); metricsReady = true; }
+      const day = new Date(now).toISOString().slice(0, 10);
+      await db.prepare('INSERT INTO metrics (day,name,page,n) VALUES (?,?,?,1) ON CONFLICT(day,name,page) DO UPDATE SET n = n + 1')
+        .bind(day, name, page).run();
       return json({ ok: true });
     }
 

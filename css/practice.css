@@ -1,0 +1,148 @@
+/* Practice in a Pinch. Paper surface by default; tokens make it work in dark mode too. */
+.pp-hero { padding: 2rem 1.25rem 1.6rem; }
+.pp-loop { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+.pp-loop li { display: inline-flex; gap: 0.4rem; align-items: baseline; font-size: 0.85rem; color: var(--ink-soft); padding: 0.35rem 0.75rem; border: 1px solid rgba(200,134,46,0.4); border-radius: 999px; }
+.pp-loop b { color: var(--gold); font-weight: 700; }
+.pp-wrap { max-width: 760px; margin: 0 auto; padding: 1rem 1.25rem 3rem; display: block; }
+
+.pp-resume { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 0.6rem; padding: 0.95rem 1.1rem; background: var(--forest2); border: 1px solid var(--rule); border-left: 4px solid var(--fill); border-radius: 4px 14px 14px 4px; box-shadow: var(--shadow); }
+.pp-resume[hidden] { display: none; }
+.pp-resume b { display: block; font-family: var(--serif); font-size: 1.08rem; }
+.pp-resume span { font-size: 0.9rem; color: var(--ink-soft); }
+
+.pp-form { margin: 0; }
+.pp-q { border: 1px solid var(--rule); background: var(--forest2); border-radius: var(--radius-lg); padding: 1rem 1.1rem 1.05rem; margin-top: 0.8rem; box-shadow: var(--shadow); min-width: 0; }
+.pp-q-label { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.65rem; padding: 0; float: left; width: 100%; }
+.pp-q-label + * { clear: both; }
+.pp-q-label .n { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.18em; color: var(--gold); }
+.pp-q-label .t { font-family: var(--serif); font-size: 1.18rem; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+.pp-opts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pp-opt { min-height: 48px; min-width: 64px; padding: 0.5rem 1rem; border: 1.5px solid var(--border); border-radius: 12px; background: var(--forest2); color: var(--ink); font: inherit; font-size: 1rem; font-weight: 600; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.pp-opt:hover { border-color: var(--gold); }
+.pp-opt.active { background: var(--brand-forest); color: #F7F3E9; border-color: var(--brand-forest); }
+.pp-opt.active::before { content: ""; display: inline-block; width: 7px; height: 7px; background: var(--fill); transform: rotate(45deg); margin-right: 0.5rem; vertical-align: 0.12em; }
+.pp-sticky { position: sticky; bottom: 0; background: linear-gradient(to top, var(--bg) 70%, transparent); padding: 0.9rem 0 0.5rem; margin-top: 0.4rem; z-index: 5; }
+.pp-sticky[hidden] { display: none; }
+.pp-sticky .btn { width: 100%; justify-content: center; }
+@media (min-width: 640px) { .pp-sticky { position: static; background: none; padding: 0; margin-top: 1rem; } .pp-sticky .btn { width: auto; } }
+
+.pp-out { margin-top: 1.5rem; scroll-margin-top: 80px; }
+.pp-out-h .section-title { margin: 0.1rem 0 0.25rem; font-size: clamp(1.5rem, 4vw, 1.9rem); outline: none; }
+.pp-out-h .sub { font-size: 0.95rem; color: var(--ink-soft); }
+.pp-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0 1.1rem; }
+.pp-actions .btn { padding: 0.7rem 1.1rem; }
+.pp-actions .btn:disabled { opacity: 0.75; cursor: default; }
+.pp-blocks { list-style: none; }
+.pp-block { display: flex; margin-bottom: 0.65rem; border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; background: var(--forest2); box-shadow: var(--shadow); }
+.pp-time { min-width: 68px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.8rem 0.4rem; background: var(--forest3); flex-shrink: 0; border-right: 4px solid var(--c, var(--fill)); }
+.pp-time b { font-family: var(--mono); font-size: 1.35rem; font-weight: 500; color: var(--ink); line-height: 1.1; }
+.pp-time i { font-size: 0.66rem; font-style: normal; color: var(--ink-faint); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+.pp-body { flex: 1; padding: 0.85rem 1rem 0.9rem; min-width: 0; }
+.pp-slot { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); margin-bottom: 0.2rem; }
+.pp-name { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; margin: 0; }
+.pp-name button { background: none; border: 0; padding: 0; color: var(--ink); font: inherit; cursor: pointer; text-align: left; text-decoration: underline; text-decoration-color: rgba(200,134,46,0.5); text-underline-offset: 3px; }
+.pp-name button:hover { color: var(--gold); }
+.pp-again { display: inline-block; font-family: var(--sans); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--on-fill); background: var(--fill); border-radius: 999px; padding: 0.12rem 0.5rem; vertical-align: 0.2em; }
+.pp-run { font-size: 0.95rem; color: var(--ink-soft); line-height: 1.55; margin-top: 0.3rem; }
+.pp-cue { display: inline-block; background: rgba(200,134,46,0.12); border: 1px solid rgba(200,134,46,0.45); border-radius: 8px; padding: 0.3rem 0.65rem; font-size: 0.92rem; color: var(--gold-light); font-weight: 600; margin-top: 0.55rem; }
+.pp-cue span { font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.85; margin-right: 0.2rem; }
+.pp-tools { display: flex; gap: 0.4rem; margin-top: 0.55rem; }
+.pp-tools button { background: none; border: 1px solid var(--rule); border-radius: 999px; padding: 0.35rem 0.85rem; min-height: 38px; font: inherit; font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; }
+.pp-tools button:hover { color: var(--ink); border-color: var(--gold); }
+.pp-note { font-size: 0.85rem; color: var(--ink-faint); line-height: 1.55; margin-top: 1rem; }
+.pp-print-notes { display: none; }
+
+.pp-saved, .pp-more { margin-top: 2.5rem; scroll-margin-top: 80px; }
+.pp-saved-h { font-family: var(--serif); font-size: 1.45rem; font-weight: 600; letter-spacing: -0.01em; }
+.pp-saved-sub { font-size: 0.92rem; color: var(--ink-faint); margin: 0.2rem 0 0.8rem; }
+.pp-empty { padding: 1.1rem 1.15rem; border: 1.5px dashed var(--border); border-radius: 14px; color: var(--ink-soft); }
+.pp-empty b { display: block; color: var(--ink); margin-bottom: 0.15rem; }
+.pp-list { list-style: none; display: grid; gap: 0.6rem; }
+.pp-item { padding: 0.95rem 1rem; background: var(--forest2); border: 1px solid var(--rule); border-radius: 14px; box-shadow: var(--shadow); }
+.pp-item-main b { display: block; font-family: var(--serif); font-size: 1.1rem; font-weight: 600; }
+.pp-item-main > span { font-size: 0.85rem; color: var(--ink-faint); }
+.pp-item-note { font-size: 0.9rem; color: var(--ink-soft); margin-top: 0.35rem; line-height: 1.5; }
+.pp-item-note span { font-weight: 700; color: var(--ink); }
+.pp-item-act { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; align-items: center; }
+.pp-del { margin-left: auto; background: none; border: 0; color: var(--ink-faint); font: inherit; font-size: 0.85rem; text-decoration: underline; min-height: 40px; padding: 0 0.3rem; cursor: pointer; }
+.pp-del:hover { color: #a3321f; }
+.pp-more .mini-tools { grid-template-columns: 1fr 1fr; }
+
+/* Dialogs: run mode and reflection */
+.pp-dialog { border: 0; padding: 0; margin: auto; width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); border-radius: 20px; background: var(--bg); color: var(--ink); box-shadow: 0 20px 60px rgba(0,0,0,0.45); }
+.pp-dialog::backdrop { background: rgba(10,22,16,0.72); }
+.pp-runmode { padding: 1.1rem 1.2rem 1.4rem; text-align: center; }
+.run-top { display: flex; justify-content: space-between; align-items: center; }
+.run-step { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); }
+.run-x { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--rule); background: var(--forest2); color: var(--ink); font-size: 1rem; cursor: pointer; }
+.run-slot { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.4rem; color: var(--ink-soft); }
+.run-name { font-family: var(--serif); font-size: clamp(1.6rem, 6vw, 2.2rem); font-weight: 600; line-height: 1.12; margin: 0.25rem 0 0.4rem; }
+.run-clock { font-family: var(--mono); font-size: clamp(3.6rem, 18vw, 5.6rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1; margin: 0.4rem 0 0.8rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+.run-clock.over { color: #b5432c; }
+.run-ctrl { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 0.5rem; }
+.run-ctrl .btn { justify-content: center; min-height: 56px; padding: 0.6rem 0.5rem; }
+.run-go { font-size: 1.15rem; }
+.run-cue { margin-top: 1rem; padding: 0.75rem 0.9rem; border-radius: 12px; background: rgba(200,134,46,0.14); border: 1px solid rgba(200,134,46,0.5); font-size: 1.15rem; font-weight: 700; color: var(--ink); }
+.run-cue span { display: block; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.15rem; }
+.run-setup { margin-top: 0.8rem; font-size: 1rem; line-height: 1.55; color: var(--ink-soft); text-align: left; }
+.run-up { margin-top: 0.8rem; font-size: 0.92rem; font-weight: 600; color: var(--ink-faint); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.pp-reflect form { padding: 1.3rem 1.25rem 1.25rem; }
+.pp-reflect h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 600; }
+.ref-sub { color: var(--ink-soft); font-size: 0.95rem; margin: 0.2rem 0 0.9rem; }
+.pp-reflect label { display: block; font-weight: 700; font-size: 0.95rem; margin: 0.8rem 0 0.3rem; }
+.pp-reflect input[type=text] { width: 100%; min-height: 48px; padding: 0.7rem 0.85rem; border: 1.5px solid var(--border); border-radius: 10px; background: var(--forest2); color: var(--ink); font: inherit; font-size: 1rem; }
+.pp-reflect fieldset { border: 0; margin-top: 0.9rem; }
+.pp-reflect legend { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.ref-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.ref-chip { margin: 0 !important; display: inline-flex !important; align-items: center; gap: 0.4rem; min-height: 44px; padding: 0.4rem 0.8rem; border: 1.5px solid var(--border); border-radius: 999px; font-weight: 600 !important; font-size: 0.9rem !important; cursor: pointer; background: var(--forest2); }
+.ref-chip input { width: 18px; height: 18px; accent-color: var(--fill); }
+.ref-chip:has(input:checked) { border-color: var(--fill); background: rgba(200,134,46,0.14); }
+.ref-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.2rem; }
+
+@media (max-width: 520px) {
+  .pp-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .pp-actions #run { grid-column: 1 / -1; }
+  .pp-time { min-width: 58px; }
+  .pp-resume { flex-direction: column; align-items: flex-start; }
+  .pp-item-act .btn { flex: 1 1 auto; justify-content: center; }
+  .pp-dialog { width: 100vw; max-width: 100vw; max-height: 100dvh; height: 100dvh; margin: 0; border-radius: 0; }
+  .pp-runmode { display: flex; flex-direction: column; padding-top: calc(0.8rem + env(safe-area-inset-top)); padding-bottom: calc(1.2rem + env(safe-area-inset-bottom)); }
+}
+
+@media print {
+  body.paper { background: #fff !important; }
+  .pp-hero, .pp-form, .pp-actions, .pp-tools, .pp-note, .pp-saved, .pp-more, .pp-resume, .nav, .footer, .mobile-menu, .fieldbar, .pp-dialog { display: none !important; }
+  .pp-wrap { max-width: none; padding: 0; }
+  .pp-out { margin: 0; }
+  .pp-out-h .section-label::before { content: "DugoutLab  \00b7  Practice in a Pinch  \00b7  "; }
+  .pp-out-h .section-title, .pp-name, .pp-name button, .pp-run, .pp-time b { color: #000 !important; text-decoration: none; }
+  .pp-out-h .sub { display: none; }
+  .pp-block { background: #fff !important; border-color: #bbb !important; box-shadow: none !important; break-inside: avoid; }
+  .pp-time { background: #f1f1f1 !important; }
+  .pp-slot { color: #555 !important; }
+  .pp-cue { color: #000 !important; background: #fff !important; border-color: #999 !important; }
+  .pp-again { border: 1px solid #000; background: #fff !important; color: #000 !important; }
+  .pp-print-notes { display: grid; gap: 0.2rem; margin-top: 1rem; font-size: 0.9rem; }
+  .pp-print-notes span { border-bottom: 1px solid #999; padding: 1.1rem 0 0.15rem; color: #333; }
+}
+@media (max-width: 520px) {
+  .pp-hero { padding: 1.25rem 1.1rem 1.1rem; }
+  .pp-hero h1 { font-size: 1.9rem; margin-bottom: 0.4rem; }
+  .pp-hero p { font-size: 0.98rem; }
+  .pp-loop { flex-wrap: nowrap; gap: 0.3rem; margin-top: 0.8rem; }
+  .pp-loop li { flex: 1; justify-content: center; padding: 0.3rem 0.2rem; }
+  .pp-loop li span { display: none; }
+  .pp-q { padding: 0.85rem 0.9rem 0.9rem; margin-top: 0.6rem; }
+  .pp-q-label { margin-bottom: 0.5rem; }
+  .pp-opt { min-width: 0; flex: 1 1 auto; padding: 0.5rem 0.7rem; }
+}
+@media (max-width: 520px) {
+  .pp-opts { display: grid; gap: 0.4rem; }
+  #q-len { grid-template-columns: repeat(4, 1fr); }
+  #q-age { grid-template-columns: repeat(5, 1fr); }
+  #q-sport { grid-template-columns: repeat(2, 1fr); }
+  .pp-opt { padding: 0.5rem 0.2rem; font-size: 0.95rem; }
+  .pp-opt.active::before { display: none; }
+}

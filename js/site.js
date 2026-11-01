@@ -3,7 +3,10 @@
 // ── Mobile nav ────────────────────────────────────────────────────
 function toggleMenu() {
   var m = document.getElementById('mobile-menu');
-  if (m) m.classList.toggle('open');
+  if (!m) return;
+  var open = m.classList.toggle('open');
+  var b = document.getElementById('menu-btn');
+  if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
 }
 
 // Close mobile menu on outside click
@@ -13,6 +16,7 @@ document.addEventListener('click', function(e) {
   if (menu && menu.classList.contains('open')) {
     if (!menu.contains(e.target) && (!btn || !btn.contains(e.target))) {
       menu.classList.remove('open');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
     }
   }
 });
@@ -127,16 +131,18 @@ var DL_SECTION = (function () {
   var path = window.location.pathname;
   var page = path.split('/').pop() || 'index.html';
   if (page.indexOf('.') < 0) page += '.html';
-  if (path.indexOf('/articles/') >= 0 || page === 'articles.html') return { page: page, section: 'articles.html' };
-  var TRAIN = ['training.html', 'athlete.html', 'moves.html', 'stage-finder.html', 'development.html'];
-  var AGES = ['ages.html', 'stages.html'];
-  var WHY = ['how-kids-learn.html'];
-  var TOOLS = ['tools.html', 'lineup.html', 'pods.html', 'pitch-tracker.html', 'practice.html', 'framework.html',
-    'progression.html', 'practice-example.html', 'games.html', 'situations.html', 'situation.html', 'field-layout.html',
-    'strike-zone.html', 'cage-targets.html', 'arena.html', 'game.html', 'pocket-card.html', 'launch-lab.html',
-    'skipper.html', 'coach-dad.html', 'coach-dad-stay-loose.html'];
-  var sec = TRAIN.indexOf(page) >= 0 ? 'training.html' : AGES.indexOf(page) >= 0 ? 'ages.html' :
-    WHY.indexOf(page) >= 0 ? 'how-kids-learn.html' : TOOLS.indexOf(page) >= 0 ? 'tools.html' : '';
+  if (path.indexOf('/articles/') >= 0) return { page: page, section: 'articles.html' };
+  var MAP = {
+    'practice.html': ['practice.html', 'framework.html', 'games.html', 'progression.html', 'practice-example.html'],
+    'game-day.html': ['game-day.html', 'lineup.html', 'pods.html', 'pitch-tracker.html', 'pocket-card.html', 'field-layout.html',
+      'strike-zone.html', 'situations.html', 'situation.html', 'skipper.html'],
+    'training.html': ['training.html', 'athlete.html', 'moves.html', 'stage-finder.html', 'development.html', 'cage-targets.html',
+      'game.html', 'arena.html', 'launch-lab.html'],
+    'articles.html': ['articles.html', 'how-kids-learn.html', 'stages.html', 'ages.html', 'about.html'],
+    'parents.html': ['parents.html', 'coach-dad.html', 'coach-dad-stay-loose.html']
+  };
+  var sec = '';
+  Object.keys(MAP).forEach(function (k) { if (MAP[k].indexOf(page) >= 0) sec = k; });
   return { page: page, section: sec };
 })();
 (function () {
@@ -155,25 +161,23 @@ var DL_SECTION = (function () {
   var page = DL_SECTION.page;
   var I = {
     home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>',
-    lineup: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1.2"/><circle cx="4" cy="12" r="1.2"/><circle cx="4" cy="18" r="1.2"/>',
+    gameday: '<path d="M12 3l8 8-8 8-8-8z"/><path d="M12 15.5v-3.2"/><circle cx="12" cy="10.6" r="0.9"/>',
     train: '<circle cx="17.5" cy="5" r="2.2"/><path d="M5.5 11.5l3.5-3 4.5 1 4 1M13.5 9.5l-3.5 6M10 15.5l-5.5 3M10 15.5l4.5 1.5 1 4.5"/>',
     practice: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/>',
-    tools: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'
+    learn: '<path d="M4 5.5C6.5 4.5 9.5 4.5 12 6c2.5-1.5 5.5-1.5 8-.5V19c-2.5-1-5.5-1-8 .5C9.5 18 6.5 18 4 19z"/><path d="M12 6v13.5"/>'
   };
   var tabs = [
-    ['index.html', 'Home', 'home'],
-    ['lineup.html', 'Lineup', 'lineup'],
-    ['practice.html', 'Practice', 'practice'],
-    ['training.html', 'Train', 'train'],
-    ['tools.html', 'Tools', 'tools']
+    ['index.html', 'Home', 'home', ''],
+    ['practice.html', 'Practice', 'practice', 'practice.html'],
+    ['game-day.html', 'Game Day', 'gameday', 'game-day.html'],
+    ['training.html', 'Train', 'train', 'training.html'],
+    ['articles.html', 'Learn', 'learn', 'articles.html']
   ];
   var nav = document.createElement('nav');
   nav.className = 'fieldbar';
   nav.setAttribute('aria-label', 'Quick tools');
   nav.innerHTML = tabs.map(function (t) {
-    var on = t[0] === page || (t[0] === 'lineup.html' && page === 'pods.html') ||
-      (t[0] === 'training.html' && DL_SECTION.section === 'training.html') ||
-      (t[0] === 'tools.html' && DL_SECTION.section === 'tools.html' && ['lineup.html', 'pods.html', 'practice.html'].indexOf(page) < 0);
+    var on = t[0] === page || (t[3] && t[3] === DL_SECTION.section);
     return '<a href="/' + t[0] + '"' + (on ? ' class="on" aria-current="page"' : '') + '>' +
       '<svg viewBox="0 0 24 24" aria-hidden="true">' + I[t[2]] + '</svg><span>' + t[1] + '</span></a>';
   }).join('');
@@ -290,4 +294,58 @@ var DL_SECTION = (function () {
   if (links) { var li = document.createElement('li'); li.innerHTML = '<button type="button" class="nav-acct" data-acct>' + (s ? 'Sign out' : 'Sign in') + '</button>'; links.appendChild(li); }
   document.querySelectorAll('#acct-out, .nav-acct').forEach(function (b) { b.addEventListener('click', function () { s ? signOut() : openSignIn(); }); });
   var bi = document.getElementById('acct-in'); if (bi) bi.addEventListener('click', openSignIn);
+})();
+
+// ── Skip link and main landmark ────────────────────────────────────
+(function () {
+  if (document.querySelector('.skip-link')) return;
+  var menu = document.getElementById('mobile-menu');
+  var main = document.getElementById('main') || document.querySelector('main');
+  if (!main && menu) { main = menu.nextElementSibling; while (main && /^(STYLE|SCRIPT)$/.test(main.tagName)) main = main.nextElementSibling; }
+  if (!main) return;
+  if (!main.id) main.id = 'main';
+  if (main.tagName !== 'MAIN' && !main.getAttribute('role')) main.setAttribute('role', 'main');
+  var a = document.createElement('a'); a.className = 'skip-link'; a.href = '#' + main.id; a.textContent = 'Skip to content';
+  document.body.insertBefore(a, document.body.firstChild);
+})();
+
+// ── Page style: Auto (follow the phone), Light, or Dark ────────────
+// Reading and form pages use the paper surface; this lets anyone pick.
+(function () {
+  function current() { try { return localStorage.getItem('dl_theme') || 'auto'; } catch (e) { return 'auto'; } }
+  function apply(v) {
+    try { if (v === 'auto') localStorage.removeItem('dl_theme'); else localStorage.setItem('dl_theme', v); } catch (e) {}
+    if (v === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', v);
+    document.querySelectorAll('[data-theme-set]').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-theme-set') === v ? 'true' : 'false'); });
+  }
+  document.querySelectorAll('[data-theme-set]').forEach(function (b) { b.addEventListener('click', function () { apply(b.getAttribute('data-theme-set')); }); });
+  apply(current());
+})();
+
+// ── Shared helpers every tool can use ──────────────────────────────
+window.DL = window.DL || {};
+// One age group across the site. Values: a46, a79, a1012, a1315, a16.
+DL.AGES = [['a46', '4-6'], ['a79', '7-9'], ['a1012', '10-12'], ['a1315', '13-15'], ['a16', '16+']];
+DL.getAge = function () { try { return localStorage.getItem('dl_age') || ''; } catch (e) { return ''; } };
+DL.setAge = function (v) { try { localStorage.setItem('dl_age', v); } catch (e) {} };
+DL.toast = function (msg) {
+  var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = msg;
+  document.body.appendChild(t); setTimeout(function () { t.remove(); }, 2600);
+};
+// Privacy-first counts: an event name and a page, nothing else. No cookies,
+// no IDs, no IP stored. Daily totals only (see /api/metric and privacy.html).
+DL.track = function (name) {
+  try {
+    if (navigator.doNotTrack === '1' || window.doNotTrack === '1' || navigator.globalPrivacyControl) return;
+    if (!/^[a-z0-9_]{2,40}$/.test(name) || location.protocol !== 'https:') return;
+    var body = JSON.stringify({ e: name, p: (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '').slice(0, 40) });
+    if (navigator.sendBeacon) navigator.sendBeacon('/api/metric', new Blob([body], { type: 'application/json' }));
+  } catch (e) {}
+};
+// Returning visitor: count once per day per browser, without storing who.
+(function () {
+  try {
+    var d = new Date().toISOString().slice(0, 10), last = localStorage.getItem('dl_seen');
+    if (last !== d) { if (last) DL.track('return_visit'); localStorage.setItem('dl_seen', d); }
+  } catch (e) {}
 })();
