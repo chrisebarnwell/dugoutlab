@@ -24,7 +24,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 </head>
-<body class="paper">
+<body>
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
   <ul class="nav-links">
@@ -294,7 +294,7 @@
     var leg=document.getElementById('fw-mixlegend'); leg.innerHTML='';
     MIXLEG.forEach(function(m){
       var s=document.createElement('span');
-      s.style.cssText='display:flex;align-items:center;gap:0.4rem';
+      s.style.cssText='display:flex;align-items:center;gap:0.4rem;color:var(--ink-soft)';
       s.innerHTML='<span style="width:10px;height:10px;border-radius:2px;background:'+m.color+';display:inline-block"></span>'+m.name;
       leg.appendChild(s);
     });

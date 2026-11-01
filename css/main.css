@@ -28,8 +28,8 @@
   --gold-dark:     #a06e1f;
   --ink:           #f4efe6;
   --ink-soft:      rgba(244,239,230,0.72);
-  --ink-mid:       rgba(244,239,230,0.6);
-  --ink-faint:     rgba(244,239,230,0.4);
+  --ink-mid:       rgba(244,239,230,0.68);
+  --ink-faint:     rgba(244,239,230,0.6);
   --rule:          rgba(244,239,230,0.12);
   --cream:         #f4efe6;
   --cream2:        #ebe3d2;
@@ -37,7 +37,7 @@
   --cream-ink-soft:#5b574c;
   --text:          #f4efe6;
   --text-mid:      rgba(244,239,230,0.72);
-  --text-light:    rgba(244,239,230,0.5);
+  --text-light:    rgba(244,239,230,0.62);
   --border:        rgba(244,239,230,0.18);
   --border2:       rgba(244,239,230,0.10);
   --sans:          'Inter', system-ui, -apple-system, sans-serif;
@@ -54,7 +54,7 @@
 
 /* Field tokens, re-declared wherever a dark band sits on a paper page */
 body.paper .nav, body.paper .mobile-menu, body.paper .page-hero, body.paper .hero, body.paper .footer,
-body.paper .fieldbar, .surface-paper .on-dark, body.paper .on-dark, body.paper .modal-overlay, body.paper .acct-bg {
+body.paper .fieldbar, body.paper .disclaimer-strip, body.paper .one-job-box, body.paper .cheat-card, .surface-paper .on-dark, body.paper .on-dark, body.paper .modal-overlay, body.paper .acct-bg {
   --bg: #0F1F18; --forest2: #15291f; --forest3: #1a3024; --forest-deep: #0a1610;
   --gold: #C8862E; --gold-light: #e2a85a; --gold-dark: #a06e1f;
   --ink: #f4efe6; --ink-soft: rgba(244,239,230,0.78); --ink-mid: rgba(244,239,230,0.66); --ink-faint: rgba(244,239,230,0.58);
@@ -791,3 +791,13 @@ html[data-theme="dark"] body.paper .article-cue-box { background: rgba(200,134,4
   .hs-row { flex-direction: column; }
   .home-card li i { display: none; }
 }
+
+/* Tool first-use callouts (Lineup Builder sample team, and any tool with a demo) */
+.lu-demo, .lu-sample-note { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.95rem 1.1rem; margin-bottom: 1rem; background: var(--forest2); border: 1px solid var(--rule); border-left: 4px solid var(--fill); border-radius: 4px 14px 14px 4px; box-shadow: var(--shadow); color: var(--ink); }
+.lu-sample-note { margin: 0.25rem 0 1rem; }
+.lu-sample-note[hidden] { display: none; }
+.lu-demo b, .lu-sample-note b { display: block; font-family: var(--serif); font-size: 1.08rem; font-weight: 600; }
+.lu-demo span, .lu-sample-note span { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5; }
+.lu-demo .btn, .lu-sample-note .btn { flex-shrink: 0; }
+@media (max-width: 560px) { .lu-demo, .lu-sample-note { flex-direction: column; align-items: stretch; } .lu-demo .btn, .lu-sample-note .btn { justify-content: center; } }
+@media print { .lu-demo, .lu-sample-note { display: none !important; } }

@@ -551,7 +551,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 @media print { .mode-switch { display: none !important; } }
 </style>
 </head>
-<body>
+<body class="paper">
 
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
@@ -602,6 +602,12 @@ select option { background: var(--forest-deep); color: var(--ink); }
 
   <!-- ERROR -->
   <div class="error-box" id="error-box"></div>
+
+  <!-- FIRST USE: see a finished lineup before typing a roster -->
+  <div class="lu-demo" id="lu-demo">
+    <div><b>New here? See it work first.</b><span>Load a sample team of 11 and get a full five-inning lineup in one tap. Your own saved roster is not touched.</span></div>
+    <button type="button" class="btn btn-primary btn-sm" onclick="tryDemoTeam()">Try a sample team</button>
+  </div>
 
   <!-- STEP PROGRESS BAR -->
   <div class="step-bar" id="step-bar">
@@ -840,6 +846,10 @@ select option { background: var(--forest-deep); color: var(--ink); }
         <button class="btn-print" onclick="resetWizard()">New Lineup</button>
       </div>
     </div>
+    <div class="lu-sample-note" id="lu-sample-note" hidden role="status">
+      <div><b>This is a sample team.</b><span>Pitchers and catchers are set by inning, sitting is spread across the roster, and you can see every kid's spot each inning. Ready for yours?</span></div>
+      <button type="button" class="btn btn-primary btn-sm" onclick="useMyRoster()">Enter my roster</button>
+    </div>
     <div class="lineup-table-wrap">
       <table class="lineup-table" id="lineup-table">
         <thead id="lineup-thead"></thead>
@@ -971,6 +981,7 @@ window.addEventListener('DOMContentLoaded', function() {
 // ── ROSTER PERSISTENCE (saved on this device) ──────────────────────
 var ROSTER_KEY = 'dugout_roster_v1';
 function saveRoster() {
+  if (window.LU_SAMPLE) return; /* never overwrite a coach's roster with the sample team */
   try {
     var data = state.players
       .filter(function(p){ return p.name && p.name.trim(); })
@@ -1316,6 +1327,7 @@ function generateLineup() {
       var result = buildLineupMatrix(state);
       state.lineup = result;
       renderLineup(result);
+      if (!window.LU_SAMPLE && window.DL && DL.track) DL.track('lineup_built');
     } catch (e) {
       showError('Could not build lineup: ' + e.message);
       document.getElementById('wizard-footer').style.display = 'flex';
@@ -1767,7 +1779,41 @@ function downloadPDF() {
 }
 
 // ── RESET ─────────────────────────────────────────────────────────
+// ── SAMPLE TEAM: first-use demo, kept apart from the saved roster ──
+var luStash = null;
+var LU_SAMPLE_TEAM = [['Ava','1'],['Ben','1'],['Cam','1'],['Dev','2'],['Eli','2'],['Finn','2'],['Gus','2'],['Hana','2'],['Ivy','3'],['Jo','3'],['Kai','3']];
+function tryDemoTeam() {
+  if (!window.LU_SAMPLE) {
+    luStash = { players: state.players.map(function (p) { return { name: p.name, tier: p.tier }; }), team: document.getElementById('team-name').value,
+      pitchers: state.pitchers.slice(), catchers: state.catchers.slice() };
+  }
+  window.LU_SAMPLE = true;
+  document.getElementById('player-list').innerHTML = ''; state.players = [];
+  LU_SAMPLE_TEAM.forEach(function (p) { addPlayer(p[0], p[1]); });
+  document.getElementById('team-name').value = 'Sample Team';
+  state.pitchers = ['Ava', 'Ava', 'Ben', 'Ben', 'Cam'];
+  state.catchers = ['Gus', 'Gus', 'Hana', 'Hana', 'Dev'];
+  document.getElementById('lu-sample-note').hidden = false;
+  generateLineup();
+  if (window.DL && DL.track) DL.track('lineup_demo');
+  setTimeout(function () { document.getElementById('lineup-output').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200);
+}
+function useMyRoster() {
+  window.LU_SAMPLE = false;
+  document.getElementById('lu-sample-note').hidden = true;
+  document.getElementById('player-list').innerHTML = ''; state.players = [];
+  var rows = luStash && luStash.players.some(function (p) { return p.name && p.name.trim(); }) ? luStash.players : null;
+  if (rows) rows.forEach(function (p) { addPlayer(p.name, p.tier); }); else for (var i = 0; i < 10; i++) addPlayer();
+  while (state.players.length < 9) addPlayer();
+  document.getElementById('team-name').value = luStash ? luStash.team : '';
+  state.pitchers = luStash ? luStash.pitchers : []; state.catchers = luStash ? luStash.catchers : [];
+  luStash = null;
+  resetWizard();
+  setTimeout(function () { var f = document.querySelector('#player-list input'); document.getElementById('step-1').scrollIntoView({ behavior: 'smooth', block: 'start' }); if (f) f.focus({ preventScroll: true }); }, 50);
+}
+
 function resetWizard() {
+  if (window.LU_SAMPLE) { window.LU_SAMPLE = false; useMyRoster(); return; }
   document.getElementById('lineup-output').classList.remove('show');
   document.getElementById('wizard-footer').style.display = 'flex';
   goToStep(1);
