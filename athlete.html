@@ -1028,7 +1028,7 @@
     $('p-bk').textContent = !S.account ? 'Saved on this phone only. Sign in (email only) to back it up and open it on another phone.' : (a.cloudId ? (a.dirty ? 'Changes waiting to back up.' : 'Backed up ' + new Date(a.synced || a.updated).toLocaleString() + '.') : 'Not backed up yet.');
     if ($('p-in')) $('p-in').addEventListener('click', function () { signin(); });
     if ($('p-sync')) $('p-sync').addEventListener('click', function () { a.dirty = true; sync(a, true); });
-    if ($('p-out')) $('p-out').addEventListener('click', function () { S.account = null; save(); go('plan'); });
+    if ($('p-out')) $('p-out').addEventListener('click', function () { if (window.dlSignOut) window.dlSignOut(); else { S.account = null; save(); go('plan'); } });
     $('p-print').addEventListener('click', function () { window.print(); });
     $('p-exp').addEventListener('click', function () { var b = new Blob([JSON.stringify(a, null, 2)], { type: 'application/json' }), u = URL.createObjectURL(b), t = document.createElement('a'); t.href = u; t.download = 'dugoutlab-' + a.profile.nickname.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + today() + '.json'; document.body.appendChild(t); t.click(); t.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 1000); });
     $('p-imp').addEventListener('click', function () { $('p-file').click(); });

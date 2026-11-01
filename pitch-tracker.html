@@ -526,6 +526,7 @@
     api('signup', { name: $('in-name').value, email: $('in-email').value, role: 'parent', adult: true, app: 'pitch' }).then(done).catch(fail).then(function () { b.disabled = false; });
   });
   $('h-out').addEventListener('click', function () {
+    if (window.dlSignOut) { window.dlSignOut(); return; }
     st.token = null; st.account = null; save();
     try { localStorage.removeItem('dl_game2'); } catch (e) {}
     show('s-signin');
