@@ -128,7 +128,7 @@ var DL_SECTION = (function () {
   var page = path.split('/').pop() || 'index.html';
   if (page.indexOf('.') < 0) page += '.html';
   if (path.indexOf('/articles/') >= 0 || page === 'articles.html') return { page: page, section: 'articles.html' };
-  var TRAIN = ['training.html', 'athlete.html', 'stage-finder.html', 'development.html'];
+  var TRAIN = ['training.html', 'athlete.html', 'moves.html', 'stage-finder.html', 'development.html'];
   var AGES = ['ages.html', 'stages.html'];
   var WHY = ['how-kids-learn.html'];
   var TOOLS = ['tools.html', 'lineup.html', 'pods.html', 'pitch-tracker.html', 'practice.html', 'framework.html',

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a1610">
+<title>Movement Library | DugoutLab</title>
+<meta name="description" content="Every move in the DugoutLab Athlete Plan as a card: prep, power, strength and compete. Drag cards into a template to build your own youth baseball or softball workout.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+  .ml { max-width: 1120px; margin: 0 auto; padding: 1.5rem 1.25rem 9rem; }
+  .ml-eb { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
+  .ml h1 { font-family: var(--serif); font-size: clamp(2rem, 6vw, 2.8rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.015em; margin: 0.5rem 0 0.6rem; }
+  .ml-sub { color: var(--ink-soft); font-size: 1rem; max-width: 56ch; }
+  .ml-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 1.5rem; margin-top: 1.5rem; align-items: start; }
+  @media (max-width: 900px) { .ml-grid { grid-template-columns: 1fr; } }
+
+  /* filters */
+  .ml-f { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 0.4rem; }
+  .ml-f button { font: inherit; font-size: 0.8rem; font-weight: 600; color: var(--ink-soft); background: var(--forest2); border: 1px solid var(--rule); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+  .ml-f button.on { background: var(--gold); border-color: var(--gold); color: #0F1F18; }
+  .ml-search { width: 100%; margin-top: 0.8rem; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--rule); background: var(--forest-deep); color: var(--ink); font: inherit; font-size: 0.95rem; box-sizing: border-box; }
+  .ml-search:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+  .ml-lbl { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-faint); margin-top: 1rem; }
+
+  /* library cards */
+  .ml-sec { margin-top: 1.6rem; }
+  .ml-sec-h { display: flex; align-items: center; gap: 10px; margin-bottom: 0.7rem; }
+  .ml-sec-h b { font-family: var(--mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
+  .ml-sec-h span { flex: 1; height: 1px; background: var(--rule); }
+  .ml-sec-h em { font-style: normal; font-size: 0.75rem; color: var(--ink-faint); font-weight: 600; }
+  .ml-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+  .mc { position: relative; display: flex; gap: 10px; align-items: flex-start; background: linear-gradient(180deg, #213a2b 0%, var(--forest2) 70px); border: 1px solid var(--rule); border-radius: 14px; padding: 12px 12px 12px 10px; touch-action: pan-y; user-select: none; -webkit-user-select: none; transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; }
+  .mc:hover { border-color: rgba(200,134,46,0.5); }
+  .mc.in { border-color: rgba(200,134,46,0.55); }
+  .mc .grip { flex: 0 0 22px; align-self: stretch; display: flex; align-items: center; justify-content: center; color: var(--ink-faint); cursor: grab; touch-action: none; border-radius: 6px; }
+  .mc .grip svg { width: 14px; height: 22px; fill: currentColor; }
+  .mc .bd { flex: 1; min-width: 0; }
+  .mc .nm { font-weight: 700; font-size: 0.95rem; line-height: 1.25; color: var(--ink); }
+  .mc .ds { font-family: var(--mono); font-size: 0.74rem; color: var(--ink-soft); margin-top: 3px; }
+  .mc .cu { font-size: 0.8rem; color: var(--ink-faint); margin-top: 6px; line-height: 1.35; }
+  .mc .tg { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 7px; }
+  .mc .tg i { font-style: normal; font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); border: 1px solid var(--rule); border-radius: 4px; padding: 2px 5px; }
+  .mc .add { flex: 0 0 34px; height: 34px; border-radius: 10px; border: 1px solid var(--rule); background: none; color: var(--gold); font-size: 1.3rem; line-height: 1; cursor: pointer; }
+  .mc.in .add { background: var(--gold); color: #0F1F18; border-color: var(--gold); }
+
+  /* builder */
+  .bw { position: sticky; top: 80px; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 18px; padding: 16px; }
+  .bw-h { display: flex; align-items: center; gap: 8px; }
+  .bw-name { flex: 1; min-width: 0; font-family: var(--serif); font-size: 1.25rem; font-weight: 600; color: var(--ink); background: none; border: 0; border-bottom: 1px dashed var(--rule); padding: 2px 0; }
+  .bw-name:focus { outline: none; border-bottom-color: var(--gold); }
+  .bw-meta { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-faint); margin-top: 6px; }
+  .zone { margin-top: 12px; border: 1.5px dashed var(--rule); border-radius: 14px; padding: 10px; min-height: 58px; transition: border-color 0.15s, background 0.15s; }
+  .zone.hot { border-color: var(--gold); background: rgba(200,134,46,0.08); }
+  .zone-h { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  .zone-h em { font-style: normal; color: var(--ink-faint); letter-spacing: 0.08em; }
+  .zone .empty { font-size: 0.8rem; color: var(--ink-faint); text-align: center; padding: 6px 0; }
+  .bi { display: flex; align-items: center; gap: 8px; background: var(--forest2); border: 1px solid var(--rule); border-radius: 10px; padding: 8px; margin-top: 6px; touch-action: pan-y; }
+  .bi .grip { flex: 0 0 18px; color: var(--ink-faint); cursor: grab; touch-action: none; display: flex; justify-content: center; }
+  .bi .grip svg { width: 12px; height: 18px; fill: currentColor; }
+  .bi .code { flex: 0 0 30px; height: 30px; border-radius: 7px; background: var(--forest3); color: var(--gold-light); font-family: var(--mono); font-size: 0.75rem; display: flex; align-items: center; justify-content: center; }
+  .bi .t { flex: 1; min-width: 0; }
+  .bi .t b { display: block; font-size: 0.86rem; color: var(--ink); line-height: 1.2; }
+  .bi .t input { width: 100%; margin-top: 3px; font-family: var(--mono); font-size: 0.72rem; color: var(--gold-light); background: none; border: 0; border-bottom: 1px dashed transparent; padding: 1px 0; }
+  .bi .t input:focus { outline: none; border-bottom-color: var(--gold); }
+  .bi .x { flex: 0 0 28px; height: 28px; border: 0; background: none; color: var(--ink-faint); font-size: 1.1rem; cursor: pointer; border-radius: 6px; }
+  .bw-acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .bw-acts button, .bw-acts a { font: inherit; font-size: 0.85rem; font-weight: 700; border-radius: 10px; padding: 11px 8px; cursor: pointer; text-align: center; text-decoration: none; border: 1px solid var(--rule); background: none; color: var(--ink-soft); }
+  .bw-acts .pri { grid-column: 1 / -1; background: var(--gold); border-color: var(--gold); color: #0F1F18; }
+  .bw-saved { margin-top: 14px; border-top: 1px solid var(--rule); padding-top: 12px; }
+  .bw-saved .row { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 0.85rem; }
+  .bw-saved .row button { font: inherit; background: none; border: 0; color: var(--ink-soft); cursor: pointer; text-align: left; padding: 0; }
+  .bw-saved .row button.open { flex: 1; color: var(--ink); font-weight: 600; }
+  .bw-saved .row button.del { color: var(--ink-faint); }
+  .bw-note { font-size: 0.75rem; color: var(--ink-faint); margin-top: 10px; line-height: 1.45; }
+  .bw-x { display: none; }
+
+  /* drag ghost */
+  .ghost { position: fixed; z-index: 9999; pointer-events: none; width: 240px; transform: translate(-50%, -60%) rotate(-3deg) scale(1.04); box-shadow: 0 24px 50px rgba(0,0,0,0.6); border-color: var(--gold) !important; opacity: 0.96; }
+  body.dragging, body.dragging * { cursor: grabbing !important; }
+
+  /* phone: builder becomes a tray */
+  .tray { display: none; }
+  @media (max-width: 900px) {
+    .bw { position: fixed; left: 0; right: 0; bottom: calc(64px + env(safe-area-inset-bottom)); top: auto; z-index: 950; border-radius: 20px 20px 0 0; max-height: 72vh; overflow-y: auto; transform: translateY(110%); transition: transform 0.3s cubic-bezier(.2,.8,.2,1); box-shadow: 0 -20px 50px rgba(0,0,0,0.6); }
+    body.tray-open .bw { transform: none; }
+    .bw-x { display: block; font: inherit; background: none; border: 1px solid var(--rule); color: var(--ink-soft); border-radius: 999px; padding: 5px 12px; font-size: 0.8rem; cursor: pointer; }
+    .tray { display: flex; position: fixed; left: 12px; right: 12px; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 940; align-items: center; gap: 10px; background: var(--gold); color: #0F1F18; border-radius: 14px; padding: 12px 14px; font-weight: 700; box-shadow: 0 12px 30px rgba(0,0,0,0.5); cursor: pointer; transition: transform 0.15s; }
+    .tray.hot { transform: scale(1.04); box-shadow: 0 0 0 3px var(--gold-light), 0 12px 30px rgba(0,0,0,0.5); }
+    .tray .n { background: #0F1F18; color: var(--gold); border-radius: 999px; min-width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 0.8rem; }
+    .tray .t { flex: 1; } .tray .t small { display: block; font-weight: 500; font-size: 0.72rem; opacity: 0.75; }
+    body.tray-open .tray { display: none; }
+  }
+
+  /* toast */
+  .toast { position: fixed; left: 50%; bottom: calc(150px + env(safe-area-inset-bottom)); transform: translate(-50%, 20px); opacity: 0; z-index: 10001; background: #0a1610; color: var(--ink); border: 1px solid var(--gold); border-radius: 999px; padding: 9px 16px; font-size: 0.85rem; font-weight: 600; transition: all 0.25s; pointer-events: none; }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+  /* print */
+  #print { display: none; }
+  @media print {
+    body * { visibility: hidden; }
+    #print, #print * { visibility: visible; }
+    #print { display: block; position: absolute; left: 0; top: 0; width: 100%; color: #000; background: #fff; font-family: Helvetica, Arial, sans-serif; padding: 18px; }
+    #print h2 { font-size: 20pt; margin: 0 0 4px; } #print .m { font-size: 9pt; color: #555; margin-bottom: 12px; }
+    #print h3 { font-size: 10pt; letter-spacing: 0.12em; text-transform: uppercase; border-bottom: 1px solid #999; padding-bottom: 3px; margin: 14px 0 6px; break-after: avoid; }
+    #print .r { display: grid; grid-template-columns: 34px 1fr 120px 28px 28px 28px; gap: 6px; align-items: center; font-size: 10.5pt; padding: 5px 0; border-bottom: 1px solid #ddd; break-inside: avoid; }
+    #print .r b { font-size: 12pt; } #print .bx { width: 18px; height: 18px; border: 1px solid #333; border-radius: 3px; }
+    #print .src { font-size: 8pt; color: #555; margin-top: 16px; border-top: 1px solid #999; padding-top: 6px; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="ages.html">My Age Group</a></li>
+    <li><a href="tools.html">Tools</a></li>
+    <li><a href="training.html">Train</a></li>
+    <li><a href="articles.html">Field Notes</a></li>
+    <li><a href="how-kids-learn.html">Why It Works</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="ages.html">My Age Group</a>
+  <a href="tools.html">Tools</a>
+  <a href="training.html">Train</a>
+  <a href="articles.html">Field Notes</a>
+  <a href="how-kids-learn.html">Why It Works</a>
+</div>
+
+<main class="ml">
+  <div class="ml-eb"><a href="training.html" style="color:var(--ink-faint);text-decoration:none">&larr; Train</a> &nbsp;/&nbsp; Movement Library</div>
+  <h1>Movement Library</h1>
+  <p class="ml-sub">Every card in the Athlete Plan. Drag a card into the template, or tap +, to build your own workout.</p>
+
+  <div class="ml-grid">
+    <section>
+      <div class="ml-lbl">Block</div>
+      <div class="ml-f" id="f-block"></div>
+      <div class="ml-lbl">Age</div>
+      <div class="ml-f" id="f-age"></div>
+      <input type="search" class="ml-search" id="q" placeholder="Search moves: squat, med ball, jump..." autocomplete="off">
+      <div id="lib"></div>
+    </section>
+
+    <aside class="bw" id="bw" aria-label="Your workout">
+      <div class="bw-h"><input class="bw-name" id="w-name" value="My workout" maxlength="40" aria-label="Workout name"><button type="button" class="bw-x" id="bw-x">Done</button></div>
+      <div class="bw-meta" id="w-meta"></div>
+      <div id="zones"></div>
+      <div class="bw-acts">
+        <button type="button" class="pri" id="w-save">Save workout</button>
+        <button type="button" id="w-print" data-gate>Print</button>
+        <button type="button" id="w-share">Copy link</button>
+        <button type="button" id="w-clear" style="grid-column:1/-1">Clear</button>
+      </div>
+      <div class="bw-saved" id="w-saved"></div>
+      <p class="bw-note">Safety stays on: no throwing work, bodyweight first, light dumbbells only 13 and up with no growth spurt. Stop any move that hurts.</p>
+    </aside>
+  </div>
+</main>
+
+<div class="tray" id="tray" role="button" tabindex="0"><span class="n" id="tray-n">0</span><span class="t">Your workout<small>Drag cards here or tap +</small></span><span>&#9650;</span></div>
+<div class="toast" id="toast"></div>
+<div id="print"></div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="athlete.html">Athlete Plan</a></li>
+        <li><a href="training.html">Train</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="stages.html">The 4 Stages</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
+    <span>dugoutlab.com</span>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+<script src="js/athlete-rules.js"></script>
+<script src="js/email-gate.js" data-mode="actions"></script>
+<script>
+(function () {
+  var R = window.DL_RULES, LIB = R.LIB;
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function each(l, f) { Array.prototype.forEach.call(l, f); }
+
+  /* ---------- library model ---------- */
+  var BLOCKS = [
+    { k: 'prep', n: 'Prep', note: 'Warm-up, landings, balance' },
+    { k: 'power', n: 'Power', note: 'Jumps, med ball, speed' },
+    { k: 'strength', n: 'Strength', note: 'Squat, push, pull, hinge, core' },
+    { k: 'compete', n: 'Compete', note: 'Race the clock, recover' }
+  ];
+  var SLOT = { prep: 'prep', land: 'prep', bal: 'prep', lat: 'prep',
+    hop: 'power', 'hop-s': 'power', stick: 'power', 'stick-s': 'power', lat2: 'power', 'lat-s': 'power', react: 'power', speed: 'power', nj: 'power',
+    squat: 'strength', push: 'strength', pull: 'strength', hinge: 'strength', core: 'strength', carry: 'strength',
+    play: 'compete', mobil: 'compete', 'rope-easy': 'compete' };
+  var TYPE = { land: 'Landing', bal: 'Balance', lat: 'Footwork', hop: 'Elastic', 'hop-s': 'Low impact', stick: 'Jump', 'stick-s': 'Low impact', lat2: 'Lateral', 'lat-s': 'Low impact',
+    react: 'Rotational', speed: 'Speed', nj: 'No impact', squat: 'Squat', push: 'Push', pull: 'Pull', hinge: 'Hinge', core: 'Core', carry: 'Carry', play: 'Compete', mobil: 'Recovery', 'rope-easy': 'Conditioning', prep: 'Warm-up' };
+  var DOSE = { str: '2 x 8', pow: '2 x 5', hop: '2 x 10', hold: '2 x 20 sec', trip: '2-3 trips' };
+  var GEAR = {}; R.GEAR.forEach(function (g) { GEAR[g.id] = g.label.split(' (')[0].replace('Box, step or sturdy bench', 'Box').replace('Cones or markers', 'Cones'); });
+  var ORDER = ['fun', 'learn', 'train', 'compete'], AGES = { fun: '6-9', learn: '10-12', train: '13-15', compete: '16+' };
+  function ages(m) {
+    var lo = m.min ? ORDER.indexOf(m.min) : 0, hi = m.max ? ORDER.indexOf(m.max) : 3;
+    if (m.load) lo = Math.max(lo, 2);
+    return { lo: lo, hi: hi, txt: lo === 0 && hi === 3 ? 'All ages' : hi === 3 ? AGES[ORDER[lo]].split('-')[0].replace('+', '') + '+' : AGES[ORDER[lo]].split('-')[0].replace('+', '') + '-' + AGES[ORDER[hi]].split('-').pop().replace('+', '') };
+  }
+  var MOVES = LIB.map(function (m) {
+    var a = ages(m), tags = [TYPE[m.slot] || ''];
+    if (m.gear) tags.push(GEAR[m.gear] || m.gear);
+    tags.push(a.txt);
+    return { id: m.id, name: m.name, cue: m.cue, dose: DOSE[m.dose] || m.dose, block: SLOT[m.slot] || 'strength', tags: tags.filter(Boolean), lo: a.lo, hi: a.hi };
+  });
+  var BY = {}; MOVES.forEach(function (m) { BY[m.id] = m; });
+
+  /* ---------- state ---------- */
+  var KEY = 'dl_my_workouts', W = blank(), F = { block: 'all', age: -1, q: '' };
+  function blank() { return { id: null, name: 'My workout', items: { prep: [], power: [], strength: [], compete: [] } }; }
+  function saved() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } }
+  function store(l) { try { localStorage.setItem(KEY, JSON.stringify(l)); } catch (e) {} }
+  function draftSave() { try { localStorage.setItem(KEY + '_draft', JSON.stringify(W)); } catch (e) {} }
+  function count() { var n = 0; BLOCKS.forEach(function (b) { n += W.items[b.k].length; }); return n; }
+  function has(id) { return BLOCKS.some(function (b) { return W.items[b.k].some(function (x) { return x.id === id; }); }); }
+  function toast(t) { var e = $('toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.h); toast.h = setTimeout(function () { e.classList.remove('on'); }, 1400); }
+
+  /* ---------- filters ---------- */
+  function chips(el, list, cur, fn) {
+    el.innerHTML = list.map(function (c) { return '<button type="button" data-v="' + c[0] + '"' + (String(c[0]) === String(cur) ? ' class="on"' : '') + '>' + c[1] + '</button>'; }).join('');
+    each(el.querySelectorAll('button'), function (b) { b.addEventListener('click', function () { fn(b.getAttribute('data-v')); }); });
+  }
+  function drawFilters() {
+    chips($('f-block'), [['all', 'All']].concat(BLOCKS.map(function (b) { return [b.k, b.n]; })), F.block, function (v) { F.block = v; drawFilters(); drawLib(); });
+    chips($('f-age'), [[-1, 'Any']].concat(ORDER.map(function (o, i) { return [i, AGES[o]]; })), F.age, function (v) { F.age = +v; drawFilters(); drawLib(); });
+  }
+  $('q').addEventListener('input', function () { F.q = this.value.trim().toLowerCase(); drawLib(); });
+
+  /* ---------- library ---------- */
+  var GRIP = '<svg viewBox="0 0 14 22"><circle cx="4" cy="4" r="1.6"/><circle cx="10" cy="4" r="1.6"/><circle cx="4" cy="11" r="1.6"/><circle cx="10" cy="11" r="1.6"/><circle cx="4" cy="18" r="1.6"/><circle cx="10" cy="18" r="1.6"/></svg>';
+  function card(m) {
+    return '<div class="mc' + (has(m.id) ? ' in' : '') + '" data-id="' + m.id + '"><span class="grip" data-drag aria-label="Drag">' + GRIP + '</span><div class="bd"><div class="nm">' + esc(m.name) + '</div><div class="ds">' + esc(m.dose) + '</div><div class="cu">' + esc(m.cue) + '</div><div class="tg">' + m.tags.map(function (t) { return '<i>' + esc(t) + '</i>'; }).join('') + '</div></div>' +
+      '<button type="button" class="add" data-add aria-label="Add to workout">' + (has(m.id) ? '&#10003;' : '+') + '</button></div>';
+  }
+  function drawLib() {
+    var html = '';
+    BLOCKS.forEach(function (b) {
+      if (F.block !== 'all' && F.block !== b.k) return;
+      var l = MOVES.filter(function (m) { return m.block === b.k && (F.age < 0 || (m.lo <= F.age && m.hi >= F.age)) && (!F.q || (m.name + ' ' + m.tags.join(' ') + ' ' + m.cue).toLowerCase().indexOf(F.q) >= 0); });
+      if (!l.length) return;
+      html += '<div class="ml-sec"><div class="ml-sec-h"><b>' + b.n + '</b><span></span><em>' + l.length + ' cards</em></div><div class="ml-cards">' + l.map(card).join('') + '</div></div>';
+    });
+    $('lib').innerHTML = html || '<p class="ml-sub" style="margin-top:1.5rem">No cards match. Clear the search.</p>';
+    each($('lib').querySelectorAll('.mc'), function (c) {
+      c.querySelector('[data-add]').addEventListener('click', function () { var id = c.getAttribute('data-id'); if (has(id)) remove(id); else add(id, BY[id].block); });
+      startDrag(c.querySelector('[data-drag]'), function () { return { id: c.getAttribute('data-id'), from: null }; }, c);
+    });
+  }
+
+  /* ---------- builder ---------- */
+  function add(id, block, at) {
+    if (has(id)) { toast('Already in the workout'); return; }
+    var l = W.items[block]; var it = { id: id, dose: BY[id].dose };
+    if (at == null || at > l.length) l.push(it); else l.splice(at, 0, it);
+    changed(); toast('Added to ' + BLOCKS.filter(function (b) { return b.k === block; })[0].n);
+  }
+  function remove(id) { BLOCKS.forEach(function (b) { W.items[b.k] = W.items[b.k].filter(function (x) { return x.id !== id; }); }); changed(); }
+  function move(id, block, at) {
+    var it = null; BLOCKS.forEach(function (b) { W.items[b.k] = W.items[b.k].filter(function (x) { if (x.id === id) { it = x; return false; } return true; }); });
+    if (!it) return; var l = W.items[block]; if (at == null || at > l.length) l.push(it); else l.splice(at, 0, it); changed();
+  }
+  function changed() { draftSave(); drawBuilder(); drawLib(); }
+  function drawBuilder() {
+    var n = count(), mins = 0;
+    $('zones').innerHTML = BLOCKS.map(function (b, bi) {
+      var L = String.fromCharCode(65 + bi);
+      return '<div class="zone" data-zone="' + b.k + '"><div class="zone-h"><span>' + L + '. ' + b.n + '</span><em>' + W.items[b.k].length + '</em></div>' +
+        (W.items[b.k].length ? W.items[b.k].map(function (it, i) { var m = BY[it.id]; if (!m) return ''; return '<div class="bi" data-id="' + it.id + '"><span class="grip" data-drag>' + GRIP + '</span><span class="code">' + L + (i + 1) + '</span><span class="t"><b>' + esc(m.name) + '</b><input value="' + esc(it.dose) + '" maxlength="30" aria-label="Sets and reps"></span><button type="button" class="x" aria-label="Remove">&times;</button></div>'; }).join('') : '<div class="empty">Drop ' + b.n.toLowerCase() + ' cards here</div>') + '</div>';
+    }).join('');
+    mins = Math.max(0, Math.round(n * 2.2));
+    $('w-meta').textContent = n ? n + (n === 1 ? ' move' : ' moves') + ' · about ' + mins + ' min' : 'Empty. Drag cards in, or tap +.';
+    $('tray-n').textContent = n; $('w-name').value = W.name;
+    each($('zones').querySelectorAll('.bi'), function (r) {
+      var id = r.getAttribute('data-id');
+      r.querySelector('.x').addEventListener('click', function () { remove(id); });
+      r.querySelector('input').addEventListener('input', function () { BLOCKS.forEach(function (b) { W.items[b.k].forEach(function (x) { if (x.id === id) x.dose = r.querySelector('input').value; }); }); draftSave(); });
+      startDrag(r.querySelector('[data-drag]'), function () { return { id: id, from: 'builder' }; }, r);
+    });
+    drawSaved();
+  }
+  $('w-name').addEventListener('input', function () { W.name = this.value || 'My workout'; draftSave(); });
+
+  /* ---------- drag and drop (mouse + touch, pointer events) ---------- */
+  var D = null;
+  function startDrag(handle, info, src) {
+    handle.addEventListener('pointerdown', function (e) {
+      if (e.button) return; e.preventDefault();
+      var g = src.cloneNode(true); g.classList.add('ghost', 'mc'); g.style.left = e.clientX + 'px'; g.style.top = e.clientY + 'px'; document.body.appendChild(g);
+      D = { info: info(), g: g, src: src }; src.style.opacity = 0.35; document.body.classList.add('dragging');
+      try { handle.setPointerCapture(e.pointerId); } catch (x) {}
+    });
+    handle.addEventListener('pointermove', function (e) { if (!D) return; D.g.style.left = e.clientX + 'px'; D.g.style.top = e.clientY + 'px'; hot(e.clientX, e.clientY); autoscroll(e.clientY); });
+    function end(e) {
+      if (!D) return; var t = target(e.clientX, e.clientY), info = D.info;
+      D.g.remove(); D.src.style.opacity = ''; document.body.classList.remove('dragging'); hot(-1, -1); D = null;
+      if (!t) return;
+      if (t.zone) { if (info.from) move(info.id, t.zone, t.at); else add(info.id, t.zone, t.at); }
+      else if (t.tray) { if (!info.from) add(info.id, BY[info.id].block); }
+    }
+    handle.addEventListener('pointerup', end); handle.addEventListener('pointercancel', end);
+  }
+  function under(x, y) { var g = D && D.g; if (g) g.style.display = 'none'; var el = document.elementFromPoint(x, y); if (g) g.style.display = ''; return el; }
+  function target(x, y) {
+    if (x < 0) return null; var el = under(x, y); if (!el) return null;
+    if (el.closest('#tray')) return { tray: 1 };
+    var z = el.closest('[data-zone]'); if (!z || !visible($('bw'))) return null;
+    var rows = z.querySelectorAll('.bi'), at = rows.length;
+    for (var i = 0; i < rows.length; i++) { var r = rows[i].getBoundingClientRect(); if (y < r.top + r.height / 2) { at = i; break; } }
+    if (D && D.info.from) { var cur = Array.prototype.indexOf.call(rows, D.src); if (cur >= 0 && cur < at) at--; }
+    return { zone: z.getAttribute('data-zone'), at: at };
+  }
+  function visible(el) { var r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < window.innerHeight; }
+  function hot(x, y) {
+    var t = target(x, y);
+    each(document.querySelectorAll('.zone.hot'), function (z) { z.classList.remove('hot'); }); $('tray').classList.remove('hot');
+    if (t && t.zone) document.querySelector('[data-zone="' + t.zone + '"]').classList.add('hot');
+    if (t && t.tray) $('tray').classList.add('hot');
+  }
+  function autoscroll(y) { var h = window.innerHeight; if (y < 70) window.scrollBy(0, -12); else if (y > h - 150 && !document.body.classList.contains('tray-open')) window.scrollBy(0, 12); }
+
+  /* ---------- phone tray ---------- */
+  $('tray').addEventListener('click', function () { document.body.classList.add('tray-open'); });
+  $('bw-x').addEventListener('click', function () { document.body.classList.remove('tray-open'); });
+
+  /* ---------- save, share, print ---------- */
+  function encode() { return BLOCKS.map(function (b) { return W.items[b.k].map(function (x) { return x.id + (x.dose !== BY[x.id].dose ? '~' + encodeURIComponent(x.dose) : ''); }).join(','); }).join('|'); }
+  function decode(s) {
+    var w = blank(); String(s).split('|').forEach(function (part, i) { var b = BLOCKS[i]; if (!b || !part) return; part.split(',').forEach(function (t) { var p = t.split('~'), id = p[0]; if (BY[id] && !w.items[b.k].some(function (x) { return x.id === id; })) w.items[b.k].push({ id: id, dose: p[1] ? decodeURIComponent(p[1]) : BY[id].dose }); }); });
+    return w;
+  }
+  $('w-save').addEventListener('click', function () {
+    if (!count()) { toast('Add a card first'); return; }
+    var l = saved(); if (!W.id) W.id = Date.now().toString(36);
+    W.saved = Date.now(); l = l.filter(function (x) { return x.id !== W.id; }); l.unshift(JSON.parse(JSON.stringify(W))); store(l.slice(0, 30)); draftSave(); drawSaved(); toast('Saved');
+  });
+  $('w-share').addEventListener('click', function () {
+    if (!count()) { toast('Add a card first'); return; }
+    var url = location.origin + location.pathname + '#w=' + encode() + '&n=' + encodeURIComponent(W.name);
+    try { navigator.clipboard.writeText(url).then(function () { toast('Link copied'); }, function () { prompt('Copy this link', url); }); } catch (e) { prompt('Copy this link', url); }
+  });
+  $('w-clear').addEventListener('click', function () { W = blank(); changed(); });
+  $('w-print').addEventListener('click', function () {
+    if (!count()) { toast('Add a card first'); return; }
+    var h = '<h2>' + esc(W.name) + '</h2><div class="m">DugoutLab Movement Library &middot; ' + count() + ' moves &middot; check a box for each set</div>';
+    BLOCKS.forEach(function (b, bi) { if (!W.items[b.k].length) return; var L = String.fromCharCode(65 + bi); h += '<h3>' + L + '. ' + b.n + '</h3>' + W.items[b.k].map(function (it, i) { var m = BY[it.id]; return '<div class="r"><b>' + L + (i + 1) + '</b><span><b>' + esc(m.name) + '</b><br><span style="font-size:9pt;color:#555">' + esc(m.cue) + '</span></span><b>' + esc(it.dose) + '</b><span class="bx"></span><span class="bx"></span><span class="bx"></span></div>'; }).join(''); });
+    h += '<div class="src"><b>Guidelines and sources this workout follows:</b> Lloyd et al. (2014) International consensus on youth resistance training; Faigenbaum et al. (2009) NSCA youth resistance training position statement; Lloyd et al. (2016) NSCA long-term athletic development; Webster and Hewett (2018) neuromuscular training meta-analysis. Bodyweight first. No throwing work. Cut jumping during a growth spurt. Educational, not medical advice.</div>';
+    $('print').innerHTML = h; window.print();
+  });
+  function drawSaved() {
+    var l = saved(); $('w-saved').innerHTML = l.length ? '<div class="ml-lbl" style="margin-top:0">Saved workouts</div>' + l.map(function (w) { var n = 0; BLOCKS.forEach(function (b) { n += (w.items[b.k] || []).length; }); return '<div class="row"><button type="button" class="open" data-o="' + w.id + '">' + esc(w.name) + ' <span style="color:var(--ink-faint);font-weight:500">&middot; ' + n + '</span></button><button type="button" class="del" data-d="' + w.id + '">Delete</button></div>'; }).join('') : '';
+    each($('w-saved').querySelectorAll('[data-o]'), function (b) { b.addEventListener('click', function () { var w = saved().filter(function (x) { return x.id === b.getAttribute('data-o'); })[0]; if (w) { W = JSON.parse(JSON.stringify(w)); BLOCKS.forEach(function (bk) { W.items[bk.k] = (W.items[bk.k] || []).filter(function (x) { return BY[x.id]; }); }); changed(); toast('Opened ' + w.name); } }); });
+    each($('w-saved').querySelectorAll('[data-d]'), function (b) { b.addEventListener('click', function () { store(saved().filter(function (x) { return x.id !== b.getAttribute('data-d'); })); drawSaved(); }); });
+  }
+
+  /* ---------- boot ---------- */
+  var hm = location.hash.match(/w=([^&]*)/);
+  if (hm) { W = decode(hm[1]); var nm = location.hash.match(/n=([^&]*)/); if (nm) W.name = decodeURIComponent(nm[1]).slice(0, 40); history.replaceState(null, '', location.pathname); }
+  else { try { var d = JSON.parse(localStorage.getItem(KEY + '_draft') || 'null'); if (d && d.items) { W = d; BLOCKS.forEach(function (b) { W.items[b.k] = (W.items[b.k] || []).filter(function (x) { return BY[x.id]; }); }); } } catch (e) {} }
+  drawFilters(); drawLib(); drawBuilder();
+  if (hm && window.innerWidth <= 900) document.body.classList.add('tray-open');
+})();
+</script>
+</body>
+</html>
