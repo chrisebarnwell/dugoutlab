@@ -52,7 +52,11 @@
 <div class="page-hero">
   <div class="page-hero-inner">
     <h1>Coach the age in front of you.</h1>
-    <p style="margin-top:0.5rem;font-size:1rem;color:rgba(255,255,255,0.7)">Pick your group. Tools to use tonight, plus the thinking behind them.</p>
+    <p style="margin-top:0.5rem;font-size:1rem;color:rgba(255,255,255,0.78)">Pick your group. We will remember it, and Practice in a Pinch will open set to it.</p>
+    <div class="age-pick age-pick-hero" role="group" aria-label="Your team's age group" id="age-pick">
+      <button type="button" data-age="a46" data-sec="ages-4-6">4-6</button><button type="button" data-age="a79" data-sec="ages-7-12">7-9</button><button type="button" data-age="a1012" data-sec="ages-7-12">10-12</button><button type="button" data-age="a1315" data-sec="ages-13-15">13-15</button><button type="button" data-age="a16" data-sec="ages-16">16+</button>
+    </div>
+    <p class="age-pick-msg" id="age-pick-msg" role="status" aria-live="polite"></p>
   </div>
 </div>
 <section class="section section-white" style="padding:1.5rem 0"><div class="container center"><a href="#ages-4-6">Ages 4-6</a> &middot; <a href="#ages-7-12">Ages 7-12</a> &middot; <a href="#ages-13-15">Ages 13-15</a> &middot; <a href="#ages-16">Ages 16+</a></div></section>
@@ -62,9 +66,9 @@
     <div class="section-title">Ages 4-6</div>
     <p style="max-width:680px;margin:0.5rem 0 1.5rem">The game is about moving and having fun. Keep instructions short and keep them moving. Every kid touches the ball every rep. <a href="stages.html">Full stage guide &rarr;</a></p>
     <div class="grid-3" style="margin-bottom:1.75rem">
-      <a href="framework.html?age=a46" class="card card-link article-card" style="text-decoration:none">
+      <a href="practice.html?age=a46" class="card card-link article-card" style="text-decoration:none">
         <div class="card-title">Build tonight&#39;s practice</div>
-        <div class="card-summary">Practice Framework, set to this age.</div>
+        <div class="card-summary">Practice in a Pinch, set to this age.</div>
       </a>
       <a href="lineup.html" class="card card-link article-card" style="text-decoration:none">
         <div class="card-title">Set the lineup</div>
@@ -116,9 +120,9 @@
     <div class="section-title">Ages 7-12</div>
     <p style="max-width:680px;margin:0.5rem 0 1.5rem">The stage most rec coaches live in. Games first, simple reps to start a new skill, then put it back in a game. Encourage other sports. <a href="stages.html">Full stage guide &rarr;</a></p>
     <div class="grid-3" style="margin-bottom:1.75rem">
-      <a href="framework.html?age=a79" class="card card-link article-card" style="text-decoration:none">
+      <a href="practice.html?age=a79" class="card card-link article-card" style="text-decoration:none">
         <div class="card-title">Build tonight&#39;s practice</div>
-        <div class="card-summary">Practice Framework, set to this age.</div>
+        <div class="card-summary">Practice in a Pinch, set to this age.</div>
       </a>
       <a href="lineup.html" class="card card-link article-card" style="text-decoration:none">
         <div class="card-title">Set the lineup</div>
@@ -205,9 +209,9 @@
     <div class="section-title">Ages 13-15</div>
     <p style="max-width:680px;margin:0.5rem 0 1.5rem">More structured practice, still wrapped in game-like work. Readiness depends on maturity, not the birthday. Recognize effort, decisions, and improvement. <a href="stages.html">Full stage guide &rarr;</a></p>
     <div class="grid-3" style="margin-bottom:1.75rem">
-      <a href="framework.html?age=a1315" class="card card-link article-card" style="text-decoration:none">
+      <a href="practice.html?age=a1315" class="card card-link article-card" style="text-decoration:none">
         <div class="card-title">Build tonight&#39;s practice</div>
-        <div class="card-summary">Practice Framework, set to this age.</div>
+        <div class="card-summary">Practice in a Pinch, set to this age.</div>
       </a>
       <a href="lineup.html" class="card card-link article-card" style="text-decoration:none">
         <div class="card-title">Set the lineup</div>
@@ -259,9 +263,9 @@
     <div class="section-title">Ages 16+</div>
     <p style="max-width:680px;margin:0.5rem 0 1.5rem">The athlete starts to own the plan. The coach shifts toward strategy and mental performance. <a href="stages.html">Full stage guide &rarr;</a></p>
     <div class="grid-3" style="margin-bottom:1.75rem">
-      <a href="framework.html?age=a16" class="card card-link article-card" style="text-decoration:none">
+      <a href="practice.html?age=a16" class="card card-link article-card" style="text-decoration:none">
         <div class="card-title">Build tonight&#39;s practice</div>
-        <div class="card-summary">Practice Framework, set to this age.</div>
+        <div class="card-summary">Practice in a Pinch, set to this age.</div>
       </a>
       <a href="lineup.html" class="card card-link article-card" style="text-decoration:none">
         <div class="card-title">Set the lineup</div>
@@ -351,5 +355,19 @@
   </div>
 </footer>
 <script src="js/site.js"></script>
+<script>
+(function () {
+  var box = document.getElementById('age-pick'), msg = document.getElementById('age-pick-msg');
+  var LABEL = { a46: '4-6', a79: '7-9', a1012: '10-12', a1315: '13-15', a16: '16+' };
+  function mark(v) { box.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-age') === v ? 'true' : 'false'); }); }
+  mark(DL.getAge());
+  box.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var v = b.getAttribute('data-age'); DL.setAge(v); mark(v);
+    msg.innerHTML = 'Saved: ages ' + LABEL[v] + '. <a href="practice.html?age=' + v + '">Build a practice for this age</a>';
+    var sec = document.getElementById(b.getAttribute('data-sec')); if (sec) setTimeout(function () { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 600);
+  });
+})();
+</script>
 </body>
 </html>

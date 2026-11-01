@@ -648,7 +648,7 @@ body.paper .page-hero { background: var(--brand-forest) url('../assets/brand/fie
 /* TL;DR: the short version, first thing in every article */
 .tldr { position: relative; margin: 0 0 2.2rem; padding: 1.15rem 1.25rem 1.1rem 1.35rem; background: var(--forest2); border: 1px solid var(--rule); border-left: 4px solid var(--fill); border-radius: 4px 14px 14px 4px; box-shadow: var(--shadow); }
 .tldr::after { content: ""; position: absolute; right: 16px; top: 16px; width: 12px; height: 12px; background: var(--fill); transform: rotate(45deg); opacity: 0.85; }
-.article-body .tldr-h, .tldr-h { font-family: var(--mono); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin: 0 0 0.65rem; line-height: 1.3; }
+body.paper .article-body .tldr-h, .article-body .tldr-h, .tldr-h { padding-top: 0; font-family: var(--mono); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin: 0 0 0.65rem; line-height: 1.3; }
 .tldr-h span { font-family: var(--sans); letter-spacing: 0.04em; text-transform: none; color: var(--ink-faint); font-size: 0.85rem; margin-left: 0.4rem; }
 .article-body .tldr ul, .tldr ul { list-style: none; margin: 0; padding: 0; }
 .article-body .tldr li, .tldr li { position: relative; padding-left: 1.15rem; margin-bottom: 0.55rem; font-size: 1rem; line-height: 1.55; color: var(--ink); }
@@ -801,3 +801,11 @@ html[data-theme="dark"] body.paper .article-cue-box { background: rgba(200,134,4
 .lu-demo .btn, .lu-sample-note .btn { flex-shrink: 0; }
 @media (max-width: 560px) { .lu-demo, .lu-sample-note { flex-direction: column; align-items: stretch; } .lu-demo .btn, .lu-sample-note .btn { justify-content: center; } }
 @media print { .lu-demo, .lu-sample-note { display: none !important; } }
+
+/* Standard age picker: the same five groups everywhere */
+.age-pick { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1.1rem; }
+.age-pick button { min-height: 46px; min-width: 64px; padding: 0.5rem 1rem; border-radius: 12px; border: 1.5px solid rgba(200,134,46,0.55); background: transparent; color: var(--ink); font: inherit; font-weight: 700; font-size: 1rem; cursor: pointer; }
+.age-pick button:hover { border-color: var(--fill); }
+.age-pick button[aria-pressed="true"] { background: var(--fill); color: var(--on-fill); border-color: var(--fill); }
+.age-pick-msg { min-height: 1.4em; margin-top: 0.6rem !important; font-size: 0.95rem !important; color: var(--ink-soft) !important; }
+.age-pick-msg a { color: var(--gold-light); font-weight: 700; text-decoration: underline; }

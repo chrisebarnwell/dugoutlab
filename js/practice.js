@@ -38,7 +38,8 @@
 
   /* ── State: remembered answers, sensible defaults ─────────────── */
   var prefs = load(KEY_PREFS, {});
-  var sharedAge = window.DL && DL.getAge ? DL.getAge() : '';
+  var urlAge = new URLSearchParams(location.search).get('age');
+  var sharedAge = BASE[urlAge] ? urlAge : (window.DL && DL.getAge ? DL.getAge() : '');
   var state = {
     len: LENS.indexOf(prefs.len) >= 0 ? prefs.len : 60,
     sport: prefs.sport === 'softball' ? 'softball' : 'baseball',
