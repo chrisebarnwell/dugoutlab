@@ -94,7 +94,7 @@ window.DL_PARSE = (function () {
       /* growth */
       if (/\bgrowth spurt\b|\bgrew\b|\bgrowing\b|\btaller\b|\bshoe size\b|\boutgrew\b|\bshot up\b|\bsprouted\b|\bnew (shoes|cleats)\b|\b(shoes|cleats) (don'?t|do not|won'?t) fit\b/.test(c)) { growth = true; used = true; }
       /* sessions */
-      var st = c.match(/\b(session|workout|day)\s*([abc])\b/); if (st) sessionTag = st[2].toUpperCase();
+      var st = c.match(/\b(session|workout|day)\s*(one|two|three|four|[1-4]|[abcd])\b/); if (st) sessionTag = ({ one: '1', two: '2', three: '3', four: '4', a: '1', b: '2', c: '3', d: '4' })[st[2]] || st[2];
       if (/\b(did|done|finished|completed|crushed|got (in|through)|knocked out|wrapped)\b.*\b(session|workout|training|plan|day [abc]|the move|strength day)\b|\bworked out\b|\btrained\b|\bdid (the|her|his|their|my) (plan|workout|session)\b/.test(c)) { if (!neg) sessionDone = true; used = true; }
       if (/\bskipped\b|\bmissed\b|\bdidn'?t (do|get to|train|work ?out)\b|\bno workout\b|\bno session\b|\btook (the day|today|yesterday) off\b/.test(c)) { skipped = true; used = true; }
       if (/\brest day\b|\bday off\b|\brested\b/.test(c)) { rest = true; used = true; }
@@ -119,7 +119,7 @@ window.DL_PARSE = (function () {
     if (noPain && !Object.keys(discomfort).length) set('discomfort', 'Reported discomfort', 'none', 'choice', 'recognized', ['none', 'knee', 'arm', 'back', 'other']);
     if (tired) set('tired', 'Tired (general)', true, 'bool');
     if (growth) set('growth', 'Growth sign reported', true, 'bool');
-    if (sessionDone) { set('sessionDone', 'Plan session done', true, 'bool'); if (sessionTag) set('sessionTag', 'Which session', sessionTag, 'choice', 'recognized', ['A', 'B', 'C', 'D']); }
+    if (sessionDone) { set('sessionDone', 'Plan session done', true, 'bool'); if (sessionTag) set('sessionTag', 'Which session', sessionTag, 'choice', 'recognized', ['1', '2', '3', '4']); }
     if (skipped) set('skipped', 'Session skipped', true, 'bool');
     if (rest) set('rest', 'Rest day', true, 'bool');
     if (feel) set('feel', 'How it felt', feel, 'choice', 'recognized', ['easy', 'ok', 'hard']);

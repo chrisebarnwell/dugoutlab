@@ -106,7 +106,7 @@ window.DL_RULES = (function () {
     spurt: { src: ['bergeron2015', 'ours'], why: 'Growth spurt reported. Overuse complaints at the knee and heel rise in this window, so jumping volume comes down, box jumps become step-downs, and mobility goes up. Reported by you, not a diagnosis.' },
     spurtUnsure: { src: ['bergeron2015'], why: 'Not sure about a growth spurt? Watch for a fast height jump, a new shoe size, new clumsiness, or sore knees or heels. If you see those, answer "In one now" at the next check-in.' },
     warm: { src: ['webster2018', 'mandelbaum2005'], why: 'Every session opens with a short neuromuscular warm-up: soft landings, single-leg balance, light hops. Programs like this cut ACL injury rates by roughly half in meta-analyses.' },
-    move: { src: ['vanhooren2016', 'lloyd2016phv'], why: 'The Move block trains timing, not just force: land, stick, bounce. Force has to be ready before contact. Before the growth spurt, this kind of work produced the biggest sprint and jump gains in one controlled study.' },
+    move: { src: ['vanhooren2016', 'lloyd2016phv'], why: 'The Power block trains timing, not just force: land, stick, bounce. Force has to be ready before contact. Before the growth spurt, this kind of work produced the biggest sprint and jump gains in one controlled study.' },
     waterbag: { src: ['vanhooren2016', 'ours'], why: 'Water bag work is in because you have one. The shifting load forces the body to brace before it moves. Promising and plausible, not yet tested in youth. Keep it light, half full, and low rep.' },
     medball: { src: ['szymanski2007'], why: 'Light rotational medicine-ball throws are in because you have a ball. Studied in high school hitters.' },
     dose: { src: ['nsca2009'], why: 'Sets and reps sit inside the NSCA youth ranges: strength 1 to 3 sets of 6 to 15, power 1 to 3 sets of 3 to 6.' },
@@ -143,157 +143,130 @@ window.DL_RULES = (function () {
   var LIB = [];
   function L(slot, id, name, cue, o) { o = o || {}; o.slot = slot; o.id = id; o.name = name; o.cue = cue; LIB.push(o); }
 
-  /* warm-up, 10 and up */
-  L('prep', 'prep-skip', 'Skips, walking lunges, leg swings', 'Loose and tall.', { dose: '3 min' });
-  L('prep', 'prep-world', 'World\'s greatest stretch, then high-knee march', 'Reach for the ceiling.', { dose: '3 min' });
-  L('prep', 'prep-inch', 'Inchworm walkouts, then side shuffles', 'Hands walk out, feet walk in.', { dose: '3 min' });
-  L('land', 'land-ko', 'Knee-over-toe landing drill: small hop, land soft, hold', 'Land like a ninja. Knees over toes.', { dose: '2 x 5', jump: 1, spurtOK: 1 });
-  L('land', 'land-drop', 'Drop and freeze: rise on your toes, drop into a quiet half squat', 'Freeze like a photo.', { dose: '2 x 5' });
-  L('land', 'land-snap', 'Snap down: arms up, snap into an athletic stance, freeze', 'Make no sound.', { dose: '2 x 5' });
-  L('bal', 'bal-eyes', 'Single-leg balance, eyes up', 'Pick a spot on the wall and hold it.', { dose: '30 sec each' });
-  L('bal', 'bal-reach', 'Single-leg balance with a three-way toe reach', 'Tap the clock: 12, 3, 6.', { dose: '2 x 3 each' });
-  L('bal', 'bal-catch', 'Single-leg balance, toss and catch a ball', 'Eyes on the ball, quiet foot.', { dose: '30 sec each' });
-  L('bal', 'bal-closed', 'Single-leg balance, eyes closed', 'Grow tall through the top of your head.', { dose: '20 sec each', min: 'train' });
-  L('lat', 'lat-hop', 'Lateral hops over a line, soft', 'Quiet feet.', { dose: '2 x 6 each', jump: 1 });
-  L('lat', 'lat-shuffle', 'Athletic shuffle, quick feet', 'Stay low, never cross your feet.', { dose: '2 x 10 yd each way' });
-  L('lat', 'lat-carioca', 'Carioca (grapevine)', 'Hips turn, shoulders stay square.', { dose: '2 x 10 yd each way' });
+  /* ---------- library: standard strength-and-conditioning names, short external cues ----------
+     Every move is a recognized drill from youth S&C and neuromuscular-training programs (NSCA, PEP, Lloyd and Oliver).
+     Stage, gear, growth-spurt and discomfort gates decide who sees what. No playground games, no made-up drills. */
 
-  /* warm-up, 6 to 9 */
-  L('f-animal', 'f-animal-1', 'Animal walks: bear, crab, frog', 'Low like a crab, long like a bear.', { dose: '2 min' });
-  L('f-animal', 'f-animal-2', 'Animal walks: gorilla, duck, inchworm', 'Big gorilla, tiny duck.', { dose: '2 min' });
-  L('f-animal', 'f-animal-3', 'Animal walks: penguin, bear, kangaroo hops', 'Kangaroos land quiet.', { dose: '2 min', jump: 1 });
-  L('f-game', 'f-tag', 'Tag or a relay', 'Fast feet, soft steps.', { dose: '2 min' });
-  L('f-game', 'f-redlight', 'Red light, green light', 'Freeze like a statue.', { dose: '2 min' });
-  L('f-game', 'f-sharks', 'Sharks and minnows', 'Dodge, do not crash.', { dose: '2 min' });
-  L('f-game', 'f-simon', 'Simon says, athlete version', 'Listen, then move.', { dose: '2 min' });
-  L('f-hop', 'f-skip', 'Skips and hops, land soft', 'Quiet feet.', { dose: '1 min', jump: 1, spurtOK: 1 });
-  L('f-hop', 'f-hopscotch', 'Hopscotch', 'Land on the number, quiet.', { dose: '1 min', jump: 1 });
-  L('f-hop', 'f-beam', 'Balance beam walk on a line', 'Arms out like a plane.', { dose: '1 min' });
+  /* PREP: dynamic warm-up and activation */
+  L('prep', 'prep-skip', 'Dynamic warm-up: A-skip, walking lunge, leg swings', 'Tall and loose.', { dose: '3 min' });
+  L('prep', 'prep-world', 'World\'s greatest stretch + A-march', 'Long reach, tall hips.', { dose: '3 min' });
+  L('prep', 'prep-inch', 'Inchworm + lateral shuffle', 'Hands out, feet in.', { dose: '3 min' });
+  L('prep', 'prep-gate', 'Hip open and close the gate + carioca', 'Knee leads, hips stay square.', { dose: '3 min' });
+  L('land', 'land-ko', 'Mini hop to stick', 'Land silent. Knees over toes.', { dose: '2 x 5', jump: 1, spurtOK: 1 });
+  L('land', 'land-drop', 'Drop squat', 'Drop fast. Freeze.', { dose: '2 x 5' });
+  L('land', 'land-snap', 'Snap-down to athletic stance', 'Snap down. Freeze.', { dose: '2 x 5' });
+  L('bal', 'bal-eyes', 'Single-leg stance', 'Lock onto one spot.', { dose: '30 sec each' });
+  L('bal', 'bal-reach', 'Single-leg Y-balance reach', 'Reach long, stay tall.', { dose: '2 x 3 each' });
+  L('bal', 'bal-catch', 'Single-leg stance + ball toss', 'Eyes on the ball.', { dose: '30 sec each' });
+  L('bal', 'bal-closed', 'Single-leg stance, eyes closed', 'Tall through the crown.', { dose: '20 sec each', min: 'learn' });
+  L('lat', 'lat-hop', 'Lateral line hops', 'Off the ground fast.', { dose: '2 x 6 each', jump: 1 });
+  L('lat', 'lat-shuffle', 'Lateral shuffle', 'Low hips. Never click the heels.', { dose: '2 x 10 yd each way' });
+  L('lat', 'lat-carioca', 'Carioca', 'Hips turn, shoulders square.', { dose: '2 x 10 yd each way' });
 
-  /* move: hops */
-  L('hop', 'pogo', 'Pogo hops, quiet feet', 'Bounce like the floor is hot.', { dose: 'hop', jump: 1 });
-  L('hop', 'pogo-fb', 'Forward-back pogo over a line', 'Tiny and fast over the line.', { dose: 'hop', jump: 1 });
-  L('hop', 'pogo-ss', 'Side-to-side pogo over a line', 'Quick off the ground.', { dose: 'hop', jump: 1 });
-  L('hop', 'pogo-1', 'Single-leg pogo, small', 'Bounce off the ball of the foot.', { dose: '2 x 6 each', jump: 1, min: 'learn' });
-  L('hop', 'rope', 'Jump rope, two feet', 'Tiny bounces.', { dose: '2 x 30 sec', jump: 1, gear: 'rope', spurtOK: 1 });
-  L('hop', 'line-hops', 'Line hops: in, out, like a ladder', 'Hit the spaces fast.', { dose: 'hop', jump: 1 });
-  L('hop-s', 'pogo-low', 'Low pogo hops, tiny and quiet', 'Tiny like a mouse.', { dose: '2 x 6', jump: 1, spurtOK: 1 });
-  L('hop-s', 'ankle-bounce', 'Ankle bounces, heels stay up', 'Springy, not high.', { dose: '2 x 8', jump: 1, spurtOK: 1 });
-  /* move: stick the landing */
-  L('stick', 'step-stick', 'Step off the box, stick the landing', 'Freeze when you land. Count to two.', { dose: 'pow', jump: 1, gear: 'box' });
-  L('stick', 'sqj-stick', 'Squat jump, stick the landing', 'Freeze when you land. Count to two.', { dose: 'pow', jump: 1 });
-  L('stick', 'broad-stick', 'Broad jump, stick it', 'Jump out, land like a statue.', { dose: 'pow', jump: 1, min: 'learn' });
-  L('stick', 'turn-stick', 'Jump, turn a quarter, stick it', 'Land facing the new wall.', { dose: 'pow', jump: 1, min: 'learn' });
-  L('stick', 'hop-stick-1', 'Short hop on one leg and stick', 'Land and own it for two.', { dose: '2 x 4 each', jump: 1, min: 'train' });
-  L('stick-s', 'stepdown', 'Slow step-down off a step', 'Three seconds down. Quiet landing.', { dose: '2 x 5 each' });
-  L('stick-s', 'drop-freeze', 'Drop into a half squat and freeze', 'Freeze like a photo.', { dose: '2 x 5' });
-  /* move: lateral */
-  L('lat2', 'skater', 'Lateral bound and hold (skater)', 'Land on one foot and stay.', { dose: '2 x 4 each', jump: 1 });
-  L('lat2', 'line-stick', 'Lateral hop over a line and stick', 'Land on the far foot, freeze.', { dose: '2 x 4 each', jump: 1 });
-  L('lat2', 'cross-stick', 'Crossover step and stick', 'Push the ground sideways.', { dose: '2 x 4 each' });
-  L('lat2', 'cone-reach', 'Lateral bound to a cone, reach and stick', 'Touch the cone, stay balanced.', { dose: '2 x 4 each', jump: 1, gear: 'cones', min: 'learn' });
-  L('lat-s', 'skater-step', 'Lateral step and hold (skater, no hop)', 'Land on one foot and stay.', { dose: '2 x 4 each' });
-  L('lat-s', 'lat-lunge-bal', 'Lateral lunge to a balance', 'Push back to one foot and freeze.', { dose: '2 x 4 each' });
-  /* move: reactive and rotational */
-  L('react', 'wb-stride', 'Water bag stride and stick (light, half full)', 'Stride, plant, freeze. Let the water settle.', { dose: '2 x 5 each', gear: 'waterbag', back: 1 });
-  L('react', 'wb-shuffle', 'Water bag hold: quick shuffle and stop', 'Stop the water, not just your feet.', { dose: '2 x 4 each', gear: 'waterbag', back: 1 });
-  L('react', 'wb-lunge', 'Water bag reverse lunge, hug it tight', 'Keep the water quiet.', { dose: '2 x 5 each', gear: 'waterbag', back: 1 });
-  L('react', 'mb-rot', 'Medicine-ball rotational throw into a wall', 'Throw it through the wall.', { dose: '2 x 6 each', gear: 'medball', back: 1 });
-  L('react', 'mb-chest', 'Medicine-ball chest pass to a wall', 'Push the ball through the bricks.', { dose: '2 x 8', gear: 'medball' });
-  L('react', 'mb-step', 'Medicine-ball step-behind rotational throw', 'Step, turn, throw it through the wall.', { dose: '2 x 5 each', gear: 'medball', back: 1, min: 'train' });
-  L('react', 'band-rot', 'Band rotation, slow and controlled', 'Turn the belt buckle to the wall.', { dose: '2 x 8 each', gear: 'bands', back: 1 });
-  L('react', 'shadow', 'Shadow swings, stick the front foot', 'Front foot lands and freezes.', { dose: '2 x 6', back: 1, overhead: 1 });
-  L('react', 'drop-ball', 'Drop-ball reaction: catch it before the second bounce', 'Eyes on the ball, first step fast.', { dose: '2 x 5' });
-  L('react', 'mirror', 'Mirror drill: shuffle and stop with a partner', 'Copy the leader, stop on a dime.', { dose: '3 x 15 sec' });
-  /* move: speed (30-minute sessions) */
-  L('speed', 'fall-start', 'Falling start: lean, fall, sprint 10 yards', 'Let the lean pull you out.', { dose: '4 reps', jump: 1 });
-  L('speed', 'wall-march', 'Wall march: drive the knee', 'Push the wall away, knee to the sky.', { dose: '2 x 8 each' });
-  L('speed', 'chase', 'Chase: partner gets a two-step head start, 10 yards', 'Catch them before the line.', { dose: '4 reps', jump: 1 });
-  L('speed', 'getup-go', 'Get-up and go: lie down, pop up, sprint 10 yards', 'Fastest first step wins.', { dose: '4 reps', jump: 1 });
-  /* move: knee or heel reported (no impact) */
-  L('nj', 'bal2', 'Single-leg balance with a slow reach', 'Reach for the floor, stay tall.', { dose: '2 x 5 each' });
-  L('nj', 'stepdown-nj', 'Slow step-down off a step', 'Three seconds down. Quiet landing.', { dose: '2 x 5 each' });
-  L('nj', 'mob', 'Hip and ankle mobility flow', 'Slow and smooth.', { dose: '2 rounds' });
-  L('nj', 'lunge-slow', 'Walking lunges, slow', 'Tall chest, soft knee.', { dose: '2 x 6 each' });
+  /* POWER: elastic */
+  L('hop', 'pogo', 'Pogo jumps', 'Stiff ankles. Hot floor.', { dose: 'hop', jump: 1 });
+  L('hop', 'pogo-fb', 'Linear pogo over a line', 'Short contacts.', { dose: 'hop', jump: 1 });
+  L('hop', 'pogo-ss', 'Lateral pogo over a line', 'Short contacts.', { dose: 'hop', jump: 1 });
+  L('hop', 'pogo-1', 'Single-leg pogo', 'Bounce off the ball of the foot.', { dose: '2 x 6 each', jump: 1, min: 'learn' });
+  L('hop', 'rope', 'Jump rope, double-leg', 'Quiet, quick.', { dose: '2 x 30 sec', jump: 1, gear: 'rope', spurtOK: 1 });
+  L('hop', 'line-hops', 'Ladder hops (line or tape)', 'Hit every box fast.', { dose: 'hop', jump: 1 });
+  L('hop-s', 'pogo-low', 'Low-amplitude pogo', 'Small and quick.', { dose: '2 x 6', jump: 1, spurtOK: 1 });
+  L('hop-s', 'ankle-bounce', 'Ankle hops', 'Heels never touch.', { dose: '2 x 8', jump: 1, spurtOK: 1 });
+  /* POWER: jump and stick */
+  L('stick', 'step-stick', 'Box drop to stick', 'Land and own it for two.', { dose: 'pow', jump: 1, gear: 'box' });
+  L('stick', 'sqj-stick', 'Countermovement jump to stick', 'Jump tall. Land silent.', { dose: 'pow', jump: 1 });
+  L('stick', 'broad-stick', 'Broad jump to stick', 'Jump out. Land like a statue.', { dose: 'pow', jump: 1, min: 'learn' });
+  L('stick', 'turn-stick', '90-degree jump to stick', 'Land facing the new wall.', { dose: 'pow', jump: 1, min: 'learn' });
+  L('stick', 'hop-stick-1', 'Single-leg hop to stick', 'Stick it for two.', { dose: '2 x 4 each', jump: 1, min: 'train' });
+  L('stick-s', 'stepdown', 'Eccentric step-down', 'Three seconds down.', { dose: '2 x 5 each' });
+  L('stick-s', 'drop-freeze', 'Snap-down, no jump', 'Snap down. Freeze.', { dose: '2 x 5' });
+  /* POWER: lateral (fielding range) */
+  L('lat2', 'skater', 'Skater bound to stick', 'Push the ground sideways.', { dose: '2 x 4 each', jump: 1 });
+  L('lat2', 'line-stick', 'Lateral hop to stick', 'Land on the outside foot.', { dose: '2 x 4 each', jump: 1 });
+  L('lat2', 'cross-stick', 'Crossover step to stick', 'Turn the hips, push off the back foot.', { dose: '2 x 4 each' });
+  L('lat2', 'cone-reach', 'Lateral bound + cone reach', 'Touch it, stay balanced.', { dose: '2 x 4 each', jump: 1, gear: 'cones', min: 'learn' });
+  L('lat-s', 'skater-step', 'Skater step, no hop', 'Load the outside hip.', { dose: '2 x 4 each' });
+  L('lat-s', 'lat-lunge-bal', 'Lateral lunge to single-leg balance', 'Push back and freeze.', { dose: '2 x 4 each' });
+  /* POWER: rotational and reactive */
+  L('react', 'wb-stride', 'Water bag stride to stick', 'Stride, plant, freeze. Let the water settle.', { dose: '2 x 5 each', gear: 'waterbag', back: 1 });
+  L('react', 'wb-shuffle', 'Water bag shuffle and stop', 'Stop the water, not just your feet.', { dose: '2 x 4 each', gear: 'waterbag', back: 1 });
+  L('react', 'wb-lunge', 'Water bag reverse lunge', 'Keep the water quiet.', { dose: '2 x 5 each', gear: 'waterbag', back: 1 });
+  L('react', 'mb-rot', 'Med ball rotational scoop toss', 'Throw it through the wall.', { dose: '2 x 6 each', gear: 'medball', back: 1 });
+  L('react', 'mb-chest', 'Med ball chest pass', 'Through the bricks.', { dose: '2 x 8', gear: 'medball' });
+  L('react', 'mb-step', 'Med ball step-behind scoop toss', 'Step, turn, launch.', { dose: '2 x 5 each', gear: 'medball', back: 1, min: 'train' });
+  L('react', 'band-rot', 'Band anti-rotation to rotation', 'Belt buckle to the wall.', { dose: '2 x 8 each', gear: 'bands', back: 1 });
+  L('react', 'shadow', 'Dry swings, stick the stride', 'Front foot lands and freezes.', { dose: '2 x 6', back: 1, overhead: 1 });
+  L('react', 'drop-ball', 'Ball-drop reaction start', 'First step before the second bounce.', { dose: '2 x 5' });
+  L('react', 'mirror', 'Partner mirror shuffle', 'Read, react, stop.', { dose: '3 x 15 sec' });
+  /* SPEED: baseball starts (30-minute sessions) */
+  L('speed', 'fall-start', 'Falling start, 10 yd', 'Lean. Fall. Go.', { dose: '4 reps', jump: 1 });
+  L('speed', 'wall-march', 'Wall drill: A-march', 'Punch the knee up.', { dose: '2 x 8 each' });
+  L('speed', 'xover-start', 'Crossover start from a lead, 10 yd', 'Turn the hips, rip the arm.', { dose: '4 reps', jump: 1 });
+  L('speed', 'dropstep-start', 'Drop-step start, 10 yd', 'Open the hip, sprint the angle.', { dose: '4 reps', jump: 1 });
+  L('speed', 'pro-agility', '5-10-5 pro agility', 'Low on the cut.', { dose: '3 reps', jump: 1, gear: 'cones', min: 'learn' });
+  L('speed', 'home-first', 'Home-to-first finish', 'Run through the bag.', { dose: '3 reps', jump: 1 });
+  /* knee or heel reported: no impact */
+  L('nj', 'bal2', 'Single-leg RDL reach', 'Reach long, stay tall.', { dose: '2 x 5 each' });
+  L('nj', 'stepdown-nj', 'Eccentric step-down', 'Three seconds down.', { dose: '2 x 5 each' });
+  L('nj', 'mob', 'Hip and ankle mobility', 'Slow and smooth.', { dose: '2 rounds' });
+  L('nj', 'lunge-slow', 'Tempo walking lunge', 'Tall chest.', { dose: '2 x 6 each' });
 
-  /* strength, 10 and up */
-  L('squat', 'squat', 'Bodyweight squat, sit back', 'Push the floor away.', { dose: 'str' });
-  L('squat', 'split', 'Split squat', 'Back knee kisses the floor.', { dose: 'str', each: 1 });
-  L('squat', 'stepup', 'Step-up onto the box', 'Push the box into the ground.', { dose: 'str', each: 1, gear: 'box' });
-  L('squat', 'lat-lunge', 'Lateral lunge', 'Sit back into the side you step to.', { dose: 'str', each: 1 });
-  L('squat', 'rev-lunge', 'Reverse lunge', 'Step back soft, drive the front foot.', { dose: 'str', each: 1 });
-  L('squat', 'cossack', 'Cossack squat, side to side', 'Slide low, heel stays down.', { dose: 'str', each: 1, min: 'train' });
-  L('squat', 'wb-squat', 'Water bag front squat, hug it', 'Keep the water still.', { dose: 'str', gear: 'waterbag', back: 1 });
+  /* STRENGTH */
+  L('squat', 'squat', 'Bodyweight squat', 'Push the floor away.', { dose: 'str' });
+  L('squat', 'split', 'Split squat', 'Back knee to the floor.', { dose: 'str', each: 1 });
+  L('squat', 'stepup', 'Step-up', 'Drive through the box.', { dose: 'str', each: 1, gear: 'box' });
+  L('squat', 'lat-lunge', 'Lateral lunge', 'Sit into the hip.', { dose: 'str', each: 1 });
+  L('squat', 'rev-lunge', 'Reverse lunge', 'Drive the front foot.', { dose: 'str', each: 1 });
+  L('squat', 'cossack', 'Cossack squat', 'Heel stays down.', { dose: 'str', each: 1, min: 'train' });
+  L('squat', 'wb-squat', 'Water bag front squat', 'Keep the water still.', { dose: 'str', gear: 'waterbag', back: 1 });
   L('squat', 'goblet', 'Goblet squat, light dumbbell', 'Push the floor away.', { dose: 'str', gear: 'db', load: 1 });
-  L('push', 'pushup', 'Push-up (hands on a step if needed)', 'Body like a plank.', { dose: 'str' });
-  L('push', 'hr-pushup', 'Hand-release push-up', 'Push the floor away fast.', { dose: 'str' });
-  L('push', 'slow-pushup', 'Slow push-up: three seconds down', 'Lower like an elevator.', { dose: 'str' });
-  L('push', 'tap-pushup', 'Push-up to a shoulder tap', 'Hips stay still as a table.', { dose: 'str', back: 1 });
-  L('push', 'pike-pushup', 'Pike push-up', 'Head goes between your hands.', { dose: 'str', overhead: 1, min: 'train' });
-  L('push', 'band-press', 'Band chest press', 'Punch the band forward.', { dose: 'str', gear: 'bands' });
-  L('push', 'db-press', 'Half-kneeling one-arm dumbbell press', 'Push the ceiling away.', { dose: 'str', each: 1, gear: 'db', load: 1, overhead: 1 });
-  L('pull', 'tablerow', 'Table row (under a sturdy table)', 'Pull the table to you.', { dose: 'str' });
-  L('pull', 'invrow', 'Inverted row under the bar', 'Pull the bar to your chest.', { dose: 'str', gear: 'bar' });
-  L('pull', 'bandrow', 'Band row', 'Pull the band to your pockets.', { dose: 'str', gear: 'bands' });
-  L('pull', 'pullapart', 'Band pull-apart', 'Stretch the band across the room.', { dose: 'str', gear: 'bands' });
-  L('pull', 'superman-pull', 'Superman pulls: face down, elbows to pockets', 'Pull your elbows into your back pockets.', { dose: 'str' });
-  L('pull', 'ytw', 'Floor Y-T-W raises, face down', 'Thumbs to the ceiling.', { dose: '2 x 5 each letter', overhead: 1 });
-  L('pull', 'hang', 'Dead hang from the bar', 'Squeeze the bar like a lemon.', { dose: 'hold', gear: 'bar', overhead: 1 });
-  L('pull', 'db-row', 'One-arm dumbbell row', 'Pull the weight to your pocket.', { dose: 'str', each: 1, gear: 'db', load: 1 });
-  L('hinge', 'airplane', 'Single-leg airplane (hip hinge)', 'Reach your heel to the wall behind you.', { dose: '2 x 6 each' });
-  L('hinge', 'bridge', 'Glute bridge', 'Push the floor away with your heels.', { dose: 'str' });
-  L('hinge', 'sl-bridge', 'Single-leg glute bridge', 'Hips stay level like a table.', { dose: 'str', each: 1, min: 'learn' });
-  L('hinge', 'rdl-reach', 'Single-leg reach to a cone (RDL reach)', 'Reach long, back leg to the wall.', { dose: '2 x 6 each' });
-  L('hinge', 'walkout', 'Hamstring walkouts from a bridge', 'Tiny heel steps out and back.', { dose: '2 x 5' });
-  L('hinge', 'bandgm', 'Band good morning', 'Push your hips to the wall behind you.', { dose: 'str', gear: 'bands', back: 1 });
-  L('hinge', 'nordic', 'Nordic lower, partner holds the feet', 'Fall as slowly as you can.', { dose: '2 x 3', min: 'train' });
-  L('hinge', 'db-rdl', 'Dumbbell Romanian deadlift, light', 'Slide the weight down your legs.', { dose: 'str', gear: 'db', load: 1, back: 1 });
-  L('core', 'plank', 'Plank', 'Still as a table.', { dose: 'hold', back: 1 });
-  L('core', 'sideplank', 'Side plank', 'Hips to the ceiling.', { dose: 'hold', each: 1, back: 1 });
-  L('core', 'deadbug', 'Dead bug, slow', 'Press your back into the floor.', { dose: '2 x 8 each' });
-  L('core', 'birddog', 'Bird dog', 'Do not spill the water on your back.', { dose: '2 x 6 each' });
-  L('core', 'pallof', 'Pallof press (band)', 'Do not let the band turn you.', { dose: '2 x 8 each', gear: 'bands', back: 1 });
-  L('core', 'bearhold', 'Bear hold, knees an inch off the floor', 'Hover like a table.', { dose: 'hold' });
-  L('core', 'hollow', 'Hollow hold', 'Be a banana.', { dose: 'hold', min: 'learn', back: 1 });
-  L('core', 'copen', 'Short Copenhagen side plank, knee on the bench', 'Squeeze the bench.', { dose: '2 x 15 sec each', gear: 'box', min: 'train', back: 1 });
-  L('core', 'taps', 'Plank shoulder taps', 'Hips stay still.', { dose: '2 x 8 each', back: 1 });
-  L('carry', 'bearhug', 'Bear-hug carry (anything heavy-ish)', 'Hug it tight, walk tall.', { dose: 'trip', back: 1 });
-  L('carry', 'jugs', 'Farmer carry with two water jugs', 'Walk tall like a soldier.', { dose: 'trip', back: 1 });
+  L('push', 'pushup', 'Push-up (incline if needed)', 'Rigid plank.', { dose: 'str' });
+  L('push', 'hr-pushup', 'Hand-release push-up', 'Explode off the floor.', { dose: 'str' });
+  L('push', 'slow-pushup', 'Tempo push-up, 3 sec down', 'Control the descent.', { dose: 'str' });
+  L('push', 'tap-pushup', 'Push-up + shoulder tap', 'Hips do not move.', { dose: 'str', back: 1 });
+  L('push', 'pike-pushup', 'Pike push-up', 'Head between the hands.', { dose: 'str', overhead: 1, min: 'train' });
+  L('push', 'band-press', 'Band chest press', 'Punch it out.', { dose: 'str', gear: 'bands' });
+  L('push', 'db-press', 'Half-kneeling DB press, light', 'Ribs down, press up.', { dose: 'str', each: 1, gear: 'db', load: 1, overhead: 1 });
+  L('pull', 'tablerow', 'Inverted row (sturdy table)', 'Chest to the edge.', { dose: 'str' });
+  L('pull', 'invrow', 'Inverted row', 'Chest to the bar.', { dose: 'str', gear: 'bar' });
+  L('pull', 'bandrow', 'Band row', 'Elbows to the back pockets.', { dose: 'str', gear: 'bands' });
+  L('pull', 'pullapart', 'Band pull-apart', 'Stretch it across the room.', { dose: 'str', gear: 'bands' });
+  L('pull', 'superman-pull', 'Prone W raise', 'Elbows to the back pockets.', { dose: 'str' });
+  L('pull', 'ytw', 'Prone Y-T-W', 'Thumbs up.', { dose: '2 x 5 each letter', overhead: 1 });
+  L('pull', 'hang', 'Dead hang', 'Crush the bar.', { dose: 'hold', gear: 'bar', overhead: 1 });
+  L('pull', 'db-row', 'One-arm DB row, light', 'Pull to the pocket.', { dose: 'str', each: 1, gear: 'db', load: 1 });
+  L('hinge', 'airplane', 'Single-leg hip airplane', 'Heel to the back wall.', { dose: '2 x 6 each' });
+  L('hinge', 'bridge', 'Glute bridge', 'Drive through the heels.', { dose: 'str' });
+  L('hinge', 'sl-bridge', 'Single-leg glute bridge', 'Hips level.', { dose: 'str', each: 1, min: 'learn' });
+  L('hinge', 'rdl-reach', 'Single-leg RDL', 'Reach long, back leg to the wall.', { dose: '2 x 6 each' });
+  L('hinge', 'walkout', 'Bridge hamstring walkout', 'Small heel steps.', { dose: '2 x 5' });
+  L('hinge', 'bandgm', 'Band good morning', 'Hips to the back wall.', { dose: 'str', gear: 'bands', back: 1 });
+  L('hinge', 'nordic', 'Nordic hamstring lower, partner assist', 'Fall as slow as you can.', { dose: '2 x 3', min: 'train' });
+  L('hinge', 'db-rdl', 'DB Romanian deadlift, light', 'Slide it down the thighs.', { dose: 'str', gear: 'db', load: 1, back: 1 });
+  L('core', 'plank', 'Front plank', 'Squeeze everything.', { dose: 'hold', back: 1 });
+  L('core', 'sideplank', 'Side plank', 'Hips high.', { dose: 'hold', each: 1, back: 1 });
+  L('core', 'deadbug', 'Dead bug', 'Low back glued down.', { dose: '2 x 8 each' });
+  L('core', 'birddog', 'Bird dog', 'Hips stay flat.', { dose: '2 x 6 each' });
+  L('core', 'pallof', 'Pallof press', 'Do not let it turn you.', { dose: '2 x 8 each', gear: 'bands', back: 1 });
+  L('core', 'bearhold', 'Bear plank hold', 'Knees one inch up.', { dose: 'hold' });
+  L('core', 'hollow', 'Hollow hold', 'Low back down.', { dose: 'hold', min: 'learn', back: 1 });
+  L('core', 'copen', 'Short-lever Copenhagen plank', 'Squeeze the bench.', { dose: '2 x 15 sec each', gear: 'box', min: 'train', back: 1 });
+  L('core', 'taps', 'Plank shoulder taps', 'Hips still.', { dose: '2 x 8 each', back: 1 });
+  L('carry', 'bearhug', 'Bear-hug carry', 'Tall and tight.', { dose: 'trip', back: 1 });
+  L('carry', 'jugs', 'Farmer carry (water jugs)', 'Tall. No lean.', { dose: 'trip', back: 1 });
   L('carry', 'wb-carry', 'Water bag bear-hug carry', 'Keep the water quiet.', { dose: 'trip', gear: 'waterbag', back: 1 });
-  L('carry', 'suitcase', 'Suitcase carry, one dumbbell', 'Stay tall. Do not lean.', { dose: 'trip', gear: 'db', load: 1, back: 1 });
-  L('carry', 'bear-crawl', 'Bear crawl 10 yards and back', 'Knees low, back flat as a table.', { dose: '2 trips' });
+  L('carry', 'suitcase', 'Suitcase carry, one DB', 'Do not lean.', { dose: 'trip', gear: 'db', load: 1, back: 1 });
+  L('carry', 'bear-crawl', 'Bear crawl, 10 yd and back', 'Back flat.', { dose: '2 trips' });
 
-  /* strength as a game, 6 to 9 */
-  L('f-sq', 'statue', 'Squat and freeze like a statue', 'Sit on an invisible chair.', { dose: '2 x 8' });
-  L('f-sq', 'frog', 'Frog jumps, then freeze', 'Land like a quiet frog.', { dose: '2 x 5', jump: 1 });
-  L('f-sq', 'wallsit', 'Wall sit contest', 'Sit on the invisible chair.', { dose: '2 x 20 sec' });
-  L('f-push', 'hi5', 'Push-up high fives (knees are fine)', 'Body like a board.', { dose: '2 x 6' });
-  L('f-push', 'crab-race', 'Crab walk race', 'Belly to the sky.', { dose: '3 trips' });
-  L('f-push', 'wheelbarrow', 'Wheelbarrow walk with a partner', 'Strong like a table.', { dose: '2 trips' });
-  L('f-crawl', 'crawl', 'Bear crawl there, crab walk back', 'Low and slow.', { dose: '3 trips' });
-  L('f-crawl', 'army', 'Army crawl under a table or rope', 'Stay under the laser.', { dose: '3 trips' });
-  L('f-crawl', 'crawl-tag', 'Bear crawl tag', 'Crawl fast, stay low.', { dose: '2 min' });
-  L('f-core', 'plankgame', 'Plank hold game: who moves first?', 'Still as a table.', { dose: '2 x 20 sec' });
-  L('f-core', 'superman', 'Superman hold contest', 'Fly like Superman.', { dose: '2 x 15 sec' });
-  L('f-core', 'beetle', 'Dead bug, slow, like a flipped beetle', 'Back glued to the floor.', { dose: '2 x 6 each' });
-  L('f-carry', 'carry-fun', 'Carry something heavy to the line and back', 'Hug it tight, walk tall.', { dose: '2 trips' });
-  L('f-carry', 'pillow', 'Pillow carry relay', 'Fast feet, tight hug.', { dose: '2 trips' });
-  L('f-carry', 'jug-fun', 'Water jug carry, one in each hand', 'Walk tall like a soldier.', { dose: '2 trips' });
-
-  /* play */
-  L('play', 'play-sport', 'Free play: another sport, bike, pickup anything', 'You pick the game.', { dose: 'most of the time' });
-  L('play', 'play-derby', 'Wiffle ball home run derby', 'Pick your spot, then swing.', { dose: 'most of the time' });
-  L('play', 'play-tag', 'Tag games: everybody is it', 'Dodge, cut, go.', { dose: 'most of the time' });
-  L('play', 'play-relay', 'Sprint relays with friends or family', 'Race the clock, then each other.', { dose: 'most of the time' });
-  L('play', 'play-pickle', 'Pickle (rundown) game in the yard', 'Fake, freeze, go.', { dose: 'most of the time', overhead: 1 });
-  L('f-play', 'f-pick', 'Pick one: tag, a relay, or an obstacle course', 'You pick.', { dose: 'until time is up' });
-  L('f-play', 'f-obstacle', 'Obstacle course: build it together', 'Under, over, around.', { dose: 'until time is up' });
-  L('f-play', 'f-catch', 'Throw and catch with a different ball every round', 'Eyes on the ball.', { dose: 'until time is up', overhead: 1 });
-  L('f-play', 'f-hide', 'Hide and seek, sprint home', 'Fastest feet home.', { dose: 'until time is up' });
-  L('mobil', 'mob-hip', 'Hip flow and mobility', 'Slow and smooth.', { dose: '1 round' });
-  L('mobil', 'mob-couch', 'Couch stretch and hip openers', 'Breathe out long.', { dose: '1 round' });
-  L('mobil', 'mob-ankle', 'Ankle and hip mobility circuit', 'Knee past the toes, heel down.', { dose: '1 round' });
-  L('rope-easy', 'rope-easy', 'Easy jump rope', 'Tiny bounces.', { dose: '3 x 30 sec', gear: 'rope', jump: 1, spurtOK: 1 });
+  /* COMPETE: free play and other sports (sampling is part of the plan) */
+  L('play', 'play-sport', 'Compete: pickup game, another sport', 'Athlete picks the game.', { dose: 'rest of session' });
+  L('play', 'play-derby', 'Compete: wiffle ball home run derby', 'Call your spot, then swing.', { dose: 'rest of session' });
+  L('play', 'play-relay', 'Compete: sprint races, first to 10 yd', 'Race the clock, then each other.', { dose: 'rest of session' });
+  L('play', 'play-pickle', 'Compete: pickle (rundown)', 'Fake, freeze, go.', { dose: 'rest of session', overhead: 1 });
+  L('mobil', 'mob-hip', 'Recovery: hip mobility', 'Slow and smooth.', { dose: '1 round' });
+  L('mobil', 'mob-couch', 'Recovery: couch stretch + 90/90', 'Long exhale.', { dose: '1 round' });
+  L('mobil', 'mob-ankle', 'Recovery: ankle and hip circuit', 'Knee past the toes, heel down.', { dose: '1 round' });
+  L('rope-easy', 'rope-easy', 'Easy jump rope', 'Quiet, quick.', { dose: '3 x 30 sec', gear: 'rope', jump: 1, spurtOK: 1 });
 
   var LIB_BY = {}; LIB.forEach(function (m) { LIB_BY[m.id] = m; });
   var DEMO_PRIORITY = {};
@@ -304,7 +277,7 @@ window.DL_RULES = (function () {
     if (m.gear && !has(g, m.gear)) return false;
     if (m.load && !f.loadOK) return false;
     if (m.jump && f.noJump) return false;
-    if (m.jump && f.spurt && !m.spurtOK && /^(hop|stick|lat2|speed|land|lat|f-hop|f-sq|f-animal)$/.test(m.slot)) return false;
+    if (m.jump && f.spurt && !m.spurtOK && /^(hop|stick|lat2|speed|land|lat)$/.test(m.slot)) return false;
     if (m.overhead && f.noOverhead) return false;
     if (m.back && f.noBack) return false;
     return true;
@@ -345,7 +318,6 @@ window.DL_RULES = (function () {
   }
 
   function warmBlock(stage, g, f, wk, tier, rot) {
-    if (stage === 'fun') return fill([['f-animal'], ['f-game'], ['f-hop']], g, f, stage, wk, tier, rot);
     return fill([['prep'], ['land'], ['bal'], ['lat']], g, f, stage, wk, tier, rot);
   }
   function moveBlock(stage, g, f, wk, tier, rot, long) {
@@ -355,11 +327,9 @@ window.DL_RULES = (function () {
     return fill(sl, g, f, stage, wk, tier, rot);
   }
   function strengthBlock(stage, g, f, wk, tier, rot, short) {
-    if (stage === 'fun') return fill(short ? [['f-sq'], ['f-push'], ['f-crawl']] : [['f-sq'], ['f-push'], ['f-crawl'], ['f-core'], ['f-carry']], g, f, stage, wk, tier, rot);
     return fill(short ? [['squat'], ['push'], ['pull'], ['core']] : [['squat'], ['push'], ['pull'], ['hinge'], ['core'], ['carry']], g, f, stage, wk, tier, rot);
   }
   function playBlock(stage, g, f, wk, tier, rot) {
-    if (stage === 'fun') return fill([['f-play'], ['f-play']], g, f, stage, wk, tier, rot);
     return fill([['play'], ['rope-easy'], ['mobil']], g, f, stage, wk, tier, rot);
   }
 
@@ -422,7 +392,7 @@ window.DL_RULES = (function () {
     if (f.noOverhead) W.push(why('arm'));
     if (f.noBack) W.push(why('back'));
     if ((p.discomfort || 'none') === 'other') W.push(why('other'));
-    if (stage !== 'fun') W.push(why('warm'));
+    W.push(why('warm'));
     W.push(why('move'));
     if (has(g, 'waterbag') && !f.noBack) W.push(why('waterbag'));
     else if (has(g, 'medball') && !f.noOverhead && !f.noBack) W.push(why('medball'));
@@ -437,12 +407,12 @@ window.DL_RULES = (function () {
 
     /* session templates by minutes: which blocks, in order */
     var T;
-    if (minutes <= 10) T = [['A', 'Move', ['warm', 'move']], ['B', 'Strength', ['warm', 'strength']]];
-    else if (minutes <= 20) T = [['A', 'Move + Strength', ['warm', 'move', 'strength']], ['B', 'Move + Play', ['warm', 'move', 'play']], ['C', 'Strength + Play', ['warm', 'strength', 'play']]];
-    else T = [['A', 'Move + Strength + Play', ['warm', 'move', 'strength', 'play']], ['B', 'Move + Play', ['warm', 'move', 'play']], ['C', 'Strength + Play', ['warm', 'strength', 'play']]];
-    if (stage === 'fun') T = T.map(function (t) { var b = t[2].slice(); if (b.indexOf('play') < 0) b.push('play'); return [t[0], t[1].indexOf('Play') < 0 ? t[1] + ' + Play' : t[1], b]; });
+    if (minutes <= 10) T = [['A', 'Power', ['warm', 'move']], ['B', 'Strength', ['warm', 'strength']]];
+    else if (minutes <= 20) T = [['A', 'Power + Strength', ['warm', 'move', 'strength']], ['B', 'Power + Compete', ['warm', 'move', 'play']], ['C', 'Strength + Compete', ['warm', 'strength', 'play']]];
+    else T = [['A', 'Power + Strength + Compete', ['warm', 'move', 'strength', 'play']], ['B', 'Power + Compete', ['warm', 'move', 'play']], ['C', 'Strength + Compete', ['warm', 'strength', 'play']]];
+    if (stage === 'fun') T = T.map(function (t) { var b = t[2].slice(); if (b.indexOf('play') < 0) b.push('play'); return [t[0], t[1].indexOf('Compete') < 0 ? t[1] + ' + Compete' : t[1], b]; });
     var order = days === 2 ? [0, 1] : days === 3 ? [0, 1, T.length > 2 ? 2 : 0] : [0, 1, T.length > 2 ? 2 : 0, T.length > 2 ? 0 : 1];
-    var BLOCK_NAMES = { warm: 'Warm-up', move: 'Move: land, stick, bounce', strength: stage === 'fun' ? 'Strong, as a game' : 'Strength', play: 'Play' };
+    var BLOCK_NAMES = { warm: 'Prep', move: 'Power', strength: 'Strength', play: 'Compete' };
     var BLOCK_COLORS = { warm: '#6E8F74', move: '#C8862E', strength: '#3E5A43', play: '#7A9480' };
 
     var sessions = order.map(function (ti, i) {
@@ -451,9 +421,9 @@ window.DL_RULES = (function () {
       t[2].forEach(function (b) {
         var rot = ((st.blockNo || 1) - 1) + i;
         var items = b === 'warm' ? warmBlock(stage, g, f, wk, tier, rot) : b === 'move' ? moveBlock(stage, g, f, wk, tier, rot, minutes >= 30) : b === 'strength' ? strengthBlock(stage, g, f, wk, tier, rot, short) : playBlock(stage, g, f, wk, tier, rot);
-        blocks.push({ key: b, name: BLOCK_NAMES[b], color: BLOCK_COLORS[b], minutes: b === 'warm' ? warmMin : each, items: items });
+        blocks.push({ key: b, name: String.fromCharCode(65 + blocks.length) + '. ' + BLOCK_NAMES[b], color: BLOCK_COLORS[b], minutes: b === 'warm' ? warmMin : each, items: items });
       });
-      return { idx: i, tag: String.fromCharCode(65 + i), name: t[1], minutes: minutes, blocks: blocks };
+      return { idx: i, tag: String(i + 1), name: t[1], minutes: minutes, blocks: blocks };
     });
 
     return {

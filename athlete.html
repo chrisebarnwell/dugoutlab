@@ -606,7 +606,7 @@
         '<p class="sub" style="margin-top:14px">Six quick tests, about 10 minutes. ' + esc(a.profile.nickname) + ' only competes with ' + esc(a.profile.nickname) + '. Then Session ' + s.tag + ' is next.</p>' +
         '<button type="button" class="cta" id="t-test">Start test day' + ICON.up + '</button><button type="button" class="link" id="t-tskip" style="color:var(--ink-faint)">Skip tests this block</button></div>' : '') +
       '<div class="hero' + (testDue(a) ? ' hidden' : '') + '"><div class="row"><div class="pill"><i></i>' + (a.live ? 'In progress' : 'Today\'s session') + '</div><div class="count">' + pad2(blockDone(a)) + '<small> / ' + pad2(plan.days * 4) + '</small></div></div>' +
-      '<div class="eb">' + esc(s.blocks.map(function (b) { return b.key === 'warm' ? 'Warm-up' : b.key === 'move' ? 'Move' : b.key === 'strength' ? 'Strength' : 'Play'; }).join(' · ')) + '</div>' +
+      '<div class="eb">' + esc(s.blocks.map(function (b) { return b.key === 'warm' ? 'Prep' : b.key === 'move' ? 'Power' : b.key === 'strength' ? 'Strength' : 'Compete'; }).join(' · ')) + '</div>' +
       '<div class="big">Session ' + s.tag + '</div><div class="tag">' + esc(plan.week.name) + '.</div>' +
       '<p class="sub" style="margin-top:14px">' + esc(plan.week.note) + '</p>' +
       '<div class="meta"><span>' + ICON.clock + s.minutes + ' min</span><span>' + ICON.moves + moves + ' moves</span><span>' + ICON.bolt + esc(plan.stage.name) + '</span></div>' +
@@ -655,12 +655,12 @@
     var s = plan.sessions[a.live.idx], n = 0, html = '<div class="row"><span class="eb acc">Session ' + s.tag + ' &middot; ' + s.minutes + ' min</span><button type="button" class="btn-sm" id="tr-quit">Pause</button></div><div class="h1">' + esc(s.name) + '</div>';
     s.blocks.forEach(function (b, bi) {
       html += '<div class="blk-h"><b>' + esc(b.name) + '</b><span></span><em>' + b.minutes + ' min' + (REST[b.key] ? ' &middot; ' + REST[b.key] + 's rest' : '') + '</em></div>';
-      b.items.forEach(function (it) {
-        n++; var k = keyOf(b, it), d = parseDose(it.dose), rows = a.live.sets[k] || [], l = lastFor(a, k), all = rows.length && rows.every(function (r) { return r.done; });
+      b.items.forEach(function (it, ii) {
+        n++; var code = b.name.charAt(0) + (ii + 1), k = keyOf(b, it), d = parseDose(it.dose), rows = a.live.sets[k] || [], l = lastFor(a, k), all = rows.length && rows.every(function (r) { return r.done; });
         var lastTxt = l ? 'Last time (' + nice(l.date) + '): ' + l.sets.filter(function (r) { return r.done; }).map(function (r) { return r.v != null ? r.v : 'done'; }).join(', ') + (d.unit === 'sec' ? ' sec' : d.unit === 'reps' ? ' reps' : '') + '.' : 'First time on this one.';
         var nudge = l ? 'Match it with quieter, cleaner reps. Beat yourself, not anyone else.' : 'Find an easy, clean number. It becomes the baseline. Next time you compare to it.';
         html += '<div class="ex' + (all ? ' complete' : '') + '" data-k="' + esc(k) + '" data-unit="' + d.unit + '" data-label="' + esc(d.label || '') + '" data-rest="' + REST[b.key] + '">' +
-          '<div class="ex-h"><div class="num">' + pad2(n) + '</div><div><div class="eb">' + esc(b.key === 'warm' ? 'Warm-up' : b.key === 'move' ? 'Move' : b.key === 'strength' ? 'Strength' : 'Play') + ' &middot; ' + esc(gearOf(it)) + '</div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + (REST[b.key] ? ' &middot; ' + REST[b.key] + 's rest' : '') + '</div></div></div>' +
+          '<div class="ex-h"><div class="num">' + code + '</div><div><div class="eb">' + esc(b.key === 'warm' ? 'Prep' : b.key === 'move' ? 'Power' : b.key === 'strength' ? 'Strength' : 'Compete') + ' &middot; ' + esc(gearOf(it)) + '</div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + (REST[b.key] ? ' &middot; ' + REST[b.key] + 's rest' : '') + '</div></div></div>' +
           figSlot(it.id) + (it.cue ? '<p class="ex-cue">' + esc(it.cue) + '</p>' : '') + demoBtn(it.id) +
           (d.unit === 'reps' || d.unit === 'sec' ? '<div class="last"><div class="eb">Last session</div><p>' + esc(lastTxt) + '</p><p class="acc">' + esc(nudge) + '</p></div>' : '') +
           '<div class="sets"><div class="sets-h"><span>SET</span><span>' + (d.unit === 'reps' ? 'REPS' + (d.each ? ' EACH SIDE' : '') : d.unit === 'sec' ? 'SECONDS' : 'TARGET') + '</span><span>DONE</span></div>' +
@@ -709,7 +709,7 @@
   function trainPreview(a, plan) {
     var s = plan.sessions[a.queue.next % plan.sessions.length], n = 0;
     M.innerHTML = '<div class="eb acc">Up next &middot; ' + s.minutes + ' min</div><div class="h1">Session ' + s.tag + '</div><p class="sub">' + esc(s.name) + '. ' + esc(plan.week.note) + '</p>' +
-      s.blocks.map(function (b) { return '<div class="blk-h"><b>' + esc(b.name) + '</b><span></span><em>' + b.minutes + ' min</em></div>' + b.items.map(function (it) { n++; return '<div class="ex"><div class="ex-h"><div class="num">' + pad2(n) + '</div><div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + '</div></div></div>' + figSlot(it.id) + '</div>'; }).join(''); }).join('') +
+      s.blocks.map(function (b) { return '<div class="blk-h"><b>' + esc(b.name) + '</b><span></span><em>' + b.minutes + ' min</em></div>' + b.items.map(function (it, ii) { n++; return '<div class="ex"><div class="ex-h"><div class="num">' + b.name.charAt(0) + (ii + 1) + '</div><div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + '</div></div></div>' + figSlot(it.id) + '</div>'; }).join(''); }).join('') +
       '<button type="button" class="cta" id="tr-start">Start session ' + s.tag + ICON.up + '</button>' +
       '<button type="button" class="cta ghost" id="tr-skip" style="margin-top:10px;justify-content:center">Skip this one</button>' + foot();
     mountFigs();
@@ -982,7 +982,7 @@
     each(M.querySelectorAll('[data-move]'), function (b) { b.addEventListener('click', function () { moveDrill(a, b.getAttribute('data-move')); }); });
     each(M.querySelectorAll('.kt'), function (b) { b.addEventListener('click', function () {
       var k = b.getAttribute('data-k'), rev = sess.slice().reverse();
-      if (k === 'sess') openSheet(sheetHead('All sessions', sess.length + ' banked') + (rev.map(sessRow).join('') || '<p class="muted" style="margin-top:10px">None yet. Session A is waiting.</p>'));
+      if (k === 'sess') openSheet(sheetHead('All sessions', sess.length + ' banked') + (rev.map(sessRow).join('') || '<p class="muted" style="margin-top:10px">None yet. Session 1 is waiting.</p>'));
       if (k === 'streak') openSheet(sheetHead('Streak', st ? st + ' days and counting' : 'Start a new run today') + '<div class="kpis k3"><div><b>' + st + '</b><i>now</i></div><div><b>' + bst + '</b><i>best ever</i></div><div><b>' + Object.keys(trained).length + '</b><i>days trained</i></div></div><p class="muted" style="margin-top:14px">Missing a day breaks nothing in the plan. The streak is just a game. Weeks on plan is the number that matters.</p>' + rev.slice(0, 10).map(sessRow).join(''));
       if (k === 'weeks') { var c = {}; sess.forEach(function (e) { var m = monOf(e.date); c[m] = (c[m] || 0) + 1; }); var rows = ''; for (var i = 0; i < 8; i++) { var m = P.addDays(monOf(today()), -7 * i), n = c[m] || 0; rows += '<div class="wrow"><span>' + (i ? 'Week of ' + esc(nice(m)) : 'This week') + '</span><div class="wbar"><span style="width:' + Math.min(100, Math.round(100 * n / plan.days)) + '%" class="' + (n >= plan.days ? 'full' : '') + '"></span></div><b>' + n + '/' + plan.days + '</b></div>'; } openSheet(sheetHead('Weeks on plan', wks + (wks === 1 ? ' week' : ' weeks') + ' in a row') + '<p class="muted" style="margin-top:8px">A week counts when ' + plan.days + ' sessions get done. Two real days beat four imaginary ones.</p>' + rows); }
       if (k === 'feel') openSheet(sheetHead('How it felt', sess.length ? 'Mostly ' + esc(FEEL[Object.keys(feels).sort(function (x, y) { return feels[y] - feels[x]; })[0]]).toLowerCase() : 'No sessions yet') +
