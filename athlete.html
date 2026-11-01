@@ -96,36 +96,35 @@
   .day.next small { color: var(--acc); }
 
   /* exercise card */
-  .ex { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px 20px 20px; margin-top: 16px; }
+  .ex { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 14px 12px; margin-top: 10px; }
   .ex.complete { border-color: rgba(200,134,46,0.4); }
-  .ex-h { display: flex; gap: 16px; align-items: flex-start; }
-  .num { flex: 0 0 48px; height: 48px; border-radius: 10px; background: var(--grn); color: var(--gold-light); font-family: var(--mono); font-weight: 500; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; }
-  .ex.complete .num { flex: 0 0 48px; height: 48px; border-radius: 10px; background: var(--grn); color: var(--gold-light); font-family: var(--mono); font-weight: 500; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; }
-  .ex-n { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; margin-top: 4px; }
-  .ex-d { color: var(--ink2); font-size: 0.92rem; margin-top: 6px; font-weight: 500; }
-  .ex-cue { color: var(--ink); font-size: 1rem; margin-top: 16px; line-height: 1.5; }
-  .last { border: 1px solid var(--line2); border-radius: 12px; padding: 14px 16px; margin-top: 16px; background: var(--bg2); }
-  .last p { font-size: 0.92rem; color: var(--ink2); margin-top: 6px; line-height: 1.55; }
-  .last p.acc { color: var(--acc2); }
-  .sets { margin-top: 18px; }
-  .sets-h, .set { display: grid; grid-template-columns: 44px 1fr 72px; gap: 12px; align-items: center; }
-  .sets-h { font-family: var(--mono); font-size: 0.64rem; font-weight: 500; letter-spacing: 0.16em; color: var(--ink3); padding: 0 0 10px; }
+  .ex-h { display: flex; gap: 12px; align-items: center; }
+  .num { flex: 0 0 38px; height: 38px; border-radius: 8px; background: var(--grn); color: var(--gold-light); font-family: var(--mono); font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; }
+  .ex.complete .num { background: var(--acc); color: #0F1F18; }
+  .ex-h .eb { display: none; }
+  .ex-n { font-family: var(--sans); font-size: 1rem; font-weight: 700; letter-spacing: 0; line-height: 1.25; }
+  .ex-d { color: var(--ink2); font-size: 0.8rem; margin-top: 2px; font-weight: 500; font-family: var(--mono); }
+  .ex-cue { color: var(--ink3); font-size: 0.85rem; margin-top: 8px; line-height: 1.4; }
+  .lastln { font-size: 0.78rem; color: var(--acc2); margin-top: 3px; font-family: var(--mono); }
+  .sets { margin-top: 10px; }
+  .sets-h, .set { display: grid; grid-template-columns: 28px 1fr 56px; gap: 10px; align-items: center; }
+  .sets-h { font-family: var(--mono); font-size: 0.58rem; font-weight: 500; letter-spacing: 0.14em; color: var(--ink3); padding: 0 0 6px; }
   .sets-h span:nth-child(2) { text-align: center; } .sets-h span:last-child { text-align: center; }
-  .set { padding: 12px 0; border-top: 1px solid var(--line); }
-  .set .n { font-size: 1.2rem; font-weight: 600; color: var(--ink2); text-align: center; }
-  .set input { width: 100%; height: 60px; border-radius: 10px; border: 1.5px solid var(--rule); background: var(--forest-deep); text-align: center; font-family: var(--mono); font-size: 1.45rem; font-weight: 500; color: var(--ink); -moz-appearance: textfield; }
+  .set { padding: 6px 0; border-top: 1px solid var(--line); }
+  .set .n { font-size: 0.95rem; font-weight: 600; color: var(--ink2); text-align: center; }
+  .set input { width: 100%; height: 42px; border-radius: 8px; border: 1.5px solid var(--rule); background: var(--forest-deep); text-align: center; font-family: var(--mono); font-size: 1.15rem; font-weight: 500; color: var(--ink); -moz-appearance: textfield; }
   .set input::-webkit-outer-spin-button, .set input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .set input:focus { outline: 2px solid var(--acc); outline-offset: -1px; }
   .set.on input { background: var(--grn); border-color: var(--grn2); color: var(--acc2); }
-  .set .txt { height: 64px; border-radius: 12px; border: 1.5px dashed var(--line2); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--ink2); font-size: 1.05rem; padding: 0 10px; text-align: center; }
+  .set .txt { height: 42px; border-radius: 8px; border: 1.5px dashed var(--line2); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--ink2); font-size: 0.9rem; padding: 0 8px; text-align: center; }
   .set.on .txt { background: var(--grn); border-style: solid; border-color: var(--grn2); color: var(--acc2); }
-  .chk { width: 72px; height: 64px; border-radius: 12px; border: 1.5px solid var(--line2); display: flex; align-items: center; justify-content: center; color: var(--ink3); }
-  .chk svg { width: 30px; height: 30px; stroke: currentColor; fill: none; stroke-width: 2.6; }
+  .chk { width: 56px; height: 42px; border-radius: 8px; border: 1.5px solid var(--line2); display: flex; align-items: center; justify-content: center; color: var(--ink3); }
+  .chk svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2.6; }
   .set.on .chk { background: var(--acc); border-color: var(--acc); color: #0F1F18; }
-  .setacts { display: flex; gap: 22px; margin-top: 14px; font-weight: 700; font-size: 0.95rem; color: var(--ink2); }
-  .setacts button { display: inline-flex; align-items: center; gap: 8px; }
-  .setacts svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; }
-  .blk-h { margin-top: 30px; display: flex; align-items: center; gap: 10px; }
+  .setacts { display: flex; gap: 18px; margin-top: 8px; font-weight: 600; font-size: 0.82rem; color: var(--ink3); }
+  .setacts button { display: inline-flex; align-items: center; gap: 6px; }
+  .setacts svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+  .blk-h { margin-top: 22px; display: flex; align-items: center; gap: 10px; }
   .blk-h b { font-family: var(--mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
   .blk-h span { flex: 1; height: 1px; background: var(--line2); }
   .blk-h em { font-style: normal; font-size: 0.75rem; color: var(--ink3); font-weight: 700; }
@@ -667,11 +666,10 @@
       b.items.forEach(function (it, ii) {
         n++; var code = b.name.charAt(0) + (ii + 1), k = keyOf(b, it), d = parseDose(it.dose), rows = a.live.sets[k] || [], l = lastFor(a, k), all = rows.length && rows.every(function (r) { return r.done; });
         var lastTxt = l ? 'Last time (' + nice(l.date) + '): ' + l.sets.filter(function (r) { return r.done; }).map(function (r) { return r.v != null ? r.v : 'done'; }).join(', ') + (d.unit === 'sec' ? ' sec' : d.unit === 'reps' ? ' reps' : '') + '.' : 'First time on this one.';
-        var nudge = l ? 'Match it with cleaner reps. Then raise the bar.' : 'Find an easy, clean number. It becomes the baseline. Next time you compare to it.';
         html += '<div class="ex' + (all ? ' complete' : '') + '" data-k="' + esc(k) + '" data-unit="' + d.unit + '" data-label="' + esc(d.label || '') + '" data-rest="' + REST[b.key] + '">' +
-          '<div class="ex-h"><div class="num">' + code + '</div><div><div class="eb">' + esc(b.key === 'warm' ? 'Prep' : b.key === 'move' ? 'Power' : b.key === 'strength' ? 'Strength' : 'Compete') + ' &middot; ' + esc(gearOf(it)) + '</div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + (REST[b.key] ? ' &middot; ' + REST[b.key] + 's rest' : '') + '</div></div></div>' +
+          '<div class="ex-h"><div class="num">' + code + '</div><div><div class="eb">' + esc(b.key === 'warm' ? 'Prep' : b.key === 'move' ? 'Power' : b.key === 'strength' ? 'Strength' : 'Compete') + ' &middot; ' + esc(gearOf(it)) + '</div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + (REST[b.key] ? ' &middot; ' + REST[b.key] + 's rest' : '') + '</div>' + (l && (d.unit === 'reps' || d.unit === 'sec') ? '<div class="lastln">' + esc(lastTxt.replace('Last time ', 'Last ')) + '</div>' : '') + '</div></div>' +
           figSlot(it.id) + (it.cue ? '<p class="ex-cue">' + esc(it.cue) + '</p>' : '') + demoBtn(it.id) +
-          (d.unit === 'reps' || d.unit === 'sec' ? '<div class="last"><div class="eb">Last session</div><p>' + esc(lastTxt) + '</p><p class="acc">' + esc(nudge) + '</p></div>' : '') +
+          
           '<div class="sets"><div class="sets-h"><span>SET</span><span>' + (d.unit === 'reps' ? 'REPS' + (d.each ? ' EACH SIDE' : '') : d.unit === 'sec' ? 'SECONDS' : 'TARGET') + '</span><span>DONE</span></div>' +
           rows.map(function (r, i) { return setRow(d, r, i); }).join('') + '</div>' +
           (d.unit === 'reps' || d.unit === 'sec' ? '<div class="setacts"><button type="button" data-add>' + ICON.plus + 'Add set</button><button type="button" data-rm>Remove last</button></div>' : '') + '</div>';
@@ -1126,7 +1124,7 @@
         '<input type="text" class="hp" id="si-hp" tabindex="-1" autocomplete="off" aria-hidden="true"><div class="err" id="si-err"></div>' +
         '<button type="button" class="cta" id="si-go">' + (mode === 'in' ? 'Sign in' : 'Sign up') + ICON.arrow + '</button>' +
         '<p class="muted" style="margin-top:14px;text-align:center">' + (mode === 'in' ? 'New here? ' : 'Have an account? ') + '<button type="button" id="si-sw" style="color:var(--acc);font-weight:700">' + (mode === 'in' ? 'Sign up' : 'Sign in') + '</button></p>' +
-        (gate ? '<p class="muted" style="margin-top:6px;text-align:center"><button type="button" id="si-skip" style="color:var(--ink-faint);text-decoration:underline">Skip. Save on this phone only.</button></p>' : ''));
+        '');
       if ($('si-skip')) $('si-skip').addEventListener('click', function () { closeSheet(); if (after) after(); });
       try { var le = localStorage.getItem('dl_last_email'); if (le) $('si-e').value = le; } catch (e) {}
       $('si-sw').addEventListener('click', function () { mode = mode === 'in' ? 'up' : 'in'; draw(); });
@@ -1148,7 +1146,20 @@
 
   /* ---------- boot ---------- */
   load(); $('rest-mute').style.opacity = S.mute ? 0.35 : 1;
-  if (list().length) { if (!S.current || !S.athletes[S.current]) S.current = list()[0].localId; go(cur().live ? 'train' : 'today'); } else startScreen();
+  function boot() { if (list().length) { if (!S.current || !S.athletes[S.current]) S.current = list()[0].localId; go(cur() && cur().live ? 'train' : 'today'); } else startScreen(); }
+  function restoring() { shell(false); M.innerHTML = '<div class="eb acc">Athlete Plan</div><div class="h1">Restoring your plans.</div><p class="sub">Pulling every athlete from your account.</p>'; }
+  /* A cleared browser keeps no plans but may still know the account (another DugoutLab tool, or the last email used).
+     Restore from the cloud before ever showing an empty start screen. */
+  var lastEmail = ''; try { lastEmail = localStorage.getItem('dl_last_email') || ''; } catch (e) {}
+  if (list().length) { boot(); if (S.account) pull().then(function () { if (TAB !== 'train') go(TAB); }, function () {}); }
+  else if (S.account) { restoring(); pull().then(boot, boot); }
+  else if (lastEmail) {
+    restoring();
+    fetch('/api/signin', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: lastEmail }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (j && j.token) { S.account = { token: j.token, name: j.account ? j.account.name : '' }; save(); return pull(); } })
+      .then(boot, boot);
+  } else boot();
   status();
   if (S.account) pull().then(function () { if (cur()) go(TAB); else if (list().length) { S.current = list()[0].localId; go('today'); } }).catch(function () {});
   window.addEventListener('online', function () { list().forEach(function (a) { if (a.dirty) sync(a); }); });
