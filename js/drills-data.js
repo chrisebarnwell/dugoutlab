@@ -26,19 +26,49 @@ var DRILLS = [
 
 // ══ WARM-UPS ══════════════════════════════════════════════════════
 
-{id:'wu-blob-tag',name:'Blob Tag',category:'warmup',
- ageMin:5,ageMax:9,skillLevels:['first-year','developing','experienced'],
- duration:7,minPlayers:6,equipment:'Cones for boundary',
- setup:'Two players start holding hands as the "blob." Cones mark a 40x40 ft boundary. All others scatter inside.',
- execution:'The blob moves together and tags free players using only its outside hands. Tagged players join the chain. Last free player wins. Reset and play again. Keep rounds under 3 minutes.',
- cue:'"Keep moving. Don\'t let the blob corner you!"',
- why:'Pure movement that builds spatial awareness and agility through play. No instruction needed. Just action.',
+
+// ══ CHRIS'S OPENER (added 2026-10-31) ═══════════════════════════════
+
+{id:'wu-race-to-first',name:'Race to First',category:'warmup',
+ ageMin:5,ageMax:18,skillLevels:['first-year','developing','experienced'],
+ duration:5,minPlayers:2,equipment:'Stopwatch or phone, home plate, first base',
+ setup:'Everyone lines up behind home with a bat. Coach at first with a phone timer.',
+ execution:'Each player swings at air, drops the bat, and runs through first. Coach calls the time out loud. Second run: beat your own time. Line moves fast, nobody waits more than 30 seconds.',
+ cue:'"Beat your own number."',
+ why:'Starts practice at game speed with a number each kid owns. The race is against yourself, so every kid can win.',
+ principle:'game-based-play',practiceSlot:'warmup',
+ sport:'both',
+ watchFor:'Kids slowing down before the bag. Run through first, not to it.',
+ progressions:'Add a defender who fields a rolled ball and throws to first. Now it is a real race.',
+ regression:'Youngest players: no timer, just "run past the coach at first."'
+},
+
+{id:'wu-soccer-loose',name:'Small-Sided Soccer',category:'warmup',
+ ageMin:5,ageMax:18,skillLevels:['first-year','developing','experienced'],
+ duration:6,minPlayers:6,equipment:'Soccer ball (or any big ball), 4 cones for two small goals',
+ setup:'Cones make two small goals about 40 ft apart. Split into teams of 3 or 4. No goalies.',
+ execution:'Play soccer for 5 to 6 minutes. Small goals, no goalies, everyone moves. Score, restart fast. Swap teams once.',
+ cue:'"Find the open space."',
+ why:'Gets legs and heads moving before baseball. Reading space and changing direction carry over to fielding and baserunning. Multi-sport play is linked to longer participation, though that evidence is mostly retrospective (Cote).',
  principle:'modified-play-adm',practiceSlot:'warmup',
  sport:'both',
- execution:'Start with 2 players holding hands as the blob. Everyone else spreads inside the boundary. Coach says "go." Blob moves together. Only the outside hands can tag. Tagged players join the chain. If the chain breaks: that section must freeze for 5 seconds. Last free player wins. Reset immediately and play again. Keep rounds under 3 minutes so energy stays high.',
- watchFor:'Chain breaking apart. Enforce the freeze rule. Blob cornering players against a fence. Remind them to use the whole space.',
- progressions:'Shrink the boundary each round. Add a second blob once the chain reaches 6 players.',
- regression:'For very young players: no chain. Taggers work solo and tagged players sit out one round.'
+ watchFor:'One kid hogging the ball. Add a rule: three touches max.',
+ progressions:'Two balls at once.',
+ regression:'Bigger goals, more players per side.'
+},
+
+{id:'wu-flag-football',name:'Flag Football',category:'warmup',
+ ageMin:6,ageMax:18,skillLevels:['first-year','developing','experienced'],
+ duration:6,minPlayers:6,equipment:'Foam or soft football, flags or a rag in the back pocket, cones for end zones',
+ setup:'Cones mark two end zones about 30 yards apart. Teams of 3 or 4. Everyone wears a flag.',
+ execution:'Pull the flag to stop the play. Four downs to score. Everyone must touch the ball once per drive. Swap with soccer week to week.',
+ cue:'"Catch it on the run."',
+ why:'Throwing to a moving target, catching on the move, and cutting. Same reads as a ball in the gap, in a different sport.',
+ principle:'modified-play-adm',practiceSlot:'warmup',
+ sport:'both',
+ watchFor:'Rough flag pulls. Flags only, no grabbing shirts.',
+ progressions:'Two quarterbacks: any player can throw a lateral pass.',
+ regression:'No rush on the passer. Shorter field.'
 },
 
 {id:'wu-nuclear-dodgeball',name:'Nuclear Dodgeball',category:'warmup',
@@ -71,50 +101,8 @@ var DRILLS = [
  regression:'Walk only. No tagging. Last player to the base becomes "It."'
 },
 
-{id:'wu-freeze-tag-sports',name:'Freeze Tag Baseball',category:'warmup',
- ageMin:5,ageMax:9,skillLevels:['first-year','developing'],
- duration:5,minPlayers:6,equipment:'None',
- setup:'2-3 players are "it." Tagged players freeze in a batting stance. Untagged players can unfreeze teammates by crawling through their legs.',
- execution:'Play for 90-second rounds. Rotate who is "it" each round. Variation: frozen players do 5 hops to get free instead of being unfrozen by teammates.',
- cue:'"Stay low when you run. Like you\'re ducking under something!"',
- why:'Freezing in a batting stance sneaks in athletic positioning without making it feel like a drill.',
- principle:'game-based-play',practiceSlot:'warmup',
- sport:'both',
- execution:'Choose 2-3 taggers. Tagged players freeze in a batting stance. Feet shoulder-width, slight bend, hands up. Untagged players can unfreeze teammates by crawling through their legs. Rotate taggers every 90 seconds. Run 3-4 rounds. After the game: ask players "what does a good batting stance feel like?" Let them answer.',
- watchFor:'Frozen players not holding the stance. Gentle reminder. Crawling players getting kicked. Enforce that frozen players stay still.',
- progressions:'Frozen players must hold a fielding ready position instead of batting stance. Add a second unfreeze method: partner throws a ball to them and they catch it.',
- regression:'No crawling unfreeze. A teammate just taps you to unfreeze.'
-},
 
-{id:'wu-bandits',name:'Bandits',category:'warmup',
- ageMin:7,ageMax:14,skillLevels:['first-year','developing','experienced'],
- duration:6,minPlayers:8,equipment:'Pinnies or flag football flags',
- setup:'Each player tucks a pinnie or flag into the back of their waistband. Boundary 40x40 ft.',
- execution:'Everyone tries to steal everyone else\'s flag while protecting their own. If your flag is taken, you join the sideline. Last player with a flag wins. Keep rounds short.',
- cue:'"Change direction fast. Protect your flag!"',
- why:'Develops change-of-direction agility and spatial awareness. Competitive without being physically aggressive.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'Each player tucks a pinnie into their waistband with about 12 inches hanging out. On "go," everyone protects their own flag while stealing others. Stolen flag goes in your hand. You keep playing. If your flag is stolen: you are out and cheer from the sideline. Last player with a flag wins. Play 3-4 rounds of 60-90 seconds.',
- watchFor:'Grabbing jerseys or shorts instead of flags. Players just running away instead of competing. Reduce boundary.',
- progressions:'Reduce boundary. Add: if you have 3 flags you must give one back.',
- regression:'Team bandits. Two teams, collect your team color flags only.'
-},
 
-{id:'wu-shark-island',name:'Shark Island',category:'warmup',
- ageMin:5,ageMax:9,skillLevels:['first-year','developing'],
- duration:6,minPlayers:8,equipment:'Bases or cones as "islands"',
- setup:'Scatter 4-5 bases around the field as islands. 2-3 players are "sharks." All others are swimmers.',
- execution:'Sharks chase swimmers. Swimmers are safe on an island but max 2 players per island. If a third player arrives, one must leave. Tagged swimmers become sharks.',
- cue:'"Keep your head up. Know where every island is!"',
- why:'Kids keep their heads up and make quick choices about where to run. Lots of movement, lots of decisions, no standing in line.',
- principle:'game-based-play',practiceSlot:'warmup',
- sport:'both',
- execution:'Mark 4-5 bases as islands. Choose 2 sharks. Swimmers move between islands. Max 2 per island. Third player arriving must leave immediately. Tagged players become sharks. Sharks cannot stand on islands. Run for 90 seconds, then count remaining swimmers. New round with new sharks. 4 rounds.',
- watchFor:'Three players piling on one island. Enforce the 2-player max firmly. Sharks guarding one island without moving.',
- progressions:'Reduce to 3 islands. Add a time limit on islands. Max 10 seconds per stay.',
- regression:'No tagging. Sharks count to 5 when pointing at a swimmer in the water; that swimmer becomes a shark.'
-},
 
 // ══ FIELDING ══════════════════════════════════════════════════════
 
@@ -608,50 +596,8 @@ var DRILLS = [
 
 // ══ PITCHING ══════════════════════════════════════════════════════
 
-{id:'pt-flat-ground-spots',name:'Flat Ground Spot Work',category:'pitching',
- ageMin:9,ageMax:14,skillLevels:['developing','experienced'],
- duration:10,minPlayers:2,equipment:'Ball, glove, target (catcher or net)',
- setup:'Pitcher on flat ground, catcher or net at your league\'s pitching distance. Catcher sets up target in four zones: up-in, up-out, down-in, down-out.',
- execution:'Pitcher calls the target before throwing. 20 throws total, 5 per zone. Track hits vs misses by zone. No feedback on mechanics. Only on whether it hit the spot.',
- cue:'"Pick a corner, see the corner, throw to the corner."',
- why:'Aiming at a spot gives the pitcher a simple goal and instant feedback. We keep feedback on the result, not the delivery. Delivery work belongs with a qualified pitching coach.',
- principle:'external-focus',practiceSlot:'acquisition',
- sport:'baseball',
- execution:'Catcher sets up at your league\'s pitching distance (46 feet in Little League Majors, shorter in younger divisions). Catcher shows four targets: up-in, up-out, down-in, down-out. Hold the glove for 3 full seconds in the target before the pitcher winds up. Pitcher calls the target before throwing. 20 pitches total. 5 per zone. Track: hit the target (within 6 inches of glove) vs. miss. Find the worst zone and throw 5 extra to that zone. Count every pitch toward the day\'s pitch count.',
- watchFor:'Not calling the target before throwing. Pitchers trying to throw harder instead of hitting the spot. Any arm pain: stop for the day.',
- progressions:'Add a batter standing in the box. Doesn\'t swing, just gives visual context. Reduce the target size.',
- regression:'Catcher holds a large glove target flat. Easier visual. Shorter distance (35 feet).'
-},
 
-{id:'pt-balance-point',name:'Stork Balance Challenge',category:'pitching',
- ageMin:8,ageMax:14,skillLevels:['first-year','developing'],
- duration:8,minPlayers:1,equipment:'None',
- setup:'Players spread out on flat ground. No ball needed.',
- execution:'Everyone stands on one leg, other knee up, like a stork. Hold as long as you can. Last player standing wins. Switch legs. 5 rounds.',
- cue:'"Pick a spot and stare at it. Stay tall."',
- why:'A fun balance game for pitchers and everyone else. We treat balance as a general athletic skill here, not a delivery lesson. Delivery coaching belongs with a qualified pitching coach.',
- principle:'athletic-development',practiceSlot:'acquisition',
- sport:'baseball',
- execution:'Players spread out. On "go," everyone lifts one knee toward hip height and holds. Anyone who touches down sits and cheers. Last player standing wins the round. Switch legs each round. Add challenges: eyes closed, catch a soft toss while balancing, or turn the head side to side. 5 rounds.',
- watchFor:'Players holding their breath or locking the standing knee. Kids who wobble a lot: let them touch a fence first and build up.',
- progressions:'Eyes closed. Catch a soft toss while balancing. Balance on a folded towel.',
- regression:'Hold for 5 seconds. Fingertips on a fence or a partner\'s shoulder.'
-},
 
-{id:'pt-target-competition',name:'Target Strike Competition',category:'pitching',
- ageMin:9,ageMax:14,skillLevels:['developing','experienced'],
- duration:12,minPlayers:2,equipment:'Strike zone target or catcher, ball',
- setup:'Two pitchers alternate. Each gets 10 pitches. Call balls and strikes against a strike zone target.',
- execution:'Count strikes only. Most strikes in 10 pitches wins the round. Count every pitch toward each pitcher\'s daily limit. Play 3 rounds.',
- cue:'"Throw it like you don\'t care. Throw through the target."',
- why:'A simple strike contest makes command practice fun and gives each pitcher a score to beat. Keep it about hitting the target, not about changing the delivery.',
- principle:'classic-staple',practiceSlot:'variable',
- sport:'baseball',
- execution:'Two pitchers alternate. Each gets 10 pitches into a strike zone target or catcher. Score: strike = 1 pt, ball = 0. Most strikes in 10 pitches wins the round. Play 3 rounds. Between rounds: each pitcher identifies their worst zone from that round. Final round: each pitcher declares which zone they are attacking before each pitch.',
- watchFor:'Pitchers trying to throw too hard to impress. Accuracy only. Pitchers not honoring the zone declaration.',
- progressions:'Reduce the strike zone target size. Add a catcher who frames aggressively to create closer calls.',
- regression:'Pitch to a large bucket or trash can as the target. Distance reduced to 40 feet.'
-},
 
 // ══ MENTAL / CLOSING ═══════════════════════════════════════════════
 
@@ -732,20 +678,6 @@ var DRILLS = [
  regression:'Lower the tee height. Let child hold the bat with both hands and just push the ball off first.'
 },
 
-{id:'tb-run-bases',name:'Run the Bases',category:'baserunning',
- ageMin:4,ageMax:7,skillLevels:['first-year'],
- duration:10,minPlayers:4,equipment:'Full base set or cones',
- setup:'All players line up at home plate.',
- execution:'On "go," first player runs all the bases as fast as possible. Everyone cheers. Coach points to bases in order: "First! Second! Third! Home!" Point the way so they run first, second, third, home.',
- cue:'"Run to the base, not to me!"',
- why:'T-ball players need lots of trips around the bases to learn the order. Enthusiasm matters more than perfection at this stage.',
- principle:'game-based-play',practiceSlot:'small-sided',
- sport:'both',
- execution:'All players line up at home plate. On "go": first player runs to first base, touches it, continues to second, third, and home. Coach points and calls each base loudly: "First! Second! Third! Home!" Celebrate every player who completes the circuit. Run it again immediately. No rest. High enthusiasm from coach and teammates.',
- watchFor:'Players stopping at first out of habit. Running past home plate without touching it.',
- progressions:'Two players running simultaneously. Teaches not to run into each other.',
- regression:'Coach walks alongside the player and points to each base while they run.'
-},
 
 {id:'tb-bucket-toss',name:'Bucket Toss',category:'fielding',
  ageMin:4,ageMax:7,skillLevels:['first-year'],
@@ -762,20 +694,6 @@ var DRILLS = [
  regression:'6-inch toss into a laundry basket at 3 feet.'
 },
 
-{id:'tb-movement-circuit',name:'Movement Circuit',category:'warmup',
- ageMin:4,ageMax:7,skillLevels:['first-year'],
- duration:7,minPlayers:4,equipment:'Cones, agility dots or chalk circles',
- setup:'5 stations in a circle: hop on one foot, broad jump, zigzag cones, roll and get up, balance on one foot for 5 seconds.',
- execution:'Coach blows whistle every 45 seconds. Players rotate clockwise. Two rotations through the whole circuit. Make each station a game: "How many hops can you do before the whistle?"',
- cue:'"Move like a baseball player. Quick feet, stay low!"',
- why:'Lots of different movements build general coordination at an age when kids are learning to control their bodies. It is also just fun.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'5 stations arranged in a circle. Station 1: hop on one foot 10 times. Station 2: broad jump forward and back 5 times. Station 3: zigzag through 4 cones. Station 4: roll on the ground and jump up. Station 5: balance on one foot for 5 counts. Coach blows whistle every 45 seconds. Players rotate. Two full rotations. Make each station a game: "How many hops before the whistle?"',
- watchFor:'Players rushing through stations without engaging.',
- progressions:'Add a bat or ball at each station for sport-specific feel.',
- regression:'Fewer stations (3). Coach at each station demonstrating.'
-},
 
 {id:'tb-scatter-ball',name:'Scatter Ball',category:'small-sided',
  ageMin:4,ageMax:8,skillLevels:['first-year'],
@@ -861,21 +779,6 @@ var DRILLS = [
 
 // ── SOLO HITTING ──────────────────────────────────────────────────
 
-{id:'sl-tee-one-location',name:'Tee Work: One Location',category:'hitting',solo:true,
- soloCategory:'hitting',soloEquip:'Tee, ball (or wiffle ball), net or open space',
- ageMin:5,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:10,minPlayers:1,equipment:'Tee, ball, net or fence',
- setup:'Set up a tee at belt height, slightly in front of your stride foot. Put a ball on it. Stand in your stance.',
- execution:'Take 10 swings at the same spot. Focus only on one thing per session: contact point, staying through the ball, or finishing your swing. No more than one focus. Count how many solid contacts you make.',
- cue:'"Drive through the ball. Not at it."',
- why:'The tee is a simple, cheap way to get a lot of swings. The ball holds still, so the hitter can focus on one thing at a time.',
- principle:'classic-staple',practiceSlot:'acquisition',
- sport:'both',
- execution:'Set tee at belt height, just in front of the stride foot. Stand in your stance. Take 10 swings with one focus only. Watch where the ball goes after contact. That tells you more than any coach. After 10: adjust the tee one inch and notice if contact changes. 20 swings total per session.',
- watchFor:'Changing your focus every swing. Swinging without a clear target for the ball.',
- progressions:'Move to two locations alternating. Record yourself on your phone and check hand position at contact.',
- regression:'Slow-motion swings. Feel each position. Load, stride, contact, finish.'
-},
 
 {id:'sl-tee-two-spot',name:'Tee Work: Two Locations',category:'hitting',solo:true,
  soloCategory:'hitting',soloEquip:'Tee, balls, net or open space',
@@ -925,37 +828,7 @@ var DRILLS = [
  regression:'Shorter bounce. Let it die down to a slower speed first.'
 },
 
-{id:'sl-heavy-swings',name:'Tire Swings',category:'hitting',solo:true,
- soloCategory:'hitting',soloEquip:'Your regular bat, an old tire or heavy bag hung at waist height (optional)',
- ageMin:10,ageMax:18,skillLevels:['developing','experienced'],
- duration:8,minPlayers:1,equipment:'Bat, tire or heavy bag',
- setup:'Hang an old tire or put a heavy bag at waist height. Stand in your stance and swing through it.',
- execution:'20-30 full swings with your regular bat, driving through the contact point. No tire: shadow swings in front of a mirror work too. Stop if your hands or wrists hurt.',
- cue:'"Finish your swing every rep. No half swings."',
- why:'Hitting something solid gives feedback on whether you drive through contact or stop short. Keep the volume modest. The goal is feel, not a workout.',
- principle:'coach-application',practiceSlot:'acquisition',
- sport:'both',
- execution:'Stand in batting stance facing a tire or heavy bag hung at waist height. Swing through it with your regular bat, 20-30 swings with rest after every 10. Focus on finishing your swing through contact. Stop if hands, wrists, or elbows hurt.',
- watchFor:'Stopping the swing at contact. Sore hands or wrists: stop for the day.',
- progressions:'Swing from one knee to feel the turn. Alternate 5 tire swings with 5 tee swings.',
- regression:'Shadow swings with no resistance first. Focus on follow-through before adding resistance.'
-},
 
-{id:'sl-mirror-stance',name:'Mirror Stance and Load Check',category:'hitting',solo:true,
- soloCategory:'hitting',soloEquip:'Mirror or phone camera propped up, bat',
- ageMin:9,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:5,minPlayers:1,equipment:'Mirror or phone camera, bat',
- setup:'Set up a mirror or prop your phone on video mode. Stand in your batting stance so you can see yourself from the front or side.',
- execution:'Take 10 slow-motion swings watching your mechanics. Check: are your knees bent? Is your weight balanced? Are your hands in a strong position? One correction at a time.',
- cue:'"See yourself before you fix yourself."',
- why:'Seeing yourself gives feedback you cannot feel. A mirror or phone gives you that when no coach is around.',
- principle:'perception-decision',practiceSlot:'acquisition',
- sport:'both',
- execution:'Prop your phone on video mode at knee height facing you from the front, or stand in front of a mirror. Take 10 slow-motion swings. After each, watch the replay or check the mirror. Pick ONE thing to look at per session: heel lift, hip rotation, hand path, or finish position. Never try to check more than one thing.',
- watchFor:'Checking too many things at once. Moving the camera instead of positioning it well from the start.',
- progressions:'Record from the side as well to see bat path. Compare to a swing you admire from a video.',
- regression:'No video. Just slow-motion swings with conscious body awareness.'
-},
 
 // ── SOLO FIELDING ─────────────────────────────────────────────────
 
@@ -1123,151 +996,16 @@ var DRILLS = [
 
 // ── SOLO BODY CONTROL / ATHLETICISM ───────────────────────────────
 
-{id:'sl-jump-rope',name:'Jump Rope',category:'warmup',solo:true,
- soloCategory:'bodycontrol',soloEquip:'Jump rope ($5-10)',
- ageMin:5,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:8,minPlayers:1,equipment:'Jump rope',
- setup:'Any flat surface. No setup beyond the rope.',
- execution:'3 rounds: 1 minute jumping, 30 seconds rest. Week 1: basic two-foot jumps. Week 2: alternate feet. Week 3: double-unders if able. Track your personal best consecutive jumps.',
- cue:'"Light on your feet. Like you\'re ready to react."',
- why:'A cheap, fun way to build foot speed, rhythm, and coordination. Kids can track streaks and try to beat them.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'3 rounds: 1 minute jumping, 30 seconds rest. Week 1: basic two-foot jumps. Week 2: alternate feet. Left, right, left, right. Week 3: double-unders if able (rope goes under twice per jump). Track your longest consecutive streak without tripping each session. Post it and try to beat it.',
- watchFor:'Jumping too high: stay low and quick. During growth spurts, cut the rounds and skip double-unders if knees or heels are sore.',
- progressions:'Double-unders. Alternate-foot sprint rhythm.',
- regression:'Just 30-second sets. Basic two-foot jumps only.'
-},
 
-{id:'sl-lateral-shuffle',name:'Lateral Shuffle Cone Drill',category:'warmup',solo:true,
- soloCategory:'bodycontrol',soloEquip:'2 cones or water bottles (10 feet apart)',
- ageMin:7,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:6,minPlayers:1,equipment:'2 cones, 10 feet apart',
- setup:'Place 2 cones 10 feet apart. Start at one cone in an athletic stance: knees bent, weight forward, feet shoulder-width.',
- execution:'Shuffle laterally to the other cone without crossing your feet. Touch the cone with your outside hand. Shuffle back. 10 reps = one set. Three sets. Progress: speed up. Progress 2: place a third cone in the middle for a W-pattern.',
- cue:'"Stay low the whole time. Don\'t stand up as you move."',
- why:'Side-to-side movement shows up all over baseball: fielding, baserunning, backing up plays. Quick, free, and easy to do anywhere.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'Place 2 cones 10 feet apart. Athletic stance: knees bent, weight forward, feet shoulder-width. Shuffle to one cone, touch it with outside hand, shuffle back. Repeat: 10 reps = one set. Three sets. Key: stay low throughout. Do not stand up while shuffling. Progress: add a W-pattern with a third cone in the middle.',
- watchFor:'Standing up between shuffles. Crossing feet. Feet never cross in a shuffle.',
- progressions:'W-pattern. Time yourself.',
- regression:'Slow walk-speed shuffle. Focus on foot position.'
-},
 
-{id:'sl-broad-jump',name:'Standing Broad Jump Series',category:'warmup',solo:true,
- soloCategory:'bodycontrol',soloEquip:'Tape or chalk to mark distance, flat surface',
- ageMin:6,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:6,minPlayers:1,equipment:'Tape or chalk',
- setup:'Mark a starting line with tape or chalk. Stand at the line with feet shoulder-width.',
- execution:'Jump as far forward as possible with both feet, landing softly and controlled. Mark where you land. Repeat 5 times. Rest 60 seconds. Do 3 sets. Track your best jump each session.',
- cue:'"Explode out and up. Stick the landing."',
- why:'A simple bodyweight jump that builds leg power and good landings. Tracking your best jump is fun and shows progress.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'Mark a starting line. Stand with feet shoulder-width. Swing arms back, bend knees, then drive arms forward and jump as far as possible. Land softly on both feet. Controlled landing, no falling forward. Mark where you land. 5 jumps. Rest 60 seconds. 3 sets. Track your best jump distance each session.',
- watchFor:'Landing without control, collapsing forward. No arm drive. During growth spurts, cut to 1-2 sets and stop if knees or heels are sore.',
- progressions:'Broad jump into a short sprint. Single-leg broad jumps for older, experienced players only.',
- regression:'Step broad jump. Step forward with one foot then push off for the jump.'
-},
 
-{id:'sl-balance-single-leg',name:'Single-Leg Balance Work',category:'warmup',solo:true,
- soloCategory:'bodycontrol',soloEquip:'None',
- ageMin:6,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:5,minPlayers:1,equipment:'None',
- setup:'Stand barefoot on a flat surface. This drill requires no equipment.',
- execution:'Balance on one foot for 30 seconds. Eyes open. Then close your eyes. Much harder. Repeat on the other foot. 3 sets per foot. Progress: balance on one foot and catch a tennis ball tossed to yourself.',
- cue:'"Find one point on the ground. Stare at it."',
- why:'Balance helps with fielding, running, and hitting. Balance work is part of many injury-prevention warm-ups used in youth sports, and it is cheap and safe.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'Stand on one foot for 30 seconds. Then eyes closed. Much harder. 3 holds per foot. Progress: balance on one foot and toss a tennis ball to yourself. The toss and catch challenge forces the body to stabilize dynamically.',
- watchFor:'Body swaying wildly. Find a single focal point on the ground to stare at.',
- progressions:'Balance on one foot and swing the other leg forward and back while staying stable.',
- regression:'Eyes open only. Hold for 15 seconds.'
-},
 
-{id:'sl-plank-series',name:'Baseball Plank Series',category:'warmup',solo:true,
- soloCategory:'bodycontrol',soloEquip:'None, flat surface',
- ageMin:8,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:6,minPlayers:1,equipment:'None',
- setup:'Any flat surface. Three positions: front plank, left side plank, right side plank.',
- execution:'Front plank: 30 seconds. Left side plank: 20 seconds. Right side plank: 20 seconds. Rest 30 seconds. Repeat twice. Progress: add a reach or leg lift in each position.',
- cue:'"Straight line from head to heel. Squeeze everything."',
- why:'A bodyweight way to build trunk strength with no equipment. Good general fitness for any athlete, and easy to do at home.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'Three positions in sequence: (1) Front plank. Elbows under shoulders, straight line head to heel, 30 seconds. (2) Left side plank. Bottom elbow under shoulder, body straight, 20 seconds. (3) Right side plank. Same, 20 seconds. Rest 30 seconds. Repeat twice. Progress: in each position, add a reach or leg lift for 5 reps.',
- watchFor:'Hips sagging in front plank. Side plank body rotating forward.',
- progressions:'Plank with alternating arm reach. Add 5-second holds at each position.',
- regression:'Plank from knees rather than full position.'
-},
 
-{id:'sl-agility-ladder',name:'Agility Ladder Patterns',category:'warmup',solo:true,
- soloCategory:'bodycontrol',soloEquip:'Agility ladder ($15-20) or chalk squares on pavement',
- ageMin:7,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:10,minPlayers:1,equipment:'Agility ladder or chalk on pavement',
- setup:'Lay out the ladder on flat ground. No ladder: draw 10 squares with chalk, each about 18 inches across.',
- execution:'Pattern 1: one foot in each box, fast. Pattern 2: two feet in each box. Pattern 3: in-in-out-out (Ickey Shuffle). 3 runs through per pattern. Rest 30 seconds between patterns. Track speed improvement week to week.',
- cue:'"Look forward. Not down at the ladder."',
- why:'Fun footwork patterns that build coordination and rhythm. How much ladder work carries over to game quickness is unclear, so treat it as a good warm-up, not a magic fix.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'Lay ladder on flat ground. Pattern 1: one foot in each box, fast. Pattern 2: two feet in each box. Pattern 3: in-in-out-out (Ickey Shuffle). 3 runs through per pattern. 30-second rest between patterns. Track: time each run through. Look forward. Not down at the ladder. Arms pump like sprinting.',
- watchFor:'Looking down at the ladder. Eyes forward.',
- progressions:'Add a sprint for 10 yards after exiting the ladder.',
- regression:'Walk speed only. Two patterns max.'
-},
 
 // ── SOLO PITCHING ─────────────────────────────────────────────────
 
-{id:'sl-towel-drill',name:'Pitch Count and Rest Log',category:'pitching',solo:true,
- soloCategory:'pitching',soloEquip:'Notebook or phone notes',
- ageMin:9,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:3,minPlayers:1,equipment:'Notebook or phone',
- setup:'Keep a simple log for every day you pitch: the date, pitches thrown, and how your arm felt (1-5).',
- execution:'After every game or bullpen, write down the pitch count and how your arm feels. Check it against your league\'s pitch count and rest-day rules (Little League, or the MLB and USA Baseball Pitch Smart guidelines). Share the log with your coach and parents.',
- cue:'"Count every pitch. Rest is part of the plan."',
- why:'Pitch counts and rest days are the most widely recommended way to protect young arms (Pitch Smart, Little League rules). A log makes the count visible to everyone.',
- principle:'coach-application',practiceSlot:'acquisition',
- sport:'baseball',
- execution:'Every day you pitch, log: date, pitches thrown (games plus bullpens), and arm feel from 1 to 5. Before the next outing, check the log against your league\'s rest-day rules. Also note if you caught or pitched for another team that week. Any pain, not just normal tiredness: stop throwing and tell a parent.',
- watchFor:'Forgetting bullpens and second teams. Pitching and catching on the same day. Pitching through pain.',
- progressions:'Add weekly and season totals. Plan a real break from competitive pitching each year, as Pitch Smart recommends.',
- regression:'Just the date and pitch count. Add arm feel later.'
-},
 
-{id:'sl-balance-point-hold',name:'Solo Stork Balance',category:'pitching',solo:true,
- soloCategory:'pitching',soloEquip:'None',
- ageMin:8,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:7,minPlayers:1,equipment:'None',
- setup:'Stand on flat ground. No ball needed.',
- execution:'Stand on one leg with the other knee lifted toward hip height. Hold for 10-20 seconds. 5 holds per leg. Make it harder: close your eyes or turn your head side to side.',
- cue:'"Pick a spot, stay tall, stay still."',
- why:'Balance is a general athletic skill for everyone, pitchers included. This is a balance challenge, not a delivery lesson. Delivery coaching belongs with a qualified pitching coach.',
- principle:'athletic-development',practiceSlot:'acquisition',
- sport:'baseball',
- execution:'Stand on one leg, other knee lifted toward hip height. Hold 10-20 seconds without touching down. 5 holds per leg. Then try it with eyes closed, or while tossing a tennis ball to yourself. Keep a record of your longest hold.',
- watchFor:'Holding your breath. Locking the standing knee straight: keep a soft bend.',
- progressions:'Eyes closed. Catch a self-toss while balancing. Stand on a folded towel.',
- regression:'Fingertips on a wall. Hold 5 seconds.'
-},
 
-{id:'sl-net-spot-work',name:'Net Spot Work',category:'pitching',solo:true,
- soloCategory:'pitching',soloEquip:'Pitching net with strike zone target or drawn target, baseballs',
- ageMin:9,ageMax:18,skillLevels:['developing','experienced'],
- duration:15,minPlayers:1,equipment:'Pitching net with target, baseballs',
- setup:'Set up a net with a strike zone target at proper pitching distance (46 feet for Little League, 60.5 feet for high school). Aim at 4 quadrants: up-in, up-out, down-in, down-out.',
- execution:'Throw 20 pitches calling the target out loud before each one. Track hits vs. misses by quadrant. Keep a scorecard. Goal: 14 out of 20 in your target zone.',
- cue:'"See the corner. Throw to the corner."',
- why:'A target and a scorecard turn solo throwing into a game, and charting shows where your misses go. Count these pitches toward your daily limit.',
- principle:'coach-application',practiceSlot:'variable',
- sport:'baseball',
- execution:'Net with target at 46 feet (Little League). Call target zone out loud before every pitch: "Down and away." Throw. Mark hit or miss on a scorecard. 20 pitches. Track which zone you miss most. Spend 5 extra pitches on your weakest zone at the end of every session. Keep the scorecard.',
- watchFor:'Not calling the target before throwing. Throwing to the same zone every time. Any arm pain: stop for the day.',
- progressions:'Add a batter standing (not swinging) in the box for visual context.',
- regression:'Shorter distance (35 feet). Larger target zone.'
-},
 
 // ── SOLO MENTAL / VISUALIZATION ───────────────────────────────────
 
@@ -1308,50 +1046,8 @@ var DRILLS = [
 
 // ── WARM-UPS (6 new) ──────────────────────────────────────────────
 
-{id:'wu-color-tag',name:'Color Tag',category:'warmup',
- ageMin:5,ageMax:9,skillLevels:['first-year','developing'],
- duration:6,minPlayers:6,equipment:'4 colored cones (red, blue, green, yellow)',
- setup:'Place 4 colored cones at corners of a 30x30 boundary. Two players are taggers, everyone else is free.',
- execution:'Coach calls a color instead of "go." Everyone sprints to that color cone. Last player to touch it becomes a tagger. If tagged while running: join the taggers. Run 5-6 rounds.',
- cue:'"Listen. Then explode. Don\'t move before you hear the color."',
- why:'Kids have to hear the color, think, and then go. Lots of quick starts, and it keeps everyone listening.',
- principle:'perception-decision',practiceSlot:'warmup',
- sport:'both',
- execution:'Place cones before players arrive. Two players start as taggers inside the boundary. Coach stands outside and calls a color every 15-20 seconds. Everyone sprints to that cone. Last player to touch it joins the taggers. If tagged mid-run: also joins the taggers. Run until 3-4 players remain free, then reset. 4 rounds.',
- watchFor:'Players pre-moving before the color is called. Call it out. Taggers giving up. Swap them out after each round.',
- progressions:'Call two colors at once. Players pick one. Call colors faster with less warning.',
- regression:'Walk only. No tagging. Just racing to the cone.'
-},
 
-{id:'wu-mirror-partner',name:'Mirror Partner Drill',category:'warmup',
- ageMin:7,ageMax:14,skillLevels:['first-year','developing','experienced'],
- duration:6,minPlayers:2,equipment:'None',
- setup:'Partners face each other 4 feet apart. One leads, one mirrors every movement.',
- execution:'Leader makes lateral cuts, forward/backward shuffles, and jumps. Mirror partner reacts to each movement as fast as possible. 45 seconds leading, switch. Three rounds each. Progress: add a sprint to a cone at the end.',
- cue:'"React. Don\'t predict."',
- why:'Kids react to a partner they cannot predict, so it is quick-feet practice with a game feel. No equipment needed.',
- principle:'perception-decision',practiceSlot:'warmup',
- sport:'both',
- execution:'Partners face each other 4 feet apart. Designate leader and mirror. Leader makes lateral shuffles, forward/backward steps, arm raises, squats. Anything athletic. Mirror matches every movement as fast as possible. 45 seconds leading, switch. Three rounds each. Final round: no designated leader. Both react simultaneously.',
- watchFor:'Leaders making non-athletic movements (jumping jacks, etc.). Redirect to baseball movements: shuffle, ready position, load. Mirrors looking at feet instead of their partner.',
- progressions:'Leader can use diagonal movements and pivots. Add a ball. Leader holds ball and randomly offers it; mirror must react to take or block.',
- regression:'Slow-motion only. Leader calls the movement before doing it.'
-},
 
-{id:'wu-tail-tag-infield',name:'Tail Tag Infield Race',category:'warmup',
- ageMin:6,ageMax:10,skillLevels:['first-year','developing'],
- duration:7,minPlayers:6,equipment:'Pinnies or flag strips',
- setup:'Split players into pairs. Each player tucks a pinnie in their waistband as a tail. Set a 30x30 boundary with cones.',
- execution:'On go, each player tries to steal their partner\'s tail while protecting their own. First to steal their partner\'s tail wins the pair. Run 5 rounds with different partners. Final round: last tail standing.',
- cue:'"Stay low. Change direction with short steps, not big ones."',
- why:'Short one-on-one battles keep intensity high and everyone moving at once.',
- principle:'coach-application',practiceSlot:'warmup',
- sport:'both',
- execution:'Pair players before starting. Each player tucks a pinnie 12 inches out of their waistband. On "go," each player in the pair tries to steal their partner\'s tail. First to steal it wins the pair. Immediately announce new matchups. Rotate so players face different opponents. After 5 rounds: survivor bracket, last tail standing wins.',
- watchFor:'Grabbing clothing. Players running out of boundary. Call them back.',
- progressions:'Three-player triangles instead of pairs. Winner of each pair must face each other in a final.',
- regression:'Partners must stay within 10 feet of each other at all times.'
-},
 
 {id:'wu-rock-paper-scissors-sprint',name:'Rock Paper Scissors Sprint',category:'warmup',
  ageMin:5,ageMax:12,skillLevels:['first-year','developing'],
@@ -1368,20 +1064,6 @@ var DRILLS = [
  regression:'No chasing. Just race to see who gets to the cone first.'
 },
 
-{id:'wu-hoop-relay',name:'Hula Hoop Relay',category:'warmup',
- ageMin:5,ageMax:10,skillLevels:['first-year','developing'],
- duration:6,minPlayers:6,equipment:'4-6 hula hoops',
- setup:'Scatter hula hoops across the field. Two teams start at opposite ends.',
- execution:'Players run through, around, or jump into each hoop on a set course. First team to complete the circuit wins. Add variations: balance on one foot in the hoop for 2 seconds before moving on.',
- cue:'"Quick feet through the hoop. Don\'t slow down!"',
- why:'The hoops show young kids exactly where to step without much talking. Relays add energy and teamwork.',
- principle:'game-based-play',practiceSlot:'warmup',
- sport:'both',
- execution:'Set up 4-5 hoops in a line as a course. Two teams race simultaneously on parallel courses. Players must step into each hoop with both feet before moving to the next. At the end: run back and tag the next player. First team to get all players through wins. Run 3 races.',
- watchFor:'Players skipping hoops. Tagging before the previous player is back.',
- progressions:'Balance on one foot inside each hoop for 2 seconds.',
- regression:'One foot in each hoop only. No stopping required.'
-},
 
 {id:'wu-dynamic-stretch-circuit',name:'Dynamic Stretch Circuit',category:'warmup',
  ageMin:8,ageMax:18,skillLevels:['developing','experienced'],
@@ -1461,7 +1143,7 @@ var DRILLS = [
 },
 
 {id:'fd-dive-and-recover',name:'Dive and Recover',category:'fielding',
- ageMin:9,ageMax:14,skillLevels:['developing','experienced'],
+ ageMin:12,ageMax:14,skillLevels:['developing','experienced'],
  duration:10,minPlayers:2,equipment:'Tennis balls, soft grass or turf area, gloves',
  setup:'Outfield grass. Fielder starts standing. Partner stands 10 feet away with a bucket of tennis balls.',
  execution:'Partner tosses a ball far to the fielder\'s forehand or backhand. Forcing a full dive to reach it. Fielder lands, pops up, resets. No throws after the dive. Just field, recover, reset. 10 dives each.',
@@ -1672,20 +1354,6 @@ var DRILLS = [
  regression:'Coach holds the ball up and shows the color before tossing. Hitter confirms the color before swinging.'
 },
 
-{id:'hit-tee-top-hand',name:'Top-Hand Tee Drill',category:'hitting',
- ageMin:9,ageMax:14,skillLevels:['developing','experienced'],
- duration:7,minPlayers:1,equipment:'Tee, ball, net',
- setup:'Remove the bottom hand from the bat (or grip loosely). Swing 10 times using only the top hand.',
- execution:'10 top-hand swings from the tee. Focus on palm-up at contact. Then 10 bottom-hand-only swings: focus on palm-down. Then 10 normal two-hand swings and feel the integration.',
- cue:'"One widely-taught approach: keep the top hand palm up at contact to prevent rolling over early. Bottom hand drives the barrel through."',
- why:'One-hand drills are common in hitting practice. They let a hitter feel what each hand does before putting the swing back together.',
- principle:'classic-staple',practiceSlot:'acquisition',
- sport:'both',
- execution:'Remove the bottom hand or grip loosely. Top hand only. 10 swings off the tee. Focus: one widely-taught approach: palm facing up or outward at the contact point, delaying wrist roll-over. Note: some coaches teach the wrist rolls through at contact. This drill trains the stay-through version. Then: bottom hand only. 10 swings. Feel the difference: bottom hand drives the barrel, top hand guides it. Then: both hands. 10 swings. Feel the integration of both.',
- watchFor:'Wrist rolling over before contact. In this approach, palm should face up or outward at the moment of contact. Bottom-hand swings collapsing at contact.',
- progressions:'Top-hand-only soft toss instead of tee. Progress to full swing with emphasis on hand roles.',
- regression:'Slow-motion swings first. Have the hitter stop at contact and check hand position before completing.'
-},
 
 {id:'hit-gap-drill',name:'Hit to the Gap',category:'hitting',
  ageMin:9,ageMax:14,skillLevels:['developing','experienced'],
@@ -1719,20 +1387,6 @@ var DRILLS = [
  regression:'Slow motion. Count: "catch, transfer, grip." Check each step before speeding up.'
 },
 
-{id:'th-behind-back',name:'Behind-the-Back Catch',category:'throwing',
- ageMin:8,ageMax:14,skillLevels:['developing','experienced'],
- duration:7,minPlayers:2,equipment:'Tennis balls, gloves (optional)',
- setup:'Partners 8-10 feet apart. One player puts their glove (or catching hand) behind their back.',
- execution:'Partner makes short underhanded tosses to the fielder who catches behind their back. 15 reps each. Progress: move to side-arm tosses. This is a coordination and spatial awareness drill, not a mechanics drill.',
- cue:'"Feel where the ball is. Trust your hands."',
- why:'A fun coordination challenge. Kids learn to feel where the ball is and trust their hands.',
- principle:'athletic-development',practiceSlot:'acquisition',
- sport:'both',
- execution:'Partners 8-10 feet apart. Catcher puts dominant hand (or glove) behind their back. Partner makes soft underhand tosses. Varying left, right, and directly to the catcher. Catcher must sense where the ball is and catch it behind their back with one hand. 15 tosses each. Progress: toss from 12 feet. Add a light bounce off the ground before catching.',
- watchFor:'Catcher peeking around their body. They must keep looking forward. Partner tossing too hard. Keep it soft.',
- progressions:'Tosser uses overhand instead of underhand. Add a secondary task: catcher counts backward from 10 simultaneously.',
- regression:'Tosser bounces the ball softly. Slower trajectory gives more time to locate.'
-},
 
 {id:'th-accuracy-tournament',name:'Accuracy Tournament',category:'throwing',
  ageMin:8,ageMax:14,skillLevels:['first-year','developing','experienced'],
@@ -1749,20 +1403,6 @@ var DRILLS = [
  regression:'Larger target (4x4 feet). Two distances only: 20 and 35 feet.'
 },
 
-{id:'th-cross-body-drill',name:'Cross-Body Throwing Drill',category:'throwing',
- ageMin:10,ageMax:14,skillLevels:['developing','experienced'],
- duration:8,minPlayers:2,equipment:'Balls, gloves',
- setup:'Player starts facing away from their throwing target. Partner gives a "go" signal.',
- execution:'On signal: player pivots, locates the target, and throws. 15 reps, varying the starting direction (facing full opposite, facing 90 degrees, etc.). Emphasize footwork on the pivot. Not just the throw.',
- cue:'"Find your target with your feet first. Then throw."',
- why:'Fielders often have to turn and throw instead of throwing from a set position. This gives reps finding the target with the feet first.',
- principle:'coach-application',practiceSlot:'variable',
- sport:'both',
- execution:'Player starts facing completely away from their throwing target. Partner calls "go." Player pivots on their throwing-side foot. Spin to face the target. Find the target with eyes. Then plant the glove-side foot and throw. 15 reps facing full opposite. Then 10 reps facing 90 degrees right. Then 10 reps facing 90 degrees left. Simulate a shortstop making a spin throw.',
- watchFor:'Throwing before eyes find the target. Throwing off the back foot. Must plant glove-side foot first.',
- progressions:'Add a baserunner who starts running on "go." Fielder must complete the spin and throw in time.',
- regression:'Walk through in slow motion: pivot, find target, plant, throw. No speed yet.'
-},
 
 {id:'th-partner-receive',name:'Receive and Redirect',category:'throwing',
  ageMin:8,ageMax:14,skillLevels:['developing','experienced'],
@@ -1886,20 +1526,6 @@ var DRILLS = [
  regression:'Coach rolls only. No surprises. Slowly add variety after the rule is understood.'
 },
 
-{id:'br-base-angle-race',name:'Base-Rounding Angle Race',category:'baserunning',
- ageMin:7,ageMax:14,skillLevels:['first-year','developing','experienced'],
- duration:8,minPlayers:4,equipment:'Full base set, cones marking wide arc',
- setup:'Cones mark a rounding arc a few feet outside the baseline, starting about 15 feet before each base. Players compete in pairs from home.',
- execution:'Race from home to third, rounding first and second along the cone path. Any runner who cuts inside a cone loses the point regardless of finish time. Best of 5 rounds wins.',
- cue:'"Loop wide early. Hit the inside corner of the bag."',
- why:'A good turn lets runners keep their speed through the base instead of stopping to change direction. The cones make the arc visible, and racing makes kids want to do it right.',
- principle:'coach-application',practiceSlot:'acquisition',
- sport:'both',
- execution:'Place cones a few feet outside the baseline, about 15 feet before first and second base, to mark the arc. Two players race from home. Both must loop around the outside of the arc cone before touching each base. Player who ignores the cone and runs straight loses the point regardless of speed. Five races per round. Best of 5 wins the series.',
- watchFor:'Players cutting inside the cone. Players forgetting the cone once they get competitive.',
- progressions:'Add a third base cone. Time each player individually and compare.',
- regression:'Walk the cone path first. Show how the arc lets you keep running hard through the base.'
-},
 
 {id:'br-dirt-ball-read',name:'Dirt Ball Reads',category:'baserunning',
  ageMin:9,ageMax:14,skillLevels:['developing','experienced'],
@@ -2040,22 +1666,8 @@ var DRILLS = [
 
 // ── PITCHING (4 new) ──────────────────────────────────────────────
 
-{id:'pt-windup-stretch',name:'Windup vs. Stretch Strike Count',category:'pitching',
- ageMin:9,ageMax:14,skillLevels:['developing','experienced'],
- duration:10,minPlayers:2,equipment:'Ball, glove, catcher or net',
- setup:'Pitcher alternates: one pitch from windup, one from stretch. Catcher or net at league distance.',
- execution:'10 pitches alternating windup and stretch. Tally strikes from each. After each pair: which start felt more comfortable? Count all pitches toward the daily limit.',
- cue:'"Same target, same routine, from both starts."',
- why:'Pitchers throw from the stretch whenever runners are on, so they need reps there too. A simple strike tally shows where they are more comfortable. Keep feedback on the target, not the delivery.',
- principle:'coach-application',practiceSlot:'variable',
- sport:'baseball',
- execution:'Pitcher alternates: one pitch from the windup, one from the stretch. After each pair, the pitcher answers one question out loud: "Which one felt more comfortable?" 10 pairs of pitches. Track windup strikes vs. stretch strikes on a simple tally. Count every pitch toward the day\'s pitch count.',
- watchFor:'Pitcher rushing the pace from the stretch. Frustration after misses: count strikes, not misses. Any arm pain: stop for the day.',
- progressions:'A full session from the stretch, since runners on base put pitchers there often.',
- regression:'Walk through the windup and stretch with no ball first to learn the legal starting positions.'
-},
 
-{id:'pt-fielding-position',name:'Pitcher Fielding Practice (PFP)',category:'pitching',
+{id:'pt-fielding-position',name:'Pitcher Fielding Practice (PFP)',category:'fielding',
  ageMin:9,ageMax:14,skillLevels:['developing','experienced'],
  duration:10,minPlayers:3,equipment:'Full infield, balls',
  setup:'Pitcher on mound. Fielders at first and third. Coach at home.',
@@ -2070,22 +1682,8 @@ var DRILLS = [
  regression:'Coach rolls slow comebackers while the pitcher starts in a ready position on the mound. Walk through covering first.'
 },
 
-{id:'pt-location-chart',name:'Charted Bullpen Session',category:'pitching',
- ageMin:10,ageMax:14,skillLevels:['developing','experienced'],
- duration:15,minPlayers:2,equipment:'Ball, catcher, paper strike zone chart',
- setup:'Draw a simple strike zone divided into 9 zones (3x3 grid) on paper. Catcher calls targets by zone number.',
- execution:'20 pitches. Catcher calls the zone before each pitch. Pitcher tries to hit it. Mark hit vs. miss on the chart after each pitch. Find the strongest and weakest zones. Work the weak ones.',
- cue:'"Know your chart. Attack your strong zones in games."',
- why:'Charting shows a pitcher where their misses tend to go, which makes practice more specific. Keep it about targets, not delivery changes, and count every pitch.',
- principle:'coach-application',practiceSlot:'variable',
- sport:'baseball',
- execution:'Draw a 3x3 strike zone grid on paper. 9 zones numbered. Catcher calls a zone number before each pitch. Pitcher throws to that zone. Mark hit vs. miss on the chart after each pitch. 20 pitches. After: find the 3 zones with the worst accuracy. Add 5 extra pitches to each weak zone. Pitcher keeps the chart for next session and tracks it over time. Count every pitch toward the daily limit.',
- watchFor:'Pitcher guessing zone location instead of having a real target. Catcher not setting up in the called zone.',
- progressions:'Add a batter who is allowed to take. Pitcher must throw actual strikes.',
- regression:'Only 4 zones: up/down/in/out. 10 pitches. Simple chart.'
-},
 
-{id:'pt-hip-shoulder-sep',name:'Pitcher Covers First',category:'pitching',
+{id:'pt-hip-shoulder-sep',name:'Pitcher Covers First',category:'fielding',
  ageMin:10,ageMax:14,skillLevels:['developing','experienced'],
  duration:8,minPlayers:3,equipment:'Balls, gloves, first base',
  setup:'Pitcher on the mound. First baseman at first. Coach at home with balls.',
@@ -2152,21 +1750,6 @@ var DRILLS = [
  regression:'Flip only 6 inches. Almost no arc. Very slow decision.'
 },
 
-{id:'sl-tee-high-low',name:'High-Low Tee Work',category:'hitting',solo:true,
- soloCategory:'hitting',soloEquip:'Adjustable tee, balls, net',
- ageMin:8,ageMax:18,skillLevels:['developing','experienced'],
- duration:10,minPlayers:1,equipment:'Adjustable tee, balls, net',
- setup:'Set tee at high (letter height), take 5 swings. Set tee at low (knee height), take 5 swings. Alternate without resetting your stance.',
- execution:'10 swings high, 10 swings low, alternating randomly by calling it before each swing. High ball: stay through it, hands lead. Low ball: get your hands down, stay through the bottom.',
- cue:'"High: flat path. Low: slight downward angle. Both: drive through."',
- why:'Pitches come at different heights, so tee work at one height only covers part of the zone. Alternating makes you adjust.',
- principle:'variable-practice',practiceSlot:'variable',
- sport:'both',
- execution:'Tee at letter-height: 10 swings. Tee at knee-height: 10 swings. Now alternate randomly. Call the height before each swing, then move the tee. 20 total. Check: for high ball, keep path level. For low ball, slight downward angle to the contact point. The body should adjust naturally if you trust the contact point.',
- watchFor:'Same swing path regardless of height.',
- progressions:'Add inside/outside to the high/low variation. Four variables total.',
- regression:'One height per session.'
-},
 
 {id:'sl-one-hand-catch-toss',name:'One-Hand Catch and Toss',category:'hitting',solo:true,
  soloCategory:'hitting',soloEquip:'Tennis ball, wall',
@@ -2200,21 +1783,6 @@ var DRILLS = [
  regression:'Just two situations alternating: hit to right side vs. hit for power.'
 },
 
-{id:'sl-video-analysis',name:'Phone Video Swing Analysis',category:'hitting',solo:true,
- soloCategory:'hitting',soloEquip:'Phone propped on bag or cone, tee, balls',
- ageMin:10,ageMax:18,skillLevels:['developing','experienced'],
- duration:10,minPlayers:1,equipment:'Phone, tee, balls',
- setup:'Prop phone in video mode at knee height, facing home plate from the front. Get the whole swing in frame.',
- execution:'Record 10 swings. Watch each one immediately. Look for one thing: does your back heel come up before contact? (Yes = good rotation). Does your front shoulder fly open early? Pick ONE thing to fix next 10 swings.',
- cue:'"Watch. Then change one thing. One thing."',
- why:'Video is a free self-coaching tool if you have a phone. The one-thing rule keeps you from trying to fix everything at once.',
- principle:'perception-decision',practiceSlot:'acquisition',
- sport:'both',
- execution:'Prop phone on video mode at knee height facing home plate. Take 10 swings. After each: watch the video immediately. Focus on ONE thing per session. Pick before you start. Example: "I\'m checking if my back heel comes up before contact." After 10 swings: make one adjustment. Take 10 more. Compare.',
- watchFor:'Checking multiple things. Pick one.',
- progressions:'Slow the video to 0.25x speed. Compare side-by-side with a pro swing you\'ve saved.',
- regression:'Watch 5 swings before making any adjustment.'
-},
 
 // ── SOLO FIELDING (5 new) ─────────────────────────────────────────
 
@@ -2300,21 +1868,6 @@ var DRILLS = [
 
 // ── SOLO THROWING (5 new) ─────────────────────────────────────────
 
-{id:'sl-spin-grip-work',name:'Four-Seam Grip by Feel',category:'throwing',solo:true,
- soloCategory:'throwing',soloEquip:'Baseball',
- ageMin:9,ageMax:18,skillLevels:['developing','experienced'],
- duration:6,minPlayers:1,equipment:'Baseball',
- setup:'Sit or stand. One baseball.',
- execution:'Practice setting a four-seam grip (fingers across the wide seams) without looking, by feel alone. 20 re-grips. Then toss the ball straight up, catch it, and set the four-seam grip before throwing to a target.',
- cue:'"Find the seams without looking."',
- why:'A four-seam grip helps throws fly straight. Finding it by feel speeds up the transfer. It takes only a ball and a few minutes.',
- principle:'coach-application',practiceSlot:'acquisition',
- sport:'baseball',
- execution:'Hold one baseball. Set a four-seam grip (fingers across the wide seams). Release and re-grip 10 times without looking. Toss the ball 6 inches up, catch it, and set the four-seam grip as fast as you can. 20 times. Goal: four-seam grip without looking, every time.',
- watchFor:'Looking at the ball to set the grip.',
- progressions:'Set grip and throw to a target in one fluid motion.',
- regression:'Look at the ball for grip setting. Gradually reduce how long you look.'
-},
 
 {id:'sl-wall-crow-hop',name:'Wall Crow Hop Throws',category:'throwing',solo:true,
  soloCategory:'throwing',soloEquip:'Tennis ball, glove, wall',
@@ -2348,21 +1901,6 @@ var DRILLS = [
  regression:'Face the target and just catch and throw at 20-30 feet.'
 },
 
-{id:'sl-shadow-delivery',name:'Shadow Routine Rehearsal',category:'throwing',solo:true,
- soloCategory:'throwing',soloEquip:'None, mirror optional',
- ageMin:9,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:8,minPlayers:1,equipment:'None (mirror optional)',
- setup:'On a mound or flat ground. No ball.',
- execution:'Rehearse your full pre-pitch routine 10 times with no ball: step on the rubber, get the sign, see the target, take one breath, then an easy dry motion. The focus is the routine, not the delivery.',
- cue:'"Same routine, every pitch."',
- why:'Rehearsing the routine without a ball gives reps with no arm stress and helps the routine feel automatic. We leave delivery changes to a qualified pitching coach.',
- principle:'sport-psych',practiceSlot:'acquisition',
- sport:'baseball',
- execution:'No ball. Rehearse your routine 10 times: step on the rubber, look in for the sign, pick a target, take one breath, then an easy dry motion at half speed. Then 5 more at game pace. The goal is doing the routine the same way every time.',
- watchFor:'Skipping steps. Rushing the breath.',
- progressions:'Rehearse with a teammate calling game situations: "Runner on first, 2-1 count."',
- regression:'5 rehearsals. Just the step, the target, and the breath.'
-},
 
 {id:'sl-target-zones-wall',name:'Four-Zone Wall Targets',category:'throwing',solo:true,
  soloCategory:'throwing',soloEquip:'Tennis ball, tape (4 pieces), wall',
@@ -2382,105 +1920,15 @@ var DRILLS = [
 
 // ── SOLO BODY CONTROL (6 new) ─────────────────────────────────────
 
-{id:'sl-box-jumps',name:'Box Jumps or Step Jumps',category:'warmup',solo:true,
- soloCategory:'bodycontrol',soloEquip:'Stable step or curb 8-12 inches high (not a bench that can tip)',
- ageMin:10,ageMax:18,skillLevels:['developing','experienced'],
- duration:7,minPlayers:1,equipment:'Step or sturdy low box',
- setup:'Stable surface 8-12 inches high. Stand facing it.',
- execution:'Two-foot jump onto the step. Land softly. Both feet, knees bent. Step back down (not jump down). 3 sets of 8 jumps. Rest 45 seconds between sets. Progress: add a pause at the top, holding the landing position for 2 seconds.',
- cue:'"Land like you\'re trying not to make noise."',
- why:'Builds leg power and teaches soft, controlled landings. Stepping down instead of jumping down keeps the impact low.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'Stand facing a step or box 8-12 inches high. Two-foot jump onto the surface. Drive with the arms. Land softly: both feet, knees bent, absorb the landing. Step back down (do not jump down). 3 sets of 8 jumps. Rest 45 seconds between sets. Add: pause at the top for 2 seconds. Hold the landing before stepping down.',
- watchFor:'Landing with straight knees: absorb the impact. During growth spurts, cut the sets in half and stop if knees or heels are sore.',
- progressions:'Hold the landing 3 seconds. Single-leg landings for older, experienced players only.',
- regression:'Step onto the box with one foot first instead of jumping.'
-},
 
-{id:'sl-medicine-ball',name:'Light Medicine Ball Rotational Throws',category:'warmup',solo:true,
- soloCategory:'bodycontrol',soloEquip:'Light medicine ball (2-4 lb) or a basketball, wall',
- ageMin:12,ageMax:18,skillLevels:['developing','experienced'],
- duration:8,minPlayers:1,equipment:'Light medicine ball (2-4 lb) or basketball, wall',
- setup:'Stand sideways to wall, 3-4 feet away. Hold medicine ball at chest.',
- execution:'Rotate away from the wall, then turn back and throw the ball against the wall. Catch the rebound. 8-10 reps each side. Start with a basketball or no ball until the movement is smooth.',
- cue:'"Hips start the throw. Arms just deliver it."',
- why:'Practices turning the hips and trunk together with a light ball. Keep it light: this is about rhythm and control, not heavy loading.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'Stand sideways to a wall 3-4 feet away. Hold a light ball (2-4 lb) at chest. Rotate away from the wall. Loading. Drive hips back toward the wall, then let the shoulders follow. Release the ball into the wall. Catch the rebound. 10 reps each side. Hips start the throw. Arms just deliver it. Rest 45 seconds between sides.',
- watchFor:'Arms doing all the work. Not rotating fully before throwing. Using a heavy ball: stay light.',
- progressions:'Step into the throw. Add a few reps with the same light ball.',
- regression:'No ball. Just practice the rotation pattern 20 times.'
-},
 
-{id:'sl-t-balance',name:'T-Balance Hold',category:'warmup',solo:true,
- soloCategory:'bodycontrol',soloEquip:'None',
- ageMin:7,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:5,minPlayers:1,equipment:'None',
- setup:'Stand on one foot. Arms out to the sides.',
- execution:'Lean forward until your body forms a "T" shape. One leg on the ground, one leg extended back, torso parallel to ground, arms extended. Hold for 10 seconds. 5 holds per leg. Close eyes to increase difficulty.',
- cue:'"Find one point on the floor. Hold still."',
- why:'Builds single-leg balance and hip control, which help with fielding, running, and just about every athletic move.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'Stand on one foot. Lean forward until your body forms a T. Torso parallel to ground, free leg extending behind. Arms out to the sides for balance. Hold 10 seconds. 5 holds per leg. Close your eyes for the last 2 holds.',
- watchFor:'Hips rotating open. Keep hips square to the ground.',
- progressions:'Hold while catching a tennis ball tossed to you.',
- regression:'Hold for 5 seconds only. Touch a wall if needed.'
-},
 
-{id:'sl-speed-ladder-advanced',name:'Advanced Ladder Patterns',category:'warmup',solo:true,
- soloCategory:'bodycontrol',soloEquip:'Agility ladder or chalk squares',
- ageMin:10,ageMax:18,skillLevels:['developing','experienced'],
- duration:10,minPlayers:1,equipment:'Agility ladder',
- setup:'Agility ladder on flat ground. Advanced patterns require 10+ ladder rungs.',
- execution:'Pattern 1: Single-leg hops through each box. Pattern 2: Lateral icky shuffle. In-in-out-out sideways. Pattern 3: Hip rotation pattern. Turn 90 degrees each box. 3 runs through each pattern. Rest 30 seconds between.',
- cue:'"Arms drive the rhythm. Pump them hard."',
- why:'Harder patterns challenge coordination and keep ladder work interesting for older players.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'Advanced ladder patterns on flat ground. Pattern 1: single-leg hops through each box. Pattern 2: lateral icky shuffle. In-in-out-out sideways. Pattern 3: hip rotation. Step in each box and turn 90 degrees. 3 runs through each pattern. 30-second rest. Arms pump hard. They drive the rhythm.',
- watchFor:'Looking down at the ladder. During growth spurts, drop the single-leg hops.',
- progressions:'Add a sprint for 10 yards after exiting the ladder.',
- regression:'Basic one-foot-in-each-box at walk speed.'
-},
 
-{id:'sl-sprint-mechanics',name:'Sprint Mechanics Drill',category:'warmup',solo:true,
- soloCategory:'bodycontrol',soloEquip:'30-yard open space, cones',
- ageMin:8,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:8,minPlayers:1,equipment:'30-yard space, optional cones',
- setup:'30-yard lane. Phone on video if self-coaching.',
- execution:'5 runs: (1) A-skip (high knee skip), (2) B-skip (extend and claw foot down), (3) sprint at 70% effort, (4) sprint at 90% effort, (5) all-out 30-yard sprint. Rest 60 seconds between sprints. Record time on final sprint.',
- cue:'"Pump your arms. Your legs will follow your arms."',
- why:'Good running form helps on the bases and in the field. Timing your final sprint lets you see progress.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'30-yard lane. (1) A-skip: high knee, exaggerated skip, 30 yards. (2) B-skip: A-skip plus extend and claw the foot down. (3) Sprint at 70%: 30 yards. (4) Sprint at 90%: 30 yards. (5) All-out sprint: 30 yards. Rest 60 seconds between sprints. Record your time on the final all-out sprint.',
- watchFor:'Swinging arms across the body. Arms drive forward and back, not sideways.',
- progressions:'Light partner-band resistance for 10-yard starts (older players only).',
- regression:'Just A-skips and then one full-speed sprint.'
-},
 
-{id:'sl-hip-hinge',name:'Hip Hinge and Athletic Ready Drill',category:'warmup',solo:true,
- soloCategory:'bodycontrol',soloEquip:'None',
- ageMin:6,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:5,minPlayers:1,equipment:'None',
- setup:'Stand with feet shoulder-width. No equipment.',
- execution:'Hip hinge: push hips back (not bend knees), keep back flat, hands reach toward the ground. Feel hamstring stretch. Stand back up explosively. 15 reps. Then: athletic ready position. Knees bent, hips back, weight on balls of feet, hands ready. Hold 10 seconds. Repeat 3 times.',
- cue:'"Hips back, not knees down. Baseball is played hips back."',
- why:'The hip hinge is the base of the ready position for fielding and hitting. Practicing it on its own makes it easier to find in the game.',
- principle:'athletic-development',practiceSlot:'warmup',
- sport:'both',
- execution:'Stand feet shoulder-width. Push hips backward. NOT bending the knees first. Keep back flat. Hands slide down the thighs. Feel the hamstring stretch. Stand back up by driving hips forward. 15 reps slow. Then: hold the hinge for 3 seconds at the bottom. Then stand in athletic ready position. Same hinge but with knees slightly bent. Hold 10 seconds. 3 times.',
- watchFor:'Bending the knees first instead of hinging at the hip.',
- progressions:'Add a dowel rod along the spine to feel if the back is staying flat.',
- regression:'Stand in front of a wall so the hips push back into it as a reference.'
-},
 
 // ── SOLO PITCHING (3 new) ─────────────────────────────────────────
 
-{id:'sl-wrist-snap',name:'Solo Comebacker Drill',category:'pitching',solo:true,
+{id:'sl-wrist-snap',name:'Solo Comebacker Drill',category:'fielding',solo:true,
  soloCategory:'pitching',soloEquip:'Tennis ball, glove, wall, tape',
  ageMin:8,ageMax:18,skillLevels:['first-year','developing','experienced'],
  duration:7,minPlayers:1,equipment:'Tennis ball, glove, wall',
@@ -2496,37 +1944,7 @@ var DRILLS = [
  regression:'Softer throws and stand farther back for slower rebounds.'
 },
 
-{id:'sl-mound-visualization',name:'Mound Visualization Routine',category:'pitching',solo:true,
- soloCategory:'pitching',soloEquip:'Mound or mound-like surface, ball',
- ageMin:9,ageMax:18,skillLevels:['developing','experienced'],
- duration:5,minPlayers:1,equipment:'Mound access',
- setup:'Stand on the mound alone, ball in hand. No catcher needed.',
- execution:'Go through 10 dry run-throughs of your routine with NO ball. See the catcher\'s target. Picture the pitch hitting it. Then throw a few real pitches only if your pitch count allows.',
- cue:'"See it perfectly. Then throw it."',
- why:'Picturing the target from the spot where you will pitch can help some players feel ready. Imagery has some research support, mostly in older athletes. Keep it short.',
- principle:'sport-psych',practiceSlot:'acquisition',
- sport:'baseball',
- execution:'Stand on the mound alone. 10 dry run-throughs of your routine with no ball. Before each: see the catcher\'s glove clearly. Picture the pitch hitting that spot. After 10: throw a few real pitches if your pitch count allows, and count them.',
- watchFor:'Rushing through visualization. Not seeing a specific target. Be precise.',
- progressions:'Visualize the most pressured game moment you have faced.',
- regression:'Just 5 visualizations. See the target only.'
-},
 
-{id:'sl-release-point',name:'Miss Pattern Chart',category:'pitching',solo:true,
- soloCategory:'pitching',soloEquip:'Baseball, tape target on wall',
- ageMin:10,ageMax:18,skillLevels:['developing','experienced'],
- duration:10,minPlayers:1,equipment:'Baseball, tape target on wall or net',
- setup:'Mark a 12-inch tape target on a wall or net at strike zone height. Throw from a comfortable distance (30-40 feet).',
- execution:'15 throws at comfortable effort. Only track WHERE the ball hits relative to the target: left, right, high, low, or on target. Look for a pattern and share it with your coach.',
- cue:'"Same target, same effort. Just notice where the misses go."',
- why:'Knowing where your misses tend to go makes practice more specific. We track the result, not the delivery. If there is a pattern, a qualified pitching coach can help.',
- principle:'external-focus',practiceSlot:'variable',
- sport:'baseball',
- execution:'Mark a tape target at strike zone height. Throw 15 pitches at comfortable effort from 30-40 feet. After each: mark left, right, high, low, or on target on a scorecard. After 15: look for a pattern and pick the part of the target to aim at next time. Count these toward your daily pitch total.',
- watchFor:'Overthrowing to try to hit the target. Any arm pain: stop.',
- progressions:'Smaller target. Chart across several sessions.',
- regression:'Closer (20-25 feet). Bigger target.'
-},
 
 // ── SOLO MENTAL (3 new) ───────────────────────────────────────────
 
@@ -2562,50 +1980,11 @@ var DRILLS = [
  regression:'Just one thought and one reframe. Start simple.'
 },
 
-{id:'sl-focus-grid',name:'Focus Grid Training',category:'mental',solo:true,
- soloCategory:'mental',soloEquip:'Printed focus grid (10x10 number grid) or phone app',
- ageMin:10,ageMax:18,skillLevels:['developing','experienced'],
- duration:5,minPlayers:1,equipment:'Focus grid (print or app)',
- setup:'Find or print a 10x10 grid of random numbers 00-99. Set a 1-minute timer.',
- execution:'Find and cross out numbers 00, 01, 02... in sequence as fast as possible in 1 minute. Count how many you find. Record your score. Practice 3 times per week. Track your scores over 3 weeks.',
- cue:'"Stay in the grid. Every time your mind wanders, your count drops."',
- why:'A classic concentration challenge from sport psychology. Evidence that it improves focus in games is weak, so treat it as a fun challenge and a way to practice refocusing.',
- principle:'sport-psych',practiceSlot:'closing',
- sport:'both',
- execution:'Print a 10x10 grid of random numbers 00-99 or use a focus grid app. Set a 1-minute timer. Find and cross out 00, 01, 02... in sequence as fast as possible. Count how many you find. Record your score. Practice 3 times per week. Track improvement over 3 weeks. Every time your mind wanders: your count drops. This is the immediate feedback.',
- watchFor:'Jumping to higher numbers. Must go in sequence.',
- progressions:'2-minute sessions. Use a smaller number font.',
- regression:'30-second sessions. Larger numbers on the grid.'
-},
 
 
 
 // ══ SOFTBALL-SPECIFIC DRILLS ══════════════════════════════════════
 // sport:'softball': softball-specific distances or rules
-
-{id:'sf-windmill-balance',name:'Softball Pitcher Target Game',category:'pitching',sport:'softball',
- ageMin:9,ageMax:18,skillLevels:['first-year','developing','experienced'],
- duration:10,minPlayers:1,equipment:'Balls, catcher or net, tape target',
- setup:'Pitcher at the league pitching distance. Catcher or net with a strike zone target.',
- execution:'Pitcher calls a spot (in, out, up, down) before each pitch. Catcher holds the glove there. 15 pitches. Hit the spot = 2 points, strike but not the spot = 1 point. Beat your last score. Count every pitch.',
- cue:'"Call it, see it, hit it."',
- why:'A target and a score make command practice a game. We keep feedback on the target, not the windmill motion. Leave delivery coaching to a qualified pitching coach.',
- watchFor:'Throwing harder instead of hitting the spot. Any arm or shoulder pain: stop for the day.',
- progressions:'Smaller target zones. A batter stands in (no swing) for realism.',
- regression:'Shorter distance. Bigger target. Two zones only: in and out.',
- practiceSlot:'acquisition'},
-
-{id:'sf-rise-ball-target',name:'High-Zone Target Work',category:'pitching',sport:'softball',
- ageMin:11,ageMax:18,skillLevels:['developing','experienced'],
- duration:10,minPlayers:2,equipment:'Balls, catcher or net, tape target on net',
- setup:'Tape a target at the top of the strike zone on a net or strike zone board. Pitcher at regulation distance (35-43 feet depending on age).',
- execution:'Pitcher aims at the high target only, 15 pitches, using whatever pitch their pitching coach has taught. Mark hits vs. misses. Debrief: where did the misses go? Count every pitch.',
- cue:'"Pick the spot and hit it."',
- why:'Hitting the top of the zone on purpose is a useful skill. We keep this about the target; pitch-specific spin and release work belongs with a qualified pitching coach.',
- watchFor:'Pitches sailing over the target. Trying to throw harder instead of hitting the spot. Any arm pain: stop.',
- progressions:'Alternate high and low targets.',
- regression:'10 pitches at a bigger target.',
- practiceSlot:'variable'},
 
 {id:'sf-slap-hitting',name:'Slap Hitting Footwork',category:'hitting',sport:'softball',
  ageMin:10,ageMax:18,skillLevels:['developing','experienced'],
@@ -2617,18 +1996,6 @@ var DRILLS = [
  watchFor:'Stopping the footwork on contact. Back foot not fully crossing over before the slap.',
  progressions:'Live coach pitch. Add a first baseman to create real urgency.',
  regression:'Walk-speed footwork only. Build up to running speed over multiple sessions.',
- practiceSlot:'acquisition'},
-
-{id:'sf-drop-ball-drill',name:'Low-Zone Target Work',category:'pitching',sport:'softball',
- ageMin:11,ageMax:18,skillLevels:['developing','experienced'],
- duration:8,minPlayers:2,equipment:'Balls, catcher or net with low target',
- setup:'Tape a low target at the knees on a net. Pitcher at regulation distance.',
- execution:'15 pitches at the low target only. After each pitch the catcher says "on" or "miss." After 15: where did the misses go? Count every pitch.',
- cue:'"Knees. Hit the glove."',
- why:'Low pitches tend to produce ground balls. This keeps the focus on the target; pitch-specific release work belongs with a qualified pitching coach.',
- watchFor:'Pitches bouncing short. Aiming so hard the pitcher gets tense. Any arm pain: stop.',
- progressions:'Alternate low and high targets. A hitter stands in the box (no swing).',
- regression:'Bigger target, shorter distance.',
  practiceSlot:'acquisition'},
 
 {id:'sf-outfield-distance',name:'Softball Outfield Distances',category:'fielding',sport:'softball',
@@ -2643,7 +2010,7 @@ var DRILLS = [
  regression:'Short-distance throws only. Build outward.',
  practiceSlot:'variable'},
 
-{id:'sf-circle-change',name:'Pitcher-Catcher Signs Game',category:'pitching',sport:'softball',
+{id:'sf-circle-change',name:'Pitcher-Catcher Signs Game',category:'mental',sport:'softball',
  ageMin:10,ageMax:18,skillLevels:['developing','experienced'],
  duration:8,minPlayers:2,equipment:'Balls, catcher or net',
  setup:'Pitcher at the rubber or flat ground. Catcher at league distance.',
@@ -2800,19 +2167,7 @@ var DRILLS = [
 
 // ── PITCHING: PICKOFF AND FIELD COVERAGE ─────────────────────────
 
-{id:'pt-pickoff-first',name:'Pickoff Move to First',category:'pitching',sport:'baseball',
- ageMin:11,ageMax:18,skillLevels:['developing','experienced'],
- duration:12,minPlayers:3,equipment:'Ball, first baseman, runner at first',
- setup:'Pitcher at the rubber. First baseman at the bag. Runner taking a lead at first. Use only where leads and pickoffs are allowed (not Little League 12U and younger).',
- execution:'Pitcher works from the stretch. Mix in pickoff attempts. Right-hander has two legal options: (1) step off the rubber with the pivot foot first, then throw; or (2) spin move: step toward first base with the free foot and spin to throw. Both are legal. Left-hander can make a legal pickoff move directly from the set position. Run 10 total: 6 pitches to the plate, 4 pickoff attempts (randomized so the runner can\'t predict). After each pickoff: debrief the runner. "Did you get back? What did you see?"',
- cue:'"Righties: step off the rubber first, or step directly toward first. Learn the step-off first."',
- why:'A legal, consistent pickoff move keeps runners honest and helps pitchers avoid balks. Learning the legal footwork is the main goal.',
- watchFor:'Right-handed pitcher throwing to first without a legal step toward the base or stepping off first. Balk. Remind: must either step off the rubber first, or execute a legal spin step toward the base. Not varying timing between pitches and pickoffs.',
- progressions:'Runner attempts to steal. Pitcher must decide pitch or pickoff in real time.',
- regression:'Walk through the step-off footwork 20 times without a throw. Ingrain the footwork before adding the throw.',
- practiceSlot:'acquisition'},
-
-{id:'pt-pickoff-second',name:'Pickoff Play to Second',category:'pitching',sport:'baseball',
+{id:'pt-pickoff-second',name:'Pickoff Play to Second',category:'small-sided',sport:'baseball',
  ageMin:12,ageMax:18,skillLevels:['experienced'],
  duration:12,minPlayers:4,equipment:'Full battery, shortstop and second baseman, runner at second',
  setup:'Runner at second. Pitcher at the rubber. Shortstop and second baseman at their positions. Pre-game signal established: who is covering on the daylight play.',
@@ -2825,46 +2180,6 @@ var DRILLS = [
  practiceSlot:'variable'},
 
 // ── CONDITIONING / BASERUNNING SPRINTS ────────────────────────────
-
-{id:'br-baserunning-sprints',name:'Baserunning Sprint Circuit',category:'baserunning',sport:'both',
- ageMin:11,ageMax:18,skillLevels:['developing','experienced'],
- duration:12,minPlayers:2,equipment:'Full base set, stopwatch',
- setup:'Full base set at regulation distances. Players in batting stance at home plate. Two groups race.',
- execution:'Rep 1: Sprint home to first. Timed. Rep 2: Sprint home to second. Round first correctly. Rep 3: Sprint home to third. Round both bases correctly. Rep 4: Inside-the-park home run. All four bases, correct arc on every bag. Rest 90 seconds between each rep. Track times. Post them. Compete to beat your personal best each week.',
- cue:'"Attack every base. Never glide."',
- why:'Timed runs give players a number to beat and a reason to round bases correctly. Tracking personal bests keeps it about their own progress.',
- watchFor:'Sloppy rounding on the second and third rep. Players jogging back after each rep. Walk back to stay ready.',
- progressions:'Compare times running a straight line vs. a good arc.',
- regression:'One base only. Walk the correct arc path before sprinting.',
- practiceSlot:'acquisition'},
-
-{id:'br-down-and-back',name:'Down and Back Baserunning',category:'baserunning',sport:'both',
- ageMin:11,ageMax:18,skillLevels:['developing','experienced'],
- duration:10,minPlayers:4,equipment:'Bases or cones at regulation distance',
- setup:'Bases at regulation distance. Players at home. Two lines run simultaneously.',
- execution:'On "go": sprint to first and back (touching the bag each time). Then sprint to second and back. Then to third and back. Then full circuit. Home to first to second to third to home. No resting between distances. Straight through. First player to complete all four distances wins. Run 3 full competitions.',
- cue:'"Touch the bag every time. A missed bag is a missed out."',
- why:'A classic start-and-stop running game. Short sprints with changes of direction look a lot like how baseball players actually run.',
- watchFor:'Missing bases during competition. Players half-sprinting. Enforce full effort.',
- progressions:'Winner picks the next warm-up game.',
- regression:'One distance only: home to first and back. Build from there.',
- practiceSlot:'warmup'},
-
-// ── PREGAME ROUTINE ───────────────────────────────────────────────
-
-{id:'fd-pregame-routine',name:'Full Pregame Routine',category:'fielding',sport:'both',
- ageMin:11,ageMax:18,skillLevels:['developing','experienced'],
- duration:15,minPlayers:9,equipment:'Full infield and outfield, fungo, balls',
- setup:'Full field. Two fungos. One for infield, one for outfield. Coach hits. Standard pre-game sequence.',
- execution:'One standard sequence (about 12 minutes; adapt to your league\'s available time): (1) Outfield fly balls and throws to third. 2 minutes. (2) Outfield throws to second. 1 minute. (3) Outfield throws to cutoff home. 1 minute. (4) Infield grounders to each position, throw to first. 2 minutes. (5) Around the horn. 1 minute each direction. (6) Infield double play feeds. 2 minutes. (7) Final around the horn, catcher returns to pitcher. 1 minute. Run this until the team can complete it under 12 minutes without errors.',
- cue:'"Pre-game is not warm-up. It\'s a statement. Own it."',
- why:'A clean pregame routine gets everyone moving and focused before the first pitch. When kids know it well, it runs itself.',
- watchFor:'Slow transitions between segments. Enforce urgency. Cutoff man not setting up correctly.',
- progressions:'Time the full routine and challenge the team to complete it faster without errors.',
- regression:'Run one segment at a time until each is clean before combining into the full sequence.',
- practiceSlot:'variable'},
-
-// ── SIGN READING ──────────────────────────────────────────────────
 
 {id:'mn-sign-reading',name:'Sign Reading and Execution',category:'mental',sport:'both',
  ageMin:12,ageMax:18,skillLevels:['developing','experienced'],
@@ -2907,7 +2222,7 @@ var DRILLS = [
  practiceSlot:'acquisition'},
 
 {id:'fd-catcher-framing',name:'Catcher Framing and Receiving',category:'fielding',sport:'baseball',
- ageMin:12,ageMax:18,skillLevels:['developing','experienced'],
+ ageMin:13,ageMax:18,skillLevels:['developing','experienced'],
  duration:10,minPlayers:2,equipment:'Full catcher gear, balls, pitcher or pitching machine',
  setup:'Catcher in full gear behind home plate. Pitcher at regulation distance or pitching machine set to consistent location.',
  execution:'Three receiving focuses. 5 pitches each: (1) Framing the edge pitch. Glove moves to present the pitch: inward for outside-corner pitches, upward for low pitches, hold steady for pitches in the heart. The direction is location-specific, not one universal movement. (2) Blocking. Glove fills the five-hole, body drops on dirt balls. (3) Pop time. Receive, transfer, throw to second. Time the pop time and try to beat your own best. Total: 15 pitches. Catcher calls each pitch a ball or strike as they receive it.',
