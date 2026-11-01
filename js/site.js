@@ -231,7 +231,7 @@ var DL_SECTION = (function () {
     '.acct-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0.9rem 0 0.2rem;margin-top:0.4rem;border-top:1px solid var(--rule)}' +
     '.acct-row small{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint)}' +
     '.acct-row b{display:block;color:var(--ink);font-family:var(--sans);font-size:0.95rem;margin-top:2px}' +
-    '.acct-btn{font:inherit;font-weight:700;font-size:0.9rem;border-radius:999px;padding:0.55rem 1.1rem;cursor:pointer;border:1px solid var(--gold);background:var(--gold);color:#0F1F18}' +
+    '.acct-btn{font:inherit;font-weight:700;font-size:0.9rem;border-radius:999px;padding:0.55rem 1.1rem;cursor:pointer;border:1px solid var(--gold);background:var(--fill);color:var(--on-fill)}' +
     '.acct-btn.ghost{background:none;color:var(--ink-soft);border-color:var(--rule)}' +
     '.nav-acct{font:inherit;font-size:0.85rem;font-weight:600;color:var(--ink-soft);background:none;border:1px solid var(--rule);border-radius:999px;padding:0.35rem 0.9rem;margin-left:0.5rem;cursor:pointer}' +
     '.acct-bg{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.6);display:flex;align-items:flex-end;justify-content:center}' +
@@ -240,7 +240,7 @@ var DL_SECTION = (function () {
     '.acct-sh p{color:var(--ink-soft);font-size:0.9rem;line-height:1.5}' +
     '.acct-sh input[type=email],.acct-sh input[type=text]{width:100%;margin-top:12px;padding:13px;border-radius:12px;border:1.5px solid var(--rule);background:var(--forest-deep);color:var(--ink);font:inherit;font-size:1rem;box-sizing:border-box}' +
     '.acct-sh label{display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:0.85rem;color:var(--ink-soft)}' +
-    '.acct-sh .go{width:100%;margin-top:16px;padding:15px;border-radius:12px;border:0;background:var(--gold);color:#0F1F18;font:inherit;font-weight:700;font-size:1rem;cursor:pointer}' +
+    '.acct-sh .go{width:100%;margin-top:16px;padding:15px;border-radius:12px;border:0;background:var(--fill);color:var(--on-fill);font:inherit;font-weight:700;font-size:1rem;cursor:pointer}' +
     '.acct-sh .err{color:var(--gold-light);font-size:0.85rem;margin-top:8px;min-height:1em}' +
     '.acct-sh .x{background:none;border:0;color:var(--ink-faint);font:inherit;text-decoration:underline;margin-top:12px;width:100%;cursor:pointer}';
   document.head.appendChild(css);

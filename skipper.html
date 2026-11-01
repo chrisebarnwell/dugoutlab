@@ -2,9 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Skipper: Manage a Game With the Numbers | DugoutLab</title>
 <meta name="description" content="Manage a full baseball or softball game. Every batted ball is decided by real physics, every decision is scored by run expectancy math, and you can ask the numbers before you call the play.">
+<!-- dl:head -->
+<link rel="canonical" href="https://dugoutlab.com/skipper">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DugoutLab">
+<meta property="og:title" content="Skipper: Manage a Game With the Numbers">
+<meta property="og:description" content="Manage a full baseball or softball game. Every batted ball is decided by real physics, every decision is scored by run expectancy math, and you can ask the numbers before you call the play.">
+<meta property="og:url" content="https://dugoutlab.com/skipper">
+<meta property="og:image" content="https://dugoutlab.com/assets/brand/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0F1F18">
+<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -16,8 +30,8 @@
   .sk-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--gold); margin-bottom: 0.4rem; }
   .sk-hint { font-size: 0.82rem; color: var(--ink-faint); line-height: 1.45; }
   .sk-sel { width: 100%; background: var(--forest-deep); color: var(--ink); border: 1px solid var(--rule); border-radius: 9px; padding: 0.65rem 0.75rem; font: inherit; font-size: 16px; margin-top: 0.3rem; }
-  .sk-btn { background: var(--gold); color: var(--forest); border: none; border-radius: 12px; padding: 0.9rem 1rem; font-size: 1.05rem; font-weight: 700; width: 100%; cursor: pointer; }
-  .sk-btn:hover { background: var(--gold-light); }
+  .sk-btn { background: var(--fill); color: var(--on-fill); border: none; border-radius: 12px; padding: 0.9rem 1rem; font-size: 1.05rem; font-weight: 700; width: 100%; cursor: pointer; }
+  .sk-btn:hover { background: var(--fill-hover); }
   .sk-btn:disabled { background: var(--forest-deep); color: var(--ink-faint); border: 1.5px dashed var(--rule); cursor: not-allowed; }
   .sk-btn2 { background: var(--forest-deep); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 10px; padding: 0.65rem 0.8rem; font: inherit; font-size: 0.92rem; font-weight: 600; cursor: pointer; width: 100%; }
   .sk-btn2:hover { border-color: var(--gold); }
@@ -26,7 +40,7 @@
   .sk-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
   .sk-pick button { background: var(--forest-deep); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 9px; padding: 0.6rem 0.4rem; font: inherit; font-size: 0.9rem; font-weight: 600; text-align: left; cursor: pointer; }
   .sk-pick button small { display: block; font-weight: 400; font-size: 0.74rem; color: var(--ink-faint); margin-top: 0.1rem; }
-  .sk-pick button.on { background: var(--gold); border-color: var(--gold); color: var(--forest); }
+  .sk-pick button.on { background: var(--fill); border-color: var(--gold); color: var(--forest); }
   .sk-pick button.on small { color: rgba(10,22,16,0.7); }
   .sk-pick button:disabled { opacity: 0.4; cursor: not-allowed; }
   .sk-tog { display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; font-weight: 600; padding: 0.45rem 0; }
@@ -61,11 +75,11 @@
   .sk-bars { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-top: 0.35rem; }
   .sk-bar { font-size: 0.68rem; color: var(--ink-faint); min-width: 44px; }
   .sk-bar i { display: block; height: 5px; background: var(--rule); border-radius: 3px; margin-top: 2px; overflow: hidden; }
-  .sk-bar i b { display: block; height: 100%; background: var(--gold); }
+  .sk-bar i b { display: block; height: 100%; background: var(--fill); }
   .sk-bar.lo i b { background: #b86b4b; } .sk-bar.hi i b { background: #7ad6a8; }
   .sk-gas { height: 8px; background: var(--rule); border-radius: 4px; overflow: hidden; margin-top: 0.35rem; }
   .sk-gas b { display: block; height: 100%; background: #7ad6a8; }
-  .sk-gas.warn b { background: var(--gold); } .sk-gas.bad b { background: #b86b4b; }
+  .sk-gas.warn b { background: var(--fill); } .sk-gas.bad b { background: #b86b4b; }
 
   .sk-res { font-family: var(--serif); font-size: 1.6rem; font-weight: 600; line-height: 1.1; letter-spacing: -0.015em; }
   .sk-res.hit { color: var(--gold-light); } .sk-res.hr { color: var(--gold); font-style: italic; } .sk-res.bad { color: #e0a090; }
@@ -76,7 +90,7 @@
   .sk-chip.up { border-color: #7ad6a8; color: #7ad6a8; } .sk-chip.dn { border-color: #b86b4b; color: #e0a090; }
   .sk-why { list-style: none; margin: 0.5rem 0 0; padding: 0; }
   .sk-why li { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.45; padding: 0.35rem 0 0.35rem 1rem; border-top: 1px solid var(--rule); position: relative; }
-  .sk-why li::before { content: ""; position: absolute; left: 0; top: 0.85rem; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+  .sk-why li::before { content: ""; position: absolute; left: 0; top: 0.85rem; width: 6px; height: 6px; border-radius: 50%; background: var(--fill); }
   .sk-why li b { color: var(--ink); }
 
   .sk-field { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
@@ -100,7 +114,7 @@
   .sk-re th, .sk-re td { padding: 0.28rem 0.3rem; text-align: center; border-bottom: 1px solid var(--rule); }
   .sk-re th { color: var(--ink-faint); font-weight: 500; }
   .sk-re td:first-child { text-align: left; color: var(--ink-soft); }
-  .sk-re td.now { background: var(--gold); color: var(--forest); font-weight: 500; border-radius: 4px; }
+  .sk-re td.now { background: var(--fill); color: var(--on-fill); font-weight: 500; border-radius: 4px; }
 
   .sk-report { display: grid; gap: 0.5rem; }
   .sk-big { font-family: var(--serif); font-size: 2rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; }
@@ -162,7 +176,7 @@
   .sk-pgrid td button { width: 100%; min-height: 52px; background: var(--forest-deep); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 9px; font-family: var(--mono); padding: 0.3rem 0.2rem; cursor: pointer; }
   .sk-pgrid td button b { display: block; font-size: 1.05rem; font-weight: 500; }
   .sk-pgrid td button small { display: block; font-size: 0.66rem; color: var(--ink-faint); }
-  .sk-pgrid td button.on { background: var(--gold); border-color: var(--gold); color: var(--forest); }
+  .sk-pgrid td button.on { background: var(--fill); border-color: var(--gold); color: var(--forest); }
   .sk-pgrid td button.on small { color: rgba(10,22,16,0.75); }
   .sk-odds { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 9px; padding: 0.6rem 0.7rem; margin-bottom: 0.2rem; }
   .sk-odds-h { font-weight: 700; margin-bottom: 0.4rem; }
@@ -190,22 +204,25 @@
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
     <ul class="nav-links">
-    <li><a href="ages.html">My Age Group</a></li>
-    <li><a href="tools.html">Tools</a></li>
+    <li><a href="practice.html">Practice</a></li>
+    <li><a href="game-day.html">Game Day</a></li>
     <li><a href="training.html">Train</a></li>
-    <li><a href="articles.html">Field Notes</a></li>
-    <li><a href="how-kids-learn.html">Why It Works</a></li>
+    <li><a href="articles.html">Learn</a></li>
+    <li><a href="parents.html" class="nav-aside">Parents</a></li>
   </ul>
   <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
 <div class="mobile-menu" id="mobile-menu">
-  <a href="ages.html">My Age Group</a>
-  <a href="tools.html">Tools</a>
+  <a href="practice.html">Practice</a>
+  <a href="game-day.html">Game Day</a>
   <a href="training.html">Train</a>
-  <a href="articles.html">Field Notes</a>
-  <a href="how-kids-learn.html">Why It Works</a>
+  <a href="articles.html">Learn</a>
+  <a href="parents.html">Parents</a>
+  <a href="tools.html" class="mm-small">All tools</a>
+  <a href="ages.html" class="mm-small">By age</a>
+  <a href="about.html" class="mm-small">About</a>
 </div>
 
 <section class="page-hero" style="padding:2.5rem 1.25rem 1.75rem">
@@ -368,32 +385,52 @@ Loaded       2.29    1.54    0.75</pre></li>
   <div class="footer-inner">
     <div class="footer-brand">
       <div class="logo">Dugout<span>Lab</span></div>
-      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+      <p>Better practices. Happier ballplayers. Less guesswork. Free tools and honest, evidence-checked coaching for volunteer coaches and parents.</p>
+      <div class="theme-switch" role="group" aria-label="Page style">
+        <span>Page style</span>
+        <button type="button" data-theme-set="auto">Auto</button><button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
+      </div>
     </div>
     <div class="footer-links">
-      <h4>Tools</h4>
+      <h4>Practice</h4>
       <ul>
         <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="games.html">Games Library</a></li>
         <li><a href="framework.html">Practice Framework</a></li>
-        <li><a href="lineup.html">Lineup Builder</a></li>
-        <li><a href="athlete.html">Athlete Plan</a></li>
-        <li><a href="training.html">Train</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
       </ul>
     </div>
     <div class="footer-links">
-      <h4>Learn</h4>
+      <h4>Game Day</h4>
       <ul>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="pods.html">Pod Rotation</a></li>
+        <li><a href="pitch-tracker.html">Pitch Tracker</a></li>
+        <li><a href="pocket-card.html">Back Pocket Card</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Train and Learn</h4>
+      <ul>
+        <li><a href="training.html">Train</a></li>
         <li><a href="articles.html">Field Notes</a></li>
-        <li><a href="stages.html">The 4 Stages</a></li>
-        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="parents.html">For parents</a></li>
+        <li><a href="how-kids-learn.html">How kids learn</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>DugoutLab</h4>
+      <ul>
+        <li><a href="tools.html">All tools</a></li>
+        <li><a href="ages.html">By age</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="privacy.html">Privacy</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
-    <span>dugoutlab.com</span>
+    <span>&copy; 2026 DugoutLab. Built for volunteer coaches.</span>
+    <span>Your job is to make them want to come back tomorrow.</span>
   </div>
 </footer>
 

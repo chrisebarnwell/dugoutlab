@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" role="img" aria-label="DugoutLab">
+  <rect width="520" height="120" fill="#F7F3E9"/>
+  <g transform="translate(10 10)"><path fill="#0F1F18" fill-rule="evenodd" d="M16.5 19H54c19 0 30.5 12 30.5 30S73 79 50 79H16.2v-4c5.3 0 8.4-2.5 8.4-7V30.5c0-4.5-3.1-6.5-8.1-6.8z M37.4 34.7h28.8v19.5L51.6 66.8 37.4 54.2z"/></g>
+  <text x="112" y="78" font-family="'Playfair Display', Georgia, serif" font-size="56" font-weight="700" fill="#0F1F18" letter-spacing="-0.5">Dugout<tspan fill="#8a5a12" font-style="italic" font-weight="600">Lab</tspan></text>
+</svg>

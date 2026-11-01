@@ -2,9 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Practice in a Pinch | DugoutLab</title>
 <meta name="description" content="Three taps and you have tonight's youth baseball or softball practice: how long, which sport, what age. Games first, one focused fix, a closer they will talk about in the car.">
+<!-- dl:head -->
+<link rel="canonical" href="https://dugoutlab.com/practice">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DugoutLab">
+<meta property="og:title" content="Practice in a Pinch">
+<meta property="og:description" content="Three taps and you have tonight&#x27;s youth baseball or softball practice: how long, which sport, what age. Games first, one focused fix, a closer they will talk about in the car.">
+<meta property="og:url" content="https://dugoutlab.com/practice">
+<meta property="og:image" content="https://dugoutlab.com/assets/brand/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0F1F18">
+<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -19,7 +33,7 @@
   .pp-opts { display: flex; flex-wrap: wrap; gap: 0.45rem; }
   .pp-opt { min-height: 44px; padding: 0.5rem 1rem; border: 1.5px solid var(--rule); border-radius: 10px; background: transparent; color: var(--ink-soft); font: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
   .pp-opt:hover { border-color: var(--gold); color: var(--gold-light); }
-  .pp-opt.active { background: var(--gold); color: var(--forest); border-color: var(--gold); }
+  .pp-opt.active { background: var(--fill); color: var(--on-fill); border-color: var(--gold); }
   .pp-build { margin-top: 1rem; }
   .pp-out { margin-top: 1.5rem; }
   .pp-out-h { display: flex; justify-content: space-between; align-items: flex-end; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
@@ -58,27 +72,30 @@
   }
 </style>
 </head>
-<body>
+<body class="paper">
 
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
     <ul class="nav-links">
-    <li><a href="ages.html">My Age Group</a></li>
-    <li><a href="tools.html">Tools</a></li>
+    <li><a href="practice.html">Practice</a></li>
+    <li><a href="game-day.html">Game Day</a></li>
     <li><a href="training.html">Train</a></li>
-    <li><a href="articles.html">Field Notes</a></li>
-    <li><a href="how-kids-learn.html">Why It Works</a></li>
+    <li><a href="articles.html">Learn</a></li>
+    <li><a href="parents.html" class="nav-aside">Parents</a></li>
   </ul>
   <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
 <div class="mobile-menu" id="mobile-menu">
-  <a href="ages.html">My Age Group</a>
-  <a href="tools.html">Tools</a>
+  <a href="practice.html">Practice</a>
+  <a href="game-day.html">Game Day</a>
   <a href="training.html">Train</a>
-  <a href="articles.html">Field Notes</a>
-  <a href="how-kids-learn.html">Why It Works</a>
+  <a href="articles.html">Learn</a>
+  <a href="parents.html">Parents</a>
+  <a href="tools.html" class="mm-small">All tools</a>
+  <a href="ages.html" class="mm-small">By age</a>
+  <a href="about.html" class="mm-small">About</a>
 </div>
 
 <div class="page-hero pp-hero">
@@ -142,32 +159,52 @@
   <div class="footer-inner">
     <div class="footer-brand">
       <div class="logo">Dugout<span>Lab</span></div>
-      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+      <p>Better practices. Happier ballplayers. Less guesswork. Free tools and honest, evidence-checked coaching for volunteer coaches and parents.</p>
+      <div class="theme-switch" role="group" aria-label="Page style">
+        <span>Page style</span>
+        <button type="button" data-theme-set="auto">Auto</button><button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
+      </div>
     </div>
     <div class="footer-links">
-      <h4>Tools</h4>
+      <h4>Practice</h4>
       <ul>
         <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="games.html">Games Library</a></li>
         <li><a href="framework.html">Practice Framework</a></li>
-        <li><a href="lineup.html">Lineup Builder</a></li>
-        <li><a href="athlete.html">Athlete Plan</a></li>
-        <li><a href="training.html">Train</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
       </ul>
     </div>
     <div class="footer-links">
-      <h4>Learn</h4>
+      <h4>Game Day</h4>
       <ul>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="pods.html">Pod Rotation</a></li>
+        <li><a href="pitch-tracker.html">Pitch Tracker</a></li>
+        <li><a href="pocket-card.html">Back Pocket Card</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Train and Learn</h4>
+      <ul>
+        <li><a href="training.html">Train</a></li>
         <li><a href="articles.html">Field Notes</a></li>
-        <li><a href="stages.html">The 4 Stages</a></li>
-        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="parents.html">For parents</a></li>
+        <li><a href="how-kids-learn.html">How kids learn</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>DugoutLab</h4>
+      <ul>
+        <li><a href="tools.html">All tools</a></li>
+        <li><a href="ages.html">By age</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="privacy.html">Privacy</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
-    <span>dugoutlab.com</span>
+    <span>&copy; 2026 DugoutLab. Built for volunteer coaches.</span>
+    <span>Your job is to make them want to come back tomorrow.</span>
   </div>
 </footer>
 

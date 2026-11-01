@@ -14,49 +14,79 @@ FOOTER = '''<footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand">
       <div class="logo">Dugout<span>Lab</span></div>
-      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+      <p>Better practices. Happier ballplayers. Less guesswork. Free tools and honest, evidence-checked coaching for volunteer coaches and parents.</p>
+      <div class="theme-switch" role="group" aria-label="Page style">
+        <span>Page style</span>
+        <button type="button" data-theme-set="auto">Auto</button><button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
+      </div>
     </div>
     <div class="footer-links">
-      <h4>Tools</h4>
+      <h4>Practice</h4>
       <ul>
         <li><a href="{p}practice.html">Practice in a Pinch</a></li>
+        <li><a href="{p}games.html">Games Library</a></li>
         <li><a href="{p}framework.html">Practice Framework</a></li>
-        <li><a href="{p}lineup.html">Lineup Builder</a></li>
-        <li><a href="{p}athlete.html">Athlete Plan</a></li>
-        <li><a href="{p}training.html">Train</a></li>
+        <li><a href="{p}progression.html">Season Plan</a></li>
       </ul>
     </div>
     <div class="footer-links">
-      <h4>Learn</h4>
+      <h4>Game Day</h4>
       <ul>
+        <li><a href="{p}lineup.html">Lineup Builder</a></li>
+        <li><a href="{p}pods.html">Pod Rotation</a></li>
+        <li><a href="{p}pitch-tracker.html">Pitch Tracker</a></li>
+        <li><a href="{p}pocket-card.html">Back Pocket Card</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Train and Learn</h4>
+      <ul>
+        <li><a href="{p}training.html">Train</a></li>
         <li><a href="{p}articles.html">Field Notes</a></li>
-        <li><a href="{p}stages.html">The 4 Stages</a></li>
-        <li><a href="{p}progression.html">Season Plan</a></li>
+        <li><a href="{p}parents.html">For parents</a></li>
+        <li><a href="{p}how-kids-learn.html">How kids learn</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>DugoutLab</h4>
+      <ul>
+        <li><a href="{p}tools.html">All tools</a></li>
+        <li><a href="{p}ages.html">By age</a></li>
         <li><a href="{p}about.html">About</a></li>
         <li><a href="{p}privacy.html">Privacy</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
-    <span>dugoutlab.com</span>
+    <span>&copy; 2026 DugoutLab. Built for volunteer coaches.</span>
+    <span>Your job is to make them want to come back tomorrow.</span>
   </div>
 </footer>'''
 
-# One menu, top nav and hamburger alike. (href, label)
+# One menu, top nav and hamburger alike. (href, label). Organized by the coach's task.
 NAV = [
-    ('ages.html', 'My Age Group'),
-    ('tools.html', 'Tools'),
+    ('practice.html', 'Practice'),
+    ('game-day.html', 'Game Day'),
     ('training.html', 'Train'),
-    ('articles.html', 'Field Notes'),
-    ('how-kids-learn.html', 'Why It Works'),
+    ('articles.html', 'Learn'),
+    ('parents.html', 'Parents'),
+]
+# Hamburger only: the rest, one tap away on a phone
+MOBILE_EXTRA = [
+    ('tools.html', 'All tools'),
+    ('ages.html', 'By age'),
+    ('about.html', 'About'),
 ]
 def nav_ul(p):
-    return '<ul class="nav-links">\n' + ''.join(f'    <li><a href="{p}{h}">{t}</a></li>\n' for h, t in NAV) + '  </ul>'
+    return '<ul class="nav-links">\n' + ''.join(f'    <li><a href="{p}{h}"' + (' class="nav-aside"' if h == 'parents.html' else '') + f'>{t}</a></li>\n' for h, t in NAV) + '  </ul>'
 def nav_mobile(p):
-    return '<div class="mobile-menu" id="mobile-menu">\n' + ''.join(f'  <a href="{p}{h}">{t}</a>\n' for h, t in NAV) + '</div>'
+    return ('<div class="mobile-menu" id="mobile-menu">\n' + ''.join(f'  <a href="{p}{h}">{t}</a>\n' for h, t in NAV)
+            + ''.join(f'  <a href="{p}{h}" class="mm-small">{t}</a>\n' for h, t in MOBILE_EXTRA) + '</div>')
 NAV_RE = re.compile(r'<ul class="nav-links">.*?</ul>', re.S)
 MOBILE_RE = re.compile(r'<div class="mobile-menu" id="mobile-menu">.*?</div>', re.S)
+
+# Long-form editorial pages outside articles/ that also carry a TL;DR
+TLDR_PAGES = ['how-kids-learn.html', 'coach-dad.html']
 
 # Pages that are redirect stubs or special: no inbound link needed
 NO_INBOUND_NEEDED = {'index.html', '404.html'}
@@ -79,6 +109,54 @@ BANNED = [
 EXEMPT = {'AI note outside about.html': {'about.html'}}
 FOOTER_RE = re.compile(r'<footer class="footer">.*?</footer>', re.S)
 
+# Shared <head> block: canonical URL, social cards, icons, the Page style switch, structured data.
+# Generated from each page's own <title> and description, so a new page only needs those two.
+SITE = 'https://dugoutlab.com'
+HEAD_RE = re.compile(r'\n?<!-- dl:head -->.*?<!-- /dl:head -->', re.S)
+def head_block(f, s):
+    import html as H, json
+    t = re.search(r'<title>(.*?)</title>', s, re.S)
+    d = re.search(r'<meta name="description" content="([^"]*)"', s)
+    title = H.unescape(t.group(1).strip()) if t else 'DugoutLab'
+    short = re.sub(r'\s*\|\s*DugoutLab\s*$', '', title)
+    desc = H.unescape(d.group(1)) if d else ''
+    path = '/' if f == 'index.html' else '/' + f[:-5]
+    url = SITE + path
+    art = f.startswith('articles/')
+    esc = lambda x: H.escape(x, quote=True)
+    out = ['<!-- dl:head -->',
+        f'<link rel="canonical" href="{url}">',
+        f'<meta property="og:type" content="{"article" if art else "website"}">',
+        '<meta property="og:site_name" content="DugoutLab">',
+        f'<meta property="og:title" content="{esc(short)}">',
+        f'<meta property="og:description" content="{esc(desc)}">',
+        f'<meta property="og:url" content="{url}">',
+        f'<meta property="og:image" content="{SITE}/assets/brand/og-default.png">',
+        '<meta name="twitter:card" content="summary_large_image">',
+        '<meta name="theme-color" content="#0F1F18">',
+        '<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">',
+        '<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">',
+        '<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>']
+    ld = None
+    if art:
+        ld = {'@context': 'https://schema.org', '@type': 'Article', 'headline': short, 'description': desc,
+              'url': url, 'image': SITE + '/assets/brand/og-default.png', 'inLanguage': 'en',
+              'publisher': {'@type': 'Organization', 'name': 'DugoutLab', 'url': SITE + '/',
+                            'logo': {'@type': 'ImageObject', 'url': SITE + '/assets/brand/apple-touch-icon.png'}}}
+    elif f == 'index.html':
+        ld = {'@context': 'https://schema.org', '@type': 'WebSite', 'name': 'DugoutLab', 'url': SITE + '/', 'description': desc,
+              'publisher': {'@type': 'Organization', 'name': 'DugoutLab', 'url': SITE + '/',
+                            'logo': {'@type': 'ImageObject', 'url': SITE + '/assets/brand/apple-touch-icon.png'}}}
+    if ld:
+        out.append('<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace('</', '<\\/') + '</script>')
+    out.append('<!-- /dl:head -->')
+    return '\n' + '\n'.join(out)
+def with_head(f, s):
+    s = HEAD_RE.sub('', s)
+    s = re.sub(r'\n?<meta name="theme-color"[^>]*>', '', s)
+    anchor = re.search(r'<meta name="description"[^>]*>', s) or re.search(r'</title>', s)
+    return s[:anchor.end()] + head_block(f, s) + s[anchor.end():]
+
 def main():
     fix = '--fix' in sys.argv
     problems = []
@@ -97,6 +175,20 @@ def main():
     for f in html:
         if not inbound[f] and f not in NO_INBOUND_NEEDED and f not in stubs:
             problems.append(f'{f}: orphan page, nothing links to it')
+    # Editorial standard: every Field Notes article opens with the shared TL;DR (docs/EDITORIAL.md)
+    for f in sorted(glob.glob('articles/*.html')) + TLDR_PAGES:
+        if f in stubs:
+            continue
+        s = open(f, encoding='utf-8').read()
+        if 'data-no-tldr' in s:
+            continue
+        m = re.search(r'<aside class="tldr"[^>]*>(.*?)</aside>', s, re.S)
+        if not m:
+            problems.append(f'{f}: missing TL;DR (<aside class="tldr">). See docs/EDITORIAL.md')
+            continue
+        n = len(re.findall(r'<li>', m.group(1)))
+        if not 2 <= n <= 4:
+            problems.append(f'{f}: TL;DR needs 2 to 4 bullet points, found {n}')
     idx = open('articles.html', encoding='utf-8').read()
     for f in glob.glob('articles/*.html'):
         if f not in stubs and f not in idx:
@@ -114,6 +206,15 @@ def main():
                         print(f'fixed {name}:', f)
                     else:
                         problems.append(f'{f}: {name} differs from the canonical menu (run --fix)')
+        if f.endswith('.html') and f not in stubs and f != '404.html' and '<title>' in s:
+            want_s = with_head(f, s)
+            if want_s != s:
+                if fix:
+                    s = want_s
+                    open(f, 'w', encoding='utf-8').write(s)
+                    print('fixed head:', f)
+                else:
+                    problems.append(f'{f}: shared <head> block missing or stale (run --fix)')
         if f.endswith('.html') and FOOTER_RE.search(s):
             want = FOOTER.format(p='../' if f.startswith('articles/') else '')
             if FOOTER_RE.search(s).group(0) != want:

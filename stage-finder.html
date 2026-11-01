@@ -2,9 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Stage Finder | DugoutLab</title>
 <meta name="description" content="Two quick questions. See what good, safe training looks like for a youth baseball or softball player at their stage, ages 6 to 18, and what to avoid.">
+<!-- dl:head -->
+<link rel="canonical" href="https://dugoutlab.com/stage-finder">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DugoutLab">
+<meta property="og:title" content="Stage Finder">
+<meta property="og:description" content="Two quick questions. See what good, safe training looks like for a youth baseball or softball player at their stage, ages 6 to 18, and what to avoid.">
+<meta property="og:url" content="https://dugoutlab.com/stage-finder">
+<meta property="og:image" content="https://dugoutlab.com/assets/brand/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0F1F18">
+<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@700&display=swap" rel="stylesheet">
@@ -34,7 +48,7 @@
   .tr-body p+p{margin-top:.8rem}
 
   .tr-card{background:var(--forest2);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1.75rem;position:relative;overflow:hidden;color:var(--ink)}
-  .tr-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold)}
+  .tr-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--fill)}
   .tr-card.quiet::before{background:var(--ink-faint)}
   .tr-card h3{font-family:var(--serif);font-size:1.5rem;font-weight:600;margin-bottom:.5rem;line-height:1.2}
   .tr-card p{color:var(--ink-soft);font-size:1rem}
@@ -57,7 +71,7 @@
   .tr-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.25rem}
   @media(max-width:820px){.tr-grid3{grid-template-columns:1fr}}
   .tr-rule{background:var(--forest2);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1.4rem;position:relative;overflow:hidden}
-  .tr-rule::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold)}
+  .tr-rule::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--fill)}
   .tr-rule .num{font-family:var(--serif);font-size:2rem;color:var(--gold);font-weight:700;line-height:1}
   .tr-rule h4{color:var(--ink);font-size:.95rem;margin:.4rem 0 .5rem;text-transform:uppercase;letter-spacing:.06em}
   .tr-rule p{color:var(--ink-soft);font-size:1rem}
@@ -92,8 +106,8 @@
   .blocklabel{color:var(--gold);font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:.3rem}
   .tr-list{list-style:none;margin:0;padding:0}
   .tr-list li{padding:5px 0 5px 18px;position:relative;font-size:1rem;color:var(--ink)}
-  .tr-list li::before{content:"";position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
-  .tr-list.avoid li::before{background:var(--gold-light);border-radius:0;transform:rotate(45deg)}
+  .tr-list li::before{content:"";position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:50%;background:var(--fill)}
+  .tr-list.avoid li::before{background:var(--fill-hover);border-radius:0;transform:rotate(45deg)}
   .tr-callout{background:rgba(200,134,46,0.10);border:1px solid var(--gold);border-radius:11px;padding:1.1rem 1.3rem;margin:1.25rem 0}
   .tr-callout .k{color:var(--gold);font-weight:700;font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.35rem}
   .tr-callout p{color:var(--ink);font-size:1rem}
@@ -110,7 +124,7 @@
   .src{list-style:none;margin:0;padding:0}
   .src li{padding:8px 0 8px 18px;position:relative;font-size:1rem;color:var(--ink-soft);line-height:1.5;border-top:1px solid var(--rule)}
   .src li:first-child{border-top:none}
-  .src li::before{content:"";position:absolute;left:0;top:17px;width:5px;height:5px;background:var(--gold);border-radius:50%}
+  .src li::before{content:"";position:absolute;left:0;top:17px;width:5px;height:5px;background:var(--fill);border-radius:50%}
   .src a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--rule)}
   .src a:hover{color:var(--gold-light);border-color:var(--gold-light);text-decoration:none}
   .src .what{display:block;color:var(--ink-soft);margin-top:2px}
@@ -128,7 +142,7 @@
   .opts{display:flex;gap:10px;flex-wrap:wrap}
   .opt{border:1.5px solid var(--rule);background:var(--forest3);color:var(--ink);border-radius:10px;padding:11px 16px;font:inherit;font-size:1rem;cursor:pointer;transition:.15s}
   .opt:hover{border-color:var(--gold)}
-  .opt.sel{background:var(--gold);color:var(--forest);border-color:var(--gold);font-weight:600}
+  .opt.sel{background:var(--fill);color:var(--on-fill);border-color:var(--gold);font-weight:600}
   .q .hint{color:var(--ink-faint);font-size:1rem;margin-top:.6rem}
   .result{margin-top:1.4rem;display:none}
   .result.show{display:block;animation:fade .3s ease}
@@ -150,22 +164,25 @@
 <nav class="nav">
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
   <ul class="nav-links">
-    <li><a href="ages.html">My Age Group</a></li>
-    <li><a href="tools.html">Tools</a></li>
+    <li><a href="practice.html">Practice</a></li>
+    <li><a href="game-day.html">Game Day</a></li>
     <li><a href="training.html">Train</a></li>
-    <li><a href="articles.html">Field Notes</a></li>
-    <li><a href="how-kids-learn.html">Why It Works</a></li>
+    <li><a href="articles.html">Learn</a></li>
+    <li><a href="parents.html" class="nav-aside">Parents</a></li>
   </ul>
   <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
 <div class="mobile-menu" id="mobile-menu">
-  <a href="ages.html">My Age Group</a>
-  <a href="tools.html">Tools</a>
+  <a href="practice.html">Practice</a>
+  <a href="game-day.html">Game Day</a>
   <a href="training.html">Train</a>
-  <a href="articles.html">Field Notes</a>
-  <a href="how-kids-learn.html">Why It Works</a>
+  <a href="articles.html">Learn</a>
+  <a href="parents.html">Parents</a>
+  <a href="tools.html" class="mm-small">All tools</a>
+  <a href="ages.html" class="mm-small">By age</a>
+  <a href="about.html" class="mm-small">About</a>
 </div>
 
 <div class="container">
@@ -205,32 +222,52 @@
   <div class="footer-inner">
     <div class="footer-brand">
       <div class="logo">Dugout<span>Lab</span></div>
-      <p>Honest, evidence-checked coaching for Little League and rec ball coaches.</p>
+      <p>Better practices. Happier ballplayers. Less guesswork. Free tools and honest, evidence-checked coaching for volunteer coaches and parents.</p>
+      <div class="theme-switch" role="group" aria-label="Page style">
+        <span>Page style</span>
+        <button type="button" data-theme-set="auto">Auto</button><button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
+      </div>
     </div>
     <div class="footer-links">
-      <h4>Tools</h4>
+      <h4>Practice</h4>
       <ul>
         <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="games.html">Games Library</a></li>
         <li><a href="framework.html">Practice Framework</a></li>
-        <li><a href="lineup.html">Lineup Builder</a></li>
-        <li><a href="athlete.html">Athlete Plan</a></li>
-        <li><a href="training.html">Train</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
       </ul>
     </div>
     <div class="footer-links">
-      <h4>Learn</h4>
+      <h4>Game Day</h4>
       <ul>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="pods.html">Pod Rotation</a></li>
+        <li><a href="pitch-tracker.html">Pitch Tracker</a></li>
+        <li><a href="pocket-card.html">Back Pocket Card</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Train and Learn</h4>
+      <ul>
+        <li><a href="training.html">Train</a></li>
         <li><a href="articles.html">Field Notes</a></li>
-        <li><a href="stages.html">The 4 Stages</a></li>
-        <li><a href="progression.html">Season Plan</a></li>
+        <li><a href="parents.html">For parents</a></li>
+        <li><a href="how-kids-learn.html">How kids learn</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>DugoutLab</h4>
+      <ul>
+        <li><a href="tools.html">All tools</a></li>
+        <li><a href="ages.html">By age</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="privacy.html">Privacy</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>&copy; 2026 DugoutLab. Free resource for volunteer coaches.</span>
-    <span>dugoutlab.com</span>
+    <span>&copy; 2026 DugoutLab. Built for volunteer coaches.</span>
+    <span>Your job is to make them want to come back tomorrow.</span>
   </div>
 </footer>
 
