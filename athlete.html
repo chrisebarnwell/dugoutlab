@@ -148,7 +148,11 @@
   .blk-h em { font-style: normal; font-size: 0.75rem; color: var(--ink3); font-weight: 700; }
 
   .finish { position: fixed; left: 0; right: 0; bottom: calc(var(--tab) + env(safe-area-inset-bottom)); z-index: 45; padding: 12px 16px; background: linear-gradient(to top, var(--bg) 60%, transparent); }
-  .finish .cta { max-width: 528px; margin: 0 auto; justify-content: center; gap: 12px; }
+  .finish .cta { max-width: 528px; margin: 0 auto; justify-content: center; gap: 12px; transition: all 0.25s; }
+  .finish:not(.ready) { left: auto; background: none; padding: 10px 16px; pointer-events: none; }
+  .finish:not(.ready) .cta { pointer-events: auto; width: auto; min-height: 0; margin-top: 0; padding: 9px 14px; font-size: 0.8rem; font-weight: 600; background: rgba(10,22,16,0.92); color: var(--ink2); border: 1px solid var(--line2); box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
+  .finish.ready .cta { animation: finpop 0.4s cubic-bezier(.2,.8,.2,1); }
+  @keyframes finpop { from { transform: translateY(16px) scale(0.96); opacity: 0; } to { transform: none; opacity: 1; } }
   .rest { position: fixed; right: 12px; bottom: calc(var(--tab) + env(safe-area-inset-bottom) + 92px); z-index: 60; background: #1a3024; border: 1px solid #3E5A43; border-radius: 18px; padding: 12px 18px; display: flex; align-items: center; gap: 18px; box-shadow: 0 12px 30px rgba(0,0,0,0.5); }
   .rest .rl { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em; color: var(--ink-soft); text-align: center; }
   .rest b { display: block; font-family: var(--mono); font-size: 1.9rem; font-weight: 500; color: var(--gold-light); line-height: 1.1; font-variant-numeric: tabular-nums; }
@@ -701,9 +705,14 @@
     wireSets(a);
     each(M.querySelectorAll('.stack .ex-h'), function (h) { h.addEventListener('click', function () { var c = h.parentNode; if (c.classList.contains('open')) { c.classList.remove('open'); } else openCard(c, true); save(); }); });
     var keep = a.live.open && M.querySelector('.stack .ex[data-k="' + a.live.open + '"]');
-    openCard(keep && !keep.classList.contains('complete') ? keep : nextOpen(null), false);
+    openCard(keep && !keep.classList.contains('complete') ? keep : nextOpen(null), false); updFinish();
     wireDemos();
     wake();
+  }
+  function updFinish() {
+    var all = M.querySelectorAll('.stack .ex'), dn = M.querySelectorAll('.stack .ex.complete'), ready = all.length && dn.length === all.length, f = $('finish');
+    f.classList.toggle('ready', !!ready);
+    $('finish-btn').innerHTML = ready ? 'Finish &amp; save session ' + ICON.check : 'End early (' + dn.length + '/' + all.length + ')';
   }
   function prog(rows) { var dn = rows.filter(function (r) { return r.done; }).length; return dn === rows.length && rows.length ? ICON.check : dn + '/' + rows.length; }
   function openCard(card, scroll) {
@@ -731,7 +740,7 @@
         var d = { unit: card.getAttribute('data-unit'), label: card.getAttribute('data-label') };
         card.querySelector('.sets').innerHTML = card.querySelector('.sets-h').outerHTML + rows.map(function (r, i) { return setRow(d, r, i); }).join('');
         card.classList.toggle('complete', rows.every(function (r) { return r.done; }));
-        var pg = card.querySelector('.ex-p'); if (pg) pg.innerHTML = prog(rows);
+        var pg = card.querySelector('.ex-p'); if (pg) pg.innerHTML = prog(rows); updFinish();
         bind();
       }
       function bind() {
