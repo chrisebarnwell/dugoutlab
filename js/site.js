@@ -194,6 +194,7 @@ var DL_SECTION = (function () {
 // ── Keep the screen awake on field tools ───────────────────────────
 (function () {
   var page = window.location.pathname.split('/').pop() || 'index.html';
+  if (page.indexOf('.') < 0) page += '.html'; /* Cloudflare serves /practice, not /practice.html */
   var FIELD = ['pitch-tracker.html', 'lineup.html', 'pods.html', 'practice.html', 'practice-example.html',
                'game.html', 'arena.html', 'field-layout.html', 'strike-zone.html', 'cage-targets.html', 'games.html'];
   if (FIELD.indexOf(page) < 0 || !('wakeLock' in navigator)) return;

@@ -70,6 +70,7 @@
 
 /* Dialogs: run mode and reflection */
 .pp-dialog { border: 0; padding: 0; margin: auto; width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); border-radius: 20px; background: var(--bg); color: var(--ink); box-shadow: 0 20px 60px rgba(0,0,0,0.45); }
+.pp-dialog:not([open]) { display: none; }
 .pp-dialog::backdrop { background: rgba(10,22,16,0.72); }
 .pp-runmode { padding: 1.1rem 1.2rem 1.4rem; text-align: center; }
 .run-top { display: flex; justify-content: space-between; align-items: center; }
@@ -108,7 +109,7 @@
   .pp-resume { flex-direction: column; align-items: flex-start; }
   .pp-item-act .btn { flex: 1 1 auto; justify-content: center; }
   .pp-dialog { width: 100vw; max-width: 100vw; max-height: 100dvh; height: 100dvh; margin: 0; border-radius: 0; }
-  .pp-runmode { display: flex; flex-direction: column; padding-top: calc(0.8rem + env(safe-area-inset-top)); padding-bottom: calc(1.2rem + env(safe-area-inset-bottom)); }
+  .pp-runmode[open] { display: flex; flex-direction: column; padding-top: calc(0.8rem + env(safe-area-inset-top)); padding-bottom: calc(1.2rem + env(safe-area-inset-bottom)); }
 }
 
 @media print {

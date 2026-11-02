@@ -287,8 +287,8 @@
   });
 
   /* ── Run mode: one block at a time, big type, a countdown ──────── */
-  var run = { i: 0, list: [], left: 0, timer: null, running: false };
-  function fmt(s) { var m = Math.floor(s / 60), r = s % 60; return m + ':' + (r < 10 ? '0' : '') + r; }
+  var run = { i: 0, list: [], left: 0, timer: null, running: false, end: 0 };
+  function fmt(s) { var a = Math.abs(s), m = Math.floor(a / 60), r = a % 60; return (s < 0 ? '+' : '') + m + ':' + (r < 10 ? '0' : '') + r; }
   function drawRun() {
     var st = run.list[run.i], nx = run.list[run.i + 1];
     $('run-step').textContent = 'Block ' + (run.i + 1) + ' of ' + run.list.length;
@@ -306,22 +306,26 @@
   }
   function setBlock(i) { stopTimer(); run.i = i; run.left = run.list[i].mins * 60; drawRun(); }
   function stopTimer() { if (run.timer) clearInterval(run.timer); run.timer = null; run.running = false; }
+  /* Count from a real end time, so a locked screen or a background tab never loses minutes. */
   function tick() {
-    run.left--;
-    if (run.left === 0) {
+    var was = run.left;
+    run.left = Math.round((run.end - Date.now()) / 1000);
+    if (was > 0 && run.left <= 0) {
       $('run-live').textContent = 'Time. ' + (run.list[run.i + 1] ? 'Next up: ' + run.list[run.i + 1].d.name : 'Practice is done.');
       if (navigator.vibrate) navigator.vibrate([300, 120, 300]);
     }
     if (run.left < -599) stopTimer();
     drawRun();
   }
+  document.addEventListener('visibilitychange', function () { if (run.running && document.visibilityState === 'visible') tick(); });
   $('run').addEventListener('click', function () {
     run.list = steps(); if (!run.list.length) return;
     setBlock(0); openDialog($('run-dlg')); track('practice_run');
   });
   $('run-go').addEventListener('click', function () {
     if (run.running) { stopTimer(); drawRun(); return; }
-    run.running = true; run.timer = setInterval(tick, 1000); drawRun();
+    if (!run.list.length) return;
+    run.running = true; run.end = Date.now() + run.left * 1000; run.timer = setInterval(tick, 250); drawRun();
   });
   $('run-prev').addEventListener('click', function () { if (run.i > 0) setBlock(run.i - 1); });
   $('run-next').addEventListener('click', function () {
