@@ -141,7 +141,7 @@ var DL_SECTION = (function () {
   var MAP = {
     'practice.html': ['practice.html', 'framework.html', 'games.html', 'progression.html', 'practice-example.html'],
     'game-day.html': ['game-day.html', 'lineup.html', 'pods.html', 'pitch-tracker.html', 'pocket-card.html', 'field-layout.html',
-      'strike-zone.html', 'situations.html', 'situation.html', 'skipper.html'],
+      'strike-zone.html', 'situations.html', 'situation.html', 'skipper.html', 'h2f.html', 'team.html', 'player.html'],
     'training.html': ['training.html', 'athlete.html', 'moves.html', 'stage-finder.html', 'development.html', 'cage-targets.html',
       'game.html', 'arena.html', 'launch-lab.html'],
     'articles.html': ['articles.html', 'how-kids-learn.html', 'stages.html', 'ages.html', 'about.html'],
@@ -194,7 +194,7 @@ var DL_SECTION = (function () {
 // ── Keep the screen awake on field tools ───────────────────────────
 (function () {
   var page = window.location.pathname.split('/').pop() || 'index.html';
-  var FIELD = ['pitch-tracker.html', 'lineup.html', 'pods.html', 'practice.html', 'practice-example.html',
+  var FIELD = ['pitch-tracker.html', 'h2f.html', 'lineup.html', 'pods.html', 'practice.html', 'practice-example.html',
                'game.html', 'arena.html', 'field-layout.html', 'strike-zone.html', 'cage-targets.html', 'games.html'];
   if (FIELD.indexOf(page) < 0 || !('wakeLock' in navigator)) return;
   var lock = null;
@@ -241,6 +241,7 @@ var DL_SECTION = (function () {
     '.acct-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0.9rem 0 0.2rem;margin-top:0.4rem;border-top:1px solid var(--rule)}' +
     '.acct-row small{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint)}' +
     '.acct-row b{display:block;color:var(--ink);font-family:var(--sans);font-size:0.95rem;margin-top:2px}' +
+    '.mobile-menu .acct-row a.acct-team{display:inline-block;padding:0.3rem 0 0;border:0;font-family:var(--sans);font-size:0.88rem;font-weight:600;color:var(--gold)}' +
     '.acct-btn{font:inherit;font-weight:700;font-size:0.9rem;border-radius:999px;padding:0.55rem 1.1rem;cursor:pointer;border:1px solid var(--gold);background:var(--fill);color:var(--on-fill)}' +
     '.acct-btn.ghost{background:none;color:var(--ink-soft);border-color:var(--rule)}' +
     '.nav-acct{font:inherit;font-size:0.85rem;font-weight:600;color:var(--ink-soft);background:none;border:1px solid var(--rule);border-radius:999px;padding:0.35rem 0.9rem;margin-left:0.5rem;cursor:pointer}' +
@@ -292,7 +293,7 @@ var DL_SECTION = (function () {
   var menu = document.getElementById('mobile-menu');
   if (menu) {
     var row = document.createElement('div'); row.className = 'acct-row';
-    row.innerHTML = s ? '<div><small>Signed in</small><b>' + esc(name || 'Your account') + '</b></div><button type="button" class="acct-btn ghost" id="acct-out">Sign out</button>'
+    row.innerHTML = s ? '<div><small>Signed in</small><b>' + esc(name || 'Your account') + '</b><a href="/team.html" class="acct-team">My Team</a></div><button type="button" class="acct-btn ghost" id="acct-out">Sign out</button>'
                       : '<div><small>Account</small><b>Back up your plans</b></div><button type="button" class="acct-btn" id="acct-in">Sign in</button>';
     menu.appendChild(row);
   }
@@ -300,6 +301,10 @@ var DL_SECTION = (function () {
   if (links) { var li = document.createElement('li'); li.innerHTML = '<button type="button" class="nav-acct" data-acct>' + (s ? 'Sign out' : 'Sign in') + '</button>'; links.appendChild(li); }
   document.querySelectorAll('#acct-out, .nav-acct').forEach(function (b) { b.addEventListener('click', function () { s ? signOut() : openSignIn(); }); });
   var bi = document.getElementById('acct-in'); if (bi) bi.addEventListener('click', openSignIn);
+  // My Team roster and the run save queue, on every page for anyone signed in (js/team.js).
+  if (s && !window.DLTeam && !document.querySelector('script[src$="js/team.js"]')) {
+    var ts = document.createElement('script'); ts.src = '/js/team.js'; ts.defer = true; document.head.appendChild(ts);
+  }
 })();
 
 // ── Skip link and main landmark ────────────────────────────────────

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>My Team | DugoutLab</title>
+<meta name="description" content="Save your roster once: first names and jersey numbers. Every DugoutLab tool can use it, from the Home-to-First Timer to Pitch Tracker and the Lineup Builder.">
+<!-- dl:head -->
+<link rel="canonical" href="https://dugoutlab.com/team">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DugoutLab">
+<meta property="og:title" content="My Team">
+<meta property="og:description" content="Save your roster once: first names and jersey numbers. Every DugoutLab tool can use it, from the Home-to-First Timer to Pitch Tracker and the Lineup Builder.">
+<meta property="og:url" content="https://dugoutlab.com/team">
+<meta property="og:image" content="https://dugoutlab.com/assets/brand/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0F1F18">
+<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
+<link rel="manifest" href="/site.webmanifest">
+<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<!-- /dl:head -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/team.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="practice.html">Practice</a></li>
+    <li><a href="game-day.html">Game Day</a></li>
+    <li><a href="training.html">Train</a></li>
+    <li><a href="articles.html">Learn</a></li>
+    <li><a href="parents.html" class="nav-aside">Parents</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="practice.html">Practice</a>
+  <a href="game-day.html">Game Day</a>
+  <a href="training.html">Train</a>
+  <a href="articles.html">Learn</a>
+  <a href="parents.html">Parents</a>
+  <a href="tools.html" class="mm-small">All tools</a>
+  <a href="ages.html" class="mm-small">By age</a>
+  <a href="about.html" class="mm-small">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="game-day.html">&#8592; Game Day</a></div>
+    <div class="eyebrow">My Team</div>
+    <h1>Save your roster once.</h1>
+    <p>First names and jersey numbers. Every DugoutLab tool can use them: the Home-to-First Timer, Pitch Tracker, Lineup Builder and Pod Rotation.</p>
+  </div>
+</div>
+
+<main class="tm-wrap" id="main">
+
+  <section id="s-signin" class="tm-card hidden">
+    <div class="tm-eb">Step 1</div>
+    <div class="tm-h">Sign in to save your team</div>
+    <p class="tm-p">Your roster lives in your DugoutLab account, so it shows up on your phone, your laptop, and in every tool. Email only, no password.</p>
+    <div class="tm-row" style="margin-top:1rem"><button type="button" class="btn btn-primary" id="si-go">Sign in or sign up</button></div>
+  </section>
+
+  <section id="s-setup" class="tm-card hidden">
+    <div class="tm-eb">New team</div>
+    <div class="tm-h">Name your team</div>
+    <div class="tm-row">
+      <div class="tm-field" style="flex:2"><label for="su-name">Team name</label><input id="su-name" maxlength="40" placeholder="Beach Park Ballers" autocomplete="off"></div>
+      <div class="tm-field"><label for="su-age">Age</label><select id="su-age"></select></div>
+    </div>
+    <div class="tm-row"><button type="button" class="btn btn-primary" id="su-go">Save team</button><button type="button" class="tm-ghost hidden" id="su-cancel">Cancel</button></div>
+    <div class="tm-err" id="su-err"></div>
+  </section>
+
+  <section id="s-team" class="hidden">
+    <div class="tm-card">
+      <div class="tm-row" style="justify-content:space-between">
+        <div style="min-width:0">
+          <div class="tm-eb" id="tm-age"></div>
+          <div class="tm-h" id="tm-name" style="margin:0"></div>
+        </div>
+        <button type="button" class="tm-ghost" id="tm-edit">Edit</button>
+      </div>
+      <div class="tm-row hidden" id="tm-switch-row" style="margin-top:0.8rem">
+        <div class="tm-field" style="margin:0"><label for="tm-switch">Team</label><select id="tm-switch"></select></div>
+      </div>
+      <div class="tm-row" style="margin-top:1rem">
+        <a href="h2f.html" class="btn btn-primary">Home-to-First Timer</a>
+      </div>
+      <div class="tm-row" style="margin-top:0.6rem">
+        <button type="button" class="tm-ghost" id="tm-csv">Export times (CSV)</button>
+        <button type="button" class="tm-ghost" id="tm-new">Add another team</button>
+      </div>
+      <div class="tm-err" id="tm-err"></div>
+    </div>
+
+    <div class="tm-card">
+      <div class="tm-eb">Add players</div>
+      <div class="tm-row" style="align-items:flex-end">
+        <div class="tm-field" style="flex:2"><label for="ap-name">First name</label><input id="ap-name" maxlength="24" placeholder="Will" autocomplete="off" autocapitalize="words"></div>
+        <div class="tm-field"><label for="ap-num">Jersey #</label><input id="ap-num" maxlength="3" inputmode="numeric" pattern="[0-9]*" placeholder="7"></div>
+      </div>
+      <div class="tm-row"><button type="button" class="btn btn-primary" id="ap-go">Add player</button></div>
+      <div class="tm-err" id="ap-err"></div>
+      <details style="margin-top:0.6rem" id="bulk">
+        <summary class="tm-link" style="list-style:none">Paste a whole list</summary>
+        <div class="tm-field" style="margin-top:0.7rem"><label for="bk-text">One player per line</label><textarea id="bk-text" placeholder="Will 7&#10;Maya 12&#10;Theo 3"></textarea></div>
+        <div class="tm-note" id="bk-preview" style="margin:-0.3rem 0 0.7rem">First name, then jersey number. Last names are left off.</div>
+        <div class="tm-row"><button type="button" class="btn btn-primary" id="bk-go">Add these players</button></div>
+        <div class="tm-err" id="bk-err"></div>
+      </details>
+    </div>
+
+    <div class="tm-card">
+      <div class="tm-row" style="justify-content:space-between;margin-bottom:0.7rem">
+        <div class="tm-eb" style="margin:0">Roster</div>
+        <div class="tm-note" style="margin:0" id="rs-count"></div>
+      </div>
+      <ul class="tm-list" id="rs-list"></ul>
+      <p class="tm-note">Tap a name for that player's page. First names and jersey numbers only: no last names, no photos.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>For the coach trying to get it right. Better practices. Kids who want to come back. Free tools and honest, evidence-checked coaching for volunteer coaches and parents.</p>
+      <div class="theme-switch" role="group" aria-label="Page style">
+        <span>Page style</span>
+        <button type="button" data-theme-set="auto">Auto</button><button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
+      </div>
+    </div>
+    <div class="footer-links">
+      <h4>Practice</h4>
+      <ul>
+        <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="games.html">Games Library</a></li>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Game Day</h4>
+      <ul>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="pods.html">Pod Rotation</a></li>
+        <li><a href="pitch-tracker.html">Pitch Tracker</a></li>
+        <li><a href="pocket-card.html">Back Pocket Card</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Train and Learn</h4>
+      <ul>
+        <li><a href="training.html">Train</a></li>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="parents.html">For parents</a></li>
+        <li><a href="how-kids-learn.html">How kids learn</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>DugoutLab</h4>
+      <ul>
+        <li><a href="tools.html">All tools</a></li>
+        <li><a href="ages.html">By age</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Built for volunteer coaches.</span>
+    <span>Your job is to make them want to come back tomorrow.</span>
+  </div>
+</footer>
+
+<script src="js/team.js"></script>
+<script>
+(function () {
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function show(id) { ['s-signin', 's-setup', 's-team'].forEach(function (s) { $(s).classList.toggle('hidden', s !== id); }); }
+  var editing = null, editRow = null, data = null;
+
+  for (var a = 6; a <= 18; a++) $('su-age').insertAdjacentHTML('beforeend', '<option value="' + a + '"' + (a === 10 ? ' selected' : '') + '>' + a + 'U</option>');
+
+  /* "Will 7", "7 Will", "Will #7", "#7 Will", "Will, 7". First names only; a single last initial is kept. */
+  function parseLines(text) {
+    return String(text || '').split(/\r?\n/).map(function (l) {
+      l = l.replace(/[,;\t]/g, ' ').replace(/\s+/g, ' ').trim(); if (!l) return null;
+      var num = '', m = l.match(/(?:^|\s)#?(\d{1,3})(?:\s|$)/);
+      if (m) { num = m[1]; l = (l.slice(0, m.index) + ' ' + l.slice(m.index + m[0].length)).trim(); }
+      var parts = l.replace(/[^A-Za-zÀ-ɏ' .-]/g, '').trim().split(' ').filter(Boolean);
+      if (!parts.length) return null;
+      var name = parts[0]; if (parts[1] && /^[A-Za-z]\.?$/.test(parts[1])) name += ' ' + parts[1].charAt(0).toUpperCase();
+      name = name.charAt(0).toUpperCase() + name.slice(1);
+      return { name: name.slice(0, 24), jersey: num };
+    }).filter(function (x) { return x && x.name.length >= 2; });
+  }
+
+  function team() { return DLTeam.current(); }
+  function render() {
+    data = DLTeam.cached();
+    if (!data || !data.teams.length) { show('s-setup'); $('su-cancel').classList.add('hidden'); return; }
+    show('s-team');
+    var t = team();
+    $('tm-name').textContent = t.name; $('tm-age').textContent = t.age + 'U team';
+    $('tm-switch-row').classList.toggle('hidden', data.teams.length < 2);
+    $('tm-switch').innerHTML = data.teams.map(function (x) { return '<option value="' + esc(x.id) + '"' + (x.id === t.id ? ' selected' : '') + '>' + esc(x.name) + ' (' + x.age + 'U)</option>'; }).join('');
+    var ps = DLTeam.players(t.id);
+    $('rs-count').textContent = ps.length ? ps.length + ' player' + (ps.length === 1 ? '' : 's') : '';
+    $('rs-list').innerHTML = ps.length ? ps.map(function (p) {
+      if (editRow === p.id) return '<li><div class="tm-field" style="margin:0;flex:2"><input data-en value="' + esc(p.name) + '" maxlength="24" aria-label="First name"></div>' +
+        '<div class="tm-field" style="margin:0;max-width:5.5rem"><input data-ej value="' + esc(p.jersey) + '" maxlength="3" inputmode="numeric" aria-label="Jersey number"></div>' +
+        '<div class="tm-acts"><button type="button" data-save="' + esc(p.id) + '">Save</button><button type="button" data-cancel>Cancel</button></div></li>';
+      return '<li><span class="tm-num">' + (p.jersey ? '#' + esc(p.jersey) : '&middot;') + '</span>' +
+        '<a class="tm-name" href="player.html?id=' + encodeURIComponent(p.id) + '">' + esc(p.name) + '</a>' +
+        '<div class="tm-acts"><button type="button" data-edit="' + esc(p.id) + '">Edit</button><button type="button" data-del="' + esc(p.id) + '" aria-label="Remove ' + esc(p.name) + '">Remove</button></div></li>';
+    }).join('') : '<li style="color:var(--ink-faint)">No players yet. Add them above, one at a time or as a pasted list.</li>';
+  }
+
+  function load() {
+    if (!DLTeam.token()) { show('s-signin'); return; }
+    var c = DLTeam.cached(); if (c) render();
+    DLTeam.refresh().then(render).catch(function (e) {
+      if (e.status === 401) show('s-signin'); else if (!c) { show('s-team'); $('tm-err').textContent = e.message; }
+    });
+  }
+
+  $('si-go').addEventListener('click', function () { if (window.dlSignIn) window.dlSignIn(); });
+
+  $('su-go').addEventListener('click', function () {
+    var b = this; $('su-err').textContent = ''; b.disabled = true;
+    DLTeam.api('team/team', { id: editing || undefined, name: $('su-name').value, age: $('su-age').value }).then(function (j) {
+      DLTeam.setCurrent(j.team.id); editing = null; return DLTeam.refresh();
+    }).then(function () { b.disabled = false; render(); })
+      .catch(function (e) { b.disabled = false; $('su-err').textContent = e.message; });
+  });
+  $('su-cancel').addEventListener('click', function () { editing = null; render(); });
+  $('tm-edit').addEventListener('click', function () {
+    var t = team(); editing = t.id; $('su-name').value = t.name; $('su-age').value = t.age;
+    show('s-setup'); $('su-cancel').classList.remove('hidden'); $('su-name').focus();
+  });
+  $('tm-new').addEventListener('click', function () {
+    editing = null; $('su-name').value = ''; show('s-setup'); $('su-cancel').classList.remove('hidden'); $('su-name').focus();
+  });
+  $('tm-switch').addEventListener('change', function () { DLTeam.setCurrent(this.value); editRow = null; render(); });
+
+  $('ap-go').addEventListener('click', function () {
+    var b = this; $('ap-err').textContent = ''; b.disabled = true;
+    DLTeam.api('team/player', { team_id: team().id, name: $('ap-name').value, jersey: $('ap-num').value }).then(function () {
+      $('ap-name').value = ''; $('ap-num').value = ''; $('ap-name').focus(); return DLTeam.refresh();
+    }).then(function () { b.disabled = false; render(); }).catch(function (e) { b.disabled = false; $('ap-err').textContent = e.message; });
+  });
+  $('ap-num').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('ap-go').click(); });
+
+  $('bk-text').addEventListener('input', function () {
+    var list = parseLines(this.value);
+    $('bk-preview').textContent = list.length ? list.length + ' player' + (list.length === 1 ? '' : 's') + ': ' + list.slice(0, 6).map(function (p) { return p.name + (p.jersey ? ' #' + p.jersey : ''); }).join(', ') + (list.length > 6 ? ', and more' : '') : 'First name, then jersey number. Last names are left off.';
+  });
+  $('bk-go').addEventListener('click', function () {
+    var b = this, list = parseLines($('bk-text').value); $('bk-err').textContent = '';
+    if (!list.length) { $('bk-err').textContent = 'Add one player per line, like: Will 7'; return; }
+    b.disabled = true;
+    DLTeam.api('team/bulk', { team_id: team().id, players: list }).then(function (j) {
+      $('bk-text').value = '';
+      $('bk-preview').textContent = 'Added ' + j.added.length + (j.skipped ? '. Skipped ' + j.skipped + ' already on the roster or over the 30-player limit.' : '.');
+      return DLTeam.refresh();
+    }).then(function () { b.disabled = false; render(); }).catch(function (e) { b.disabled = false; $('bk-err').textContent = e.message; });
+  });
+
+  $('rs-list').addEventListener('click', function (e) {
+    var t = e.target.closest('button'); if (!t) return;
+    if (t.hasAttribute('data-edit')) { editRow = t.getAttribute('data-edit'); render(); var i = $('rs-list').querySelector('[data-en]'); if (i) i.focus(); }
+    else if (t.hasAttribute('data-cancel')) { editRow = null; render(); }
+    else if (t.hasAttribute('data-save')) {
+      var li = t.closest('li'); t.disabled = true;
+      DLTeam.api('team/player', { id: t.getAttribute('data-save'), name: li.querySelector('[data-en]').value, jersey: li.querySelector('[data-ej]').value })
+        .then(function () { editRow = null; return DLTeam.refresh(); }).then(render)
+        .catch(function (er) { t.disabled = false; $('tm-err').textContent = er.message; });
+    } else if (t.hasAttribute('data-del')) {
+      var pid = t.getAttribute('data-del'), p = (data.players || []).filter(function (x) { return x.id === pid; })[0];
+      if (!p || !window.confirm('Remove ' + p.name + ' from the roster? Their times and pitch counts are removed too.')) return;
+      DLTeam.api('team/player-delete', { id: pid }).then(function () { return DLTeam.refresh(); }).then(render)
+        .catch(function (er) { $('tm-err').textContent = er.message; });
+    }
+  });
+
+  $('tm-csv').addEventListener('click', function () {
+    var t = team(), b = this; $('tm-err').textContent = ''; b.disabled = true;
+    DLTeam.api('team/runs?team=' + encodeURIComponent(t.id)).then(function (j) {
+      b.disabled = false;
+      if (!j.runs.length) { $('tm-err').textContent = 'No times saved yet. Run the Home-to-First Timer first.'; return; }
+      var byId = {}; (data.players || []).forEach(function (p) { byId[p.id] = p; });
+      var best = {};
+      j.runs.forEach(function (r) { var k = r.sessionId + '|' + r.playerId; if (!best[k] || r.seconds < best[k]) best[k] = r.seconds; });
+      var q = function (v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+      var rows = [['date', 'type', 'session_id', 'player', 'jersey', 'run_number', 'seconds', 'best_of_session']];
+      j.runs.forEach(function (r) {
+        var p = byId[r.playerId] || {};
+        rows.push([r.date, r.type, r.sessionId, p.name || '', p.jersey || '', r.runNumber, r.seconds.toFixed(2), best[r.sessionId + '|' + r.playerId] === r.seconds ? 'yes' : '']);
+      });
+      var blob = new Blob([rows.map(function (r) { return r.map(q).join(','); }).join('\n') + '\n'], { type: 'text/csv' });
+      var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = (t.name.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'team') + '-home-to-first.csv';
+      document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    }).catch(function (e) { b.disabled = false; $('tm-err').textContent = e.message; });
+  });
+
+  load();
+})();
+</script>
+<script src="js/site.js"></script>
+</body>
+</html>

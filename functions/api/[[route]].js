@@ -615,6 +615,8 @@ export async function onRequest(ctx) {
         const k = await ownKid(db, me, body.kid_id);
         if (!k) return bad('Not your player', 404);
         await db.prepare('DELETE FROM pitch_sessions WHERE kid_id = ? AND account_id = ?').bind(k.id, me.id).run();
+        /* Timed runs live in functions/api/team. The table may not exist yet on a fresh database. */
+        try { await db.prepare('DELETE FROM runs WHERE player_id = ? AND coach_id = ?').bind(k.id, me.id).run(); } catch (e) { /* no runs table yet */ }
         await db.prepare('DELETE FROM pitch_kids WHERE id = ?').bind(k.id).run();
         return json({ ok: true });
       }
@@ -623,6 +625,7 @@ export async function onRequest(ctx) {
         const t = await db.prepare('SELECT * FROM pitch_teams WHERE id = ? AND account_id = ?').bind(clean(body.team_id, 40), me.id).first();
         if (!t) return bad('Not your team', 404);
         await db.prepare('DELETE FROM pitch_sessions WHERE kid_id IN (SELECT id FROM pitch_kids WHERE team_id = ?)').bind(t.id).run();
+        try { await db.prepare('DELETE FROM runs WHERE coach_id = ? AND player_id IN (SELECT id FROM pitch_kids WHERE team_id = ?)').bind(me.id, t.id).run(); } catch (e) { /* no runs table yet */ }
         await db.prepare('DELETE FROM pitch_kids WHERE team_id = ?').bind(t.id).run();
         await db.prepare('DELETE FROM pitch_teams WHERE id = ?').bind(t.id).run();
         return json({ ok: true });
@@ -643,6 +646,8 @@ export async function onRequest(ctx) {
         await db.prepare('DELETE FROM events WHERE account_id = ?').bind(me.id).run();
         /* Athlete Plan rows live in functions/api/plan. The table may not exist yet on a fresh database. */
         try { await db.prepare('DELETE FROM athletes WHERE account_id = ?').bind(me.id).run(); } catch (e) { /* no athletes table yet */ }
+        /* Timed runs live in functions/api/team. The table may not exist yet on a fresh database. */
+        try { await db.prepare('DELETE FROM runs WHERE coach_id = ?').bind(me.id).run(); } catch (e) { /* no runs table yet */ }
         await db.prepare('DELETE FROM subscribers WHERE email = ?').bind(me.email).run();
         await db.prepare('DELETE FROM accounts WHERE id = ?').bind(me.id).run();
         return json({ ok: true });

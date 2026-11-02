@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Player | DugoutLab</title>
+<meta name="description" content="One player's page: Home to First times by session, average, personal best, and a chart of the season.">
+<!-- dl:head -->
+<link rel="canonical" href="https://dugoutlab.com/player">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DugoutLab">
+<meta property="og:title" content="Player">
+<meta property="og:description" content="One player&#x27;s page: Home to First times by session, average, personal best, and a chart of the season.">
+<meta property="og:url" content="https://dugoutlab.com/player">
+<meta property="og:image" content="https://dugoutlab.com/assets/brand/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0F1F18">
+<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
+<link rel="manifest" href="/site.webmanifest">
+<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<!-- /dl:head -->
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/team.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="practice.html">Practice</a></li>
+    <li><a href="game-day.html">Game Day</a></li>
+    <li><a href="training.html">Train</a></li>
+    <li><a href="articles.html">Learn</a></li>
+    <li><a href="parents.html" class="nav-aside">Parents</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="practice.html">Practice</a>
+  <a href="game-day.html">Game Day</a>
+  <a href="training.html">Train</a>
+  <a href="articles.html">Learn</a>
+  <a href="parents.html">Parents</a>
+  <a href="tools.html" class="mm-small">All tools</a>
+  <a href="ages.html" class="mm-small">By age</a>
+  <a href="about.html" class="mm-small">About</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="team.html">&#8592; My Team</a></div>
+    <div class="eyebrow" id="p-eb">Player</div>
+    <h1 id="p-name">&nbsp;</h1>
+  </div>
+</div>
+
+<main class="tm-wrap" id="main">
+  <div class="tm-card hidden" id="p-signin">
+    <div class="tm-h">Sign in to see this player</div>
+    <p class="tm-p">Player pages are private to the account that saved them.</p>
+    <div class="tm-row" style="margin-top:1rem"><button type="button" class="btn btn-primary" id="p-si">Sign in</button></div>
+  </div>
+  <div class="tm-card hidden" id="p-missing">
+    <div class="tm-h">We could not find that player</div>
+    <p class="tm-p">They may have been removed from the roster, or saved on a different account.</p>
+    <div class="tm-row" style="margin-top:1rem"><a href="team.html" class="btn btn-primary">Back to My Team</a></div>
+  </div>
+
+  <section class="tm-card hidden" id="p-h2f">
+    <div class="tm-eb">Home to First</div>
+    <div id="p-empty" class="hidden">
+      <p class="tm-p">No times yet. Run the Home-to-First Timer at the next practice and they show up here.</p>
+      <div class="tm-row" style="margin-top:1rem"><a href="h2f.html" class="btn btn-primary">Open the timer</a></div>
+    </div>
+    <div id="p-data" class="hidden">
+      <div class="pp-kpis">
+        <div class="pp-kpi"><b id="k-last">0.00</b><i>Last time</i></div>
+        <div class="pp-kpi"><b id="k-avg">0.00</b><i>Average</i></div>
+      </div>
+      <div class="pp-pb"><div><span>Personal best</span><small id="k-pbwhen"></small></div><b id="k-pb">0.00</b></div>
+      <div class="pp-chart" id="p-chart"></div>
+      <div class="pp-chart-note" id="p-tip"></div>
+      <p class="tm-note">Lower on the chart is faster, so a line heading down means quicker to first. One point per session: the better of that day's runs.</p>
+      <div class="tm-eb" style="margin-top:1.2rem">Sessions</div>
+      <ul class="pp-sess" id="p-sess"></ul>
+      <div class="tm-err" id="p-err"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>For the coach trying to get it right. Better practices. Kids who want to come back. Free tools and honest, evidence-checked coaching for volunteer coaches and parents.</p>
+      <div class="theme-switch" role="group" aria-label="Page style">
+        <span>Page style</span>
+        <button type="button" data-theme-set="auto">Auto</button><button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
+      </div>
+    </div>
+    <div class="footer-links">
+      <h4>Practice</h4>
+      <ul>
+        <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="games.html">Games Library</a></li>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Game Day</h4>
+      <ul>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="pods.html">Pod Rotation</a></li>
+        <li><a href="pitch-tracker.html">Pitch Tracker</a></li>
+        <li><a href="pocket-card.html">Back Pocket Card</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Train and Learn</h4>
+      <ul>
+        <li><a href="training.html">Train</a></li>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="parents.html">For parents</a></li>
+        <li><a href="how-kids-learn.html">How kids learn</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>DugoutLab</h4>
+      <ul>
+        <li><a href="tools.html">All tools</a></li>
+        <li><a href="ages.html">By age</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Built for volunteer coaches.</span>
+    <span>Your job is to make them want to come back tomorrow.</span>
+  </div>
+</footer>
+
+<script src="js/team.js"></script>
+<script>
+(function () {
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function fmt(s) { return (Math.round(s * 100) / 100).toFixed(2); }
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function nice(d) { var p = String(d).split('-'); return MON[+p[1] - 1] + ' ' + (+p[2]); }
+  var pid = new URLSearchParams(location.search).get('id') || '', runs = [];
+
+  function head(p) {
+    $('p-name').textContent = p ? p.name + (p.jersey ? '  #' + p.jersey : '') : 'Player';
+    if (p) document.title = p.name + ' | DugoutLab';
+  }
+  function findPlayer() {
+    var c = DLTeam.cached(); if (!c) return null;
+    for (var i = 0; i < c.players.length; i++) if (c.players[i].id === pid) return c.players[i];
+    return null;
+  }
+
+  /* Sessions in date order, each with its runs and its best. */
+  function sessions() {
+    var by = {}, list = [];
+    runs.forEach(function (r) {
+      if (!by[r.sessionId]) { by[r.sessionId] = { id: r.sessionId, date: r.date, type: r.type, runs: [], at: r.createdAt }; list.push(by[r.sessionId]); }
+      by[r.sessionId].runs.push(r);
+    });
+    list.forEach(function (s) { s.runs.sort(function (a, b) { return a.runNumber - b.runNumber; }); s.best = Math.min.apply(null, s.runs.map(function (r) { return r.seconds; })); });
+    list.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : a.at - b.at; });
+    var run = null;
+    list.forEach(function (s, i) { s.pb = i > 0 && s.best < run; if (run === null || s.best < run) run = s.best; });
+    return list;
+  }
+
+  function draw() {
+    $('p-h2f').classList.remove('hidden');
+    if (!runs.length) { $('p-empty').classList.remove('hidden'); $('p-data').classList.add('hidden'); return; }
+    $('p-empty').classList.add('hidden'); $('p-data').classList.remove('hidden');
+    var ss = sessions(), all = runs.map(function (r) { return r.seconds; });
+    var last = runs.slice().sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : a.createdAt - b.createdAt; }).pop();
+    var pb = Math.min.apply(null, all), pbS = ss.filter(function (s) { return s.best === pb; })[0];
+    $('k-last').textContent = fmt(last.seconds);
+    $('k-avg').textContent = fmt(all.reduce(function (a, b) { return a + b; }, 0) / all.length);
+    $('k-pb').textContent = fmt(pb);
+    $('k-pbwhen').textContent = pbS ? nice(pbS.date) + ', ' + pbS.type.toLowerCase() : '';
+    chart(ss);
+    $('p-sess').innerHTML = ss.slice().reverse().map(function (s) {
+      return '<li><span>' + nice(s.date) + ' &middot; ' + esc(s.type) + (s.pb ? '<span class="pp-tag">New PB!</span>' : '') + '</span><span>' +
+        s.runs.map(function (r) { return '<button type="button" class="tm-link pp-run' + (s.runs.length > 1 && r.seconds === s.best ? ' best' : '') + '" style="text-decoration:none;color:inherit" data-run="' + esc(r.id) + '" aria-label="' + fmt(r.seconds) + ' seconds, run ' + r.runNumber + '. Tap to remove.">' + fmt(r.seconds) + '</button>'; }).join(' &middot; ') +
+        '</span></li>';
+    }).join('');
+  }
+
+  /* Seconds on the y axis, NOT flipped: bigger numbers sit higher, so faster times plot lower. */
+  function chart(ss) {
+    var W = 340, H = 200, L = 38, R = 14, T = 14, B = 28, n = ss.length;
+    var vals = []; ss.forEach(function (s) { s.runs.forEach(function (r) { vals.push(r.seconds); }); });
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    var pad = Math.max(0.1, (hi - lo) * 0.15); lo = Math.floor((lo - pad) * 10) / 10; hi = Math.ceil((hi + pad) * 10) / 10;
+    function x(i) { return n === 1 ? (L + W - R) / 2 : L + i * (W - L - R) / (n - 1); }
+    function y(v) { return T + (hi - v) * (H - T - B) / (hi - lo); }
+    var g = '', ticks = 4;
+    for (var t = 0; t <= ticks; t++) {
+      var v = lo + (hi - lo) * t / ticks;
+      g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v).toFixed(1) + '" y2="' + y(v).toFixed(1) + '" stroke="rgba(244,239,230,' + (t === 0 ? 0.22 : 0.08) + ')"/>';
+      g += '<text x="' + (L - 6) + '" y="' + (y(v) + 3.5).toFixed(1) + '" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="9.5" fill="rgba(244,239,230,0.55)">' + v.toFixed(1) + '</text>';
+    }
+    ss.forEach(function (s, i) { s.runs.forEach(function (r) { if (r.seconds !== s.best) g += '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(r.seconds).toFixed(1) + '" r="3" fill="none" stroke="rgba(244,239,230,0.45)" stroke-width="1.2"/>'; }); });
+    if (n > 1) g += '<path d="' + ss.map(function (s, i) { return (i ? 'L' : 'M') + x(i).toFixed(1) + ',' + y(s.best).toFixed(1); }).join(' ') + '" fill="none" stroke="#C8862E" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>';
+    ss.forEach(function (s, i) {
+      g += '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(s.best).toFixed(1) + '" r="' + (s.pb ? 6 : 4.5) + '" fill="' + (s.pb ? '#e2a85a' : '#C8862E') + '" stroke="#0a1610" stroke-width="2"/>' +
+           '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(s.best).toFixed(1) + '" r="15" fill="transparent" data-i="' + i + '" style="cursor:pointer"/>';
+    });
+    g += '<text x="' + L + '" y="' + (H - 8) + '" font-family="Inter,sans-serif" font-size="10" fill="rgba(244,239,230,0.55)">' + nice(ss[0].date) + '</text>';
+    if (n > 1) g += '<text x="' + (W - R) + '" y="' + (H - 8) + '" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="rgba(244,239,230,0.55)">' + nice(ss[n - 1].date) + '</text>';
+    g += '<text x="' + (L - 6) + '" y="' + (H - 8) + '" text-anchor="end" font-family="Inter,sans-serif" font-size="9" fill="rgba(244,239,230,0.45)">sec</text>';
+    $('p-chart').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Home to first time by session, oldest to newest. Lower is faster.">' + g + '</svg>';
+    function tip(i) { var s = ss[i]; $('p-tip').innerHTML = '<b style="color:var(--ink)">' + nice(s.date) + '</b> &middot; ' + esc(s.type) + ' &middot; ' + s.runs.map(function (r) { return fmt(r.seconds); }).join(' and ') + (s.pb ? ' &middot; <b style="color:var(--gold-light)">New PB!</b>' : ''); }
+    Array.prototype.forEach.call($('p-chart').querySelectorAll('[data-i]'), function (c) {
+      var i = +c.getAttribute('data-i'); c.addEventListener('click', function () { tip(i); }); c.addEventListener('mouseenter', function () { tip(i); });
+    });
+    tip(n - 1);
+  }
+
+  $('p-sess').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-run]'); if (!b) return;
+    var r = runs.filter(function (x) { return x.id === b.getAttribute('data-run'); })[0]; if (!r) return;
+    if (!window.confirm('Remove this ' + fmt(r.seconds) + ' run from ' + nice(r.date) + '?')) return;
+    runs = runs.filter(function (x) { return x.id !== r.id; }); draw();
+    DLTeam.queueRemove(r.id).then(function (res) { if (!res.ok && !res.offline) $('p-err').textContent = res.error || 'Could not remove that run. Try again.'; });
+  });
+  $('p-si').addEventListener('click', function () { if (window.dlSignIn) window.dlSignIn(); });
+
+  if (!DLTeam.token()) { $('p-signin').classList.remove('hidden'); return; }
+  head(findPlayer());
+  /* Runs still waiting on this phone count too, so a time saved offline shows up right away. */
+  function pendingAdds() { return DLTeam.pending().filter(function (x) { return x.op === 'add' && x.run.playerId === pid; }).map(function (x) { return x.run; }); }
+  function pendingDels() { var d = {}; DLTeam.pending().forEach(function (x) { if (x.op === 'del') d[x.id] = 1; }); return d; }
+  DLTeam.api('team/runs?player=' + encodeURIComponent(pid)).then(function (j) {
+    var seen = {}, dels = pendingDels();
+    runs = j.runs.concat(pendingAdds()).filter(function (r) { if (seen[r.id] || dels[r.id]) return false; seen[r.id] = 1; return true; });
+    $('p-eb').textContent = 'Player';
+    draw();
+    DLTeam.refresh().then(function () { head(findPlayer()); }).catch(function () {});
+  }).catch(function (e) {
+    if (e.status === 401) $('p-signin').classList.remove('hidden');
+    else if (e.status === 404) { $('p-missing').classList.remove('hidden'); $('p-name').textContent = 'Player'; }
+    else { runs = pendingAdds(); draw(); $('p-err').textContent = 'Offline. Showing times saved on this phone.'; }
+  });
+})();
+</script>
+<script src="js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Home-to-First Timer | DugoutLab</title>
+<meta name="description" content="Tap a kid, tap start, tap stop. Home-to-first times to the hundredth, saved to each player's page with a personal best and a chart over the season. Works offline at the field.">
+<!-- dl:head -->
+<link rel="canonical" href="https://dugoutlab.com/h2f">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DugoutLab">
+<meta property="og:title" content="Home-to-First Timer">
+<meta property="og:description" content="Tap a kid, tap start, tap stop. Home-to-first times to the hundredth, saved to each player&#x27;s page with a personal best and a chart over the season. Works offline at the field.">
+<meta property="og:url" content="https://dugoutlab.com/h2f">
+<meta property="og:image" content="https://dugoutlab.com/assets/brand/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0F1F18">
+<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
+<link rel="manifest" href="/site.webmanifest">
+<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<!-- /dl:head -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/team.css">
+<style>
+/* One-handed, outdoor: big targets, high contrast, the clock owns the lower half. */
+.hf { max-width: 640px; margin: 0 auto; padding: 0.6rem 0.75rem 0; display: flex; flex-direction: column; height: calc(100dvh - 56px); min-height: 520px; }
+@media (min-width: 769px) { .hf { height: calc(100dvh - 64px); } }
+.hf-head { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.hf-date { background: var(--forest-deep); border: 1px solid var(--rule); color: var(--ink); border-radius: 12px; min-height: 44px; padding: 0 0.6rem; font: inherit; font-size: 0.95rem; font-weight: 600; color-scheme: dark; }
+.hf-sync { margin-left: auto; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); text-align: right; }
+.hf-sync.wait { color: var(--gold-light); }
+.hf-team { font-size: 0.82rem; color: var(--ink-faint); margin: 0.45rem 0 0.35rem; display: flex; justify-content: space-between; gap: 0.5rem; }
+.hf-team a { font-weight: 600; }
+.hf-roster { flex: 1 1 auto; min-height: 120px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 0.45rem; align-content: start; padding: 2px 2px 6px; -webkit-overflow-scrolling: touch; }
+.hf-kid { position: relative; min-height: 64px; border-radius: 14px; border: 2px solid var(--rule); background: var(--forest2); color: var(--ink); font: inherit; text-align: left; padding: 0.45rem 0.6rem; cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+.hf-kid b { display: block; font-size: 1.08rem; font-weight: 700; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 1.3rem; }
+.hf-kid span { display: block; font-family: var(--mono); font-size: 0.8rem; color: var(--ink-faint); margin-top: 3px; font-variant-numeric: tabular-nums; }
+.hf-kid.timed { background: var(--forest3); }
+.hf-kid.timed span { color: var(--ink); font-weight: 500; }
+.hf-kid.sel { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold) inset; }
+.hf-kid svg { position: absolute; top: 8px; right: 8px; width: 18px; height: 18px; stroke: var(--ok); fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.hf-kid:disabled { opacity: 0.55; cursor: default; }
+.hf-now { display: flex; align-items: center; gap: 0.5rem; padding: 0.55rem 0 0.45rem; border-top: 1px solid var(--rule); margin-top: 0.2rem; }
+.hf-now .who { flex: 1; min-width: 0; }
+.hf-now .who b { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; color: var(--ink); display: block; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hf-now .who small { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.25rem; font-size: 0.82rem; color: var(--ink-faint); }
+.hf-chip { border: 1px solid var(--rule); border-radius: 999px; padding: 0.1rem 0.55rem; font-family: var(--mono); font-size: 0.8rem; color: var(--ink-soft); background: none; font-variant-numeric: tabular-nums; cursor: pointer; min-height: 30px; }
+.hf-chip.best { border-color: var(--gold); color: var(--gold-light); font-weight: 600; }
+.hf-nav { min-width: 64px; min-height: 48px; border-radius: 12px; border: 1px solid var(--rule); background: none; color: var(--ink-soft); font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; touch-action: manipulation; }
+.hf-nav:disabled { opacity: 0.4; }
+.hf-pad { flex: 0 0 46%; min-height: 230px; display: flex; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+.hf-big { flex: 1; border-radius: 22px; border: 0; font: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+.hf-big .lbl { font-family: var(--serif); font-weight: 700; font-size: clamp(2.6rem, 14vw, 4.2rem); letter-spacing: 0.04em; line-height: 1; }
+.hf-big .sub { font-size: 1rem; font-weight: 600; opacity: 0.85; }
+.hf-big .clock { font-family: var(--mono); font-weight: 500; font-size: clamp(3.4rem, 19vw, 5.6rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.hf-big.start { background: var(--fill); color: var(--on-fill); }
+.hf-big.stop { background: #f4efe6; color: #0a1610; }
+.hf-big.off { background: var(--forest2); color: var(--ink-faint); border: 2px dashed var(--rule); cursor: default; }
+.hf-big:active:not(.off) { transform: scale(0.99); }
+.hf-done { flex: 1; display: grid; grid-template-rows: auto 1fr auto; gap: 0.55rem; }
+.hf-done .time { text-align: center; font-family: var(--mono); font-size: clamp(3.4rem, 19vw, 5.4rem); color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums; padding-top: 0.2rem; }
+.hf-done .time small { display: block; font-family: var(--sans); font-size: 0.95rem; color: var(--gold-light); font-weight: 700; margin-top: 0.35rem; min-height: 1.2em; letter-spacing: 0; }
+.hf-save { position: relative; overflow: hidden; border-radius: 20px; border: 0; background: var(--fill); color: var(--on-fill); font: inherit; font-family: var(--serif); font-size: clamp(2rem, 10vw, 2.8rem); font-weight: 700; letter-spacing: 0.04em; cursor: pointer; touch-action: manipulation; }
+.hf-save i { position: absolute; left: 0; bottom: 0; height: 6px; background: var(--on-fill); opacity: 0.35; width: 100%; transform-origin: left; }
+.hf-save span { position: relative; }
+.hf-redo { min-height: 56px; border-radius: 16px; border: 2px solid var(--rule); background: none; color: var(--ink); font: inherit; font-size: 1.1rem; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+.hf-toast { pointer-events: none; position: fixed; left: 50%; top: 34%; transform: translateX(-50%); z-index: 950; background: var(--forest-deep); border: 1.5px solid var(--gold); color: var(--ink); border-radius: 999px; padding: 0.55rem 1.1rem; font-weight: 600; font-size: 0.95rem; box-shadow: var(--shadow-lg); white-space: nowrap; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; transition: opacity 0.2s; }
+.hf-toast b { color: var(--gold-light); }
+.hf-msg { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 0.8rem; padding: 1rem; }
+.hf-gate { max-width: 560px; margin: 1.2rem auto; padding: 0 1rem; }
+</style>
+</head>
+<body data-nobar>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="practice.html">Practice</a></li>
+    <li><a href="game-day.html">Game Day</a></li>
+    <li><a href="training.html">Train</a></li>
+    <li><a href="articles.html">Learn</a></li>
+    <li><a href="parents.html" class="nav-aside">Parents</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="practice.html">Practice</a>
+  <a href="game-day.html">Game Day</a>
+  <a href="training.html">Train</a>
+  <a href="articles.html">Learn</a>
+  <a href="parents.html">Parents</a>
+  <a href="tools.html" class="mm-small">All tools</a>
+  <a href="ages.html" class="mm-small">By age</a>
+  <a href="about.html" class="mm-small">About</a>
+</div>
+
+<main id="main">
+  <div class="hf-gate hidden" id="g-signin">
+    <div class="tm-card">
+      <div class="tm-eb">Home-to-First Timer</div>
+      <div class="tm-h">Time every kid to first.</div>
+      <p class="tm-p">Tap a name, tap start on contact, tap stop at the bag. The time saves to that player's page, with a personal best and a chart over the season. Sign in so your roster and times follow you to any phone.</p>
+      <div class="tm-row" style="margin-top:1rem"><button type="button" class="btn btn-primary" id="g-go">Sign in or sign up</button></div>
+    </div>
+  </div>
+  <div class="hf-gate hidden" id="g-team">
+    <div class="tm-card">
+      <div class="tm-eb">Home-to-First Timer</div>
+      <div class="tm-h">Add your players first.</div>
+      <p class="tm-p">Save your roster once in My Team: first names and jersey numbers. It shows up here and in every DugoutLab tool.</p>
+      <div class="tm-row" style="margin-top:1rem"><a href="team.html" class="btn btn-primary">Set up My Team</a></div>
+    </div>
+  </div>
+
+  <div class="hf hidden" id="app">
+    <div class="hf-head">
+      <input type="date" class="hf-date" id="h-date" aria-label="Session date">
+      <div class="tm-seg" role="group" aria-label="Session type">
+        <button type="button" data-type="Practice" class="on">Practice</button><button type="button" data-type="Game">Game</button>
+      </div>
+      <div class="hf-sync" id="h-sync" aria-live="polite">Saved</div>
+    </div>
+    <div class="hf-team"><span id="h-team"></span><a href="team.html">My Team</a></div>
+    <div class="hf-roster" id="h-roster" role="group" aria-label="Roster"></div>
+    <div class="hf-now">
+      <button type="button" class="hf-nav" id="h-back">Back</button>
+      <div class="who" id="h-who" aria-live="polite"></div>
+      <button type="button" class="hf-nav" id="h-skip">Skip</button>
+    </div>
+    <div class="hf-pad" id="h-pad"></div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>For the coach trying to get it right. Better practices. Kids who want to come back. Free tools and honest, evidence-checked coaching for volunteer coaches and parents.</p>
+      <div class="theme-switch" role="group" aria-label="Page style">
+        <span>Page style</span>
+        <button type="button" data-theme-set="auto">Auto</button><button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
+      </div>
+    </div>
+    <div class="footer-links">
+      <h4>Practice</h4>
+      <ul>
+        <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="games.html">Games Library</a></li>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Game Day</h4>
+      <ul>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="pods.html">Pod Rotation</a></li>
+        <li><a href="pitch-tracker.html">Pitch Tracker</a></li>
+        <li><a href="pocket-card.html">Back Pocket Card</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Train and Learn</h4>
+      <ul>
+        <li><a href="training.html">Train</a></li>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="parents.html">For parents</a></li>
+        <li><a href="how-kids-learn.html">How kids learn</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>DugoutLab</h4>
+      <ul>
+        <li><a href="tools.html">All tools</a></li>
+        <li><a href="ages.html">By age</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Built for volunteer coaches.</span>
+    <span>Your job is to make them want to come back tomorrow.</span>
+  </div>
+</footer>
+
+<script src="js/team.js"></script>
+<script>
+(function () {
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function fmt(s) { return (Math.round(s * 100) / 100).toFixed(2); }
+  function today() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function rid() { return 'r' + (crypto.randomUUID ? crypto.randomUUID().replace(/-/g, '').slice(0, 19) : (Date.now().toString(36) + Math.random().toString(36).slice(2, 12))); }
+  var CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+  var LIVE = 'dl_h2f_live', MAX = 2, AUTOSAVE = 3000, MIN_RUN = 700, GUARD = 350;
+
+  var S = { team: null, players: [], date: today(), type: 'Practice', sid: '', runs: [], best: {}, sel: null, hist: [],
+            all: {}, phase: 'idle', t0: 0, ms: 0, stoppedAt: 0, raf: 0, saveT: 0, saveStart: 0, lock: null };
+
+  function getLive() { try { return JSON.parse(localStorage.getItem(LIVE) || '{}'); } catch (e) { return {}; } }
+  function putLive() {
+    var all = getLive(); all[S.sid] = { at: Date.now(), runs: S.runs };
+    var keys = Object.keys(all).sort(function (a, b) { return all[b].at - all[a].at; });
+    keys.slice(12).forEach(function (k) { delete all[k]; });
+    try { localStorage.setItem(LIVE, JSON.stringify(all)); } catch (e) {}
+  }
+  function sessionId() { return 'h2f_' + S.date + '_' + S.type.toLowerCase() + '_' + S.team.id; }
+  function runsFor(pid) { return S.runs.filter(function (r) { return r.playerId === pid; }).sort(function (a, b) { return a.runNumber - b.runNumber; }); }
+  function bestOf(list) { var b = null; list.forEach(function (r) { if (b === null || r.seconds < b) b = r.seconds; }); return b; }
+  function player(pid) { for (var i = 0; i < S.players.length; i++) if (S.players[i].id === pid) return S.players[i]; return null; }
+
+  /* ---------- wake lock while the timer page is in use ---------- */
+  function wake() {
+    if (!('wakeLock' in navigator) || S.lock || document.visibilityState !== 'visible') return;
+    navigator.wakeLock.request('screen').then(function (l) { S.lock = l; l.addEventListener('release', function () { S.lock = null; }); }).catch(function () {});
+  }
+  document.addEventListener('visibilitychange', wake);
+
+  /* ---------- sync status ---------- */
+  function syncLabel() {
+    var n = DLTeam.pending().length, el = $('h-sync');
+    if (!n) { el.textContent = 'All saved'; el.className = 'hf-sync'; return; }
+    el.textContent = n + ' waiting' + (navigator.onLine === false ? ', offline' : ', syncing');
+    el.className = 'hf-sync wait';
+  }
+  window.addEventListener('online', syncLabel); window.addEventListener('offline', syncLabel);
+  window.addEventListener('dlteam:synced', function (e) {
+    var rej = (e.detail && e.detail.rejected) || [];
+    if (rej.length) {
+      var ids = {}; rej.forEach(function (r) { ids[r.id] = 1; });
+      S.runs = S.runs.filter(function (r) { return !ids[r.id]; }); putLive(); draw();
+      toast(rej[0].error || 'A time did not save');
+    }
+    syncLabel();
+  });
+
+  var toastT = 0;
+  function toast(html) {
+    var t = $('h-toast'); if (!t) { t = document.createElement('div'); t.id = 'h-toast'; t.className = 'hf-toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+    t.innerHTML = html; t.style.opacity = '1'; clearTimeout(toastT); toastT = setTimeout(function () { t.style.opacity = '0'; }, 2600);
+  }
+
+  /* ---------- loading the roster and this session's runs ---------- */
+  function mergeServer(serverRuns) {
+    var q = DLTeam.pending(), adds = {}, dels = {}, out = [], seen = {};
+    q.forEach(function (x) { if (x.op === 'add' && x.run.sessionId === S.sid) adds[x.run.id] = x.run; if (x.op === 'del') dels[x.id] = 1; });
+    serverRuns.concat(Object.keys(adds).map(function (k) { return adds[k]; })).forEach(function (r) {
+      if (seen[r.id] || dels[r.id]) return; seen[r.id] = 1; out.push(r);
+    });
+    return out;
+  }
+  function loadSession() {
+    S.sid = sessionId();
+    var live = getLive()[S.sid];
+    S.runs = live ? live.runs.slice() : mergeServer([]);
+    draw();
+    DLTeam.api('team/runs?session=' + encodeURIComponent(S.sid)).then(function (j) {
+      if (S.sid !== sessionId()) return;
+      S.runs = mergeServer(j.runs); putLive(); draw();
+    }).catch(function () {});
+  }
+  /* Every run this team has, so "New PB!" knows about earlier sessions. Bests are cached for offline use. */
+  function loadBests() {
+    try { S.best = JSON.parse(localStorage.getItem('dl_h2f_best_' + S.team.id) || '{}'); } catch (e) { S.best = {}; }
+    DLTeam.api('team/runs?team=' + encodeURIComponent(S.team.id)).then(function (j) {
+      j.runs.forEach(function (r) { S.all[r.id] = r; });
+      var b = {}; Object.keys(S.all).forEach(function (k) { var r = S.all[k]; if (b[r.playerId] == null || r.seconds < b[r.playerId]) b[r.playerId] = r.seconds; });
+      S.best = b; try { localStorage.setItem('dl_h2f_best_' + S.team.id, JSON.stringify(b)); } catch (e) {}
+    }).catch(function () {});
+  }
+  function priorBest(pid) {
+    var v = S.best[pid] == null ? null : S.best[pid];
+    S.runs.forEach(function (r) { if (r.playerId === pid && (v === null || r.seconds < v)) v = r.seconds; });
+    return v;
+  }
+  function noteRun(r) {
+    S.all[r.id] = r;
+    if (S.best[r.playerId] == null || r.seconds < S.best[r.playerId]) S.best[r.playerId] = r.seconds;
+    try { localStorage.setItem('dl_h2f_best_' + S.team.id, JSON.stringify(S.best)); } catch (e) {}
+  }
+  function start() {
+    if (!DLTeam.token()) { $('g-signin').classList.remove('hidden'); return; }
+    function go() {
+      S.team = DLTeam.current(); S.players = S.team ? DLTeam.players(S.team.id) : [];
+      if (!S.players.length) { $('app').classList.add('hidden'); $('g-team').classList.remove('hidden'); return false; }
+      $('g-team').classList.add('hidden'); $('app').classList.remove('hidden');
+      $('h-team').textContent = S.team.name + ' · ' + S.players.length + ' players';
+      return true;
+    }
+    var had = !!DLTeam.cached();
+    if (had && go()) { loadSession(); loadBests(); next(null, true); }
+    DLTeam.refresh().then(function () {
+      var first = !S.sid;
+      if (go()) { if (first) { loadSession(); loadBests(); next(null, true); } else { S.players = DLTeam.players(S.team.id); draw(); } }
+    }).catch(function (e) { if (e.status === 401) { $('app').classList.add('hidden'); $('g-signin').classList.remove('hidden'); } else if (!had) { $('g-team').classList.remove('hidden'); } });
+    syncLabel(); DLTeam.flush().then(syncLabel);
+  }
+
+  /* ---------- who is up ---------- */
+  function select(pid, remember) {
+    if (S.phase !== 'idle') return;
+    if (remember && S.sel && S.sel !== pid) S.hist.push(S.sel);
+    S.sel = pid; draw();
+    var b = document.querySelector('.hf-kid[data-id="' + pid + '"]'); if (b && b.scrollIntoView) b.scrollIntoView({ block: 'nearest' });
+  }
+  /* Next kid after "from" with no run yet this session; then anyone still owed a second run. */
+  function next(from, quiet) {
+    var n = S.players.length, i0 = -1;
+    S.players.forEach(function (p, i) { if (p.id === from) i0 = i; });
+    for (var want = 0; want < MAX; want++) {
+      for (var k = 1; k <= n; k++) {
+        var p = S.players[(i0 + k + n) % n];
+        if (p.id !== from && runsFor(p.id).length === want) { select(p.id, !quiet); return true; }
+      }
+    }
+    if (from && runsFor(from).length < MAX) { select(from, false); return true; }
+    S.sel = null; draw(); return false;
+  }
+
+  /* ---------- drawing ---------- */
+  function draw() {
+    if (!S.team) return;
+    $('h-roster').innerHTML = S.players.map(function (p) {
+      var rs = runsFor(p.id), b = bestOf(rs), busy = S.phase !== 'idle';
+      return '<button type="button" class="hf-kid' + (rs.length ? ' timed' : '') + (p.id === S.sel ? ' sel' : '') + '" data-id="' + esc(p.id) + '"' + (busy && p.id !== S.sel ? ' disabled' : '') + ' aria-pressed="' + (p.id === S.sel) + '">' +
+        (rs.length ? CHECK : '') + '<b>' + esc(p.name) + '</b><span>' + (p.jersey ? '#' + esc(p.jersey) : '&nbsp;') +
+        (rs.length ? ' &middot; ' + fmt(b) + (rs.length > 1 ? ' (2)' : '') : '') + '</span></button>';
+    }).join('');
+    var p = player(S.sel), who = $('h-who');
+    if (!p) {
+      who.innerHTML = '<b>' + (S.runs.length ? 'Everyone ran twice' : 'Pick a player') + '</b><small>' + (S.runs.length ? 'Nice work. Times are on each player\'s page.' : 'Tap a name above.') + '</small>';
+    } else {
+      var rs = runsFor(p.id), b = bestOf(rs);
+      who.innerHTML = '<b>' + esc(p.name) + (p.jersey ? ' <span style="font-family:var(--mono);font-size:0.95rem;color:var(--gold)">#' + esc(p.jersey) + '</span>' : '') + '</b><small>' +
+        (rs.length ? rs.map(function (r) { return '<button type="button" class="hf-chip' + (rs.length > 1 && r.seconds === b ? ' best' : '') + '" data-run="' + esc(r.id) + '" aria-label="Run ' + r.runNumber + ', ' + fmt(r.seconds) + ' seconds. Tap to remove.">Run ' + r.runNumber + ' ' + fmt(r.seconds) + (rs.length > 1 && r.seconds === b ? ' best' : '') + '</button>'; }).join('')
+          : 'Run 1 of ' + MAX) + '</small>';
+    }
+    $('h-back').disabled = S.phase !== 'idle' || !S.hist.length;
+    $('h-skip').disabled = S.phase !== 'idle';
+    drawPad();
+  }
+  function drawPad() {
+    var pad = $('h-pad'), p = player(S.sel);
+    if (S.phase === 'done') {
+      pad.innerHTML = '<div class="hf-done"><div class="time">' + fmt(S.ms / 1000) + '<small id="h-pbnote"></small></div>' +
+        '<button type="button" class="hf-save" id="h-save"><i id="h-bar"></i><span>SAVE</span></button>' +
+        '<button type="button" class="hf-redo" id="h-redo">REDO</button></div>';
+      var old = priorBest(S.sel), t = Math.round(S.ms / 10) / 100;
+      $('h-pbnote').textContent = old !== null && t < old ? 'New PB!' : '';
+      /* SAVE and REDO only count a fresh press that started on them, never the tail of the STOP tap. */
+      var armed = null;
+      ['h-save', 'h-redo'].forEach(function (id) {
+        var el = $(id);
+        el.addEventListener('pointerdown', function () { armed = performance.now() - S.stoppedAt > GUARD ? id : null; });
+        el.addEventListener('keydown', function (e) { if (e.key === ' ' || e.key === 'Enter') armed = id; });
+        el.addEventListener('click', function () { if (armed !== id) return; armed = null; if (id === 'h-save') save(); else redo(); });
+      });
+      var bar = $('h-bar'); bar.style.transition = 'none'; bar.style.transform = 'scaleX(1)';
+      requestAnimationFrame(function () { requestAnimationFrame(function () { bar.style.transition = 'transform ' + (AUTOSAVE / 1000) + 's linear'; bar.style.transform = 'scaleX(0)'; }); });
+      return;
+    }
+    var full = p && runsFor(p.id).length >= MAX;
+    var cls = S.phase === 'run' ? 'stop' : (!p || full ? 'off' : 'start');
+    var inner = S.phase === 'run' ? '<span class="clock" id="h-clock">0.00</span><span class="lbl" style="font-size:clamp(1.6rem,8vw,2.2rem)">STOP</span>'
+      : !p ? '<span class="lbl" style="font-size:clamp(1.6rem,8vw,2.2rem)">Pick a player</span>'
+      : full ? '<span class="lbl" style="font-size:clamp(1.5rem,7vw,2rem)">Two runs saved</span><span class="sub">Tap Skip for the next kid</span>'
+      : '<span class="lbl">START</span><span class="sub">' + esc(p.name) + ', run ' + (runsFor(p.id).length + 1) + '</span>';
+    pad.innerHTML = '<button type="button" class="hf-big ' + cls + '" id="h-big"' + (cls === 'off' ? ' aria-disabled="true"' : '') + '>' + inner + '</button>';
+    $('h-big').addEventListener('pointerdown', tap);
+    $('h-big').addEventListener('keydown', function (e) { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); tap(e); } });
+    $('h-big').addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  }
+
+  /* ---------- the clock ---------- */
+  function tap(e) {
+    var now = performance.now();
+    if (e && e.cancelable) e.preventDefault();
+    if (e && e.button > 0) return;
+    if (S.phase === 'idle') {
+      var p = player(S.sel); if (!p || runsFor(p.id).length >= MAX) return;
+      if (now - S.stoppedAt < GUARD + 100) return; /* a double tap on SAVE or REDO never starts a new run */
+      S.t0 = now; S.phase = 'run'; wake(); draw(); tick();
+    } else if (S.phase === 'run') {
+      if (now - S.t0 < MIN_RUN) return; /* a bounce or double tap right after START is ignored */
+      S.ms = now - S.t0; S.stoppedAt = now; S.phase = 'done';
+      cancelAnimationFrame(S.raf);
+      if (navigator.vibrate) { try { navigator.vibrate(30); } catch (er) {} }
+      draw();
+      S.saveT = setTimeout(function () { save(true); }, AUTOSAVE);
+    }
+  }
+  function tick() {
+    if (S.phase !== 'run') return;
+    var c = $('h-clock'); if (c) c.textContent = fmt((performance.now() - S.t0) / 1000);
+    S.raf = requestAnimationFrame(tick);
+  }
+  function redo() {
+    clearTimeout(S.saveT); S.phase = 'idle'; S.stoppedAt = performance.now(); draw();
+  }
+  function save(auto) {
+    if (S.phase !== 'done') return;
+    clearTimeout(S.saveT);
+    var p = player(S.sel), rs = runsFor(S.sel), used = rs.map(function (r) { return r.runNumber; });
+    var secs = Math.round(S.ms / 10) / 100;
+    var old = priorBest(S.sel);
+    var run = { id: rid(), playerId: S.sel, sessionId: S.sid, date: S.date, type: S.type, runNumber: used.indexOf(1) < 0 ? 1 : 2, seconds: secs, createdAt: Date.now() };
+    S.runs.push(run); putLive(); noteRun(run);
+    S.phase = 'idle'; if (!auto) S.stoppedAt = performance.now();
+    toast('Saved <b>' + fmt(secs) + '</b> for ' + esc(p ? p.name : '') + (old !== null && secs < old ? ' &middot; <b>New PB!</b>' : old === null ? ' &middot; first time on the board' : ''));
+    DLTeam.queueRun(run).then(syncLabel); syncLabel();
+    if (!next(S.sel, false)) draw();
+  }
+
+  /* ---------- controls ---------- */
+  $('h-roster').addEventListener('click', function (e) { var b = e.target.closest('.hf-kid'); if (b && !b.disabled) select(b.getAttribute('data-id'), true); });
+  $('h-skip').addEventListener('click', function () { if (S.phase === 'idle' && S.players.length) { var from = S.sel; if (!next(from, false)) toast('Everyone has two runs'); } });
+  $('h-back').addEventListener('click', function () { if (S.phase === 'idle' && S.hist.length) { S.sel = S.hist.pop(); draw(); } });
+  $('h-who').addEventListener('click', function (e) {
+    var c = e.target.closest('[data-run]'); if (!c || S.phase !== 'idle') return;
+    var r = S.runs.filter(function (x) { return x.id === c.getAttribute('data-run'); })[0]; if (!r) return;
+    if (!window.confirm('Remove run ' + r.runNumber + ' (' + fmt(r.seconds) + ')?')) return;
+    S.runs = S.runs.filter(function (x) { return x.id !== r.id; }); putLive();
+    if (S.all[r.id]) { delete S.all[r.id]; var b = {}; Object.keys(S.all).forEach(function (k) { var x = S.all[k]; if (b[x.playerId] == null || x.seconds < b[x.playerId]) b[x.playerId] = x.seconds; }); S.best = b; }
+    draw();
+    DLTeam.queueRemove(r.id).then(syncLabel); syncLabel();
+  });
+  $('h-date').value = S.date;
+  $('h-date').addEventListener('change', function () { if (!/^\d{4}-\d{2}-\d{2}$/.test(this.value) || S.phase !== 'idle') { this.value = S.date; return; } S.date = this.value; S.hist = []; loadSession(); next(null, true); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-type]'), function (b) {
+    b.addEventListener('click', function () {
+      if (S.phase !== 'idle' || S.type === b.getAttribute('data-type')) return;
+      S.type = b.getAttribute('data-type');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-type]'), function (x) { x.classList.toggle('on', x === b); });
+      S.hist = []; loadSession(); next(null, true);
+    });
+  });
+  $('g-go').addEventListener('click', function () { if (window.dlSignIn) window.dlSignIn(); });
+  document.addEventListener('pointerdown', wake, { passive: true });
+  window.addEventListener('beforeunload', function (e) { if (S.phase === 'run' || S.phase === 'done') { e.preventDefault(); e.returnValue = ''; } });
+
+  if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/h2f-sw.js').catch(function () {}); }
+  start();
+})();
+</script>
+<script src="js/site.js"></script>
+</body>
+</html>

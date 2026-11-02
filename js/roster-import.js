@@ -92,6 +92,15 @@
     '.ri-msg.ok{color:var(--ok,#7ad6a8);font-weight:600}.ri-msg.err{color:var(--gold-light,#e2a85a);font-weight:600}' +
     '.ri-fine{font-size:0.78rem;color:var(--ink-faint,rgba(244,239,230,0.6));margin-top:0.35rem}';
 
+  function myTeam() {
+    try {
+      var c = JSON.parse(localStorage.getItem('dl_team_v1') || 'null'); if (!c || !c.teams || !c.teams.length) return [];
+      var cur = JSON.parse(localStorage.getItem('dl_team_cur') || 'null'), t = c.teams[0];
+      c.teams.forEach(function (x) { if (x.id === cur) t = x; });
+      return (c.players || []).filter(function (p) { return p.kind === 'player' && p.team_id === t.id; }).map(function (p) { return p.name; });
+    } catch (e) { return []; }
+  }
+
   window.RosterImport = {
     parse: function (text) { return namesFromRows(parseDelimited(text)); },
     mount: function (el, onNames) {
@@ -110,6 +119,14 @@
         '<div class="ri-msg"></div>' +
         '<div class="ri-fine">Works with GameChanger and TeamSnap exports, or any sheet with a name column. Parsed on your device. Nothing is uploaded.</div></div>';
       var input = el.querySelector('input[type=file]'), ta = el.querySelector('.ri-paste'), msg = el.querySelector('.ri-msg'), prow = el.querySelector('[data-ri=paste-row]');
+      /* My Team (team.html): the coach's saved roster, one tap. Read from this phone, so it works offline. */
+      var mine = myTeam();
+      if (mine.length) {
+        var tb = document.createElement('button'); tb.type = 'button'; tb.className = 'ri-btn'; tb.setAttribute('data-ri', 'team');
+        tb.textContent = 'Use My Team (' + mine.length + ')';
+        el.querySelector('.ri-row').insertBefore(tb, el.querySelector('.ri-row').firstChild);
+        tb.addEventListener('click', function () { done(myTeam(), 'My Team'); });
+      }
       function done(names, src) {
         if (!names.length) { msg.className = 'ri-msg err'; msg.textContent = 'No names found. Try a file with a Name column, or paste the names one per line.'; return; }
         msg.className = 'ri-msg ok'; msg.textContent = 'Loaded ' + names.length + ' names' + (src ? ' from ' + src : '') + '.';

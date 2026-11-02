@@ -1,0 +1,49 @@
+/* My Team, Home-to-First Timer, Player profile. Field surface. Reads main.css tokens only. */
+.tm-wrap { max-width: 640px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+.tm-card { background: var(--forest2); border: 1px solid var(--rule); border-radius: var(--radius-lg); padding: 1.2rem 1.1rem; margin-bottom: 1rem; }
+.tm-eb { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.45rem; }
+.tm-h { font-family: var(--serif); font-size: 1.45rem; font-weight: 600; color: var(--ink); line-height: 1.15; letter-spacing: -0.015em; margin-bottom: 0.5rem; }
+.tm-p { color: var(--ink-soft); font-size: 1rem; line-height: 1.55; }
+.tm-note { color: var(--ink-faint); font-size: 0.85rem; line-height: 1.5; margin-top: 0.6rem; }
+.tm-err { color: var(--gold-light); font-size: 0.92rem; min-height: 1.2em; margin-top: 0.4rem; font-weight: 600; }
+.tm-ok { color: var(--ok); font-size: 0.92rem; min-height: 1.2em; margin-top: 0.4rem; font-weight: 600; }
+.tm-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+.tm-row .btn { flex: 1; justify-content: center; min-height: 48px; }
+.tm-field { margin-bottom: 0.8rem; flex: 1; min-width: 0; }
+.tm-field label { display: block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); margin-bottom: 0.35rem; }
+.tm-field input, .tm-field select, .tm-field textarea { width: 100%; background: var(--forest-deep); border: 1px solid var(--rule); color: var(--ink); border-radius: 10px; padding: 0.75rem 0.8rem; font-family: var(--sans); font-size: 1rem; min-height: 48px; }
+.tm-field textarea { min-height: 140px; line-height: 1.5; }
+.tm-field input:focus, .tm-field select:focus, .tm-field textarea:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+.tm-ghost { background: none; border: 1px solid var(--rule); color: var(--ink-soft); border-radius: 999px; padding: 0.5rem 1rem; font: inherit; font-size: 0.88rem; font-weight: 600; min-height: 44px; cursor: pointer; }
+.tm-ghost:hover { border-color: var(--gold); color: var(--gold-light); }
+.tm-link { background: none; border: 0; padding: 0; color: var(--gold-light); font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+.tm-list { list-style: none; display: grid; gap: 0.45rem; }
+.tm-list li { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 12px; padding: 0.6rem 0.75rem; display: flex; align-items: center; gap: 0.6rem; min-height: 56px; }
+.tm-num { font-family: var(--mono); font-size: 0.95rem; font-weight: 500; color: var(--gold); min-width: 2.6rem; text-align: center; }
+.tm-name { flex: 1; min-width: 0; color: var(--ink); font-weight: 600; font-size: 1.05rem; text-decoration: none; }
+.tm-name small { display: block; font-weight: 400; font-size: 0.8rem; color: var(--ink-faint); margin-top: 1px; }
+a.tm-name:hover { color: var(--gold-light); text-decoration: none; }
+.tm-acts { display: flex; gap: 0.35rem; }
+.tm-acts button { background: none; border: 1px solid var(--rule); color: var(--ink-soft); border-radius: 10px; min-width: 44px; min-height: 44px; padding: 0 0.6rem; font: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+.tm-seg { display: inline-grid; grid-auto-flow: column; gap: 3px; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 12px; padding: 3px; }
+.tm-seg button { background: transparent; border: 0; border-radius: 9px; padding: 0 0.95rem; min-height: 44px; font: inherit; font-weight: 600; font-size: 0.95rem; color: var(--ink-soft); cursor: pointer; }
+.tm-seg button.on { background: var(--fill); color: var(--on-fill); }
+.hidden { display: none !important; }
+
+/* Player profile */
+.pp-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin: 0.4rem 0 0.9rem; }
+.pp-kpi { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 14px; padding: 0.9rem 0.8rem; text-align: center; }
+.pp-kpi b { display: block; font-family: var(--serif); font-size: clamp(2.2rem, 11vw, 2.9rem); line-height: 1; color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.pp-kpi i { display: block; font-style: normal; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin-top: 0.45rem; }
+.pp-pb { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; border: 1.5px solid var(--gold); border-radius: 14px; padding: 0.8rem 1rem; margin-bottom: 1rem; }
+.pp-pb span { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+.pp-pb b { font-family: var(--serif); font-size: 1.8rem; color: var(--gold-light); font-weight: 600; font-variant-numeric: tabular-nums; }
+.pp-pb small { display: block; color: var(--ink-faint); font-size: 0.8rem; }
+.pp-chart svg { width: 100%; height: auto; display: block; }
+.pp-chart-note { font-size: 0.82rem; color: var(--ink-faint); margin-top: 0.35rem; min-height: 1.2em; }
+.pp-tag { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.15rem 0.55rem; border-radius: 999px; border: 1px solid var(--gold); color: var(--gold-light); margin-left: 0.4rem; vertical-align: 2px; }
+.pp-sess { list-style: none; display: grid; gap: 0.4rem; margin-top: 0.5rem; }
+.pp-sess li { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.6rem 0.75rem; font-size: 0.92rem; color: var(--ink-soft); }
+.pp-sess li b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.pp-run { font-variant-numeric: tabular-nums; }
+.pp-run.best { color: var(--ink); font-weight: 700; }
