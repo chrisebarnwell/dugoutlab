@@ -14,7 +14,7 @@ FOOTER = '''<footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand">
       <div class="logo">Dugout<span>Lab</span></div>
-      <p>Better practices. Happier ballplayers. Less guesswork. Free tools and honest, evidence-checked coaching for volunteer coaches and parents.</p>
+      <p>For the coach trying to get it right. Better practices. Kids who want to come back. Free tools and honest, evidence-checked coaching for volunteer coaches and parents.</p>
       <div class="theme-switch" role="group" aria-label="Page style">
         <span>Page style</span>
         <button type="button" data-theme-set="auto">Auto</button><button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
@@ -136,6 +136,8 @@ def head_block(f, s):
         '<meta name="theme-color" content="#0F1F18">',
         '<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">',
         '<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">',
+        '<link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">',
+        '<link rel="manifest" href="/site.webmanifest">',
         '<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>']
     ld = None
     if art:
