@@ -19,7 +19,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
 <link rel="manifest" href="/site.webmanifest">
-<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var d=document.documentElement,t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);if(localStorage.getItem("dl_mode")==="computer")d.setAttribute("data-mode","computer")}catch(e){}</script>
 <!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -142,7 +142,7 @@ input[type="text"]::placeholder, input[type="number"]::placeholder, textarea::pl
 input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--gold);
-  box-shadow: 0 0 0 2px rgba(200,134,46,0.15);
+  box-shadow: 0 0 0 2px rgba(var(--fill-rgb),0.15);
 }
 select option { background: var(--forest-deep); color: var(--ink); }
 .input-row {
@@ -301,7 +301,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 .priority-card:hover { border-color: var(--gold); }
 .priority-card.active {
   border-color: var(--gold);
-  background: rgba(200,134,46,0.08);
+  background: rgba(var(--fill-rgb),0.08);
 }
 .priority-card .pc-icon { margin-bottom: 0.4rem; }
 .priority-card .pc-name {
@@ -551,7 +551,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 .mode-switch { max-width: 1040px; margin: 1.5rem auto 0; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 .mode-tab { display: block; border: 1.5px solid var(--rule); border-radius: 12px; padding: 1rem 1.15rem; text-decoration: none; color: var(--ink); background: var(--forest2); }
 .mode-tab:hover { border-color: var(--gold); text-decoration: none; color: var(--ink); }
-.mode-tab.active { border-color: var(--gold); background: rgba(200,134,46,0.1); }
+.mode-tab.active { border-color: var(--gold); background: rgba(var(--fill-rgb),0.1); }
 .mode-tab .mt-k { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
 .mode-tab .mt-t { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; margin: 0.2rem 0; }
 .mode-tab .mt-d { font-size: 0.84rem; color: var(--ink-soft); line-height: 1.45; }
@@ -563,6 +563,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 <body class="paper">
 
 <nav class="nav">
+  <button type="button" class="cm-toggle" role="switch" aria-checked="false" data-mode-toggle><span class="cm-track" aria-hidden="true"></span><span class="cm-label">Computer Mode</span></button>
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
   <ul class="nav-links">
     <li><a href="practice.html">Practice</a></li>

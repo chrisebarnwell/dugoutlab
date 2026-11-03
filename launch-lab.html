@@ -19,7 +19,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
 <link rel="manifest" href="/site.webmanifest">
-<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var d=document.documentElement,t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);if(localStorage.getItem("dl_mode")==="computer")d.setAttribute("data-mode","computer")}catch(e){}</script>
 <!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,14 +75,14 @@
   .ll-flash { animation: llflash 0.9s ease; }
   #ll-result-card { scroll-margin-top: 72px; }
   #ll-result-card.ll-pop { animation: llpop 0.9s ease; }
-  @keyframes llpop { 0% { box-shadow: 0 0 0 0 rgba(200,134,46,0.9); border-color: var(--gold); } 100% { box-shadow: 0 0 0 14px rgba(200,134,46,0); } }
+  @keyframes llpop { 0% { box-shadow: 0 0 0 0 rgba(var(--fill-rgb),0.9); border-color: var(--gold); } 100% { box-shadow: 0 0 0 14px rgba(var(--fill-rgb),0); } }
   .ll-short, .ll-moretog { display: none; }
   .ll-hud-row { display: flex; gap: 0.5rem; align-items: stretch; margin-top: 0.25rem; }
   .ll-hud-row .ll-swing { flex: 1; margin-top: 0; }
   .ll-moretog { flex: 0 0 auto; background: var(--forest-deep); color: var(--ink-soft); border: 1.5px solid var(--rule); border-radius: 10px; padding: 0.3rem 0.55rem; font: inherit; font-size: 0.72rem; line-height: 1.2; font-weight: 600; }
   .ll-moretog.on { border-color: var(--gold); color: var(--gold-light); }
   #ll-swing-card { scroll-margin-top: 72px; }
-  @keyframes llflash { 0% { background: rgba(200,134,46,0.35); } 100% { background: transparent; } }
+  @keyframes llflash { 0% { background: rgba(var(--fill-rgb),0.35); } 100% { background: transparent; } }
   .ll-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin-top: 0.4rem; }
   .ll-pick button { background: var(--forest-deep); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 9px; padding: 0.6rem 0.3rem; font: inherit; font-size: 0.92rem; font-weight: 600; }
   .ll-pick button.on { background: var(--fill); border-color: var(--gold); color: var(--forest); }
@@ -136,6 +136,7 @@
 <body data-nobar>
 
 <nav class="nav">
+  <button type="button" class="cm-toggle" role="switch" aria-checked="false" data-mode-toggle><span class="cm-track" aria-hidden="true"></span><span class="cm-label">Computer Mode</span></button>
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
     <ul class="nav-links">
     <li><a href="practice.html">Practice</a></li>

@@ -113,6 +113,17 @@ FOOTER_RE = re.compile(r'<footer class="footer">.*?</footer>', re.S)
 # Generated from each page's own <title> and description, so a new page only needs those two.
 SITE = 'https://dugoutlab.com'
 HEAD_RE = re.compile(r'\n?<!-- dl:head -->.*?<!-- /dl:head -->', re.S)
+# Applied before first paint: Page style (dl_theme) and Computer Mode (dl_mode). 404.html carries it by hand.
+HEAD_SCRIPT = ('<script>try{var d=document.documentElement,t=localStorage.getItem("dl_theme");'
+               'if(t==="light"||t==="dark")d.setAttribute("data-theme",t);'
+               'if(localStorage.getItem("dl_mode")==="computer")d.setAttribute("data-mode","computer")}catch(e){}</script>')
+
+# Computer Mode switch: the first thing in every top nav, so it sits top-left in both modes (css/main.css, js/site.js)
+MODE_TOGGLE = ('<button type="button" class="cm-toggle" role="switch" aria-checked="false" data-mode-toggle>'
+               '<span class="cm-track" aria-hidden="true"></span><span class="cm-label">Computer Mode</span></button>')
+TOGGLE_RE = re.compile(r'<nav class="nav">\n(?:  <button type="button" class="cm-toggle"[^\n]*\n)?')
+TOGGLE_WANT = '<nav class="nav">\n  ' + MODE_TOGGLE + '\n'
+
 def head_block(f, s):
     import html as H, json
     t = re.search(r'<title>(.*?)</title>', s, re.S)
@@ -138,7 +149,7 @@ def head_block(f, s):
         '<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">',
         '<link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">',
         '<link rel="manifest" href="/site.webmanifest">',
-        '<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>']
+        HEAD_SCRIPT]
     ld = None
     if art:
         ld = {'@context': 'https://schema.org', '@type': 'Article', 'headline': short, 'description': desc,
@@ -208,6 +219,17 @@ def main():
                         print(f'fixed {name}:', f)
                     else:
                         problems.append(f'{f}: {name} differs from the canonical menu (run --fix)')
+        if f.endswith('.html') and '<nav class="nav">' in s:
+            m = TOGGLE_RE.search(s)
+            if m.group(0) != TOGGLE_WANT:
+                if fix:
+                    s = TOGGLE_RE.sub(lambda _: TOGGLE_WANT, s, count=1)
+                    open(f, 'w', encoding='utf-8').write(s)
+                    print('fixed mode switch:', f)
+                else:
+                    problems.append(f'{f}: Computer Mode switch missing or stale in the nav (run --fix)')
+        if f == '404.html' and HEAD_SCRIPT not in s:
+            problems.append('404.html: head script (Page style + Computer Mode) missing or stale')
         if f.endswith('.html') and f not in stubs and f != '404.html' and '<title>' in s:
             want_s = with_head(f, s)
             if want_s != s:

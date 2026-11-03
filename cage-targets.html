@@ -19,7 +19,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
 <link rel="manifest" href="/site.webmanifest">
-<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var d=document.documentElement,t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);if(localStorage.getItem("dl_mode")==="computer")d.setAttribute("data-mode","computer")}catch(e){}</script>
 <!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,7 +64,7 @@ details.setup .field-grid { margin-top: 0.9rem; }
 .src-list { margin: 0.6rem 0 0 1.2rem; color: var(--ink-soft); font-size: 0.9rem; line-height: 1.65; }
 .src-list li { margin-bottom: 0.5rem; }
 .src-list strong { color: var(--ink); }
-.model-flag { display: inline-block; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-light); border: 1px solid rgba(200,134,46,0.4); border-radius: 999px; padding: 0.25rem 0.7rem; margin-bottom: 0.9rem; }
+.model-flag { display: inline-block; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-light); border: 1px solid rgba(var(--fill-rgb),0.4); border-radius: 999px; padding: 0.25rem 0.7rem; margin-bottom: 0.9rem; }
 .sight { position: fixed; inset: 0; z-index: 2000; background: #050b08; display: none; color: #f4efe6; }
 .sight.open { display: block; }
 .sight video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -77,7 +77,7 @@ details.setup .field-grid { margin-top: 0.9rem; }
 .sight-ring::before, .sight-ring::after { content: ""; position: absolute; background: #f4efe6; }
 .sight-ring::before { left: 50%; top: 38%; bottom: 38%; width: 2px; margin-left: -1px; }
 .sight-ring::after { top: 50%; left: 38%; right: 38%; height: 2px; margin-top: -1px; }
-.sight-ring.is-hit { border-color: #C8862E; border-width: 8px; box-shadow: 0 0 0 8px rgba(200,134,46,0.35); }
+.sight-ring.is-hit { border-color: #C8862E; border-width: 8px; box-shadow: 0 0 0 8px rgba(var(--fill-rgb),0.35); }
 .sight-ring.is-liner { border-color: #7ad6a8; }
 .sight-gauge { position: absolute; right: 14px; top: 24%; bottom: 24%; width: 18px; border-radius: 9px; background: rgba(5,11,8,0.6); border: 1px solid rgba(244,239,230,0.5); }
 .sight-gauge i { position: absolute; left: 0; right: 0; }
@@ -97,7 +97,7 @@ details.setup .field-grid { margin-top: 0.9rem; }
 .sight-ar.r { margin: -20px 0 0 110px; border-left-color: #e2a85a; border-right-width: 0; }
 .sight-ar.u { margin: -130px 0 0 -20px; border-bottom-color: #e2a85a; border-top-width: 0; }
 .sight-ar.d { margin: 110px 0 0 -20px; border-top-color: #e2a85a; border-bottom-width: 0; }
-.sight-pin { position: absolute; left: 0; top: 0; width: 56px; height: 56px; margin: -28px 0 0 -28px; border: 4px solid #C8862E; border-radius: 50%; background: rgba(200,134,46,0.28); box-shadow: 0 0 0 2px rgba(0,0,0,0.5); }
+.sight-pin { position: absolute; left: 0; top: 0; width: 56px; height: 56px; margin: -28px 0 0 -28px; border: 4px solid #C8862E; border-radius: 50%; background: rgba(var(--fill-rgb),0.28); box-shadow: 0 0 0 2px rgba(0,0,0,0.5); }
 .sight-pin.edge { width: 0; height: 0; border-radius: 0; background: none; border: 22px solid transparent; box-shadow: none; margin: -22px 0 0 -22px; filter: drop-shadow(0 0 3px #000); }
 .sight-pin.edge.l { border-right-color: #C8862E; border-left-width: 0; }
 .sight-pin.edge.r { border-left-color: #C8862E; border-right-width: 0; }
@@ -135,6 +135,7 @@ details.setup .field-grid { margin-top: 0.9rem; }
 <body>
 
 <nav class="nav">
+  <button type="button" class="cm-toggle" role="switch" aria-checked="false" data-mode-toggle><span class="cm-track" aria-hidden="true"></span><span class="cm-label">Computer Mode</span></button>
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
   <ul class="nav-links">
     <li><a href="practice.html">Practice</a></li>

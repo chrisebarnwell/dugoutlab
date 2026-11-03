@@ -19,7 +19,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
 <link rel="manifest" href="/site.webmanifest">
-<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var d=document.documentElement,t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);if(localStorage.getItem("dl_mode")==="computer")d.setAttribute("data-mode","computer")}catch(e){}</script>
 <!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -101,7 +101,7 @@
 .kind button.on { background: var(--ink); color: var(--forest-deep); border-color: var(--ink); }
 .net { background: var(--forest-deep); border: 2px dashed rgba(244,239,230,0.35); border-radius: 12px; padding: 0.55rem; }
 .net-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.45rem; }
-.zone { border: 2px solid var(--gold); background: rgba(200,134,46,0.14); color: var(--ink); border-radius: 12px; padding: 0.8rem 0.2rem; font-family: var(--sans); font-weight: 700; font-size: 0.8rem; line-height: 1.2; min-height: 78px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.2rem; }
+.zone { border: 2px solid var(--gold); background: rgba(var(--fill-rgb),0.14); color: var(--ink); border-radius: 12px; padding: 0.8rem 0.2rem; font-family: var(--sans); font-weight: 700; font-size: 0.8rem; line-height: 1.2; min-height: 78px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.2rem; }
 .zone b { font-family: var(--serif); font-size: 1.45rem; color: var(--gold); line-height: 1; }
 .zone.called { background: var(--fill); color: var(--on-fill); } .zone.called b { color: var(--forest-deep); }
 .zone:active { transform: scale(0.97); }
@@ -142,7 +142,7 @@
 .box th:first-child, .box td:first-child { text-align: left; }
 .box td { padding: 0.45rem 0.3rem; border-top: 1px solid var(--rule); color: var(--ink-soft); text-align: right; font-family: var(--mono); font-size: 0.82rem; }
 .box td:first-child { font-family: var(--sans); color: var(--ink); font-size: 0.9rem; }
-.box tr.mvp td { background: rgba(200,134,46,0.1); }
+.box tr.mvp td { background: rgba(var(--fill-rgb),0.1); }
 .box tr.mvp td:first-child::after { content: ' MVP'; font-family: var(--mono); font-size: 0.62rem; color: var(--gold); letter-spacing: 0.1em; }
 
 /* stats */
@@ -179,6 +179,7 @@
 <body>
 
 <nav class="nav">
+  <button type="button" class="cm-toggle" role="switch" aria-checked="false" data-mode-toggle><span class="cm-track" aria-hidden="true"></span><span class="cm-label">Computer Mode</span></button>
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
   <ul class="nav-links">
     <li><a href="practice.html">Practice</a></li>

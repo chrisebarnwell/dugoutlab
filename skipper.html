@@ -19,7 +19,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
 <link rel="manifest" href="/site.webmanifest">
-<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var d=document.documentElement,t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);if(localStorage.getItem("dl_mode")==="computer")d.setAttribute("data-mode","computer")}catch(e){}</script>
 <!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,7 +61,7 @@
   .sk-score th, .sk-score td { padding: 0.3rem 0.35rem; text-align: center; border-bottom: 1px solid var(--rule); }
   .sk-score th { color: var(--ink-faint); font-weight: 500; font-size: 0.7rem; }
   .sk-score td:first-child, .sk-score th:first-child { text-align: left; font-family: var(--sans, Inter, sans-serif); font-weight: 600; white-space: nowrap; }
-  .sk-score td.cur { background: rgba(200,134,46,0.18); }
+  .sk-score td.cur { background: rgba(var(--fill-rgb),0.18); }
   .sk-score td.tot { color: var(--gold-light); font-weight: 500; }
   .sk-score tr.you td:first-child::after { content: " (you)"; color: var(--gold); font-weight: 500; font-size: 0.72rem; }
   .sk-status { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; font-size: 0.9rem; color: var(--ink-soft); }
@@ -127,9 +127,9 @@
   .sk-dec { list-style: none; margin: 0; padding: 0; }
   .sk-dec li { font-size: 0.88rem; color: var(--ink-soft); padding: 0.4rem 0; border-top: 1px solid var(--rule); line-height: 1.45; }
   .sk-dec li b { color: var(--ink); }
-  .sk-notice { background: rgba(200,134,46,0.14); border: 1px solid var(--gold); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.88rem; color: var(--ink); margin-bottom: 0.6rem; line-height: 1.45; }
+  .sk-notice { background: rgba(var(--fill-rgb),0.14); border: 1px solid var(--gold); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.88rem; color: var(--ink); margin-bottom: 0.6rem; line-height: 1.45; }
   .sk-flash { animation: skflash 0.8s ease; }
-  @keyframes skflash { 0% { background: rgba(200,134,46,0.35); } 100% { background: transparent; } }
+  @keyframes skflash { 0% { background: rgba(var(--fill-rgb),0.35); } 100% { background: transparent; } }
   details.sk-roster summary { cursor: pointer; font-weight: 600; font-size: 0.92rem; padding: 0.3rem 0; }
   .sk-roster table { width: 100%; border-collapse: collapse; font-size: 0.8rem; font-family: var(--mono); }
   .sk-roster td, .sk-roster th { padding: 0.25rem 0.3rem; text-align: right; border-bottom: 1px solid var(--rule); }
@@ -204,6 +204,7 @@
 <body>
 
 <nav class="nav">
+  <button type="button" class="cm-toggle" role="switch" aria-checked="false" data-mode-toggle><span class="cm-track" aria-hidden="true"></span><span class="cm-label">Computer Mode</span></button>
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
     <ul class="nav-links">
     <li><a href="practice.html">Practice</a></li>

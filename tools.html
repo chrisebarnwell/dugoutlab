@@ -19,7 +19,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
 <link rel="manifest" href="/site.webmanifest">
-<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var d=document.documentElement,t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);if(localStorage.getItem("dl_mode")==="computer")d.setAttribute("data-mode","computer")}catch(e){}</script>
 <!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,6 +29,7 @@
 <body class="paper">
 
 <nav class="nav">
+  <button type="button" class="cm-toggle" role="switch" aria-checked="false" data-mode-toggle><span class="cm-track" aria-hidden="true"></span><span class="cm-label">Computer Mode</span></button>
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
     <ul class="nav-links">
     <li><a href="practice.html">Practice</a></li>
@@ -59,7 +60,7 @@
 </div>
 <style>
   .tl-jump { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; }
-  .tl-jump a { display: inline-flex; align-items: center; min-height: 40px; padding: 0.45rem 0.9rem; border: 1px solid rgba(200,134,46,0.45); border-radius: 999px; color: var(--ink); font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+  .tl-jump a { display: inline-flex; align-items: center; min-height: 40px; padding: 0.45rem 0.9rem; border: 1px solid rgba(var(--fill-rgb),0.45); border-radius: 999px; color: var(--ink); font-size: 0.85rem; font-weight: 600; text-decoration: none; }
   .tl-jump a:hover { border-color: var(--gold); color: var(--gold-light); text-decoration: none; }
   .tl-group { scroll-margin-top: 72px; }
 </style>
