@@ -19,7 +19,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
 <link rel="manifest" href="/site.webmanifest">
-<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var d=document.documentElement,t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);if(localStorage.getItem("dl_mode")==="computer")d.setAttribute("data-mode","computer")}catch(e){}</script>
 <!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,7 +82,7 @@
   @media(max-width:760px){.tr-split{grid-template-columns:1fr}}
   .tr-split>div{border-radius:var(--radius-lg);padding:1.4rem;border:1px solid var(--rule)}
   .tr-split .research{background:var(--forest-deep)}
-  .tr-split .ours{background:rgba(200,134,46,0.10);border-color:var(--gold)}
+  .tr-split .ours{background:rgba(var(--fill-rgb),0.10);border-color:var(--gold)}
   .tr-split .k{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:.5rem}
   .tr-split .research .k{color:var(--ink-faint)}
   .tr-split .ours .k{color:var(--gold)}
@@ -110,7 +110,7 @@
   .tr-list li{padding:5px 0 5px 18px;position:relative;font-size:1rem;color:var(--ink)}
   .tr-list li::before{content:"";position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:50%;background:var(--fill)}
   .tr-list.avoid li::before{background:var(--fill-hover);border-radius:0;transform:rotate(45deg)}
-  .tr-callout{background:rgba(200,134,46,0.10);border:1px solid var(--gold);border-radius:11px;padding:1.1rem 1.3rem;margin:1.25rem 0}
+  .tr-callout{background:rgba(var(--fill-rgb),0.10);border:1px solid var(--gold);border-radius:11px;padding:1.1rem 1.3rem;margin:1.25rem 0}
   .tr-callout .k{color:var(--gold);font-weight:700;font-size:.74rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.35rem}
   .tr-callout p{color:var(--ink);font-size:1rem}
   .tr-eyebrow{color:var(--gold);font-size:.78rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin:1.5rem 0 .5rem}
@@ -164,6 +164,7 @@
 <body class="paper">
 
 <nav class="nav">
+  <button type="button" class="cm-toggle" role="switch" aria-checked="false" data-mode-toggle><span class="cm-track" aria-hidden="true"></span><span class="cm-label">Computer Mode</span></button>
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
   <ul class="nav-links">
     <li><a href="practice.html">Practice</a></li>

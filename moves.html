@@ -19,7 +19,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
 <link rel="manifest" href="/site.webmanifest">
-<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var d=document.documentElement,t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);if(localStorage.getItem("dl_mode")==="computer")d.setAttribute("data-mode","computer")}catch(e){}</script>
 <!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,8 +49,8 @@
   .ml-sec-h em { font-style: normal; font-size: 0.75rem; color: var(--ink-faint); font-weight: 600; }
   .ml-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
   .mc { position: relative; display: flex; gap: 10px; align-items: flex-start; background: linear-gradient(180deg, #213a2b 0%, var(--forest2) 70px); border: 1px solid var(--rule); border-radius: 14px; padding: 12px 12px 12px 10px; touch-action: pan-y; user-select: none; -webkit-user-select: none; transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; }
-  .mc:hover { border-color: rgba(200,134,46,0.5); }
-  .mc.in { border-color: rgba(200,134,46,0.55); }
+  .mc:hover { border-color: rgba(var(--fill-rgb),0.5); }
+  .mc.in { border-color: rgba(var(--fill-rgb),0.55); }
   .mc .grip { flex: 0 0 22px; align-self: stretch; display: flex; align-items: center; justify-content: center; color: var(--ink-faint); cursor: grab; touch-action: none; border-radius: 6px; }
   .mc .grip svg { width: 14px; height: 22px; fill: currentColor; }
   .mc .bd { flex: 1; min-width: 0; }
@@ -69,7 +69,7 @@
   .bw-name:focus { outline: none; border-bottom-color: var(--gold); }
   .bw-meta { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-faint); margin-top: 6px; }
   .zone { margin-top: 12px; border: 1.5px dashed var(--rule); border-radius: 14px; padding: 10px; min-height: 58px; transition: border-color 0.15s, background 0.15s; }
-  .zone.hot { border-color: var(--gold); background: rgba(200,134,46,0.08); }
+  .zone.hot { border-color: var(--gold); background: rgba(var(--fill-rgb),0.08); }
   .zone-h { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
   .zone-h em { font-style: normal; color: var(--ink-faint); letter-spacing: 0.08em; }
   .zone .empty { font-size: 0.8rem; color: var(--ink-faint); text-align: center; padding: 6px 0; }
@@ -131,6 +131,7 @@
 <body>
 
 <nav class="nav">
+  <button type="button" class="cm-toggle" role="switch" aria-checked="false" data-mode-toggle><span class="cm-track" aria-hidden="true"></span><span class="cm-label">Computer Mode</span></button>
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
   <ul class="nav-links">
     <li><a href="practice.html">Practice</a></li>

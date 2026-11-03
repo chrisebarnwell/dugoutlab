@@ -19,7 +19,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
 <link rel="manifest" href="/site.webmanifest">
-<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var d=document.documentElement,t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);if(localStorage.getItem("dl_mode")==="computer")d.setAttribute("data-mode","computer")}catch(e){}</script>
 <!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,7 +77,7 @@
 .subrow { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.8rem; }
 .subrow .btn { justify-content: center; }
 .warnbox { border-radius: 10px; padding: 0.75rem 0.9rem; font-size: 0.95rem; line-height: 1.45; margin-bottom: 0.8rem; background: var(--forest-deep); border: 1px solid var(--rule); color: var(--ink-soft); }
-.warnbox.on { border-color: var(--gold); background: rgba(200,134,46,0.12); color: var(--ink); }
+.warnbox.on { border-color: var(--gold); background: rgba(var(--fill-rgb),0.12); color: var(--ink); }
 .warnbox b { color: var(--gold-light); }
 .meter { height: 8px; background: var(--rule); border-radius: 4px; overflow: hidden; margin-top: 0.45rem; }
 .meter span { display: block; height: 100%; background: var(--fill); border-radius: 4px; transition: width 0.2s; }
@@ -88,7 +88,7 @@
   grid-template-areas: "u u u u u" "l z1 z2 z3 r" "l z4 z5 z6 r" "l z7 z8 z9 r" "d d d d d"; touch-action: manipulation; }
 .zgrid > * { position: relative; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--sans); font-size: 0.8rem; font-weight: 600; -webkit-user-select: none; user-select: none; }
 .zc { border: 1.5px dashed rgba(244,239,230,0.35); background: transparent; color: var(--ink-soft); }
-.zc.in { border: 2px solid var(--gold); background: rgba(200,134,46,0.12); color: var(--ink); }
+.zc.in { border: 2px solid var(--gold); background: rgba(var(--fill-rgb),0.12); color: var(--ink); }
 .zc:active { transform: scale(0.96); }
 .zc:disabled { opacity: 0.35; }
 .zc.flash { background: var(--fill); color: var(--on-fill); }
@@ -119,13 +119,14 @@
 .sources { font-size: 0.85rem; color: var(--ink-faint); line-height: 1.55; }
 .sources li { margin: 0.2rem 0 0.2rem 1.1rem; }
 .btn-danger { background: transparent; color: var(--gold-light); border: 1.5px solid var(--gold-dark); }
-.btn-danger:hover { background: rgba(200,134,46,0.12); color: var(--gold-light); }
+.btn-danger:hover { background: rgba(var(--fill-rgb),0.12); color: var(--gold-light); }
 @media (max-width: 380px) { .count .big b { font-size: 2.6rem; } .tap { min-height: 132px; } }
 </style>
 </head>
 <body>
 
 <nav class="nav">
+  <button type="button" class="cm-toggle" role="switch" aria-checked="false" data-mode-toggle><span class="cm-track" aria-hidden="true"></span><span class="cm-label">Computer Mode</span></button>
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
   <ul class="nav-links">
     <li><a href="practice.html">Practice</a></li>
@@ -840,7 +841,7 @@
     $('st-heat').innerHTML = PT_CELLS.map(function (c) {
       var n = cnt[c[0]] || 0, share = n / tot, a = n ? 0.1 + 0.78 * (n / max) : 0, dark = a > 0.5;
       var label = c[2] && c[0] !== 'L' && c[0] !== 'R' ? '<small>' + c[2] + '</small>' : '';
-      return '<div class="zc' + (/[1-9]/.test(c[0]) ? ' in' : '') + '" style="grid-area:' + c[1] + ';background:rgba(200,134,46,' + a.toFixed(2) + ');color:' + (dark ? '#0a1610' : 'var(--ink)') + '" title="' + PT_ZONE[c[0]] + ': ' + n + ' of ' + tot + '">' +
+      return '<div class="zc' + (/[1-9]/.test(c[0]) ? ' in' : '') + '" style="grid-area:' + c[1] + ';background:rgba(var(--fill-rgb),' + a.toFixed(2) + ');color:' + (dark ? '#0a1610' : 'var(--ink)') + '" title="' + PT_ZONE[c[0]] + ': ' + n + ' of ' + tot + '">' +
         '<i>' + (n ? Math.round(100 * share) + '%' : '') + '</i>' + label + '</div>';
     }).join('');
     $('st-heatn').textContent = tot + ' tapped';

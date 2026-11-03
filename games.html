@@ -19,7 +19,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
 <link rel="manifest" href="/site.webmanifest">
-<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var d=document.documentElement,t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);if(localStorage.getItem("dl_mode")==="computer")d.setAttribute("data-mode","computer")}catch(e){}</script>
 <!-- /dl:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,7 +90,7 @@
     white-space: nowrap;
   }
   .game-pill.warmup    { color: #7ad6a8; border-color: rgba(82,183,136,0.4); }
-  .game-pill.fielding  { color: var(--gold-light); border-color: rgba(200,134,46,0.45); }
+  .game-pill.fielding  { color: var(--gold-light); border-color: rgba(var(--fill-rgb),0.45); }
   .game-pill.throwing  { color: #9dc5e0; border-color: rgba(125,179,212,0.4); }
   body.paper .game-pill.warmup { color: var(--ok); border-color: rgba(45,106,74,0.4); }
   body.paper .game-pill.throwing { color: #2b5f80; border-color: rgba(43,95,128,0.35); }
@@ -119,7 +119,7 @@
   .game-section ul { margin: 0; padding-left: 1.2rem; }
   .game-section li { margin-bottom: 0.35rem; }
   .game-why {
-    background: rgba(200,134,46,0.08);
+    background: rgba(var(--fill-rgb),0.08);
     border-left: 3px solid var(--gold);
     padding: 0.85rem 1rem;
     border-radius: 0 8px 8px 0;
@@ -133,6 +133,7 @@
 <body class="paper">
 
 <nav class="nav">
+  <button type="button" class="cm-toggle" role="switch" aria-checked="false" data-mode-toggle><span class="cm-track" aria-hidden="true"></span><span class="cm-label">Computer Mode</span></button>
   <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
     <ul class="nav-links">
     <li><a href="practice.html">Practice</a></li>

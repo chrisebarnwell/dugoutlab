@@ -333,6 +333,34 @@ var DL_SECTION = (function () {
   apply(current());
 })();
 
+// ── Computer Mode: a second skin, same pages ───────────────────────
+// The switch is in every nav (check_site.py). The head block applies the
+// saved choice before first paint; this keeps every switch, the browser bar
+// color and other open tabs in step. Classic is the default.
+(function () {
+  var root = document.documentElement, meta = document.querySelector('meta[name="theme-color"]');
+  var classicColor = meta ? meta.getAttribute('content') : '';
+  function on() { return root.getAttribute('data-mode') === 'computer'; }
+  function sync() {
+    var v = on();
+    document.querySelectorAll('[data-mode-toggle]').forEach(function (b) {
+      b.setAttribute('aria-checked', v ? 'true' : 'false');
+      b.title = v ? 'Computer Mode is on. Switch back to Classic.' : 'Switch to Computer Mode';
+    });
+    if (meta) meta.setAttribute('content', v ? '#0E100D' : classicColor);
+  }
+  function set(v, save) {
+    if (v) root.setAttribute('data-mode', 'computer'); else root.removeAttribute('data-mode');
+    if (save) { try { if (v) localStorage.setItem('dl_mode', 'computer'); else localStorage.removeItem('dl_mode'); } catch (e) {} }
+    sync();
+  }
+  document.querySelectorAll('[data-mode-toggle]').forEach(function (b) {
+    b.addEventListener('click', function () { set(!on(), true); });
+  });
+  window.addEventListener('storage', function (e) { if (e.key === 'dl_mode') set(e.newValue === 'computer', false); });
+  sync();
+})();
+
 // ── Shared helpers every tool can use ──────────────────────────────
 window.DL = window.DL || {};
 // One age group across the site. Values: a46, a79, a1012, a1315, a16.

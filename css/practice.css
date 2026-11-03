@@ -1,7 +1,7 @@
 /* Practice in a Pinch. Paper surface by default; tokens make it work in dark mode too. */
 .pp-hero { padding: 2rem 1.25rem 1.6rem; }
 .pp-loop { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
-.pp-loop li { display: inline-flex; gap: 0.4rem; align-items: baseline; font-size: 0.85rem; color: var(--ink-soft); padding: 0.35rem 0.75rem; border: 1px solid rgba(200,134,46,0.4); border-radius: 999px; }
+.pp-loop li { display: inline-flex; gap: 0.4rem; align-items: baseline; font-size: 0.85rem; color: var(--ink-soft); padding: 0.35rem 0.75rem; border: 1px solid rgba(var(--fill-rgb),0.4); border-radius: 999px; }
 .pp-loop b { color: var(--gold); font-weight: 700; }
 .pp-wrap { max-width: 760px; margin: 0 auto; padding: 1rem 1.25rem 3rem; display: block; }
 
@@ -40,11 +40,11 @@
 .pp-body { flex: 1; padding: 0.85rem 1rem 0.9rem; min-width: 0; }
 .pp-slot { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); margin-bottom: 0.2rem; }
 .pp-name { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; margin: 0; }
-.pp-name button { background: none; border: 0; padding: 0; color: var(--ink); font: inherit; cursor: pointer; text-align: left; text-decoration: underline; text-decoration-color: rgba(200,134,46,0.5); text-underline-offset: 3px; }
+.pp-name button { background: none; border: 0; padding: 0; color: var(--ink); font: inherit; cursor: pointer; text-align: left; text-decoration: underline; text-decoration-color: rgba(var(--fill-rgb),0.5); text-underline-offset: 3px; }
 .pp-name button:hover { color: var(--gold); }
 .pp-again { display: inline-block; font-family: var(--sans); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--on-fill); background: var(--fill); border-radius: 999px; padding: 0.12rem 0.5rem; vertical-align: 0.2em; }
 .pp-run { font-size: 0.95rem; color: var(--ink-soft); line-height: 1.55; margin-top: 0.3rem; }
-.pp-cue { display: inline-block; background: rgba(200,134,46,0.12); border: 1px solid rgba(200,134,46,0.45); border-radius: 8px; padding: 0.3rem 0.65rem; font-size: 0.92rem; color: var(--gold-light); font-weight: 600; margin-top: 0.55rem; }
+.pp-cue { display: inline-block; background: rgba(var(--fill-rgb),0.12); border: 1px solid rgba(var(--fill-rgb),0.45); border-radius: 8px; padding: 0.3rem 0.65rem; font-size: 0.92rem; color: var(--gold-light); font-weight: 600; margin-top: 0.55rem; }
 .pp-cue span { font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.85; margin-right: 0.2rem; }
 .pp-tools { display: flex; gap: 0.4rem; margin-top: 0.55rem; }
 .pp-tools button { background: none; border: 1px solid var(--rule); border-radius: 999px; padding: 0.35rem 0.85rem; min-height: 38px; font: inherit; font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; }
@@ -82,7 +82,7 @@
 .run-ctrl { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 0.5rem; }
 .run-ctrl .btn { justify-content: center; min-height: 56px; padding: 0.6rem 0.5rem; }
 .run-go { font-size: 1.15rem; }
-.run-cue { margin-top: 1rem; padding: 0.75rem 0.9rem; border-radius: 12px; background: rgba(200,134,46,0.14); border: 1px solid rgba(200,134,46,0.5); font-size: 1.15rem; font-weight: 700; color: var(--ink); }
+.run-cue { margin-top: 1rem; padding: 0.75rem 0.9rem; border-radius: 12px; background: rgba(var(--fill-rgb),0.14); border: 1px solid rgba(var(--fill-rgb),0.5); font-size: 1.15rem; font-weight: 700; color: var(--ink); }
 .run-cue span { display: block; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.15rem; }
 .run-setup { margin-top: 0.8rem; font-size: 1rem; line-height: 1.55; color: var(--ink-soft); text-align: left; }
 .run-up { margin-top: 0.8rem; font-size: 0.92rem; font-weight: 600; color: var(--ink-faint); }
@@ -98,7 +98,7 @@
 .ref-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .ref-chip { margin: 0 !important; display: inline-flex !important; align-items: center; gap: 0.4rem; min-height: 44px; padding: 0.4rem 0.8rem; border: 1.5px solid var(--border); border-radius: 999px; font-weight: 600 !important; font-size: 0.9rem !important; cursor: pointer; background: var(--forest2); }
 .ref-chip input { width: 18px; height: 18px; accent-color: var(--fill); }
-.ref-chip:has(input:checked) { border-color: var(--fill); background: rgba(200,134,46,0.14); }
+.ref-chip:has(input:checked) { border-color: var(--fill); background: rgba(var(--fill-rgb),0.14); }
 .ref-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.2rem; }
 
 @media (max-width: 520px) {

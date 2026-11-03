@@ -128,3 +128,25 @@ What to watch: practice built vs saved vs run vs reflected (the weekly loop),
 `practice_reopened` and `return_visit` (are coaches coming back), `lineup_demo`
 vs `lineup_built` (does the sample team lead to a real lineup), and the two
 homepage buttons.
+
+## Computer Mode (second skin)
+
+A switch at the top-left of every nav ("Computer Mode") swaps the whole site
+to a near-black, lime-accent skin inspired by the FORGE 6 app. Classic stays
+the default and one tap switches back.
+
+- Same pages, same markup, same content. Only tokens, type, radius and layout
+  change. All rules live under `html[data-mode="computer"]` at the end of
+  `css/main.css`.
+- Choice is stored per device as `dl_mode` and applied before first paint by
+  the shared head block (`HEAD_SCRIPT` in `check_site.py`). Other open tabs
+  follow along.
+- The switch markup is canonical (`MODE_TOGGLE` in `check_site.py`), a
+  `role="switch"` button with `aria-checked`. `js/site.js` wires it.
+- Desktop (1024px+): the top nav becomes a left sidebar with the same links.
+  Phones keep the hamburger menu and the bottom bar, restyled.
+- Page style (Auto, Light, Dark) still controls Classic. Computer Mode is
+  always dark.
+- Writing new page CSS: use tokens (`--fill`, `--fill-rgb`, `--ink`, `--rule`)
+  instead of hex, and the page works in both skins for free. For gold with
+  alpha, write `rgba(var(--fill-rgb), 0.2)`.
