@@ -59,6 +59,34 @@
   .mc .cu { font-size: 0.8rem; color: var(--ink-faint); margin-top: 6px; line-height: 1.35; }
   .mc .tg { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 7px; }
   .mc .tg i { font-style: normal; font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); border: 1px solid var(--rule); border-radius: 4px; padding: 2px 5px; }
+  .run { position: fixed; inset: 0; z-index: 10001; background: var(--forest); overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 16px calc(120px + env(safe-area-inset-bottom)); }
+  .run.hidden { display: none; }
+  .run-top { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 0 12px; background: var(--forest); border-bottom: 1px solid var(--rule); }
+  .run-h { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; margin-top: 2px; }
+  .run-end { font: inherit; font-weight: 700; font-size: 0.85rem; border: 1px solid var(--rule); background: none; color: var(--ink-soft); border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+  .run-body { max-width: 560px; margin: 0 auto; }
+  .rblk { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin: 22px 0 8px; }
+  .rc { background: var(--forest2); border: 1px solid var(--rule); border-radius: 14px; padding: 14px; margin-top: 10px; }
+  .rc.done { border-color: rgba(200,134,46,0.5); }
+  .rc.cur { border-color: var(--gold); box-shadow: 0 14px 34px rgba(0,0,0,0.45); }
+  .rc-h { display: flex; gap: 12px; align-items: center; }
+  .rc-c { flex: 0 0 38px; height: 38px; border-radius: 8px; background: var(--forest3); color: var(--gold-light); font-family: var(--mono); display: flex; align-items: center; justify-content: center; }
+  .rc.done .rc-c { background: var(--gold); color: #0F1F18; }
+  .rc-t { flex: 1; min-width: 0; } .rc-t b { display: block; font-size: 1rem; line-height: 1.25; } .rc-t small { font-family: var(--mono); font-size: 0.75rem; color: var(--ink-soft); }
+  .rc .qi { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--rule); background: none; color: var(--gold); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .rsets { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .rset { font: inherit; font-weight: 700; font-size: 0.9rem; min-width: 74px; height: 46px; padding: 0 12px; border-radius: 10px; border: 1.5px solid var(--rule); background: var(--forest-deep); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .rset.on { background: var(--gold); border-color: var(--gold); color: #0F1F18; }
+  .rset.go { border-color: var(--gold); color: var(--gold-light); }
+  .rc-r { font-size: 0.78rem; color: var(--ink-faint); margin-top: 8px; }
+  .rdone { text-align: center; padding: 40px 0 10px; } .rdone h3 { font-family: var(--serif); font-size: 2rem; margin-bottom: 6px; }
+  .rbar { position: fixed; left: 12px; right: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 3; display: flex; align-items: center; gap: 10px; max-width: 540px; margin: 0 auto; background: #0a1610; border: 1.5px solid var(--gold); border-radius: 16px; padding: 12px 14px; box-shadow: 0 16px 40px rgba(0,0,0,0.6); }
+  .rbar.hidden { display: none; } .rbar > div { flex: 1; }
+  .rbar .rl { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; color: var(--gold); text-transform: uppercase; }
+  .rbar b { font-family: var(--mono); font-size: 2rem; font-weight: 500; color: var(--gold-light); line-height: 1; }
+  .rbar.dn { background: var(--gold); } .rbar.dn b, .rbar.dn .rl { color: #0F1F18; }
+  .rbar button { font: inherit; font-weight: 700; font-size: 0.85rem; border: 1px solid var(--rule); background: none; color: var(--ink); border-radius: 10px; padding: 10px 12px; cursor: pointer; }
+  .rbar.dn button { color: #0F1F18; border-color: rgba(0,0,0,0.3); }
   .mc .acts { flex: 0 0 34px; display: flex; flex-direction: column; gap: 6px; }
   .mc .qi { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--rule); background: none; color: var(--ink-soft); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
   .mc .qi:hover { color: var(--gold); border-color: var(--gold); }
@@ -193,7 +221,8 @@
       <div class="bw-meta" id="w-meta"></div>
       <div id="zones"></div>
       <div class="bw-acts">
-        <button type="button" class="pri" id="w-save">Save workout</button>
+        <button type="button" class="pri" id="w-run">&#9654; Start workout</button>
+        <button type="button" id="w-save" style="grid-column:1/-1">Save workout</button>
         <button type="button" id="w-print" data-gate>Print</button>
         <button type="button" id="w-share">Copy link</button>
         <button type="button" id="w-clear" style="grid-column:1/-1">Clear</button>
@@ -206,6 +235,11 @@
 
 <div class="tray" id="tray" role="button" tabindex="0"><span class="n" id="tray-n">0</span><span class="t">Your workout<small>Drag cards here or tap +</small></span><span>&#9650;</span></div>
 <div class="toast" id="toast"></div>
+<div class="run hidden" id="run">
+  <div class="run-top"><div><div class="ml-eb" id="run-eb">Workout</div><div class="run-h" id="run-h"></div></div><button type="button" class="run-end" id="run-end">End</button></div>
+  <div class="run-body" id="run-body"></div>
+  <div class="rbar hidden" id="rbar"><div><div class="rl" id="rb-l">REST</div><b id="rb-t">0:00</b></div><button type="button" id="rb-add">+30s</button><button type="button" id="rb-skip">Skip</button></div>
+</div>
 <div id="print"></div>
 
 <footer class="footer">
@@ -262,8 +296,8 @@
 </footer>
 
 <script src="js/site.js"></script>
-<script src="js/athlete-rules.js?v=20261106b"></script>
-<script src="js/athlete-howto.js?v=20261106b"></script>
+<script src="js/athlete-rules.js?v=20261106c"></script>
+<script src="js/athlete-howto.js?v=20261106c"></script>
 <script src="js/email-gate.js" data-mode="actions"></script>
 <script>
 (function () {
@@ -467,6 +501,70 @@
     each($('w-saved').querySelectorAll('[data-o]'), function (b) { b.addEventListener('click', function () { var w = saved().filter(function (x) { return x.id === b.getAttribute('data-o'); })[0]; if (w) { W = JSON.parse(JSON.stringify(w)); BLOCKS.forEach(function (bk) { W.items[bk.k] = (W.items[bk.k] || []).filter(function (x) { return BY[x.id]; }); }); changed(); toast('Opened ' + w.name); } }); });
     each($('w-saved').querySelectorAll('[data-d]'), function (b) { b.addEventListener('click', function () { store(saved().filter(function (x) { return x.id !== b.getAttribute('data-d'); })); drawSaved(); }); });
   }
+
+  /* ---------- run the workout: set checks, rest and hold timers ---------- */
+  var RUN = null, T = { end: 0, h: null, cb: null };
+  function pd(d) {
+    var m = String(d).match(/^(\d+)(?:-\d+)? x (\d+)(?:-\d+)?( sec)?/); if (m) return { sets: +m[1], sec: m[3] ? +m[2] : 0 };
+    var t = String(d).match(/^(\d+)(?:-\d+)? trips/); if (t) return { sets: +t[1], sec: 0 };
+    var r = String(d).match(/^(\d+) reps/); if (r) return { sets: +r[1], sec: 0 };
+    var s2 = String(d).match(/^(\d+) sec/); if (s2) return { sets: 2, sec: +s2[1] };
+    var mn = String(d).match(/^(\d+) min/); if (mn) return { sets: 1, sec: +mn[1] * 60 };
+    return { sets: 1, sec: 0 };
+  }
+  function startRun() {
+    if (!count()) { toast('Add a card first'); return; }
+    var cards = [];
+    BLOCKS.forEach(function (b, bi) { W.items[b.k].forEach(function (it, i) { var m = BY[it.id], d = pd(it.dose); cards.push({ id: it.id, code: String.fromCharCode(65 + bi) + (i + 1), block: b, name: m.name, dose: it.dose, sec: d.sec, rest: R.restFor(it.id, b.k, teen() ? 'train' : 'learn'), done: Array(Math.max(1, Math.min(8, d.sets))).fill(false) }); }); });
+    RUN = { cards: cards }; document.body.classList.remove('tray-open');
+    $('run-h').textContent = W.name; $('run').classList.remove('hidden'); document.documentElement.style.overflow = 'hidden';
+    try { if ('wakeLock' in navigator) navigator.wakeLock.request('screen').catch(function () {}); } catch (e) {}
+    drawRun(true);
+  }
+  function curIdx() { for (var i = 0; i < RUN.cards.length; i++) if (RUN.cards[i].done.indexOf(false) >= 0) return i; return -1; }
+  function drawRun(scroll) {
+    var ci = curIdx(), html = '', last = null;
+    RUN.cards.forEach(function (c, i) {
+      if (c.block !== last) { html += '<div class="rblk">' + c.block.n + '</div>'; last = c.block; }
+      var all = c.done.indexOf(false) < 0;
+      html += '<div class="rc' + (all ? ' done' : '') + (i === ci ? ' cur' : '') + '" data-ri="' + i + '"><div class="rc-h"><span class="rc-c">' + c.code + '</span><span class="rc-t"><b>' + esc(c.name) + '</b><small>' + esc(c.dose) + (c.rest ? ' &middot; ' + c.rest + 's rest' : '') + '</small></span><button type="button" class="qi" data-rh="' + c.id + '" aria-label="How to do it">' + QI + '</button></div>' +
+        '<div class="rsets">' + c.done.map(function (d, j) { return '<button type="button" class="rset' + (d ? ' on' : c.sec ? ' go' : '') + '" data-s="' + j + '">' + (d ? '&#10003; ' : c.sec ? '&#9654; ' : '') + (c.sec ? (c.sec >= 60 ? Math.round(c.sec / 60) + ' min' : c.sec + 's') : 'Set ' + (j + 1)) + '</button>'; }).join('') + '</div>' +
+        (i === ci ? '<div class="rc-r">' + (c.sec ? 'Tap to start the clock. It checks itself off.' : 'Tap a set when it is done.') + (c.rest ? ' Rest timer starts on its own.' : '') + '</div>' : '') + '</div>';
+    });
+    if (ci < 0) html += '<div class="rdone"><h3>Workout done.</h3><p class="ml-sub" style="margin:0 auto">Every card checked. That is a win.</p><button type="button" class="hw-add" id="run-fin" style="max-width:320px">Finish</button></div>';
+    $('run-body').innerHTML = html; $('run-eb').textContent = ci < 0 ? 'Done' : 'Card ' + (ci + 1) + ' of ' + RUN.cards.length;
+    each($('run-body').querySelectorAll('[data-rh]'), function (b) { b.addEventListener('click', function () { howTo(b.getAttribute('data-rh')); }); });
+    each($('run-body').querySelectorAll('.rc'), function (el) { var c = RUN.cards[+el.getAttribute('data-ri')];
+      each(el.querySelectorAll('[data-s]'), function (b) { b.addEventListener('click', function () {
+        var j = +b.getAttribute('data-s');
+        if (c.done[j]) { c.done[j] = false; drawRun(); return; }
+        if (c.sec) timer(c.sec, 'GO &middot; ' + esc(c.name), function () { mark(c, j); }); else mark(c, j);
+      }); }); });
+    if ($('run-fin')) $('run-fin').addEventListener('click', endRun);
+    if (scroll) { var cur = $('run-body').querySelector('.rc.cur'); if (cur) setTimeout(function () { cur.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 60); }
+  }
+  function mark(c, j) {
+    c.done[j] = true; var fin = c.done.indexOf(false) < 0, ci = curIdx();
+    if (!fin && c.rest) timer(c.rest, 'REST &middot; SET ' + (c.done.filter(Boolean).length + 1) + ' NEXT');
+    else if (fin && ci >= 0 && (c.block.k === 'power' || c.block.k === 'strength')) timer(15, 'NEXT &middot; ' + esc(RUN.cards[ci].name));
+    else stopT();
+    drawRun(fin);
+  }
+  function timer(sec, label, cb) {
+    T.end = Date.now() + sec * 1000; T.cb = cb || null; $('rb-l').innerHTML = label; $('rbar').classList.remove('hidden', 'dn');
+    if (T.h) clearInterval(T.h); T.h = setInterval(tickT, 250); tickT();
+  }
+  function tickT() {
+    var left = Math.max(0, Math.round((T.end - Date.now()) / 1000)); $('rb-t').textContent = Math.floor(left / 60) + ':' + ('0' + left % 60).slice(-2);
+    if (left <= 0 && T.h) { clearInterval(T.h); T.h = null; $('rbar').classList.add('dn'); $('rb-l').textContent = 'GO'; beep(); var f = T.cb; T.cb = null; if (f) f(); setTimeout(function () { if (!T.h) $('rbar').classList.add('hidden'); }, 3500); }
+  }
+  function stopT() { if (T.h) clearInterval(T.h); T.h = null; T.cb = null; $('rbar').classList.add('hidden'); }
+  function beep() { try { if (navigator.vibrate) navigator.vibrate([120, 80, 120]); } catch (e) {} try { var C = window.AudioContext || window.webkitAudioContext, c = new C(), o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.frequency.value = 880; g.gain.value = 0.15; o.start(); o.stop(c.currentTime + 0.25); } catch (e) {} }
+  function endRun() { stopT(); $('run').classList.add('hidden'); document.documentElement.style.overflow = ''; RUN = null; }
+  $('w-run').addEventListener('click', startRun);
+  $('run-end').addEventListener('click', endRun);
+  $('rb-add').addEventListener('click', function () { T.end = Math.max(T.end, Date.now()) + 30000; $('rbar').classList.remove('dn'); if (!T.h) T.h = setInterval(tickT, 250); tickT(); });
+  $('rb-skip').addEventListener('click', function () { var f = T.cb; stopT(); if (f) f(); });
 
   /* ---------- boot ---------- */
   var hm = location.hash.match(/w=([^&]*)/);

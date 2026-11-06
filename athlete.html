@@ -153,6 +153,13 @@
   @keyframes dealdown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
   .stack .ex.complete:not(.open) { background: linear-gradient(180deg, #1c3125 0%, var(--card) 60px); }
   .stack .ex.complete:not(.open) .ex-n { color: var(--ink2); }
+  .restln { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: rgba(200,134,46,0.08); border: 1px solid var(--accline); font-size: 0.8rem; color: var(--ink2); }
+  .restln span { display: inline-flex; align-items: center; gap: 6px; } .restln svg { color: var(--acc); flex-shrink: 0; } .restln b { color: var(--acc2); }
+  .restln button { flex-shrink: 0; font-weight: 700; color: var(--acc); border: 1px solid var(--accline); border-radius: 999px; padding: 6px 10px; font-size: 0.78rem; }
+  .set:has(.go) { grid-template-columns: 28px 42px 1fr 56px; }
+  .set:has(.go) .txt { min-width: 0; }
+  .set .go { height: 42px; border-radius: 8px; border: 1.5px solid var(--accline); color: var(--acc); display: flex; align-items: center; justify-content: center; }
+  .set .go svg { width: 20px; height: 20px; }
   .howq { flex: 0 0 34px; height: 34px; margin-left: auto; border-radius: 50%; border: 1px solid var(--line2); color: var(--acc); display: inline-flex; align-items: center; justify-content: center; }
   .howq + .ex-p { margin-left: 0; }
   .howbtn { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--accline); color: var(--acc); font-weight: 700; font-size: 0.85rem; }
@@ -439,10 +446,10 @@
 <div class="sheet-bg hidden" id="sheet"><div class="sheet" id="sheet-body"></div></div>
 
 <script src="js/site.js"></script>
-<script src="js/athlete-rules.js?v=20261106b"></script>
-<script src="js/athlete-parse.js?v=20261106b"></script>
-<script src="js/athlete-demos.js?v=20261106b"></script>
-<script src="js/athlete-howto.js?v=20261106b"></script>
+<script src="js/athlete-rules.js?v=20261106c"></script>
+<script src="js/athlete-parse.js?v=20261106c"></script>
+<script src="js/athlete-demos.js?v=20261106c"></script>
+<script src="js/athlete-howto.js?v=20261106c"></script>
 <script>
 (function () {
   'use strict';
@@ -720,6 +727,7 @@
   var REST = { warm: 0, move: 45, strength: 60, play: 0 };
   /* rest seconds per move: R.restFor (rules file has the sources) */
   var NEXT_MOVE = 15;
+  var TIMER_I = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>';
   function restFor(it, b, stage) { return R.restFor ? R.restFor(it.id, b.key, stage) : (REST[b.key] || 0); }
   var HOWBTN = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.2v.1"/></svg>';
   function howTo(id, name, cue, dose) {
@@ -761,14 +769,15 @@
         var rs = restFor(it, b, plan.stage.key);
         n++; var code = b.name.charAt(0) + (ii + 1), k = keyOf(b, it), d = parseDose(it.dose), rows = a.live.sets[k] || [], l = lastFor(a, k), all = rows.length && rows.every(function (r) { return r.done; });
         var lastTxt = l ? 'Last time (' + nice(l.date) + '): ' + l.sets.filter(function (r) { return r.done; }).map(function (r) { return r.v != null ? r.v : 'done'; }).join(', ') + (d.unit === 'sec' ? ' sec' : d.unit === 'reps' ? ' reps' : '') + '.' : 'First time on this one.';
-        html += '<div class="ex' + (all ? ' complete' : '') + '" data-k="' + esc(k) + '" data-unit="' + d.unit + '" data-label="' + esc(d.label || '') + '" data-rest="' + rs + '" data-n="' + esc(it.name) + '" data-block="' + b.key + '">' +
+        html += '<div class="ex' + (all ? ' complete' : '') + '" data-k="' + esc(k) + '" data-unit="' + d.unit + '" data-label="' + esc(d.label || '') + '" data-rest="' + rs + '" data-dose="' + esc(it.dose) + '" data-n="' + esc(it.name) + '" data-block="' + b.key + '">' +
           '<div class="ex-h"><div class="num">' + code + '</div><div><div class="eb">' + esc(b.key === 'warm' ? 'Prep' : b.key === 'move' ? 'Power' : b.key === 'strength' ? 'Strength' : 'Compete') + ' &middot; ' + esc(gearOf(it)) + '</div><div class="ex-n">' + esc(it.name) + '</div><div class="ex-d">' + esc(it.dose) + (rs ? ' &middot; ' + rs + 's rest' : '') + '</div>' + (l && (d.unit === 'reps' || d.unit === 'sec') ? '<div class="lastln">' + esc(lastTxt.replace('Last time ', 'Last ')) + '</div>' : '') + '</div><button type="button" class="howq" data-how="' + esc(it.id) + '" data-hn="' + esc(it.name) + '" data-hc="' + esc(it.cue || '') + '" data-hd="' + esc(it.dose) + '" aria-label="How to do ' + esc(it.name) + '">' + HOWBTN + '</button><span class="ex-p">' + prog(rows) + '</span></div><div class="ex-b">' +
           (it.cue ? '<p class="ex-cue">' + esc(it.cue) + '</p>' : '') +
           '<button type="button" class="howbtn" data-how="' + esc(it.id) + '" data-hn="' + esc(it.name) + '" data-hc="' + esc(it.cue || '') + '" data-hd="' + esc(it.dose) + '">' + HOWBTN + 'How to do it</button>' +
           
           '<div class="sets"><div class="sets-h"><span>SET</span><span>' + (d.unit === 'reps' ? 'REPS' + (d.each ? ' EACH SIDE' : '') : d.unit === 'sec' ? 'SECONDS' : 'TARGET') + '</span><span>DONE</span></div>' +
           rows.map(function (r, i) { return setRow(d, r, i); }).join('') + '</div>' +
-          (d.unit === 'reps' || d.unit === 'sec' ? '<div class="setacts"><button type="button" data-add>' + ICON.plus + 'Add set</button><button type="button" data-rm>Remove last</button></div>' : '') + '</div></div>';
+          (d.unit === 'reps' || d.unit === 'sec' ? '<div class="setacts"><button type="button" data-add>' + ICON.plus + 'Add set</button><button type="button" data-rm>Remove last</button></div>' : '') +
+          (rs ? '<div class="restln"><span>' + TIMER_I + '<b>' + rs + 's rest</b> between sets. Starts when you check a set.</span><button type="button" data-rnow>Start now</button></div>' : '') + '</div></div>';
       });
       html += '</div>';
     });
@@ -804,7 +813,8 @@
   }
   function gearOf(it) { var n = it.name.toLowerCase(); return /water bag/.test(n) ? 'Water bag' : /medicine/.test(n) ? 'Med ball' : /band/.test(n) ? 'Band' : /dumbbell/.test(n) ? 'Light dumbbell' : /box|step/.test(n) ? 'Step' : /bar\b/.test(n) ? 'Bar' : /rope/.test(n) ? 'Rope' : 'Bodyweight'; }
   function setRow(d, r, i) {
-    var field = d.unit === 'reps' || d.unit === 'sec' ? '<input type="number" inputmode="numeric" min="0" max="300" value="' + (r.v == null ? '' : r.v) + '" data-i="' + i + '">' : '<div class="txt">' + esc(d.unit === 'trip' ? 'Trip ' + (i + 1) : d.label) + '</div>';
+    var go = (d.unit === 'sec' || /^\d+ min/.test(d.label || '')) && !r.done ? '<button type="button" class="go" data-go="' + i + '" aria-label="Start the clock">' + TIMER_I + '</button>' : '';
+    var field = d.unit === 'reps' || d.unit === 'sec' ? go + '<input type="number" inputmode="numeric" min="0" max="300" value="' + (r.v == null ? '' : r.v) + '" data-i="' + i + '">' : go + '<div class="txt">' + esc(d.unit === 'trip' ? 'Trip ' + (i + 1) : d.label) + '</div>';
     return '<div class="set' + (r.done ? ' on' : '') + '"><div class="n">' + (i + 1) + '</div>' + field + '<button type="button" class="chk" data-c="' + i + '" aria-label="Done">' + ICON.check + '</button></div>';
   }
   function wireSets(a) {
@@ -819,6 +829,10 @@
       }
       function bind() {
         each(card.querySelectorAll('input[data-i]'), function (inp) { inp.addEventListener('input', function () { var v = inp.value === '' ? null : Math.max(0, Math.min(300, parseInt(inp.value, 10) || 0)); rows[+inp.getAttribute('data-i')].v = v; save(); }); });
+        each(card.querySelectorAll('[data-go]'), function (g) { g.addEventListener('click', function () {
+          var i = +g.getAttribute('data-go'), dz = card.getAttribute('data-dose') || '', mn = dz.match(/^(\d+) min/), sec = mn ? +mn[1] * 60 : (rows[i].v || parseDose(dz).target || 20);
+          startRest(sec, 'GO &middot; ' + esc(card.getAttribute('data-n') || '') + (rows.length > 1 ? ' &middot; SET ' + (i + 1) : ''), function () { var c = card.querySelector('[data-c="' + i + '"]'); if (c && !rows[i].done) c.click(); });
+        }); });
         each(card.querySelectorAll('[data-c]'), function (b) { b.addEventListener('click', function () {
           var i = +b.getAttribute('data-c'), r = rows[i]; r.done = !r.done;
           if (r.done && r.v == null && (card.getAttribute('data-unit') === 'reps' || card.getAttribute('data-unit') === 'sec')) { var prev = rows.filter(function (x) { return x.v != null; })[0]; r.v = prev ? prev.v : null; }
@@ -830,6 +844,7 @@
         }); });
       }
       bind();
+      var rn = card.querySelector('[data-rnow]'); if (rn) rn.addEventListener('click', function () { startRest(rest, 'REST'); });
       var add = card.querySelector('[data-add]'), rm = card.querySelector('[data-rm]');
       if (add) add.addEventListener('click', function () { var l = rows[rows.length - 1]; rows.push({ v: l ? l.v : null, done: false }); save(); redraw(); });
       if (rm) rm.addEventListener('click', function () { if (rows.length > 1) { rows.pop(); save(); redraw(); } });
@@ -867,11 +882,11 @@
 
   /* ---------- rest timer ---------- */
   var RT = { end: 0, h: null };
-  function startRest(sec, label) { RT.end = Date.now() + sec * 1000; $('rest').classList.remove('hidden', 'dn'); $('rest-l').innerHTML = label || 'REST TIMER'; tick(); if (RT.h) clearInterval(RT.h); RT.h = setInterval(tick, 250); }
+  function startRest(sec, label, cb) { RT.cb = cb || null; RT.end = Date.now() + sec * 1000; $('rest').classList.remove('hidden', 'dn'); $('rest-l').innerHTML = label || 'REST TIMER'; tick(); if (RT.h) clearInterval(RT.h); RT.h = setInterval(tick, 250); }
   function tick() {
     var left = Math.max(0, Math.round((RT.end - Date.now()) / 1000));
     $('rest-t').textContent = Math.floor(left / 60) + ':' + pad2(left % 60);
-    if (left <= 0 && RT.h) { clearInterval(RT.h); RT.h = null; $('rest').classList.add('dn'); $('rest-l').textContent = 'GO'; bell(); setTimeout(function () { if (!RT.h) $('rest').classList.add('hidden'); }, 6000); }
+    if (left <= 0 && RT.h) { clearInterval(RT.h); RT.h = null; if (RT.cb) { var f = RT.cb; RT.cb = null; setTimeout(f, 50); } $('rest').classList.add('dn'); $('rest-l').textContent = 'GO'; bell(); setTimeout(function () { if (!RT.h) $('rest').classList.add('hidden'); }, 6000); }
   }
   function stopRest() { if (RT.h) clearInterval(RT.h); RT.h = null; $('rest').classList.add('hidden'); }
   function bell() { try { if (navigator.vibrate) navigator.vibrate([120, 80, 120]); } catch (e) {} if (S.mute) return; try { var C = window.AudioContext || window.webkitAudioContext, c = new C(), o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.frequency.value = 880; g.gain.value = 0.18; o.start(); setTimeout(function () { o.stop(); c.close(); }, 400); } catch (e) {} }
