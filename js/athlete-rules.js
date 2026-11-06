@@ -520,6 +520,22 @@ window.DL_RULES = (function () {
     return { planned: planned || 0, done: done, feels: feels };
   }
 
-  return { LIB: LIB, TESTS: TESTS, testsFor: testsFor, SOURCES: SOURCES, STAGES: STAGES, GEAR: GEAR, OPTIONS: OPTIONS, RULES: RULES, WEEKS: WEEKS, DEFAULTS: DEFAULTS,
+  /* Rest between sets, short on purpose so a session stays short. Children recover from short hard
+     efforts faster than adults (Ratel, Duche and Williams 2006). About 1 minute between strength sets
+     is enough for most children (Faigenbaum et al. 2009, NSCA). Jumps and sprints get enough rest to
+     stay fast and land clean; low-impact versions barely need any. Exact seconds are DugoutLab rounding.
+     block: warm|move|strength|play (plan keys) or prep|power|strength|compete (library keys). */
+  var SLOT_OF = {}; LIB.forEach(function (m) { SLOT_OF[m.id] = m.slot; });
+  function restFor(id, block, stage) {
+    var sl = SLOT_OF[id] || '', teen = stage === 'train' || stage === 'compete';
+    if (block === 'warm' || block === 'prep' || sl === 'mobil' || (sl === 'play' && !/relay|trial/.test(id))) return 0;
+    if (sl === 'speed' || /relay|trial/.test(id)) return teen ? 60 : 45;
+    if (sl === 'hop-s' || sl === 'stick-s' || sl === 'lat-s' || sl === 'nj' || sl === 'rope-easy') return 20;
+    if (block === 'move' || block === 'power') return teen ? 45 : 30;
+    if (sl === 'core' || sl === 'carry') return 30;
+    return teen ? 60 : 45;
+  }
+
+  return { LIB: LIB, TESTS: TESTS, restFor: restFor, testsFor: testsFor, SOURCES: SOURCES, STAGES: STAGES, GEAR: GEAR, OPTIONS: OPTIONS, RULES: RULES, WEEKS: WEEKS, DEFAULTS: DEFAULTS,
     stageOf: stageOf, gearAllowed: gearAllowed, label: label, buildPlan: buildPlan, reviewWeek: reviewWeek, summarizeEntries: summarizeEntries, why: why };
 })();

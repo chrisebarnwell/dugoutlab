@@ -59,6 +59,27 @@
   .mc .cu { font-size: 0.8rem; color: var(--ink-faint); margin-top: 6px; line-height: 1.35; }
   .mc .tg { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 7px; }
   .mc .tg i { font-style: normal; font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); border: 1px solid var(--rule); border-radius: 4px; padding: 2px 5px; }
+  .mc .acts { flex: 0 0 34px; display: flex; flex-direction: column; gap: 6px; }
+  .mc .qi { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--rule); background: none; color: var(--ink-soft); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .mc .qi:hover { color: var(--gold); border-color: var(--gold); }
+  .bi .t .rs { display: block; font-family: var(--mono); font-size: 0.62rem; color: var(--ink-faint); margin-top: 1px; }
+  .hw-bg { position: fixed; inset: 0; z-index: 10002; background: rgba(0,0,0,0.6); display: flex; align-items: flex-end; justify-content: center; }
+  @media (min-width: 700px) { .hw-bg { align-items: center; } .hw { border-radius: 20px !important; } }
+  .hw { width: 100%; max-width: 480px; max-height: 86vh; overflow-y: auto; background: var(--forest2); border: 1px solid var(--rule); border-radius: 22px 22px 0 0; padding: 20px 20px calc(22px + env(safe-area-inset-bottom)); color: var(--ink); animation: hwup 0.28s cubic-bezier(.2,.8,.2,1); }
+  @keyframes hwup { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .hw-top { display: flex; justify-content: space-between; align-items: center; }
+  .hw-x { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--rule); background: none; color: var(--ink-soft); font-size: 1.3rem; cursor: pointer; }
+  .hw h3 { font-family: var(--serif); font-size: 1.6rem; font-weight: 600; margin: 8px 0 4px; line-height: 1.15; }
+  .hw .ds { font-family: var(--mono); font-size: 0.78rem; color: var(--gold-light); }
+  .hw ol { list-style: none; padding: 0; margin: 14px 0 0; counter-reset: h; }
+  .hw li { counter-increment: h; display: grid; grid-template-columns: 30px 1fr; gap: 3px 10px; padding: 12px 0; border-top: 1px solid var(--rule); }
+  .hw li::before { content: counter(h); grid-row: span 2; width: 26px; height: 26px; border-radius: 50%; background: var(--forest3); color: var(--gold-light); font-family: var(--mono); font-size: 0.8rem; display: flex; align-items: center; justify-content: center; }
+  .hw li b { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); font-weight: 500; }
+  .hw li span { font-size: 0.95rem; line-height: 1.45; }
+  .hw-cue { font-family: var(--serif); font-style: italic; color: var(--gold-light); font-size: 1.1rem; margin-top: 12px; }
+  .hw .tg { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 10px; }
+  .hw .tg i { font-style: normal; font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); border: 1px solid var(--rule); border-radius: 4px; padding: 2px 5px; }
+  .hw-add { width: 100%; margin-top: 16px; padding: 14px; border-radius: 12px; border: 0; background: var(--gold); color: #0F1F18; font: inherit; font-weight: 700; cursor: pointer; }
   .mc .add { flex: 0 0 34px; height: 34px; border-radius: 10px; border: 1px solid var(--rule); background: none; color: var(--gold); font-size: 1.3rem; line-height: 1; cursor: pointer; }
   .mc.in .add { background: var(--fill); color: var(--on-fill); border-color: var(--gold); }
 
@@ -242,6 +263,7 @@
 
 <script src="js/site.js"></script>
 <script src="js/athlete-rules.js"></script>
+<script src="js/athlete-howto.js"></script>
 <script src="js/email-gate.js" data-mode="actions"></script>
 <script>
 (function () {
@@ -302,9 +324,13 @@
 
   /* ---------- library ---------- */
   var GRIP = '<svg viewBox="0 0 14 22"><circle cx="4" cy="4" r="1.6"/><circle cx="10" cy="4" r="1.6"/><circle cx="4" cy="11" r="1.6"/><circle cx="10" cy="11" r="1.6"/><circle cx="4" cy="18" r="1.6"/><circle cx="10" cy="18" r="1.6"/></svg>';
+  var QI = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.2v.1"/></svg>';
+  function teen() { return F.age >= 2; }
+  function rest(id) { var r = R.restFor(id, BY[id].block, teen() ? 'train' : 'learn'); return r ? r + 's rest' : ''; }
   function card(m) {
-    return '<div class="mc' + (has(m.id) ? ' in' : '') + '" data-id="' + m.id + '"><span class="grip" data-drag aria-label="Drag">' + GRIP + '</span><div class="bd"><div class="nm">' + esc(m.name) + '</div><div class="ds">' + esc(m.dose) + '</div><div class="cu">' + esc(m.cue) + '</div><div class="tg">' + m.tags.map(function (t) { return '<i>' + esc(t) + '</i>'; }).join('') + '</div></div>' +
-      '<button type="button" class="add" data-add aria-label="Add to workout">' + (has(m.id) ? '&#10003;' : '+') + '</button></div>';
+    var rs = rest(m.id);
+    return '<div class="mc' + (has(m.id) ? ' in' : '') + '" data-id="' + m.id + '"><span class="grip" data-drag aria-label="Drag">' + GRIP + '</span><div class="bd"><div class="nm">' + esc(m.name) + '</div><div class="ds">' + esc(m.dose) + (rs ? ' &middot; ' + rs : '') + '</div><div class="cu">' + esc(m.cue) + '</div><div class="tg">' + m.tags.map(function (t) { return '<i>' + esc(t) + '</i>'; }).join('') + '</div></div>' +
+      '<span class="acts"><button type="button" class="add" data-add aria-label="Add to workout">' + (has(m.id) ? '&#10003;' : '+') + '</button><button type="button" class="qi" data-how aria-label="How to do it">' + QI + '</button></span></div>';
   }
   function drawLib() {
     var html = '';
@@ -316,9 +342,25 @@
     });
     $('lib').innerHTML = html || '<p class="ml-sub" style="margin-top:1.5rem">No cards match. Clear the search.</p>';
     each($('lib').querySelectorAll('.mc'), function (c) {
+      c.querySelector('[data-how]').addEventListener('click', function () { howTo(c.getAttribute('data-id')); });
       c.querySelector('[data-add]').addEventListener('click', function () { var id = c.getAttribute('data-id'); if (has(id)) remove(id); else add(id, BY[id].block); });
       startDrag(c.querySelector('[data-drag]'), function () { return { id: c.getAttribute('data-id'), from: null }; }, c);
     });
+  }
+
+  /* ---------- how to do it ---------- */
+  function howTo(id) {
+    var m = BY[id], h = (window.DL_HOWTO || {})[id] || [], rs = rest(id), bg = document.createElement('div');
+    bg.className = 'hw-bg';
+    bg.innerHTML = '<div class="hw" role="dialog" aria-label="How to do ' + esc(m.name) + '"><div class="hw-top"><span class="ml-eb">How to do it</span><button type="button" class="hw-x" aria-label="Close">&times;</button></div><h3>' + esc(m.name) + '</h3><div class="ds">' + esc(m.dose) + (rs ? ' &middot; ' + rs : '') + '</div>' +
+      '<ol>' + ['Set up', 'Do it', 'Watch for'].map(function (t, i) { return h[i] ? '<li><b>' + t + '</b><span>' + esc(h[i]) + '</span></li>' : ''; }).join('') + '</ol>' +
+      '<p class="hw-cue">&ldquo;' + esc(m.cue) + '&rdquo;</p><div class="tg">' + m.tags.map(function (t) { return '<i>' + esc(t) + '</i>'; }).join('') + '</div>' +
+      '<button type="button" class="hw-add">' + (has(id) ? 'In your workout' : '+ Add to workout') + '</button></div>';
+    function close() { bg.remove(); }
+    bg.addEventListener('click', function (e) { if (e.target === bg) close(); });
+    bg.querySelector('.hw-x').addEventListener('click', close);
+    bg.querySelector('.hw-add').addEventListener('click', function () { if (!has(id)) add(id, m.block); close(); });
+    document.body.appendChild(bg);
   }
 
   /* ---------- builder ---------- */
@@ -339,7 +381,7 @@
     $('zones').innerHTML = BLOCKS.map(function (b, bi) {
       var L = String.fromCharCode(65 + bi);
       return '<div class="zone" data-zone="' + b.k + '"><div class="zone-h"><span>' + L + '. ' + b.n + '</span><em>' + W.items[b.k].length + '</em></div>' +
-        (W.items[b.k].length ? W.items[b.k].map(function (it, i) { var m = BY[it.id]; if (!m) return ''; return '<div class="bi" data-id="' + it.id + '"><span class="grip" data-drag>' + GRIP + '</span><span class="code">' + L + (i + 1) + '</span><span class="t"><b>' + esc(m.name) + '</b><input value="' + esc(it.dose) + '" maxlength="30" aria-label="Sets and reps"></span><button type="button" class="x" aria-label="Remove">&times;</button></div>'; }).join('') : '<div class="empty">Drop ' + b.n.toLowerCase() + ' cards here</div>') + '</div>';
+        (W.items[b.k].length ? W.items[b.k].map(function (it, i) { var m = BY[it.id]; if (!m) return ''; return '<div class="bi" data-id="' + it.id + '"><span class="grip" data-drag>' + GRIP + '</span><span class="code">' + L + (i + 1) + '</span><span class="t"><b>' + esc(m.name) + '</b><input value="' + esc(it.dose) + '" maxlength="30" aria-label="Sets and reps">' + (rest(it.id) ? '<small class="rs">' + rest(it.id) + '</small>' : '') + '</span><button type="button" class="x" aria-label="Remove">&times;</button></div>'; }).join('') : '<div class="empty">Drop ' + b.n.toLowerCase() + ' cards here</div>') + '</div>';
     }).join('');
     mins = Math.max(0, Math.round(n * 2.2));
     $('w-meta').textContent = n ? n + (n === 1 ? ' move' : ' moves') + ' · about ' + mins + ' min' : 'Empty. Drag cards in, or tap +.';
@@ -416,7 +458,7 @@
   $('w-print').addEventListener('click', function () {
     if (!count()) { toast('Add a card first'); return; }
     var h = '<h2>' + esc(W.name) + '</h2><div class="m">DugoutLab Movement Library &middot; ' + count() + ' moves &middot; check a box for each set</div>';
-    BLOCKS.forEach(function (b, bi) { if (!W.items[b.k].length) return; var L = String.fromCharCode(65 + bi); h += '<h3>' + L + '. ' + b.n + '</h3>' + W.items[b.k].map(function (it, i) { var m = BY[it.id]; return '<div class="r"><b>' + L + (i + 1) + '</b><span><b>' + esc(m.name) + '</b><br><span style="font-size:9pt;color:#555">' + esc(m.cue) + '</span></span><b>' + esc(it.dose) + '</b><span class="bx"></span><span class="bx"></span><span class="bx"></span></div>'; }).join(''); });
+    BLOCKS.forEach(function (b, bi) { if (!W.items[b.k].length) return; var L = String.fromCharCode(65 + bi); h += '<h3>' + L + '. ' + b.n + '</h3>' + W.items[b.k].map(function (it, i) { var m = BY[it.id]; return '<div class="r"><b>' + L + (i + 1) + '</b><span><b>' + esc(m.name) + '</b><br><span style="font-size:9pt;color:#555">' + esc(m.cue) + '</span></span><b>' + esc(it.dose) + (rest(it.id) ? '<br><span style="font-size:8.5pt;font-weight:400;color:#555">' + rest(it.id) + '</span>' : '') + '</b><span class="bx"></span><span class="bx"></span><span class="bx"></span></div>'; }).join(''); });
     h += '<div class="src"><b>Guidelines and sources this workout follows:</b> Lloyd et al. (2014) International consensus on youth resistance training; Faigenbaum et al. (2009) NSCA youth resistance training position statement; Lloyd et al. (2016) NSCA long-term athletic development; Webster and Hewett (2018) neuromuscular training meta-analysis. Bodyweight first. No throwing work. Cut jumping during a growth spurt. Educational, not medical advice.</div>';
     $('print').innerHTML = h; window.print();
   });
