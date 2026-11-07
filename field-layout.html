@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Insta Measure: Base and Mound Distances by League | DugoutLab</title>
-<meta name="description" content="Pick your league. Your phone drops a true-size diamond on the grass from the back point of home plate. Base and pitching distances for youth baseball and softball, 7U to high school.">
+<meta name="description" content="Pick your league. Lock your phone on the back point of home plate and aim at every base and the mound. Base and pitching distances for youth baseball and softball, 7U to high school.">
 <!-- dl:head -->
 <link rel="canonical" href="https://dugoutlab.com/field-layout">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="DugoutLab">
 <meta property="og:title" content="Insta Measure: Base and Mound Distances by League">
-<meta property="og:description" content="Pick your league. Your phone drops a true-size diamond on the grass from the back point of home plate. Base and pitching distances for youth baseball and softball, 7U to high school.">
+<meta property="og:description" content="Pick your league. Lock your phone on the back point of home plate and aim at every base and the mound. Base and pitching distances for youth baseball and softball, 7U to high school.">
 <meta property="og:url" content="https://dugoutlab.com/field-layout">
 <meta property="og:image" content="https://dugoutlab.com/assets/brand/og-default.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -56,12 +56,40 @@
 details.setup { margin-top: 1rem; border-top: 1px solid var(--rule); padding-top: 0.9rem; }
 details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); }
 
-.ar-btn { display: inline-flex; align-items: center; gap: 0.6rem; }
-.ar-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
-.ar-legend { list-style: none; display: grid; gap: 0.4rem; margin-top: 1rem; }
-.ar-legend li { display: grid; grid-template-columns: 14px 1fr; gap: 0.7rem; align-items: center; font-size: 0.95rem; color: var(--ink-soft); }
-.ar-legend i { width: 14px; height: 14px; border-radius: 3px; display: block; }
-.ar-warn { font-size: 0.9rem; color: var(--gold-light); margin-top: 0.8rem; min-height: 1.2em; }
+.sight { position: fixed; inset: 0; z-index: 2000; background: #050b08; display: none; color: #f4efe6; }
+.sight.open { display: block; }
+.sight [hidden] { display: none !important; }
+.sight video, .sight canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sight video { object-fit: cover; }
+.sight canvas { pointer-events: none; }
+.sight-top { position: absolute; top: 0; left: 0; right: 0; padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px 36px; background: linear-gradient(rgba(5,11,8,0.92), rgba(5,11,8,0)); text-align: center; pointer-events: none; }
+.sight-eb { font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.2em; color: #e2a85a; margin-bottom: 0.3rem; }
+.sight-zone { font-family: var(--serif); font-size: 1.9rem; font-weight: 700; line-height: 1.05; }
+.sight-zone.is-hit { color: #e2a85a; }
+.sight-sub { font-size: 1.05rem; font-weight: 600; margin-top: 0.4rem; }
+.sight-sub2 { font-size: 0.95rem; color: rgba(244,239,230,0.88); margin-top: 0.25rem; }
+.sight-x { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; }
+.sight-x::before, .sight-x::after { content: ""; position: absolute; background: #f4efe6; box-shadow: 0 0 0 1px rgba(0,0,0,0.6); }
+.sight-x::before { left: -1px; top: -26px; width: 2px; height: 52px; }
+.sight-x::after { top: -1px; left: -26px; height: 2px; width: 52px; }
+.sight-x i { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border: 2px solid #f4efe6; border-radius: 50%; box-shadow: 0 0 0 1px rgba(0,0,0,0.6); }
+.sight-x.is-hit::before, .sight-x.is-hit::after { background: #C8862E; }
+.sight-x.is-hit i { border-color: #C8862E; border-width: 4px; left: -12px; top: -12px; width: 24px; height: 24px; }
+.sight-ar { position: absolute; left: 50%; top: 50%; width: 0; height: 0; border: 20px solid transparent; filter: drop-shadow(0 0 3px #000); pointer-events: none; }
+.sight-ar.l { margin: -20px 0 0 -110px; border-right-color: #e2a85a; border-left-width: 0; }
+.sight-ar.r { margin: -20px 0 0 90px; border-left-color: #e2a85a; border-right-width: 0; }
+.sight-bot { position: absolute; bottom: 0; left: 0; right: 0; padding: 36px 16px calc(env(safe-area-inset-bottom, 0px) + 18px); background: linear-gradient(rgba(5,11,8,0), rgba(5,11,8,0.92)); text-align: center; }
+.sight-warn { font-size: 0.9rem; color: #e2a85a; min-height: 1.3em; margin-bottom: 0.5rem; }
+.sight-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; padding: 2px 2px 12px; }
+.sight-chip { border: 2px solid rgba(244,239,230,0.55); background: rgba(5,11,8,0.65); color: #f4efe6; border-radius: 999px; padding: 0.45rem 0.85rem; font-family: var(--sans); font-size: 0.88rem; font-weight: 600; }
+.sight-chip.cur { border-color: #e2a85a; color: #e2a85a; }
+.sight-chip.locked { background: #C8862E; border-color: #C8862E; color: #0a1610; }
+.sight-btns { display: flex; gap: 10px; justify-content: center; }
+.sight .btn[disabled] { opacity: 0.4; }
+.lock-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin: 1rem 0 0.4rem; }
+.lock-steps div { background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 10px; padding: 0.7rem 0.6rem; text-align: center; }
+.lock-steps b { display: block; font-family: var(--mono); font-size: 0.72rem; color: var(--gold); letter-spacing: 0.14em; margin-bottom: 0.3rem; }
+.lock-steps span { font-size: 0.85rem; color: var(--ink-soft); line-height: 1.35; display: block; }
 @media (max-width: 768px) { .tool-card { padding: 1.3rem 1.1rem; } }
 </style>
 </head>
@@ -96,7 +124,7 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
     <div class="breadcrumb"><a href="tools.html">&#8592; Tools</a></div>
     <div class="eyebrow">Tools &middot; Field Setup</div>
     <h1>Insta Measure</h1>
-    <p>Pick your league. Drop the field on the grass with your phone. Walk out and place every bag.</p>
+    <p>Pick your league. Lock your phone on the back point of home plate. Aim at every base and the mound.</p>
   </div>
 </div>
 
@@ -126,23 +154,28 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
 
     <!-- STEP 2 -->
     <div class="tool-card">
-      <div class="tool-step">Step 02 &middot; See it on the grass</div>
-      <div class="tool-h">Drop the field. Walk it. Place the bags.</div>
+      <div class="tool-step">Step 02 &middot; Lock it and aim</div>
+      <div class="tool-h">Lock the plate. Lock the line. Aim at every spot.</div>
+      <div class="lock-steps">
+        <div><b>LOCK 1</b><span>+ on the back point of home plate</span></div>
+        <div><b>LOCK 2</b><span>+ on 2nd base, or straight out over the plate</span></div>
+        <div><b>AIM</b><span>Turn until the + goes gold. Tape it.</span></div>
+      </div>
       <ol class="built-list">
-        <li>Stand behind home plate. Tap <b style="color:var(--ink)">Open in AR</b>.</li>
-        <li>Point at the grass and move the phone slowly until the field drops in.</li>
-        <li>Drag the red home pole onto the back point of home plate.</li>
-        <li>Twist with two fingers until the thin gold line points at second base.</li>
-        <li>Walk out. Put a bag at each gold pole and the rubber at the orange pole.</li>
+        <li>Stand 3 to 6 ft behind home plate, phone at your chest, held upright.</li>
+        <li>Put the + on the back point of the plate. Tap <b style="color:var(--ink)">Lock plate</b>.</li>
+        <li>Put the + on 2nd base. No 2nd base yet? Aim straight out over the point of the plate. Tap <b style="color:var(--ink)">Lock line</b>.</li>
+        <li>Pick a spot. Turn until the + goes gold. That is the exact line from the back point of the plate.</li>
+        <li>Stay where you are. A helper walks that line with the tape. You keep them on the +.</li>
       </ol>
-      <button type="button" class="btn btn-primary btn-lg ar-btn" id="ar-open" style="margin-top:1.1rem">Open in AR</button>
-      <div class="ar-warn" id="ar-warn"></div>
-      <ul class="ar-legend">
-        <li><i style="background:#d9332a"></i><span>Red pole: back point of home plate. Every distance starts here.</span></li>
-        <li><i style="background:#C8862E"></i><span>Gold poles: 1st, 2nd, 3rd. 1st and 3rd poles mark the outside back corner of the bag.</span></li>
-        <li><i style="background:#f2731a"></i><span>Orange pole and ring: front edge of the rubber or pitching plate.</span></li>
-      </ul>
-      <div class="tool-note">iPhone or iPad. Uses the AR viewer built into your phone, the same one behind Apple's Measure app. Run the tape on one base before you trust the rest. Nothing is recorded and nothing leaves your phone.</div>
+      <button type="button" class="btn btn-primary btn-lg" id="sight-open" style="margin-top:1.1rem">Open the camera</button>
+      <div class="tool-note">The phone measures turn and tilt well. It cannot tell when you walk. So you stay put and the tape goes out. Moved? Tap Re-lock. Nothing is recorded and nothing leaves your phone.</div>
+      <details class="setup">
+        <summary>Phone height</summary>
+        <div class="field" style="margin-top:0.8rem;max-width:220px"><label for="ph">Phone off the ground (ft)</label><input id="ph" type="number" inputmode="decimal" min="2" max="7" step="0.5" value="4.5"></div>
+        <div class="tool-note">Chest height for most adults is 4 to 5 ft. It only sets how far the plate is from you, so close is good enough.</div>
+      </details>
+      <ul class="lock-list" id="lock-list"></ul>
     </div>
 
     <!-- PLAY -->
@@ -161,13 +194,35 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
         <li><strong>Travel baseball (9U to 13U).</strong> 65/46, 70/50, and 80/54 are common travel distances. They change by organization, host, and year. Not checked against one rulebook. Flagged uncertain. Use the host's rules.</li>
         <li><strong>8U softball.</strong> Little League Minors softball uses 35 ft. Many rec and travel leagues use 30 ft at 8U. Flagged uncertain. Pick Custom if your league differs.</li>
         <li><strong>Base placement.</strong> In the official rules diagram, first and third bags sit inside the lines in fair territory, and second base is centered on its point. Check your league book.</li>
-        <li><strong>AR view.</strong> Uses Apple AR Quick Look and the phone's motion tracking. The model is drawn at true size from the back point of home plate. Tracking can drift over long walks and on plain grass with little texture. Accuracy across a full field has not been measured. Flagged uncertain. Check with a tape. DugoutLab build.</li>
-        <li><strong>Mound and circle rings.</strong> Ring sizes are approximate: 5 ft radius for Little League and teen mounds, 9 ft for the full-size mound, 8 ft for the softball pitching circle. Rubber 18 by 4 in on smaller fields, 24 by 6 in on full size and softball. Check your league book.</li>
+        <li><strong>Phone sight.</strong> Plain geometry from your phone's tilt and turn sensors. Lock 1 finds the back point of the plate from your phone height and the down angle (close up, a steep angle, so small errors stay small). Lock 2 sets the line to 2nd. Every spot is then turned and tilted from that point by the league distances. Turn is good to about a degree over a few minutes and can drift, so tap Re-lock if the plate marker slides off. The phone cannot track you walking, so the tape decides distance. Pins away from the center of the screen use an assumed camera lens and are approximate. The gold + at the center is the exact line. Not field tested against a survey. DugoutLab build.</li>
+
       </ul>
     </details>
 
   </div>
 </section>
+
+<div class="sight" id="sight">
+  <video id="sight-video" playsinline muted autoplay></video>
+  <canvas id="sight-canvas"></canvas>
+  <div class="sight-top">
+    <div class="sight-eb" id="s-eb">LOCK 1 OF 2</div>
+    <div class="sight-zone" id="s-title">BACK POINT OF THE PLATE</div>
+    <div class="sight-sub" id="s-sub">Put the + on it</div>
+    <div class="sight-sub2" id="s-sub2"></div>
+  </div>
+  <div class="sight-x" id="s-x"><i></i></div>
+  <div class="sight-ar l" id="ar-l" hidden></div>
+  <div class="sight-ar r" id="ar-r" hidden></div>
+  <div class="sight-bot">
+    <div class="sight-warn" id="s-warn"></div>
+    <div class="sight-chips" id="s-chips"></div>
+    <div class="sight-btns">
+      <button type="button" class="btn btn-primary btn-lg" id="s-set">Lock plate</button>
+      <button type="button" class="btn btn-secondary btn-lg" id="s-close">Done</button>
+    </div>
+  </div>
+</div>
 
 <footer class="footer">
   <div class="footer-inner">
@@ -307,34 +362,228 @@ details.setup summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; c
     if (L.m > 0) rows.push([L.sp === 'sb' ? 'Home to pitching plate (front edge)' : 'Home to front of the rubber', ftin(L.m), '']);
     rows.push(['Big steps to 1st or 3rd', 'about ' + steps(L.b), '']);
     $('tape').innerHTML = rows.map(function (r) { return '<li' + (r[2] ? ' class="key"' : '') + '><span>' + r[0] + '</span><b>' + r[1] + '</b></li>'; }).join('');
-    arState(L);
+    if (S.on && S.step === 'aim') { S.pts = points(L); S.placed = {}; S.cur = 'b1'; drawChips(); lockList(); }
   }
   sel.addEventListener('change', render);
   $('c-bases').addEventListener('input', render);
   $('c-mound').addEventListener('input', render);
 
-  /* ---------- AR view (AR Quick Look, models built by .github/scripts/build_field_ar.py) ---------- */
-  var arOK = false;
-  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  try { arOK = document.createElement('a').relList.supports('ar'); } catch (e) {}
-  /* Some iPhone browsers say no here but open AR fine, so on iOS we always try. */
-  if (isIOS) arOK = true;
-  function arFile(L) {
-    if (L.id === 'custom') return null;
-    return 'ar/field-' + String(L.b).replace('.', 'p') + '-' + String(L.m).replace('.', 'p') + '-' + L.sp + '.usdz';
+  /* ---------- phone sight: lock the back point of the plate, lock the line, aim at each spot ----------
+     Earth frame in feet: x east, y north, z up. Phone sits at (0, 0, h).
+     Field frame in feet: origin at the back point of home plate, y toward 2nd, x toward 1st. */
+  var S = { on: false, step: 'plate', R: null, got: false, P0: null, dir: null, cur: 'b1', placed: {}, pts: [], stream: null, raf: 0, flash: 0 };
+  var HALF_LONG_FOV = 33.5; /* assumed half view angle along the long side of the camera picture, main lens */
+
+  function points(L) {
+    var s = L.b / SQ2, P = [
+      { id: 'b1', name: '1ST BASE', chip: '1st', x: s, y: s, d: L.b },
+      { id: 'b2', name: '2ND BASE', chip: '2nd', x: 0, y: L.b * SQ2, d: L.b * SQ2 },
+      { id: 'b3', name: '3RD BASE', chip: '3rd', x: -s, y: s, d: L.b }
+    ];
+    if (L.m > 0) P.push({ id: 'mnd', name: L.sp === 'sb' ? 'PITCHING PLATE' : 'RUBBER', chip: L.sp === 'sb' ? 'Circle' : 'Mound', x: 0, y: L.m, d: L.m });
+    return P;
   }
-  function arState(L) {
-    var btn = $('ar-open'), w = $('ar-warn');
-    if (!arOK) { btn.disabled = true; w.textContent = 'AR view opens on an iPhone or iPad. Open this page there.'; return; }
-    if (!arFile(L)) { btn.disabled = true; w.textContent = 'AR view needs a preset league. Pick one above.'; return; }
-    btn.disabled = false; w.textContent = '';
+  function ptOf(id) { for (var i = 0; i < S.pts.length; i++) if (S.pts[i].id === id) return S.pts[i]; return null; }
+
+  function m3(A, B) { var C = []; for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) C.push(A[i * 3] * B[j] + A[i * 3 + 1] * B[3 + j] + A[i * 3 + 2] * B[6 + j]); return C; }
+  /* rows of the result: camera right, camera up, camera forward, each in earth coords */
+  function camFromEarth(alpha, beta, gamma) {
+    var ca = Math.cos(alpha * D2R), sa = Math.sin(alpha * D2R), cb = Math.cos(beta * D2R), sb = Math.sin(beta * D2R), cg = Math.cos(gamma * D2R), sg = Math.sin(gamma * D2R);
+    var M = m3(m3([ca, -sa, 0, sa, ca, 0, 0, 0, 1], [1, 0, 0, 0, cb, -sb, 0, sb, cb]), [cg, 0, sg, 0, 1, 0, -sg, 0, cg]);
+    return [M[0], M[3], M[6], M[1], M[4], M[7], -M[2], -M[5], -M[8]];
   }
-  $('ar-open').addEventListener('click', function () {
-    var f = arFile(league()); if (!arOK || !f) return;
-    var a = document.createElement('a');
-    a.rel = 'ar'; a.href = f + '#allowsContentScaling=0';
-    a.appendChild(document.createElement('img'));
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  function onOrient(e) {
+    if (e.alpha === null || e.beta === null) return;
+    var R = camFromEarth(e.alpha, e.beta, e.gamma || 0);
+    if (!S.got) { S.R = R; S.got = true; return; }
+    for (var i = 0; i < 9; i++) S.R[i] += (R[i] - S.R[i]) * 0.35;
+  }
+  function fwd() { var f = [S.R[6], S.R[7], S.R[8]], n = Math.hypot(f[0], f[1], f[2]) || 1; return [f[0] / n, f[1] / n, f[2] / n]; }
+  function wrapDeg(d) { return ((d + 180) % 360 + 360) % 360 - 180; }
+  function headOf(v) { return Math.atan2(v[0], v[1]) / D2R; }
+  function pitchOf(v) { return Math.atan2(v[2], Math.hypot(v[0], v[1])) / D2R; }
+  function phoneH() { var h = parseFloat($('ph').value); return isFinite(h) && h > 1 && h < 8 ? h : 4.5; }
+  /* where the center of the screen meets the ground */
+  function groundHit() { var f = fwd(); if (f[2] > -0.05) return null; var t = phoneH() / -f[2]; return [f[0] * t, f[1] * t]; }
+  /* field point to earth point, from the two locks */
+  function toEarth(x, y) { var d = S.dir, r = [d[1], -d[0]]; return [S.P0[0] + x * r[0] + y * d[0], S.P0[1] + x * r[1] + y * d[1]]; }
+  /* the line from the plate toward where the + points now */
+  function lineAim() {
+    var f = fwd(), Q, hit = groundHit();
+    if (hit && pitchOf(f) < -3 && Math.hypot(hit[0], hit[1]) < 250) Q = hit;
+    else { var n = Math.hypot(f[0], f[1]) || 1; Q = [f[0] / n * 400, f[1] / n * 400]; }
+    var dx = Q[0] - S.P0[0], dy = Q[1] - S.P0[1], L = Math.hypot(dx, dy);
+    return L > 8 ? [dx / L, dy / L] : null;
+  }
+
+  function drawChips() {
+    var box = $('s-chips'); box.innerHTML = '';
+    if (S.step !== 'aim') return;
+    S.pts.concat([{ id: 'relock', chip: 'Re-lock' }]).forEach(function (p) {
+      var b = document.createElement('button'); b.type = 'button';
+      var done = S.placed[p.id];
+      b.className = 'sight-chip' + (done ? ' locked' : '') + (S.cur === p.id ? ' cur' : '');
+      b.textContent = p.chip + (done ? ' ✓' : '');
+      b.addEventListener('click', function () {
+        if (p.id === 'relock') { S.step = 'plate'; S.P0 = null; S.dir = null; drawChips(); return; }
+        S.cur = p.id; drawChips();
+      });
+      box.appendChild(b);
+    });
+  }
+  function lockList() {
+    var L = league(), h = '';
+    S.pts.forEach(function (p) {
+      if (!S.placed[p.id]) return;
+      h += '<li><b>✓ ' + p.name.charAt(0) + p.name.slice(1).toLowerCase() + '</b>' + ftin(p.d) + ' from the back point of home plate.</li>';
+    });
+    $('lock-list').innerHTML = h ? '<li><b>' + L.name + '</b>Bases ' + ftin(L.b) + (L.m > 0 ? ', pitching ' + ftin(L.m) : '') + '</li>' + h : '';
+  }
+
+  function focalPx(W, H) {
+    var v = $('sight-video'), vw = v.videoWidth || 3, vh = v.videoHeight || 4;
+    var sc = Math.max(W / vw, H / vh);
+    return sc * (Math.max(vw, vh) / 2) / Math.tan(HALF_LONG_FOV * D2R);
+  }
+  function draw(g, W, H) {
+    var R = S.R, f = focalPx(W, H), h = phoneH(), L = league();
+    function S2(E) {
+      var v = [E[0], E[1], -h], q0 = R[0] * v[0] + R[1] * v[1] + R[2] * v[2], q1 = R[3] * v[0] + R[4] * v[1] + R[5] * v[2], q2 = R[6] * v[0] + R[7] * v[1] + R[8] * v[2];
+      if (q2 < 0.3) return null;
+      return [W / 2 + f * q0 / q2, H / 2 - f * q1 / q2];
+    }
+    function path(E, dash) {
+      g.setLineDash(dash || []); g.beginPath(); var on = false;
+      E.forEach(function (p) { var s = S2(p); if (!s) { on = false; return; } if (!on) { g.moveTo(s[0], s[1]); on = true; } else g.lineTo(s[0], s[1]); });
+      g.stroke(); g.setLineDash([]);
+    }
+    function seg(a, b, n) { var o = []; for (var i = 0; i <= n; i++) o.push([a[0] + (b[0] - a[0]) * i / n, a[1] + (b[1] - a[1]) * i / n]); return o; }
+    function fseg(a, b, n) { return seg(a, b, n).map(function (p) { return toEarth(p[0], p[1]); }); }
+    function stroke2(E, w, col, dash) { g.strokeStyle = 'rgba(0,0,0,0.55)'; g.lineWidth = w + 3; path(E, dash); g.strokeStyle = col; g.lineWidth = w; path(E, dash); }
+    g.lineCap = 'round';
+
+    if (S.P0) {
+      var c = S2(S.P0);
+      if (c) { g.beginPath(); g.arc(c[0], c[1], 9, 0, Math.PI * 2); g.fillStyle = '#d9332a'; g.fill(); g.lineWidth = 3; g.strokeStyle = '#f4efe6'; g.stroke(); }
+    }
+    if (S.step === 'line' && S.P0) {
+      var d = lineAim();
+      if (d) stroke2(seg(S.P0, [S.P0[0] + d[0] * 130, S.P0[1] + d[1] * 130], 60), 3, '#C8862E', [10, 8]);
+      return;
+    }
+    if (S.step !== 'aim') return;
+
+    var s = L.b / SQ2, b2 = [0, L.b * SQ2];
+    [[[0, 0], [s, s]], [[s, s], b2], [b2, [-s, s]], [[-s, s], [0, 0]]].forEach(function (l) { stroke2(fseg(l[0], l[1], 40), 3, '#f4efe6'); });
+    stroke2(fseg([s, s], [s * 1.6, s * 1.6], 30), 2, 'rgba(244,239,230,0.7)', [8, 8]);
+    stroke2(fseg([-s, s], [-s * 1.6, s * 1.6], 30), 2, 'rgba(244,239,230,0.7)', [8, 8]);
+    var cur = ptOf(S.cur);
+    if (cur) stroke2(fseg([0, 0], [cur.x, cur.y], 40), 2, '#C8862E', [4, 6]);
+    if (L.m > 0) {
+      var r = L.sp === 'sb' ? 8 : 5, ring = [];
+      for (var a = 0; a <= 48; a++) ring.push(toEarth(r * Math.cos(a / 48 * 2 * Math.PI), L.m + r * Math.sin(a / 48 * 2 * Math.PI)));
+      stroke2(ring, 2, '#f2731a');
+    }
+    S.pts.forEach(function (p) {
+      var c = S2(toEarth(p.x, p.y)); if (!c) return;
+      var isCur = S.cur === p.id, done = S.placed[p.id], rad = isCur ? 14 : 10;
+      g.beginPath(); g.arc(c[0], c[1], rad, 0, Math.PI * 2);
+      g.fillStyle = done ? 'rgba(200,134,46,0.9)' : (isCur ? 'rgba(200,134,46,0.35)' : 'rgba(244,239,230,0.25)');
+      g.fill(); g.lineWidth = isCur ? 4 : 3; g.strokeStyle = isCur || done ? '#C8862E' : '#f4efe6'; g.stroke();
+      g.font = '700 13px Inter, sans-serif'; g.textAlign = 'center';
+      var lab = p.chip + ' ' + ftin(p.d), tw = g.measureText(lab).width + 14, below = p.id === 'mnd', ty = below ? c[1] + rad + 6 : c[1] - rad - 26;
+      g.fillStyle = 'rgba(5,11,8,0.82)'; g.fillRect(c[0] - tw / 2, ty, tw, 20);
+      g.fillStyle = '#f4efe6'; g.fillText(lab, c[0], ty + 15);
+    });
+  }
+
+  function arrows(l, r) { $('ar-l').hidden = !l; $('ar-r').hidden = !r; }
+  function deg(x) { x = Math.abs(x); return (x < 10 ? x.toFixed(1) : Math.round(x)) + '°'; }
+  function ui(eb, title, hit, sub, sub2, btnText, btnOK) {
+    $('s-eb').textContent = eb; $('s-title').textContent = title; $('s-title').className = 'sight-zone' + (hit ? ' is-hit' : '');
+    $('s-sub').textContent = sub; $('s-sub2').textContent = sub2;
+    $('s-x').className = 'sight-x' + (hit ? ' is-hit' : '');
+    $('s-set').textContent = btnText; $('s-set').disabled = !btnOK;
+  }
+  function frame() {
+    if (!S.on) return;
+    S.raf = requestAnimationFrame(frame);
+    var cv = $('sight-canvas'), W = cv.clientWidth, H = cv.clientHeight, dpr = window.devicePixelRatio || 1;
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+    var g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+    if (!S.got) return;
+    draw(g, W, H);
+    var f = fwd();
+
+    if (S.step === 'plate') {
+      arrows(0, 0);
+      var hit = groundHit(), dist = hit ? Math.hypot(hit[0], hit[1]) : 0, ok = hit && pitchOf(f) < -10 && dist < 25;
+      ui('LOCK 1 OF 2', 'BACK POINT OF THE PLATE', false, 'Put the + on the back point of home plate',
+        ok ? 'Plate is ' + ftin(dist) + ' from your feet' : 'Point down at the plate. Stand 3 to 6 ft behind it.', 'Lock plate', ok);
+      return;
+    }
+    if (S.step === 'line') {
+      arrows(0, 0);
+      var d = lineAim();
+      ui('LOCK 2 OF 2', 'LINE TO SECOND', false, 'Put the + on 2nd base', 'No 2nd base yet? Aim straight out over the point of the plate.', 'Lock line', !!d);
+      return;
+    }
+    if (S.flash > Date.now()) {
+      arrows(0, 0); var nx = ptOf(S.cur);
+      ui('PLACED', $('s-title').textContent, true, nx ? 'Next: ' + nx.chip : 'Field is set', '', 'Placed', false);
+      return;
+    }
+    if (S.cur === 'done') {
+      arrows(0, 0);
+      ui('DONE', 'FIELD IS SET', true, 'Tap Done. Your spots are listed on the page.', 'Tap any chip to check one again.', 'Placed', false);
+      return;
+    }
+    var p = ptOf(S.cur), T = toEarth(p.x, p.y), h = phoneH();
+    var dh = wrapDeg(headOf(T) - headOf(f)), dp = Math.atan2(-h, Math.hypot(T[0], T[1])) / D2R - pitchOf(f), on = Math.abs(dh) <= 1;
+    var tilt = Math.abs(dp) > 4 ? (dp < 0 ? 'Tilt down ' : 'Tilt up ') + deg(dp) + '. ' : '';
+    if (on) { arrows(0, 0); ui('ON LINE', p.name, true, 'Stay put. Keep the tape on the +.', tilt + 'Tape ' + ftin(p.d) + ' from the back point of the plate.', 'Placed', true); }
+    else { arrows(dh < 0, dh > 0); ui('AIM', p.name, false, 'Turn ' + (dh > 0 ? 'right ' : 'left ') + deg(dh), tilt + ftin(p.d) + ' from the back point of the plate.', 'Placed', false); }
+  }
+
+  function openSight() {
+    function go() {
+      $('sight').classList.add('open');
+      S.on = true; S.got = false; S.step = 'plate'; S.P0 = null; S.dir = null; S.placed = {}; S.cur = 'b1'; S.pts = points(league());
+      $('s-warn').textContent = ''; drawChips();
+      window.addEventListener('deviceorientation', onOrient);
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false }).then(function (st) {
+          if (!S.on) { st.getTracks().forEach(function (t) { t.stop(); }); return; }
+          S.stream = st; var v = $('sight-video'); v.srcObject = st;
+          var pl = v.play(); if (pl && pl.catch) pl.catch(function () {});
+        }).catch(function () { if (S.on) $('s-warn').textContent = 'Camera is blocked. Allow the camera for this site and reopen.'; });
+      } else { $('s-warn').textContent = 'No camera here. Open this page on a phone.'; }
+      setTimeout(function () { if (S.on && !S.got) $('s-warn').textContent = 'No tilt sensor found. Open this page on a phone.'; }, 2000);
+      frame();
+    }
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') DeviceOrientationEvent.requestPermission().then(go, go);
+    else go();
+  }
+  function closeSight() {
+    S.on = false; cancelAnimationFrame(S.raf);
+    window.removeEventListener('deviceorientation', onOrient);
+    if (S.stream) { S.stream.getTracks().forEach(function (t) { t.stop(); }); S.stream = null; }
+    $('sight-video').srcObject = null;
+    $('sight').classList.remove('open');
+  }
+  $('sight-open').addEventListener('click', openSight);
+  $('s-close').addEventListener('click', closeSight);
+  $('s-set').addEventListener('click', function () {
+    if (!S.got || $('s-set').disabled) return;
+    if (S.step === 'plate') { var hit = groundHit(); if (!hit) return; S.P0 = hit; S.step = 'line'; return; }
+    if (S.step === 'line') { var d = lineAim(); if (!d) return; S.dir = d; S.step = 'aim'; S.pts = points(league()); if (S.cur === 'done') S.cur = 'b1'; drawChips(); return; }
+    if (S.flash > Date.now() || S.cur === 'done') return;
+    S.placed[S.cur] = true;
+    $('s-title').textContent = ptOf(S.cur).name + ' ✓';
+    var next = 'done';
+    for (var i = 0; i < S.pts.length; i++) if (!S.placed[S.pts[i].id]) { next = S.pts[i].id; break; }
+    S.cur = next; S.flash = Date.now() + 1100;
+    drawChips(); lockList();
   });
 
   render();
