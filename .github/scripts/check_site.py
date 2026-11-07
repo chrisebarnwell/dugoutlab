@@ -89,7 +89,8 @@ MOBILE_RE = re.compile(r'<div class="mobile-menu" id="mobile-menu">.*?</div>', r
 TLDR_PAGES = ['how-kids-learn.html', 'coach-dad.html']
 
 # Pages that are redirect stubs or special: no inbound link needed
-NO_INBOUND_NEEDED = {'index.html', '404.html'}
+NO_INBOUND_NEEDED = {'index.html', '404.html',
+                     'strike-zone.html'}  # shelved by Chris 2026-11-07: live by URL, unlisted
 
 # (label, regex) checked against every .html / .js / .css file
 BANNED = [
