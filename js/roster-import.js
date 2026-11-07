@@ -134,20 +134,27 @@
     '.ri-msg.ok{color:var(--ok,#7ad6a8);font-weight:600}.ri-msg.err{color:var(--gold-light,#e2a85a);font-weight:600}' +
     '.ri-fine{font-size:0.78rem;color:var(--ink-faint,rgba(244,239,230,0.6));margin-top:0.35rem}';
 
-  function myTeam() {
+  /* My Team (team.html) from this phone's cache: { name, players: [first names] } or null */
+  function myTeamFull() {
     try {
-      var c = JSON.parse(localStorage.getItem('dl_team_v1') || 'null'); if (!c || !c.teams || !c.teams.length) return [];
+      var c = JSON.parse(localStorage.getItem('dl_team_v1') || 'null'); if (!c || !c.teams || !c.teams.length) return null;
       var cur = JSON.parse(localStorage.getItem('dl_team_cur') || 'null'), t = c.teams[0];
       c.teams.forEach(function (x) { if (x.id === cur) t = x; });
-      return (c.players || []).filter(function (p) { return p.kind === 'player' && p.team_id === t.id; }).map(function (p) { return p.name; });
-    } catch (e) { return []; }
+      var names = (c.players || []).filter(function (p) { return p.kind === 'player' && p.team_id === t.id; }).map(function (p) { return p.name; });
+      return { name: t.name || '', players: names };
+    } catch (e) { return null; }
   }
+  function myTeam() { var t = myTeamFull(); return t ? t.players : []; }
+  function getJ(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+  function putJ(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
   window.RosterImport = {
     parse: function (text) { return namesFromRows(parseDelimited(text)); },
     records: function (text) { return recordsFromRows(parseDelimited(text)); },
     template: downloadTemplate,
-    /* opts.template = { file, cols, rows, note }: adds "Download template". opts.noTeam hides "Use My Team". opts.noPaste hides the paste box (page has its own). */
+    /* opts.template = { file, cols, rows, note }: adds "Download template". opts.noTeam hides "Use My Team". opts.noPaste hides the paste box (page has its own).
+       opts.auto = { key, isEmpty(), onTeamName(name) }: a signed-in coach's My Team fills the tool on its own when the roster is empty,
+       and stays in sync while the roster came from My Team. A file or paste the coach loads is never overwritten. */
     mount: function (el, onNames, opts) {
       opts = opts || {};
       if (!el || el.__ri) return;
@@ -175,8 +182,10 @@
         el.querySelector('.ri-row').insertBefore(tb, el.querySelector('.ri-row').firstChild);
         tb.addEventListener('click', function () { done(myTeam().map(function (n) { return { name: n }; }), 'My Team'); });
       }
+      var srcKey = opts.auto ? 'dl_ri_src_' + opts.auto.key : null;
       function done(recs, src) {
         var names = recs.map(function (o) { return o.name; });
+        if (srcKey && names.length) putJ(srcKey, src === 'My Team' ? { from: 'team', sig: names.join('|') } : { from: 'other' });
         if (!names.length && recs.examplesOnly) { msg.className = 'ri-msg err'; msg.textContent = 'Only the example rows are in there. Add your players under them and upload again.'; return; }
         if (!names.length) { msg.className = 'ri-msg err'; msg.textContent = 'No names found. Try a file with a Name column, or paste the names one per line.'; return; }
         msg.className = 'ri-msg ok'; msg.textContent = 'Loaded ' + names.length + ' names' + (src ? ' from ' + src : '') + '.';
@@ -193,6 +202,26 @@
           .catch(function () { msg.className = 'ri-msg err'; msg.textContent = 'Could not read that file. Export it as CSV and try again.'; });
         input.value = '';
       });
+      if (opts.auto && !opts.noTeam) {
+        var tryAuto = function () {
+          var t = myTeamFull(); if (!t || !t.players.length) return;
+          var was = getJ(srcKey), sig = t.players.join('|'), empty = false;
+          try { empty = opts.auto.isEmpty(); } catch (e) {}
+          if (!empty && !(was && was.from === 'team' && was.sig !== sig)) return;
+          done(t.players.map(function (n) { return { name: n }; }), 'My Team');
+          if (t.name && opts.auto.onTeamName) { try { opts.auto.onTeamName(t.name); } catch (e) {} }
+        };
+        var run = function () {
+          tryAuto();
+          var n = 0;
+          (function wait() {
+            if (window.DLTeam && DLTeam.refresh) DLTeam.refresh().then(tryAuto).catch(function () {});
+            else if (n++ < 20) setTimeout(wait, 250);
+          })();
+        };
+        if (document.readyState === 'complete') setTimeout(run, 0);
+        else window.addEventListener('load', function () { setTimeout(run, 0); });
+      }
     }
   };
 })();

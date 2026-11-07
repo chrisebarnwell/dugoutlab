@@ -180,7 +180,7 @@ textarea { width: 100%; min-height: 150px; }
   </a>
   <a href="lineup.html" class="mode-tab">
     <div class="mt-k">Mode B &middot; Competitive</div>
-    <div class="mt-t">Strike-Thrower Builder</div>
+    <div class="mt-t">Compete Mode</div>
     <div class="mt-d">All-Stars and travel. Tiers, a deeper pitching staff, and win / balanced / development priorities.</div>
   </a>
 </div>
@@ -371,7 +371,7 @@ textarea { width: 100%; min-height: 150px; }
   </div>
 </footer>
 
-<script src="js/roster-import.js?v=20261107"></script>
+<script src="js/roster-import.js?v=20261107b"></script>
 <script>
   RosterImport.mount(document.getElementById('roster-import'), function (names, recs) {
     recs.forEach(function (r) { if (r.pod) S.pods[r.name] = r.pod; });
@@ -382,6 +382,10 @@ textarea { width: 100%; min-height: 150px; }
     cols: ['Name', 'Pod'],
     rows: [['Example Adrian', 'Right'], ['Example Colin', 'Left']],
     note: 'Pod is Right or Left. Leave it blank and we split the pods for you.'
+  }, auto: {
+    key: 'pods',
+    isEmpty: function () { return !S.names.length; },
+    onTeamName: function (n) { var el = document.getElementById('team'); if (!el.value.trim()) { el.value = n; S.team = n; save(); } }
   } });
 </script>
 <script src="js/site.js"></script>

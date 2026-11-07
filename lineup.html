@@ -602,7 +602,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
   </a>
   <a href="lineup.html" class="mode-tab active">
     <div class="mt-k">Mode B &middot; Competitive</div>
-    <div class="mt-t">Strike-Thrower Builder</div>
+    <div class="mt-t">Compete Mode</div>
     <div class="mt-d">All-Stars and travel. Tiers, a deeper pitching staff, and win / balanced / development priorities.</div>
   </a>
 </div>
@@ -923,7 +923,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
   </div>
 </footer>
 
-<script src="js/roster-import.js?v=20261107"></script>
+<script src="js/roster-import.js?v=20261107b"></script>
 <script>
   /* Roster import: replace the rows with the uploaded names. Tier from the file, else keep the old tier, else 2. */
   RosterImport.mount(document.getElementById('roster-import'), function (names, recs) {
@@ -938,6 +938,10 @@ select option { background: var(--forest-deep); color: var(--ink); }
     cols: ['Name', 'Tier'],
     rows: [['Example Maya', '1'], ['Example Theo', '2'], ['Example Nora', '3']],
     note: 'Tier 1 = strongest, 2 = developing, 3 = beginner. Blank tier = 2.'
+  }, auto: {
+    key: 'lineup',
+    isEmpty: function () { return !loadRoster().length; },
+    onTeamName: function (n) { var el = document.getElementById('team-name'); if (el && !el.value.trim()) el.value = n; }
   } });
 </script>
 <script src="js/site.js"></script>
@@ -1757,7 +1761,7 @@ function lineupForEmail() {
   for (var i = 1; i <= inn; i++) cols.push('Inning ' + i);
   return {
     title: document.getElementById('lineup-title').textContent,
-    mode: 'Strike-Thrower Builder',
+    mode: 'Compete Mode',
     details: [inn + ' innings. Batting order is top to bottom.'],
     firstCol: 'Batting order',
     columns: cols,
