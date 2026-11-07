@@ -4,6 +4,11 @@
    follows the coach into every tool. Players are a first name and a jersey number only. The player's age is the
    team age. No last names, no photos, no kid emails.
 
+   Parent contact (optional, per player): a parent or guardian's name and email, typed by the coach.
+     player_contacts: player_id, account_id, parent_name, parent_email, updated
+   Kept in its own table and its own route so it never lands in the roster cache on every page. DugoutLab never
+   emails these addresses; they are for the coach only. Deleted with the player, the team, or the account.
+
    Timed runs (Home to First today; the kind column leaves room for other timers later):
      runs: id, coach_id, player_id, session_id, date, type (Practice|Game), run_number (1|2), seconds, created_at
    Run ids come from the phone, so a save queued offline and sent twice is stored once.
@@ -11,12 +16,13 @@
    Routes (token in the JSON body or ?token=):
      GET  /api/team/roster                          -> { account, teams, players }
      POST /api/team/team    { id?, name, age }      -> { team }
-     POST /api/team/player  { id?, team_id, name, jersey } -> { player }
-     POST /api/team/bulk    { team_id, players: [{ name, jersey }] } -> { added: [player], skipped }
+     POST /api/team/player  { id?, team_id, name, jersey, parent_name?, parent_email? } -> { player, contact }
+     POST /api/team/bulk    { team_id, players: [{ name, jersey, parent_name?, parent_email? }] } -> { added: [player], skipped, bad_emails }
+     GET  /api/team/contacts?team=                  -> { contacts: { player_id: { parent_name, parent_email } } }
      POST /api/team/player-delete { id }            -> { ok }
      GET  /api/team/runs?player= | ?session= | ?team=  -> { runs }
      POST /api/team/runs    { add: [run], remove: [id] } -> { saved: [id], removed: [id], rejected: [{ id, error }] }
-   Account deletion in /api/pitch/account-delete also removes runs. */
+   Account deletion in /api/pitch/account-delete also removes runs and parent contacts. */
 
 const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS pitch_teams (
@@ -29,6 +35,9 @@ const SCHEMA = [
     id TEXT PRIMARY KEY, coach_id TEXT NOT NULL, player_id TEXT NOT NULL, session_id TEXT NOT NULL,
     kind TEXT NOT NULL DEFAULT 'h2f', date TEXT NOT NULL, type TEXT NOT NULL, run_number INTEGER NOT NULL,
     seconds REAL NOT NULL, created_at INTEGER NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS player_contacts (
+    player_id TEXT PRIMARY KEY, account_id TEXT NOT NULL, parent_name TEXT NOT NULL DEFAULT '',
+    parent_email TEXT NOT NULL DEFAULT '', updated INTEGER NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS runs_player ON runs(player_id, date)`,
   `CREATE INDEX IF NOT EXISTS runs_coach ON runs(coach_id, session_id)`
 ];
@@ -43,6 +52,17 @@ function id() { return crypto.randomUUID().replace(/-/g, '').slice(0, 20); }
 function clean(s, n) { return String(s || '').replace(/[<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, n || 60); }
 function ageOK(n) { n = parseInt(n, 10); return n >= 6 && n <= 18 ? n : 0; }
 function jerseyOK(j) { return String(j == null ? '' : j).replace(/[^0-9]/g, '').slice(0, 3); }
+function emailOK(e) {
+  e = String(e || '').trim().toLowerCase().slice(0, 120);
+  return /^[^\s@<>,;]+@[^\s@<>,;]+\.[a-z]{2,}$/.test(e) ? e : '';
+}
+async function setContact(db, me, pid, name, email, now) {
+  if (!name && !email) { await db.prepare('DELETE FROM player_contacts WHERE player_id = ? AND account_id = ?').bind(pid, me.id).run(); return null; }
+  await db.prepare('INSERT INTO player_contacts (player_id,account_id,parent_name,parent_email,updated) VALUES (?,?,?,?,?) ' +
+    'ON CONFLICT(player_id) DO UPDATE SET parent_name = excluded.parent_name, parent_email = excluded.parent_email, updated = excluded.updated')
+    .bind(pid, me.id, name, email, now).run();
+  return { parent_name: name, parent_email: email };
+}
 function dateOK(d) { return /^\d{4}-\d{2}-\d{2}$/.test(String(d || '')) ? String(d) : ''; }
 async function ensure(db) { for (const s of SCHEMA) await db.prepare(s).run(); }
 async function auth(db, token) { return token ? db.prepare('SELECT * FROM accounts WHERE token = ?').bind(token).first() : null; }
@@ -122,20 +142,35 @@ export async function onRequest(ctx) {
       return json({ team: t });
     }
 
+    if (route === 'contacts' && method === 'GET') {
+      const t = await ownTeam(db, me, url.searchParams.get('team'));
+      if (!t) return bad('Not your team', 404);
+      const rows = (await db.prepare('SELECT c.player_id, c.parent_name, c.parent_email FROM player_contacts c JOIN pitch_kids k ON k.id = c.player_id WHERE k.team_id = ? AND c.account_id = ?').bind(t.id, me.id).all()).results;
+      const contacts = {};
+      rows.forEach(r => { contacts[r.player_id] = { parent_name: r.parent_name, parent_email: r.parent_email }; });
+      return json({ contacts });
+    }
+
     if (route === 'player' && method === 'POST') {
       const name = nameOK(body.name), jersey = jerseyOK(body.jersey);
       if (name.length < 2) return bad('Add a first name');
+      const hasContact = 'parent_name' in body || 'parent_email' in body;
+      const pName = clean(body.parent_name, 60), pRaw = String(body.parent_email || '').trim(), pEmail = emailOK(pRaw);
+      if (pRaw && !pEmail) return bad('That parent email does not look right');
       if (body.id) {
         const k = await ownPlayer(db, me, body.id);
         if (!k) return bad('Not your player', 403);
         await db.prepare('UPDATE pitch_kids SET nickname = ?, jersey = ? WHERE id = ?').bind(name, k.kind === 'player' ? jersey : '', k.id).run();
-        return json({ player: pubPlayer(await ownPlayer(db, me, k.id)) });
+        const contact = hasContact ? await setContact(db, me, k.id, pName, pEmail, now) : undefined;
+        return json({ player: pubPlayer(await ownPlayer(db, me, k.id)), contact });
       }
       const t = await ownTeam(db, me, body.team_id);
       if (!t) return bad('Set up your team first', 403);
       const c = await db.prepare('SELECT COUNT(*) AS n FROM pitch_kids WHERE team_id = ?').bind(t.id).first();
       if (c.n >= MAX_PLAYERS) return bad('Up to ' + MAX_PLAYERS + ' players per team');
-      return json({ player: pubPlayer(await addPlayer(db, me, t, name, jersey, now)) });
+      const k = await addPlayer(db, me, t, name, jersey, now);
+      const contact = await setContact(db, me, k.id, pName, pEmail, now);
+      return json({ player: pubPlayer(k), contact });
     }
 
     if (route === 'bulk' && method === 'POST') {
@@ -144,15 +179,19 @@ export async function onRequest(ctx) {
       const list = Array.isArray(body.players) ? body.players.slice(0, MAX_PLAYERS) : [];
       const existing = (await db.prepare('SELECT nickname, jersey FROM pitch_kids WHERE team_id = ?').bind(t.id).all()).results;
       const seen = new Set(existing.map(e => e.nickname.toLowerCase() + '#' + (e.jersey || '')));
-      let room = MAX_PLAYERS - existing.length, skipped = 0;
+      let room = MAX_PLAYERS - existing.length, skipped = 0, badEmails = 0;
       const added = [];
       for (const p of list) {
         const name = nameOK(p && p.name), jersey = jerseyOK(p && p.jersey), key = name.toLowerCase() + '#' + jersey;
         if (name.length < 2 || seen.has(key) || room <= 0) { skipped++; continue; }
         seen.add(key); room--;
-        added.push(pubPlayer(await addPlayer(db, me, t, name, jersey, now)));
+        const k = await addPlayer(db, me, t, name, jersey, now);
+        const pRaw = String((p && p.parent_email) || '').trim(), pEmail = emailOK(pRaw);
+        if (pRaw && !pEmail) badEmails++;
+        await setContact(db, me, k.id, clean(p && p.parent_name, 60), pEmail, now);
+        added.push(pubPlayer(k));
       }
-      return json({ added, skipped });
+      return json({ added, skipped, bad_emails: badEmails });
     }
 
     if (route === 'player-delete' && method === 'POST') {
@@ -160,6 +199,7 @@ export async function onRequest(ctx) {
       if (!k) return bad('Not your player', 404);
       await db.prepare('DELETE FROM runs WHERE player_id = ? AND coach_id = ?').bind(k.id, me.id).run();
       try { await db.prepare('DELETE FROM pitch_sessions WHERE kid_id = ? AND account_id = ?').bind(k.id, me.id).run(); } catch (e) { /* no pitch table yet */ }
+      await db.prepare('DELETE FROM player_contacts WHERE player_id = ? AND account_id = ?').bind(k.id, me.id).run();
       await db.prepare('DELETE FROM pitch_kids WHERE id = ?').bind(k.id).run();
       return json({ ok: true });
     }

@@ -108,6 +108,10 @@
         <div class="tm-field" style="flex:2"><label for="ap-name">First name</label><input id="ap-name" maxlength="24" placeholder="Will" autocomplete="off" autocapitalize="words"></div>
         <div class="tm-field"><label for="ap-num">Jersey #</label><input id="ap-num" maxlength="3" inputmode="numeric" pattern="[0-9]*" placeholder="7"></div>
       </div>
+      <div class="tm-row" style="align-items:flex-end">
+        <div class="tm-field"><label for="ap-pname">Parent name <span class="tm-opt">optional</span></label><input id="ap-pname" maxlength="60" placeholder="Jen Smith" autocomplete="off" autocapitalize="words"></div>
+        <div class="tm-field" style="flex:1.4"><label for="ap-pemail">Parent email <span class="tm-opt">optional</span></label><input id="ap-pemail" type="email" maxlength="120" placeholder="jen@example.com" autocomplete="off" autocapitalize="off" inputmode="email"></div>
+      </div>
       <div class="tm-row"><button type="button" class="btn btn-primary" id="ap-go">Add player</button></div>
       <div class="tm-err" id="ap-err"></div>
       <details style="margin-top:0.6rem" id="bulk">
@@ -126,7 +130,12 @@
         <div class="tm-note" style="margin:0" id="rs-count"></div>
       </div>
       <ul class="tm-list" id="rs-list"></ul>
-      <p class="tm-note">Tap a name for that player's page. First names and jersey numbers only: no last names, no photos.</p>
+      <div class="tm-row hidden" id="pc-row" style="margin-top:0.8rem">
+        <a class="tm-ghost" id="pc-mail" href="#">Email all parents</a>
+        <button type="button" class="tm-ghost" id="pc-copy">Copy parent emails</button>
+        <span class="tm-note" id="pc-msg" style="margin:0"></span>
+      </div>
+      <p class="tm-note">Tap a name for that player's page. Kids are first names and jersey numbers only: no last names, no photos. Parent contacts are for you only. DugoutLab never emails them.</p>
     </div>
   </section>
 
@@ -192,7 +201,7 @@
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function show(id) { ['s-signin', 's-setup', 's-team'].forEach(function (s) { $(s).classList.toggle('hidden', s !== id); }); }
-  var editing = null, editRow = null, data = null;
+  var editing = null, editRow = null, data = null, contacts = {}, upContacts = {};
 
   for (var a = 6; a <= 18; a++) $('su-age').insertAdjacentHTML('beforeend', '<option value="' + a + '"' + (a === 10 ? ' selected' : '') + '>' + a + 'U</option>');
 
@@ -222,19 +231,38 @@
     var ps = DLTeam.players(t.id);
     $('rs-count').textContent = ps.length ? ps.length + ' player' + (ps.length === 1 ? '' : 's') : '';
     $('rs-list').innerHTML = ps.length ? ps.map(function (p) {
-      if (editRow === p.id) return '<li><div class="tm-field" style="margin:0;flex:2"><input data-en value="' + esc(p.name) + '" maxlength="24" aria-label="First name"></div>' +
+      var c = contacts[p.id] || {};
+      if (editRow === p.id) return '<li style="flex-wrap:wrap"><div class="tm-field" style="margin:0;flex:2"><input data-en value="' + esc(p.name) + '" maxlength="24" aria-label="First name"></div>' +
         '<div class="tm-field" style="margin:0;max-width:5.5rem"><input data-ej value="' + esc(p.jersey) + '" maxlength="3" inputmode="numeric" aria-label="Jersey number"></div>' +
+        '<div class="tm-field" style="margin:0;flex:1 1 100%"><input data-epn value="' + esc(c.parent_name || '') + '" maxlength="60" placeholder="Parent name" aria-label="Parent name"></div>' +
+        '<div class="tm-field" style="margin:0;flex:1 1 100%"><input data-epe type="email" value="' + esc(c.parent_email || '') + '" maxlength="120" placeholder="Parent email" aria-label="Parent email" autocapitalize="off" inputmode="email"></div>' +
         '<div class="tm-acts"><button type="button" data-save="' + esc(p.id) + '">Save</button><button type="button" data-cancel>Cancel</button></div></li>';
+      var pc = c.parent_name || c.parent_email ? '<div class="tm-pc">' + esc(c.parent_name || 'Parent') + (c.parent_email ? ' &middot; <a href="mailto:' + esc(c.parent_email) + '">' + esc(c.parent_email) + '</a>' : '') + '</div>' : '';
       return '<li><span class="tm-num">' + (p.jersey ? '#' + esc(p.jersey) : '&middot;') + '</span>' +
-        '<a class="tm-name" href="player.html?id=' + encodeURIComponent(p.id) + '">' + esc(p.name) + '</a>' +
+        '<div class="tm-who"><a class="tm-name" href="player.html?id=' + encodeURIComponent(p.id) + '">' + esc(p.name) + '</a>' + pc + '</div>' +
         '<div class="tm-acts"><button type="button" data-edit="' + esc(p.id) + '">Edit</button><button type="button" data-del="' + esc(p.id) + '" aria-label="Remove ' + esc(p.name) + '">Remove</button></div></li>';
     }).join('') : '<li style="color:var(--ink-faint)">No players yet. Add them above, one at a time or as a pasted list.</li>';
+    var em = parentEmails(ps);
+    $('pc-row').classList.toggle('hidden', !em.length);
+    $('pc-mail').href = 'mailto:?bcc=' + em.map(encodeURIComponent).join(',');
+    $('pc-copy').textContent = 'Copy parent emails (' + em.length + ')';
+  }
+
+  function parentEmails(ps) {
+    var seen = {};
+    return (ps || DLTeam.players(team().id)).map(function (p) { return (contacts[p.id] || {}).parent_email; })
+      .filter(function (e) { if (!e || seen[e]) return false; seen[e] = 1; return true; });
+  }
+  /* Parent contacts load from their own route, held in memory on this page only (never cached on the phone). */
+  function loadContacts() {
+    var t = team(); if (!t) return Promise.resolve();
+    return DLTeam.api('team/contacts?team=' + encodeURIComponent(t.id)).then(function (j) { contacts = j.contacts || {}; render(); }).catch(function () {});
   }
 
   function load() {
     if (!DLTeam.token()) { show('s-signin'); return; }
     var c = DLTeam.cached(); if (c) render();
-    DLTeam.refresh().then(render).catch(function (e) {
+    DLTeam.refresh().then(function () { render(); return loadContacts(); }).catch(function (e) {
       if (e.status === 401) show('s-signin'); else if (!c) { show('s-team'); $('tm-err').textContent = e.message; }
     });
   }
@@ -256,15 +284,16 @@
   $('tm-new').addEventListener('click', function () {
     editing = null; $('su-name').value = ''; show('s-setup'); $('su-cancel').classList.remove('hidden'); $('su-name').focus();
   });
-  $('tm-switch').addEventListener('change', function () { DLTeam.setCurrent(this.value); editRow = null; render(); });
+  $('tm-switch').addEventListener('change', function () { DLTeam.setCurrent(this.value); editRow = null; contacts = {}; render(); loadContacts(); });
 
   $('ap-go').addEventListener('click', function () {
     var b = this; $('ap-err').textContent = ''; b.disabled = true;
-    DLTeam.api('team/player', { team_id: team().id, name: $('ap-name').value, jersey: $('ap-num').value }).then(function () {
-      $('ap-name').value = ''; $('ap-num').value = ''; $('ap-name').focus(); return DLTeam.refresh();
+    DLTeam.api('team/player', { team_id: team().id, name: $('ap-name').value, jersey: $('ap-num').value, parent_name: $('ap-pname').value, parent_email: $('ap-pemail').value }).then(function (j) {
+      if (j.contact) contacts[j.player.id] = j.contact;
+      ['ap-name', 'ap-num', 'ap-pname', 'ap-pemail'].forEach(function (k) { $(k).value = ''; }); $('ap-name').focus(); return DLTeam.refresh();
     }).then(function () { b.disabled = false; render(); }).catch(function (e) { b.disabled = false; $('ap-err').textContent = e.message; });
   });
-  $('ap-num').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('ap-go').click(); });
+  ['ap-num', 'ap-pemail'].forEach(function (k) { $(k).addEventListener('keydown', function (e) { if (e.key === 'Enter') $('ap-go').click(); }); });
 
   $('bk-text').addEventListener('input', function () {
     var list = parseLines(this.value);
@@ -272,23 +301,30 @@
   });
   /* File upload into the paste box: coach sees the preview, then taps Add. Template = what we save (first name, jersey). */
   RosterImport.mount($('roster-import'), function (names, recs) {
+    upContacts = {};
+    recs.forEach(function (r) {
+      var n = r.name.split(' ')[0]; n = n.charAt(0).toUpperCase() + n.slice(1);
+      if (r.parent_name || r.parent_email) upContacts[n.slice(0, 24).toLowerCase() + '#' + (r.jersey || '')] = { parent_name: r.parent_name, parent_email: r.parent_email };
+    });
     $('bk-text').value = recs.map(function (r) { return r.name.split(' ')[0] + (r.jersey ? ' ' + r.jersey : ''); }).join('\n');
     $('bk-text').dispatchEvent(new Event('input'));
   }, { noTeam: true, noPaste: true, template: {
     file: 'dugoutlab-team-roster.csv',
-    cols: ['First name', 'Jersey'],
-    rows: [['Example Will', '7'], ['Example Maya', '12']],
-    note: 'First names only. Jersey is optional.'
+    cols: ['First name', 'Jersey', 'Parent name', 'Parent email'],
+    rows: [['Example Will', '7', 'Jen Smith', 'jen@example.com'], ['Example Maya', '12', '', '']],
+    note: 'Player first names only. Jersey and parent are optional.'
   } });
   $('bk-go').addEventListener('click', function () {
     var b = this, list = parseLines($('bk-text').value); $('bk-err').textContent = '';
     if (!list.length) { $('bk-err').textContent = 'Add one player per line, like: Will 7'; return; }
     b.disabled = true;
+    list.forEach(function (p) { var c = upContacts[p.name.toLowerCase() + '#' + p.jersey]; if (c) { p.parent_name = c.parent_name || ''; p.parent_email = c.parent_email || ''; } });
     DLTeam.api('team/bulk', { team_id: team().id, players: list }).then(function (j) {
-      $('bk-text').value = '';
-      $('bk-preview').textContent = 'Added ' + j.added.length + (j.skipped ? '. Skipped ' + j.skipped + ' already on the roster or over the 30-player limit.' : '.');
+      $('bk-text').value = ''; upContacts = {};
+      $('bk-preview').textContent = 'Added ' + j.added.length + (j.skipped ? '. Skipped ' + j.skipped + ' already on the roster or over the 30-player limit.' : '.') +
+        (j.bad_emails ? ' ' + j.bad_emails + ' parent email' + (j.bad_emails === 1 ? '' : 's') + ' did not look right, so ' + (j.bad_emails === 1 ? 'it was' : 'they were') + ' left off. Tap Edit to add.' : '');
       return DLTeam.refresh();
-    }).then(function () { b.disabled = false; render(); }).catch(function (e) { b.disabled = false; $('bk-err').textContent = e.message; });
+    }).then(function () { b.disabled = false; render(); return loadContacts(); }).catch(function (e) { b.disabled = false; $('bk-err').textContent = e.message; });
   });
 
   $('rs-list').addEventListener('click', function (e) {
@@ -297,15 +333,23 @@
     else if (t.hasAttribute('data-cancel')) { editRow = null; render(); }
     else if (t.hasAttribute('data-save')) {
       var li = t.closest('li'); t.disabled = true;
-      DLTeam.api('team/player', { id: t.getAttribute('data-save'), name: li.querySelector('[data-en]').value, jersey: li.querySelector('[data-ej]').value })
-        .then(function () { editRow = null; return DLTeam.refresh(); }).then(render)
+      DLTeam.api('team/player', { id: t.getAttribute('data-save'), name: li.querySelector('[data-en]').value, jersey: li.querySelector('[data-ej]').value,
+        parent_name: li.querySelector('[data-epn]').value, parent_email: li.querySelector('[data-epe]').value })
+        .then(function (j) { if (j.contact) contacts[j.player.id] = j.contact; else delete contacts[j.player.id]; editRow = null; return DLTeam.refresh(); }).then(render)
         .catch(function (er) { t.disabled = false; $('tm-err').textContent = er.message; });
     } else if (t.hasAttribute('data-del')) {
       var pid = t.getAttribute('data-del'), p = (data.players || []).filter(function (x) { return x.id === pid; })[0];
       if (!p || !window.confirm('Remove ' + p.name + ' from the roster? Their times and pitch counts are removed too.')) return;
-      DLTeam.api('team/player-delete', { id: pid }).then(function () { return DLTeam.refresh(); }).then(render)
+      DLTeam.api('team/player-delete', { id: pid }).then(function () { delete contacts[pid]; return DLTeam.refresh(); }).then(render)
         .catch(function (er) { $('tm-err').textContent = er.message; });
     }
+  });
+
+  $('pc-copy').addEventListener('click', function () {
+    var em = parentEmails().join(', ');
+    var ok = function () { $('pc-msg').textContent = 'Copied. Paste into BCC.'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(em).then(ok).catch(function () { $('pc-msg').textContent = em; });
+    else $('pc-msg').textContent = em;
   });
 
   $('tm-csv').addEventListener('click', function () {

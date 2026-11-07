@@ -15,6 +15,7 @@
 .tm-field textarea { min-height: 140px; line-height: 1.5; }
 .tm-field input:focus, .tm-field select:focus, .tm-field textarea:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
 .tm-ghost { background: none; border: 1px solid var(--rule); color: var(--ink-soft); border-radius: 999px; padding: 0.5rem 1rem; font: inherit; font-size: 0.88rem; font-weight: 600; min-height: 44px; cursor: pointer; }
+a.tm-ghost { display: inline-flex; align-items: center; text-decoration: none; }
 .tm-ghost:hover { border-color: var(--gold); color: var(--gold-light); }
 .tm-link { background: none; border: 0; padding: 0; color: var(--gold-light); font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
 .tm-list { list-style: none; display: grid; gap: 0.45rem; }
@@ -24,6 +25,10 @@
 .tm-name small { display: block; font-weight: 400; font-size: 0.8rem; color: var(--ink-faint); margin-top: 1px; }
 a.tm-name:hover { color: var(--gold-light); text-decoration: none; }
 .tm-acts { display: flex; gap: 0.35rem; }
+.tm-who { flex: 1; min-width: 0; }
+.tm-pc { font-size: 0.8rem; color: var(--ink-faint); margin-top: 2px; overflow-wrap: anywhere; }
+.tm-pc a { color: var(--ink-soft); }
+.tm-opt { font-weight: 400; color: var(--ink-faint); text-transform: none; letter-spacing: 0; }
 .tm-acts button { background: none; border: 1px solid var(--rule); color: var(--ink-soft); border-radius: 10px; min-width: 44px; min-height: 44px; padding: 0 0.6rem; font: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
 .tm-seg { display: inline-grid; grid-auto-flow: column; gap: 3px; background: var(--forest-deep); border: 1px solid var(--rule); border-radius: 12px; padding: 3px; }
 .tm-seg button { background: transparent; border: 0; border-radius: 9px; padding: 0 0.95rem; min-height: 44px; font: inherit; font-weight: 600; font-size: 0.95rem; color: var(--ink-soft); cursor: pointer; }

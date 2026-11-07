@@ -617,6 +617,7 @@ export async function onRequest(ctx) {
         await db.prepare('DELETE FROM pitch_sessions WHERE kid_id = ? AND account_id = ?').bind(k.id, me.id).run();
         /* Timed runs live in functions/api/team. The table may not exist yet on a fresh database. */
         try { await db.prepare('DELETE FROM runs WHERE player_id = ? AND coach_id = ?').bind(k.id, me.id).run(); } catch (e) { /* no runs table yet */ }
+        try { await db.prepare('DELETE FROM player_contacts WHERE player_id = ? AND account_id = ?').bind(k.id, me.id).run(); } catch (e) { /* no contacts table yet */ }
         await db.prepare('DELETE FROM pitch_kids WHERE id = ?').bind(k.id).run();
         return json({ ok: true });
       }
@@ -626,6 +627,7 @@ export async function onRequest(ctx) {
         if (!t) return bad('Not your team', 404);
         await db.prepare('DELETE FROM pitch_sessions WHERE kid_id IN (SELECT id FROM pitch_kids WHERE team_id = ?)').bind(t.id).run();
         try { await db.prepare('DELETE FROM runs WHERE coach_id = ? AND player_id IN (SELECT id FROM pitch_kids WHERE team_id = ?)').bind(me.id, t.id).run(); } catch (e) { /* no runs table yet */ }
+        try { await db.prepare('DELETE FROM player_contacts WHERE account_id = ? AND player_id IN (SELECT id FROM pitch_kids WHERE team_id = ?)').bind(me.id, t.id).run(); } catch (e) { /* no contacts table yet */ }
         await db.prepare('DELETE FROM pitch_kids WHERE team_id = ?').bind(t.id).run();
         await db.prepare('DELETE FROM pitch_teams WHERE id = ?').bind(t.id).run();
         return json({ ok: true });
@@ -641,6 +643,7 @@ export async function onRequest(ctx) {
         }
         await db.prepare('DELETE FROM hitters WHERE account_id = ?').bind(me.id).run();
         await db.prepare('DELETE FROM pitch_sessions WHERE account_id = ?').bind(me.id).run();
+        try { await db.prepare('DELETE FROM player_contacts WHERE account_id = ?').bind(me.id).run(); } catch (e) { /* no contacts table yet */ }
         await db.prepare('DELETE FROM pitch_kids WHERE account_id = ?').bind(me.id).run();
         await db.prepare('DELETE FROM pitch_teams WHERE account_id = ?').bind(me.id).run();
         await db.prepare('DELETE FROM events WHERE account_id = ?').bind(me.id).run();

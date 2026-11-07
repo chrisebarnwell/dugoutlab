@@ -2,7 +2,7 @@
    Drop a CSV, TSV, or Excel file (GameChanger, TeamSnap, a Google Sheet export), or paste a column of names.
    Everything is parsed in the browser. Nothing is uploaded anywhere.
    Usage:  RosterImport.mount(el, function (names, records) { ... }, { template: { file, cols, rows, note }, noTeam });
-   records carry the template's extra columns when present: tier (1-3), jersey, pod (right/left).
+   records carry the template's extra columns when present: tier (1-3), jersey, pod (right/left), parent_name, parent_email.
    Excel files load the SheetJS reader (js/vendor/xlsx.full.min.js, Apache-2.0) the first time one is chosen. */
 (function () {
   var XLSX_URL = 'js/vendor/xlsx.full.min.js';
@@ -45,9 +45,11 @@
 
   /* Extra columns a DugoutLab template carries. Each tool keeps only the ones it saves. */
   function extras(hdr) {
-    var x = { tier: -1, jersey: -1, pod: -1 };
+    var x = { tier: -1, jersey: -1, pod: -1, pname: -1, pemail: -1 };
     hdr.forEach(function (h, i) {
-      if (x.tier < 0 && /^(tier|level|group)/.test(h)) x.tier = i;
+      if (x.pemail < 0 && /e-?mail/.test(h)) x.pemail = i;
+      else if (x.pname < 0 && /(parent|guardian|^mom|^dad|contact)/.test(h)) x.pname = i;
+      else if (x.tier < 0 && /^(tier|level|group)/.test(h)) x.tier = i;
       else if (x.jersey < 0 && /^(#|jersey|uniform|number|num\b|no\.?$)/.test(h)) x.jersey = i;
       else if (x.pod < 0 && /^(pod|side)/.test(h)) x.pod = i;
     });
@@ -58,6 +60,8 @@
     if (x && r) {
       var t = String(r[x.tier] || '').replace(/[^1-3]/g, '').charAt(0); if (x.tier >= 0 && t) o.tier = t;
       var j = String(r[x.jersey] || '').replace(/[^0-9]/g, '').slice(0, 3); if (x.jersey >= 0 && j) o.jersey = j;
+      var pn = String(r[x.pname] || '').trim().slice(0, 60); if (x.pname >= 0 && pn) o.parent_name = pn;
+      var pe = String(r[x.pemail] || '').trim().toLowerCase(); if (x.pemail >= 0 && /@/.test(pe)) o.parent_email = pe.slice(0, 120);
       var p = String(r[x.pod] || '').trim().toLowerCase(); if (x.pod >= 0 && p) o.pod = p.charAt(0) === 'l' ? 'left' : p.charAt(0) === 'r' ? 'right' : '';
     }
     return o;
