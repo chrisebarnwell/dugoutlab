@@ -1,7 +1,8 @@
 /* DugoutLab roster import.
    Drop a CSV, TSV, or Excel file (GameChanger, TeamSnap, a Google Sheet export), or paste a column of names.
    Everything is parsed in the browser. Nothing is uploaded anywhere.
-   Usage:  RosterImport.mount(document.getElementById('roster-import'), function (names) { ... });
+   Usage:  RosterImport.mount(el, function (names, records) { ... }, { template: { file, cols, rows, note }, noTeam });
+   records carry the template's extra columns when present: tier (1-3), jersey, pod (right/left).
    Excel files load the SheetJS reader (js/vendor/xlsx.full.min.js, Apache-2.0) the first time one is chosen. */
 (function () {
   var XLSX_URL = 'js/vendor/xlsx.full.min.js';
@@ -42,7 +43,27 @@
     return s.trim();
   }
 
-  function namesFromRows(rows) {
+  /* Extra columns a DugoutLab template carries. Each tool keeps only the ones it saves. */
+  function extras(hdr) {
+    var x = { tier: -1, jersey: -1, pod: -1 };
+    hdr.forEach(function (h, i) {
+      if (x.tier < 0 && /^(tier|level|group)/.test(h)) x.tier = i;
+      else if (x.jersey < 0 && /^(#|jersey|uniform|number|num\b|no\.?$)/.test(h)) x.jersey = i;
+      else if (x.pod < 0 && /^(pod|side)/.test(h)) x.pod = i;
+    });
+    return x;
+  }
+  function rec(name, r, x) {
+    var o = { name: clean(name) };
+    if (x && r) {
+      var t = String(r[x.tier] || '').replace(/[^1-3]/g, '').charAt(0); if (x.tier >= 0 && t) o.tier = t;
+      var j = String(r[x.jersey] || '').replace(/[^0-9]/g, '').slice(0, 3); if (x.jersey >= 0 && j) o.jersey = j;
+      var p = String(r[x.pod] || '').trim().toLowerCase(); if (x.pod >= 0 && p) o.pod = p.charAt(0) === 'l' ? 'left' : p.charAt(0) === 'r' ? 'right' : '';
+    }
+    return o;
+  }
+
+  function recordsFromRows(rows) {
     if (!rows.length) return [];
     var hdr = rows[0].map(function (h) { return h.toLowerCase(); });
     var first = -1, last = -1, name = -1;
@@ -51,20 +72,37 @@
       else if (last < 0 && /^(last|last ?name|player last|surname|family)/.test(h)) last = i;
       else if (name < 0 && /(full ?name|player ?name|athlete|^name$|^player$|^kid$|^child)/.test(h)) name = i;
     });
-    var out = [];
+    var x = extras(hdr), out = [];
     if (first >= 0) {
-      rows.slice(1).forEach(function (r) { var n = ((r[first] || '') + ' ' + (last >= 0 ? (r[last] || '') : '')).trim(); if (looksLikeName(n)) out.push(clean(n)); });
+      rows.slice(1).forEach(function (r) { var n = ((r[first] || '') + ' ' + (last >= 0 ? (r[last] || '') : '')).trim(); if (looksLikeName(n)) out.push(rec(n, r, x)); });
     } else if (name >= 0) {
-      rows.slice(1).forEach(function (r) { var n = r[name] || ''; if (looksLikeName(n)) out.push(clean(n)); });
+      rows.slice(1).forEach(function (r) { var n = r[name] || ''; if (looksLikeName(n)) out.push(rec(n, r, x)); });
     } else {
       /* No header we recognize: take the column with the most name-looking cells. */
       var cols = Math.max.apply(null, rows.map(function (r) { return r.length; })), best = 0, bestN = -1;
       for (var c = 0; c < cols; c++) { var n = rows.filter(function (r) { return looksLikeName(r[c] || ''); }).length; if (n > bestN) { bestN = n; best = c; } }
       var start = looksLikeName(rows[0][best] || '') && !/name|player|first|last|roster/i.test(rows[0][best] || '') ? 0 : 1;
-      rows.slice(start).forEach(function (r) { var v = r[best] || ''; if (looksLikeName(v)) out.push(clean(v)); });
+      rows.slice(start).forEach(function (r) { var v = r[best] || ''; if (looksLikeName(v)) out.push(rec(v)); });
     }
-    var seen = {};
-    return out.filter(function (n) { var k = n.toLowerCase(); if (!n || seen[k]) return false; seen[k] = 1; return true; }).slice(0, 40);
+    var seen = {}, ex = 0;
+    var res = out.filter(function (o) {
+      var k = o.name.toLowerCase();
+      if (/^example\b/.test(k)) { ex++; return false; } /* template sample rows */
+      if (!o.name || seen[k]) return false;
+      seen[k] = 1; return true;
+    }).slice(0, 40);
+    if (!res.length && ex) res.examplesOnly = true;
+    return res;
+  }
+  function namesFromRows(rows) { return recordsFromRows(rows).map(function (o) { return o.name; }); }
+
+  /* Blank template in the exact columns this tool saves. CSV opens in Excel, Google Sheets, and Numbers. */
+  function downloadTemplate(t) {
+    var q = function (v) { v = String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    var csv = '\ufeff' + [t.cols].concat(t.rows || []).map(function (r) { return r.map(q).join(','); }).join('\r\n') + '\r\n';
+    var url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    var a = document.createElement('a'); a.href = url; a.download = t.file; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1000);
   }
 
   function loadScript(src) {
@@ -103,7 +141,11 @@
 
   window.RosterImport = {
     parse: function (text) { return namesFromRows(parseDelimited(text)); },
-    mount: function (el, onNames) {
+    records: function (text) { return recordsFromRows(parseDelimited(text)); },
+    template: downloadTemplate,
+    /* opts.template = { file, cols, rows, note }: adds "Download template". opts.noTeam hides "Use My Team". opts.noPaste hides the paste box (page has its own). */
+    mount: function (el, onNames, opts) {
+      opts = opts || {};
       if (!el || el.__ri) return;
       el.__ri = true;
       if (!document.getElementById('ri-css')) { var st = document.createElement('style'); st.id = 'ri-css'; st.textContent = css; document.head.appendChild(st); }
@@ -111,34 +153,39 @@
         '<div class="ri"><div class="ri-h">Already have a roster?</div>' +
         '<div class="ri-row">' +
           '<button type="button" class="ri-btn" data-ri="file">Upload CSV or Excel</button>' +
-          '<button type="button" class="ri-btn" data-ri="paste">Paste from a spreadsheet</button>' +
+          (opts.noPaste ? '' : '<button type="button" class="ri-btn" data-ri="paste">Paste from a spreadsheet</button>') +
+          (opts.template ? '<button type="button" class="ri-btn" data-ri="tpl">Download template</button>' : '') +
           '<input type="file" accept=".csv,.tsv,.txt,.xlsx,.xls" style="display:none">' +
         '</div>' +
         '<textarea class="ri-paste" placeholder="Paste a column of names here. One per line, or First and Last columns from GameChanger or TeamSnap."></textarea>' +
         '<div class="ri-row" style="margin-top:0.5rem;display:none" data-ri="paste-row"><button type="button" class="ri-btn" data-ri="use">Use these names</button></div>' +
         '<div class="ri-msg"></div>' +
-        '<div class="ri-fine">Works with GameChanger and TeamSnap exports, or any sheet with a name column. Parsed on your device. Nothing is uploaded.</div></div>';
+        (opts.template ? '<div class="ri-fine">Fastest: fill in our template (' + opts.template.cols.join(', ') + ') and upload it. ' + (opts.template.note ? opts.template.note + ' ' : '') + 'Example rows are skipped.</div>' : '') +
+        '<div class="ri-fine">Also works with GameChanger and TeamSnap exports, or any sheet with a name column. Parsed on your device. Nothing is uploaded.</div></div>';
       var input = el.querySelector('input[type=file]'), ta = el.querySelector('.ri-paste'), msg = el.querySelector('.ri-msg'), prow = el.querySelector('[data-ri=paste-row]');
       /* My Team (team.html): the coach's saved roster, one tap. Read from this phone, so it works offline. */
-      var mine = myTeam();
+      var mine = opts.noTeam ? [] : myTeam();
       if (mine.length) {
         var tb = document.createElement('button'); tb.type = 'button'; tb.className = 'ri-btn'; tb.setAttribute('data-ri', 'team');
         tb.textContent = 'Use My Team (' + mine.length + ')';
         el.querySelector('.ri-row').insertBefore(tb, el.querySelector('.ri-row').firstChild);
-        tb.addEventListener('click', function () { done(myTeam(), 'My Team'); });
+        tb.addEventListener('click', function () { done(myTeam().map(function (n) { return { name: n }; }), 'My Team'); });
       }
-      function done(names, src) {
+      function done(recs, src) {
+        var names = recs.map(function (o) { return o.name; });
+        if (!names.length && recs.examplesOnly) { msg.className = 'ri-msg err'; msg.textContent = 'Only the example rows are in there. Add your players under them and upload again.'; return; }
         if (!names.length) { msg.className = 'ri-msg err'; msg.textContent = 'No names found. Try a file with a Name column, or paste the names one per line.'; return; }
         msg.className = 'ri-msg ok'; msg.textContent = 'Loaded ' + names.length + ' names' + (src ? ' from ' + src : '') + '.';
-        onNames(names);
+        onNames(names, recs);
       }
       el.querySelector('[data-ri=file]').addEventListener('click', function () { input.click(); });
-      el.querySelector('[data-ri=paste]').addEventListener('click', function () { ta.classList.toggle('on'); prow.style.display = ta.classList.contains('on') ? 'flex' : 'none'; if (ta.classList.contains('on')) ta.focus(); });
-      el.querySelector('[data-ri=use]').addEventListener('click', function () { done(namesFromRows(parseDelimited(ta.value)), ''); });
+      if (!opts.noPaste) el.querySelector('[data-ri=paste]').addEventListener('click', function () { ta.classList.toggle('on'); prow.style.display = ta.classList.contains('on') ? 'flex' : 'none'; if (ta.classList.contains('on')) ta.focus(); });
+      el.querySelector('[data-ri=use]').addEventListener('click', function () { done(recordsFromRows(parseDelimited(ta.value)), ''); });
+      if (opts.template) el.querySelector('[data-ri=tpl]').addEventListener('click', function () { downloadTemplate(opts.template); });
       input.addEventListener('change', function () {
         var f = input.files && input.files[0]; if (!f) return;
         msg.className = 'ri-msg'; msg.textContent = 'Reading ' + f.name + '...';
-        readFile(f).then(function (rows) { done(namesFromRows(rows), f.name); })
+        readFile(f).then(function (rows) { done(recordsFromRows(rows), f.name); })
           .catch(function () { msg.className = 'ri-msg err'; msg.textContent = 'Could not read that file. Export it as CSV and try again.'; });
         input.value = '';
       });

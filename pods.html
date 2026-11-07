@@ -246,10 +246,16 @@ textarea { width: 100%; min-height: 150px; }
 
 <script src="js/roster-import.js"></script>
 <script>
-  RosterImport.mount(document.getElementById('roster-import'), function (names) {
+  RosterImport.mount(document.getElementById('roster-import'), function (names, recs) {
+    recs.forEach(function (r) { if (r.pod) S.pods[r.name] = r.pod; });
     document.getElementById('names').value = names.join('\n');
     loadNames();
-  });
+  }, { template: {
+    file: 'dugoutlab-pods-roster.csv',
+    cols: ['Name', 'Pod'],
+    rows: [['Example Adrian', 'Right'], ['Example Colin', 'Left']],
+    note: 'Pod is Right or Left. Leave it blank and we split the pods for you.'
+  } });
 </script>
 <script src="js/site.js"></script>
 <script src="js/pods.js"></script>

@@ -925,15 +925,20 @@ select option { background: var(--forest-deep); color: var(--ink); }
 
 <script src="js/roster-import.js"></script>
 <script>
-  /* Roster import: replace the rows with the uploaded names. Keep a tier if the name was already there. */
-  RosterImport.mount(document.getElementById('roster-import'), function (names) {
+  /* Roster import: replace the rows with the uploaded names. Tier from the file, else keep the old tier, else 2. */
+  RosterImport.mount(document.getElementById('roster-import'), function (names, recs) {
     var tiers = {};
     state.players.forEach(function (p) { if (p.name && p.name.trim()) tiers[p.name.trim().toLowerCase()] = p.tier; });
     state.players = [];
     document.getElementById('player-list').innerHTML = '';
-    names.forEach(function (n) { addPlayer(n, tiers[n.toLowerCase()] || '2'); });
+    recs.forEach(function (r) { addPlayer(r.name, r.tier || tiers[r.name.toLowerCase()] || '2'); });
     saveRoster(); updatePlayerCount(); showRosterSavedNote();
-  });
+  }, { template: {
+    file: 'dugoutlab-lineup-roster.csv',
+    cols: ['Name', 'Tier'],
+    rows: [['Example Maya', '1'], ['Example Theo', '2'], ['Example Nora', '3']],
+    note: 'Tier 1 = strongest, 2 = developing, 3 = beginner. Blank tier = 2.'
+  } });
 </script>
 <script src="js/site.js"></script>
 <script src="js/lineup-email.js"></script>

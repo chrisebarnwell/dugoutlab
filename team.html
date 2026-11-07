@@ -111,8 +111,9 @@
       <div class="tm-row"><button type="button" class="btn btn-primary" id="ap-go">Add player</button></div>
       <div class="tm-err" id="ap-err"></div>
       <details style="margin-top:0.6rem" id="bulk">
-        <summary class="tm-link" style="list-style:none">Paste a whole list</summary>
-        <div class="tm-field" style="margin-top:0.7rem"><label for="bk-text">One player per line</label><textarea id="bk-text" placeholder="Will 7&#10;Maya 12&#10;Theo 3"></textarea></div>
+        <summary class="tm-link" style="list-style:none">Upload or paste a whole list</summary>
+        <div id="roster-import" style="margin-top:0.7rem"></div>
+        <div class="tm-field"><label for="bk-text">One player per line</label><textarea id="bk-text" placeholder="Will 7&#10;Maya 12&#10;Theo 3"></textarea></div>
         <div class="tm-note" id="bk-preview" style="margin:-0.3rem 0 0.7rem">First name, then jersey number. Last names are left off.</div>
         <div class="tm-row"><button type="button" class="btn btn-primary" id="bk-go">Add these players</button></div>
         <div class="tm-err" id="bk-err"></div>
@@ -185,6 +186,7 @@
 </footer>
 
 <script src="js/team.js"></script>
+<script src="js/roster-import.js"></script>
 <script>
 (function () {
   function $(id) { return document.getElementById(id); }
@@ -268,6 +270,16 @@
     var list = parseLines(this.value);
     $('bk-preview').textContent = list.length ? list.length + ' player' + (list.length === 1 ? '' : 's') + ': ' + list.slice(0, 6).map(function (p) { return p.name + (p.jersey ? ' #' + p.jersey : ''); }).join(', ') + (list.length > 6 ? ', and more' : '') : 'First name, then jersey number. Last names are left off.';
   });
+  /* File upload into the paste box: coach sees the preview, then taps Add. Template = what we save (first name, jersey). */
+  RosterImport.mount($('roster-import'), function (names, recs) {
+    $('bk-text').value = recs.map(function (r) { return r.name.split(' ')[0] + (r.jersey ? ' ' + r.jersey : ''); }).join('\n');
+    $('bk-text').dispatchEvent(new Event('input'));
+  }, { noTeam: true, noPaste: true, template: {
+    file: 'dugoutlab-team-roster.csv',
+    cols: ['First name', 'Jersey'],
+    rows: [['Example Will', '7'], ['Example Maya', '12']],
+    note: 'First names only. Jersey is optional.'
+  } });
   $('bk-go').addEventListener('click', function () {
     var b = this, list = parseLines($('bk-text').value); $('bk-err').textContent = '';
     if (!list.length) { $('bk-err').textContent = 'Add one player per line, like: Will 7'; return; }
