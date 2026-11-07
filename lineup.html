@@ -440,6 +440,8 @@ select option { background: var(--forest-deep); color: var(--ink); }
   margin-bottom: 1.25rem;
 }
 .lineup-output.show { display: block; }
+.lh-link { display: inline-block; font-size: 0.86rem; font-weight: 600; margin: 0.35rem 0 0.6rem; min-height: 24px; }
+a.btn-print { display: inline-flex; align-items: center; text-decoration: none; }
 .lineup-header {
   background: var(--forest-deep);
   padding: 1rem 1.5rem;
@@ -643,6 +645,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
     <div class="field-group">
       <div class="field-label">Players <span id="player-count" style="font-weight:400;color:var(--text-light)">(0 added)</span></div>
       <div id="roster-import"></div>
+      <a href="lineups.html" class="lh-link">Use a roster or lineup from a past game &rarr;</a>
       <div id="player-list" class="roster-grid"></div>
       <button class="add-player-btn" onclick="addPlayer()">+ Add Player</button>
       <div id="roster-saved-note" style="display:none;align-items:center;justify-content:space-between;gap:10px;margin-top:0.75rem;padding:0.6rem 0.85rem;background:rgba(110,148,118,0.12);border:1px solid var(--rule);border-radius:8px;font-size:0.82rem;color:var(--ink-soft);">
@@ -853,7 +856,11 @@ select option { background: var(--forest-deep); color: var(--ink); }
         <button class="btn-pdf" onclick="downloadPDF()">Download PDF</button>
         <button class="btn-print" onclick="goEmail()">Email</button>
         <button class="btn-print" onclick="resetWizard()">New Lineup</button>
+        <a class="btn-print" href="lineups.html">Past games</a>
       </div>
+    </div>
+    <div class="lu-sample-note" id="lu-from-note" hidden role="status">
+      <div><b id="lu-from-h">From a past game.</b><span>This is the lineup exactly as you saved it. Tap New Lineup to change anything and build again.</span></div>
     </div>
     <div class="lu-sample-note" id="lu-sample-note" hidden role="status">
       <div><b>This is a sample team.</b><span>Pitchers and catchers are set by inning, sitting is spread across the roster, and you can see every kid's spot each inning. Ready for yours?</span></div>
@@ -865,6 +872,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
         <tbody id="lineup-tbody"></tbody>
       </table>
     </div>
+    <div id="history-slot"></div>
     <div id="email-slot"></div>
   </div>
 
@@ -946,6 +954,7 @@ select option { background: var(--forest-deep); color: var(--ink); }
 </script>
 <script src="js/site.js"></script>
 <script src="js/lineup-email.js"></script>
+<script src="js/lineup-history.js?v=20261107"></script>
 <script>
 // ── STATE ──────────────────────────────────────────────────────────
 var state = {
@@ -994,7 +1003,57 @@ window.addEventListener('DOMContentLoaded', function() {
   } else {
     for (var i = 0; i < 10; i++) addPlayer();
   }
+  loadFromHistory();
 });
+
+// ── FROM LINEUP HISTORY (lineups.html "Use this lineup" / "Use this roster") ──
+function loadFromHistory() {
+  var h = window.LineupHistory && LineupHistory.takeHandoff();
+  if (!h) return;
+  var r = h.rec, cfg = r.config || {};
+  var roster = (r.players && r.players.length ? r.players : r.rows).map(function (p) {
+    return { name: p.name, tier: String(p.tier || '2') };
+  });
+  state.players = []; document.getElementById('player-list').innerHTML = '';
+  roster.forEach(function (p) { addPlayer(p.name, p.tier); });
+  while (state.players.length < 9) addPlayer();
+  saveRoster(); updatePlayerCount(); showRosterSavedNote();
+  document.getElementById('team-name').value = r.team || '';
+  if (r.tool === 'compete') {
+    if (r.innings) document.getElementById('innings').value = r.innings;
+    if (cfg.fieldPos) document.getElementById('field-pos').value = cfg.fieldPos;
+    state.pitchers = (cfg.pitchers || []).slice(); state.catchers = (cfg.catchers || []).slice();
+  }
+  var demo = document.getElementById('lu-demo'); if (demo) demo.style.display = 'none';
+  if (window.DL && DL.track) DL.track('lineup_reused');
+  if (h.mode !== 'lineup' || r.tool !== 'compete') {
+    setTimeout(function () { document.getElementById('step-1').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
+    return;
+  }
+  state.teamName = r.team || 'My Team';
+  state.innings = r.innings || (r.rows[0] && r.rows[0].cells.length) || 5;
+  state.historyId = r.id;
+  var rows = r.rows.slice().sort(function (a, b) { return (a.bat || 99) - (b.bat || 99); });
+  state.lineup = { lineup: rows.map(function (x) { return { name: x.name, positions: x.cells.slice() }; }), flags: [] };
+  document.getElementById('step-' + state.step).style.display = 'none';
+  document.getElementById('wizard-footer').style.display = 'none';
+  renderLineup(state.lineup, r);
+  document.getElementById('lu-from-h').textContent = 'From ' + LineupHistory.fmtDate(r.date) + (r.opp ? ' vs ' + r.opp : '') + '.';
+  document.getElementById('lu-from-note').hidden = false;
+  setTimeout(function () { document.getElementById('lineup-output').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120);
+}
+
+// The game as it will be kept in Lineup History.
+function lineupForHistory() {
+  var data = state.lineup; if (!data || window.LU_SAMPLE) return null;
+  return {
+    tool: 'compete', team: state.teamName, innings: state.innings,
+    title: document.getElementById('lineup-title').textContent,
+    rows: (data.lineup || []).map(function (p, i) { return { name: p.name, bat: i + 1, cells: (p.positions || []).map(function (x) { return x || 'EH'; }) }; }),
+    players: state.players.filter(function (p) { return p.name && p.name.trim(); }).map(function (p) { return { name: p.name.trim(), tier: p.tier }; }),
+    config: { fieldPos: state.fieldPos, ofFormat: state.ofFormat, priority: state.priority, pitchers: (state.pitchers || []).slice(), catchers: (state.catchers || []).slice() }
+  };
+}
 
 // ── ROSTER PERSISTENCE (saved on this device) ──────────────────────
 var ROSTER_KEY = 'dugout_roster_v1';
@@ -1344,6 +1403,8 @@ function generateLineup() {
     try {
       var result = buildLineupMatrix(state);
       state.lineup = result;
+      state.historyId = null;
+      document.getElementById('lu-from-note').hidden = true;
       renderLineup(result);
       if (!window.LU_SAMPLE && window.DL && DL.track) DL.track('lineup_built');
     } catch (e) {
@@ -1712,7 +1773,7 @@ function buildLineupMatrix(s) {
 }
 
 // ── RENDER LINEUP ──────────────────────────────────────────────────
-function renderLineup(data) {
+function renderLineup(data, fromRec) {
   var inn = state.innings;
 
   // Header
@@ -1750,6 +1811,13 @@ function renderLineup(data) {
   document.getElementById('lineup-title').textContent = state.teamName + ': ' + inn + '-Inning Lineup';
 
   document.getElementById('lineup-output').classList.add('show');
+  var hs = document.getElementById('history-slot');
+  if (window.LU_SAMPLE || !window.LineupHistory) hs.innerHTML = '';
+  else LineupHistory.saveBar(hs, function () {
+    var rec = lineupForHistory();
+    if (rec && fromRec) { rec.players = fromRec.players || rec.players; rec.config = fromRec.config || rec.config; }
+    return rec;
+  }, fromRec || null);
   LineupEmail.mount(document.getElementById('email-slot'), lineupForEmail);
 }
 

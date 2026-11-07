@@ -22,6 +22,12 @@
      POST /api/team/player-delete { id }            -> { ok }
      GET  /api/team/runs?player= | ?session= | ?team=  -> { runs }
      POST /api/team/runs    { add: [run], remove: [id] } -> { saved: [id], removed: [id], rejected: [{ id, error }] }
+     GET  /api/team/lineups                         -> { lineups: [lineup] }  newest game first
+     POST /api/team/lineups { save: [lineup], remove: [id] } -> { saved: [id], removed: [id], rejected: [{ id, error }] }
+
+   Saved lineups (Lineup History): one row per game the coach saves from Compete Mode or Pod Rotation.
+     lineups: id, account_id, date, tool (compete|pods), team, data (JSON: names, positions by inning,
+     batting order, plan), created, updated. Ids come from the phone, so a save sent twice is stored once.
    Account deletion in /api/pitch/account-delete also removes runs and parent contacts. */
 
 const SCHEMA = [
@@ -38,11 +44,20 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS player_contacts (
     player_id TEXT PRIMARY KEY, account_id TEXT NOT NULL, parent_name TEXT NOT NULL DEFAULT '',
     parent_email TEXT NOT NULL DEFAULT '', updated INTEGER NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS lineups (
+    id TEXT PRIMARY KEY, account_id TEXT NOT NULL, date TEXT NOT NULL, tool TEXT NOT NULL, team TEXT NOT NULL DEFAULT '',
+    data TEXT NOT NULL, created INTEGER NOT NULL, updated INTEGER NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS lineups_account ON lineups(account_id, date)`,
   `CREATE INDEX IF NOT EXISTS runs_player ON runs(player_id, date)`,
   `CREATE INDEX IF NOT EXISTS runs_coach ON runs(coach_id, session_id)`
 ];
 const TRIAL_DAYS = 14, MAX_TEAMS = 6, MAX_PLAYERS = 30, MAX_RUNS_PER_SESSION = 2;
 const TYPES = ['Practice', 'Game'];
+const LINEUP_TOOLS = ['compete', 'pods'], MAX_LINEUPS = 600, MAX_LINEUP_BYTES = 24000;
+function pubLineup(r) {
+  let d = {}; try { d = JSON.parse(r.data); } catch (e) { d = {}; }
+  return Object.assign(d, { id: r.id, date: r.date, tool: r.tool, team: r.team, savedAt: r.created, updated: r.updated, synced: true });
+}
 
 function json(data, status) {
   return new Response(JSON.stringify(data), { status: status || 200, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
@@ -252,6 +267,50 @@ export async function onRequest(ctx) {
         await db.prepare('INSERT OR IGNORE INTO runs (id,coach_id,player_id,session_id,kind,date,type,run_number,seconds,created_at) VALUES (?,?,?,?,?,?,?,?,?,?)')
           .bind(rid, me.id, k.id, sid, 'h2f', date, type, num, secs, created).run();
         saved.push(rid);
+      }
+      return json({ saved, removed, rejected });
+    }
+
+    if (route === 'lineups' && method === 'GET') {
+      const rows = (await db.prepare('SELECT * FROM lineups WHERE account_id = ? ORDER BY date DESC, created DESC LIMIT ?').bind(me.id, MAX_LINEUPS).all()).results;
+      return json({ lineups: rows.map(pubLineup) });
+    }
+
+    if (route === 'lineups' && method === 'POST') {
+      const save = Array.isArray(body.save) ? body.save.slice(0, 100) : [];
+      const remove = Array.isArray(body.remove) ? body.remove.slice(0, 200) : [];
+      const saved = [], removed = [], rejected = [];
+      for (const lid of remove) {
+        const r = clean(lid, 40);
+        await db.prepare('DELETE FROM lineups WHERE id = ? AND account_id = ?').bind(r, me.id).run();
+        removed.push(r);
+      }
+      const have = (await db.prepare('SELECT COUNT(*) AS n FROM lineups WHERE account_id = ?').bind(me.id).first()).n || 0;
+      let count = have;
+      for (const l of save) {
+        const lid = clean(l && l.id, 40);
+        if (!/^[A-Za-z0-9_-]{8,40}$/.test(lid)) { rejected.push({ id: lid, error: 'Bad lineup id' }); continue; }
+        const date = dateOK(l.date), tool = LINEUP_TOOLS.indexOf(l.tool) >= 0 ? l.tool : '';
+        if (!date || !tool) { rejected.push({ id: lid, error: 'Missing date or tool' }); continue; }
+        const rows = Array.isArray(l.rows) ? l.rows.slice(0, 40).map(function (x) {
+          return { name: clean(x && x.name, 30), bat: parseInt(x && x.bat, 10) > 0 ? parseInt(x.bat, 10) : null,
+            pod: x && (x.pod === 'right' || x.pod === 'left') ? x.pod : undefined,
+            cells: (Array.isArray(x && x.cells) ? x.cells : []).slice(0, 12).map(function (c) { return clean(c, 6); }) };
+        }).filter(function (x) { return x.name; }) : [];
+        if (!rows.length) { rejected.push({ id: lid, error: 'No players' }); continue; }
+        const rec = { title: clean(l.title, 80), opp: clean(l.opp, 40), innings: Math.max(1, Math.min(12, parseInt(l.innings, 10) || rows[0].cells.length || 1)),
+          teamId: clean(l.teamId, 40), rows: rows, players: Array.isArray(l.players) ? l.players.slice(0, 40) : [], config: l.config && typeof l.config === 'object' ? l.config : {} };
+        const data = JSON.stringify(rec).replace(/[<>]/g, '');
+        if (data.length > MAX_LINEUP_BYTES) { rejected.push({ id: lid, error: 'Lineup too large' }); continue; }
+        const own = await db.prepare('SELECT account_id FROM lineups WHERE id = ?').bind(lid).first();
+        if (own && own.account_id !== me.id) { rejected.push({ id: lid, error: 'Bad lineup id' }); continue; }
+        if (!own && count >= MAX_LINEUPS) { rejected.push({ id: lid, error: 'History is full. Delete a few old games.' }); continue; }
+        const created = Number(l.savedAt) > 0 && Number(l.savedAt) <= now + 60000 ? Math.round(Number(l.savedAt)) : now;
+        await db.prepare('INSERT INTO lineups (id,account_id,date,tool,team,data,created,updated) VALUES (?,?,?,?,?,?,?,?) ' +
+          'ON CONFLICT(id) DO UPDATE SET date = excluded.date, team = excluded.team, data = excluded.data, updated = excluded.updated')
+          .bind(lid, me.id, date, tool, clean(l.team, 60), data, created, now).run();
+        if (!own) count++;
+        saved.push(lid);
       }
       return json({ saved, removed, rejected });
     }

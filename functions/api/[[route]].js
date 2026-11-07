@@ -57,7 +57,7 @@ const SCHEMA = [
 
 /* Only these events are counted. Anything else is ignored, so the table cannot be filled with junk. */
 const METRIC_EVENTS = new Set(['practice_built', 'practice_saved', 'practice_printed', 'practice_shared', 'practice_reflected',
-  'practice_reopened', 'practice_run', 'practice_shared_open', 'lineup_demo', 'lineup_built', 'tldr_seen', 'return_visit',
+  'practice_reopened', 'practice_run', 'practice_shared_open', 'lineup_demo', 'lineup_built', 'lineup_saved', 'lineup_reused', 'tldr_seen', 'return_visit',
   'home_cta_practice', 'home_cta_lineup', 'home_signup']);
 
 /* ---------- Pitch Tracker premium gate ----------
@@ -644,6 +644,7 @@ export async function onRequest(ctx) {
         await db.prepare('DELETE FROM hitters WHERE account_id = ?').bind(me.id).run();
         await db.prepare('DELETE FROM pitch_sessions WHERE account_id = ?').bind(me.id).run();
         try { await db.prepare('DELETE FROM player_contacts WHERE account_id = ?').bind(me.id).run(); } catch (e) { /* no contacts table yet */ }
+        try { await db.prepare('DELETE FROM lineups WHERE account_id = ?').bind(me.id).run(); } catch (e) { /* no lineups table yet */ }
         await db.prepare('DELETE FROM pitch_kids WHERE account_id = ?').bind(me.id).run();
         await db.prepare('DELETE FROM pitch_teams WHERE account_id = ?').bind(me.id).run();
         await db.prepare('DELETE FROM events WHERE account_id = ?').bind(me.id).run();

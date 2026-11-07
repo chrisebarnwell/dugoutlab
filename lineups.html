@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Lineup History | DugoutLab</title>
+<meta name="description" content="Every lineup you save, by date. See where each kid has played, innings at each position, and where they hit in the order. Reuse any past roster or lineup.">
+<!-- dl:head -->
+<link rel="canonical" href="https://dugoutlab.com/lineups">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DugoutLab">
+<meta property="og:title" content="Lineup History">
+<meta property="og:description" content="Every lineup you save, by date. See where each kid has played, innings at each position, and where they hit in the order. Reuse any past roster or lineup.">
+<meta property="og:url" content="https://dugoutlab.com/lineups">
+<meta property="og:image" content="https://dugoutlab.com/assets/brand/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0F1F18">
+<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<link rel="icon" href="/assets/brand/icon-32.png" sizes="32x32" type="image/png">
+<link rel="manifest" href="/site.webmanifest">
+<script>try{var t=localStorage.getItem("dl_theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<!-- /dl:head -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+.lh-wrap { max-width: 1040px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
+.lh-top { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.lh-sync { font-size: 0.85rem; color: var(--ink-soft); }
+.lh-sync a { font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip { min-height: 40px; padding: 0.4rem 0.95rem; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--forest2); color: var(--ink-soft); font: inherit; font-size: 0.86rem; font-weight: 600; cursor: pointer; }
+.chip.on { background: var(--fill); border-color: var(--fill); color: var(--on-fill); }
+.lh-sec { margin-top: 2rem; }
+.lh-sec h2 { font-family: var(--serif); font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.25rem; }
+.lh-sec .sub { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 0.9rem; }
+.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+.kpi { background: var(--forest2); border: 1px solid var(--rule); border-radius: 10px; padding: 0.8rem 0.9rem; }
+.kpi b { display: block; font-family: var(--mono); font-size: 1.6rem; font-weight: 500; color: var(--ink); line-height: 1.1; }
+.kpi span { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); }
+.heat-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 10px; background: var(--forest2); }
+table.heat { border-collapse: collapse; width: 100%; font-size: 0.86rem; }
+.heat th { font-family: var(--mono); font-size: 0.7rem; font-weight: 500; color: var(--gold); padding: 0.55rem 0.4rem; border-bottom: 1px solid var(--rule); text-align: center; white-space: nowrap; position: sticky; top: 0; background: var(--forest2); }
+.heat th.nm, .heat td.nm { text-align: left; position: sticky; left: 0; background: var(--forest2); z-index: 1; }
+.heat td { text-align: center; padding: 0; border-bottom: 1px solid var(--rule); min-width: 40px; }
+.heat td .c { display: block; padding: 0.55rem 0.3rem; font-weight: 600; color: var(--ink); }
+.heat td .c.z { color: var(--ink-faint); font-weight: 400; }
+.heat td.nm button { all: unset; cursor: pointer; display: block; padding: 0.55rem 0.75rem; min-height: 24px; font-weight: 600; color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; white-space: nowrap; }
+.heat td.nm button:focus-visible { outline: 2px solid var(--gold); }
+.heat .sep { border-left: 1px solid var(--rule); }
+.legend { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--ink-faint); margin-top: 0.5rem; }
+.legend i { display: inline-block; width: 64px; height: 10px; border-radius: 3px; background: linear-gradient(90deg, transparent, var(--fill)); border: 1px solid var(--rule); }
+.games { display: grid; gap: 0.6rem; }
+.month { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin: 1rem 0 0.2rem; }
+.game { background: var(--forest2); border: 1px solid var(--rule); border-radius: 10px; }
+.game > button { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: grid; grid-template-columns: 64px 1fr auto; gap: 0.8rem; align-items: center; padding: 0.8rem 0.95rem; min-height: 56px; }
+.game > button:focus-visible { outline: 2px solid var(--gold); border-radius: 10px; }
+.gd { text-align: center; border-right: 1px solid var(--rule); padding-right: 0.6rem; }
+.gd b { display: block; font-family: var(--mono); font-size: 1.35rem; font-weight: 500; line-height: 1; color: var(--ink); }
+.gd span { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+.gt { font-family: var(--serif); font-weight: 600; font-size: 1.05rem; color: var(--ink); line-height: 1.2; }
+.gm { font-size: 0.8rem; color: var(--ink-faint); margin-top: 0.15rem; }
+.tag { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em; padding: 0.2rem 0.55rem; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink-soft); white-space: nowrap; }
+.gbody { display: none; padding: 0 0.95rem 1rem; }
+.game.open .gbody { display: block; }
+.mini { overflow-x: auto; margin: 0.25rem 0 0.8rem; }
+.mini table { border-collapse: collapse; font-size: 0.8rem; min-width: 100%; }
+.mini th { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; color: var(--gold); padding: 0.3rem; border-bottom: 1px solid var(--rule); text-align: center; }
+.mini th:first-child, .mini td:first-child { text-align: left; white-space: nowrap; padding-right: 0.7rem; }
+.mini td { padding: 0.3rem; border-bottom: 1px solid var(--rule); text-align: center; font-weight: 600; }
+.mini td.off { color: var(--ink-faint); font-weight: 400; font-style: italic; }
+.mini td.pc { outline: 1.5px solid var(--gold); outline-offset: -3px; border-radius: 4px; }
+.mini tr.grp td { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); font-weight: 600; }
+.acts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.acts .btn { min-height: 44px; }
+.del { background: none; border: none; color: var(--ink-faint); font: inherit; font-size: 0.85rem; text-decoration: underline; cursor: pointer; min-height: 44px; padding: 0 0.5rem; margin-left: auto; }
+.empty { background: var(--forest2); border: 1px dashed var(--rule); border-radius: 12px; padding: 2rem 1.25rem; text-align: center; }
+.empty h2 { font-family: var(--serif); font-size: 1.4rem; margin-bottom: 0.4rem; }
+.empty p { color: var(--ink-soft); margin: 0 auto 1rem; max-width: 460px; }
+.flow { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-soft); margin: 0 auto 1.1rem; display: inline-block; text-align: left; white-space: pre; background: var(--forest3); border: 1px solid var(--rule); border-radius: 8px; padding: 0.7rem 0.9rem; }
+/* Kid sheet */
+.sheet-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1200; display: none; align-items: flex-end; justify-content: center; }
+.sheet-bg.open { display: flex; }
+.sheet { background: var(--bg); color: var(--ink); width: 100%; max-width: 620px; max-height: 90vh; overflow-y: auto; border-radius: 16px 16px 0 0; padding: 1.1rem 1.1rem 2rem; border: 1px solid var(--rule); }
+@media (min-width: 700px) { .sheet-bg { align-items: center; } .sheet { border-radius: 16px; } }
+.sheet-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.9rem; }
+.sheet-h h3 { font-family: var(--serif); font-size: 1.6rem; font-weight: 600; letter-spacing: -0.015em; }
+.sheet-h .x { min-width: 44px; min-height: 44px; border-radius: 50%; border: 1px solid var(--rule); background: var(--forest2); color: var(--ink); font-size: 1.1rem; cursor: pointer; }
+.sheet h4 { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin: 1.2rem 0 0.5rem; }
+.bars { display: grid; gap: 0.35rem; }
+.bar { display: grid; grid-template-columns: 44px 1fr 34px; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
+.bar .k { font-family: var(--mono); font-weight: 500; color: var(--ink-soft); }
+.bar .t { height: 14px; background: var(--forest3); border-radius: 4px; overflow: hidden; border: 1px solid var(--rule); }
+.bar .t i { display: block; height: 100%; background: var(--fill); }
+.bar .t i.off { background: var(--ink-faint); opacity: 0.45; }
+.bar .n { font-family: var(--mono); text-align: right; color: var(--ink); }
+.spots { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(26px, 1fr); gap: 4px; align-items: end; height: 110px; padding-top: 0.5rem; }
+.spot { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; }
+.spot i { display: block; width: 100%; background: var(--fill); border-radius: 3px 3px 0 0; min-height: 2px; }
+.spot i.z { background: var(--rule); }
+.spot b { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; color: var(--ink-faint); margin-top: 4px; }
+.spot s { text-decoration: none; font-family: var(--mono); font-size: 0.68rem; color: var(--ink); margin-bottom: 2px; }
+.log { display: grid; gap: 0.4rem; }
+.logrow { display: grid; grid-template-columns: 92px 44px 1fr; gap: 0.5rem; align-items: center; font-size: 0.82rem; padding: 0.45rem 0; border-bottom: 1px solid var(--rule); }
+.logrow .d { color: var(--ink-soft); }
+.logrow .b { font-family: var(--mono); color: var(--gold); }
+.cells { display: flex; flex-wrap: wrap; gap: 3px; }
+.cells span { font-family: var(--mono); font-size: 0.7rem; padding: 0.15rem 0.35rem; border: 1px solid var(--rule); border-radius: 4px; background: var(--forest2); }
+.cells span.off { color: var(--ink-faint); font-style: italic; }
+@media (max-width: 560px) { .kpis { grid-template-columns: repeat(3, 1fr); } .kpi b { font-size: 1.3rem; } .logrow { grid-template-columns: 78px 36px 1fr; } }
+@media print {
+  .lh-top, .chips, #games-sec, .sheet-bg, .no-print { display: none !important; }
+  .heat-wrap { border: 1px solid #999; }
+  .heat td .c { color: #000 !important; }
+}
+</style>
+</head>
+<body class="paper">
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Dugout<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="practice.html">Practice</a></li>
+    <li><a href="game-day.html">Game Day</a></li>
+    <li><a href="training.html">Train</a></li>
+    <li><a href="articles.html">Learn</a></li>
+    <li><a href="parents.html" class="nav-aside">Parents</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="practice.html">Practice</a>
+  <a href="game-day.html">Game Day</a>
+  <a href="training.html">Train</a>
+  <a href="articles.html">Learn</a>
+  <a href="parents.html">Parents</a>
+  <a href="tools.html" class="mm-small">All tools</a>
+  <a href="ages.html" class="mm-small">By age</a>
+  <a href="about.html" class="mm-small">About</a>
+</div>
+
+<header class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="game-day.html">&#8592; Game Day</a></div>
+    <div class="eyebrow">Lineup History</div>
+    <h1>Every game. Every kid.</h1>
+    <p>Each lineup you save, by date. Where every kid has played, and where they hit. Tap any game to use that lineup or roster again.</p>
+  </div>
+</header>
+
+<main class="lh-wrap" id="main">
+  <div class="lh-top">
+    <div class="lh-sync" id="sync"></div>
+    <div class="acts no-print">
+      <a href="lineup.html" class="btn btn-sm btn-outline">Compete Mode</a>
+      <a href="pods.html" class="btn btn-sm btn-outline">Pod Rotation</a>
+    </div>
+  </div>
+  <div class="chips" id="teams" role="group" aria-label="Team"></div>
+  <div id="app"></div>
+</main>
+
+<div class="sheet-bg" id="sheet" onclick="if(event.target===this)closeKid()" role="dialog" aria-modal="true" aria-labelledby="kid-name">
+  <div class="sheet" id="sheet-in"></div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Dugout<span>Lab</span></div>
+      <p>For the coach trying to get it right. Better practices. Kids who want to come back. Free tools and honest, evidence-checked coaching for volunteer coaches and parents.</p>
+      <div class="theme-switch" role="group" aria-label="Page style">
+        <span>Page style</span>
+        <button type="button" data-theme-set="auto">Auto</button><button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
+      </div>
+    </div>
+    <div class="footer-links">
+      <h4>Practice</h4>
+      <ul>
+        <li><a href="practice.html">Practice in a Pinch</a></li>
+        <li><a href="games.html">Games Library</a></li>
+        <li><a href="framework.html">Practice Framework</a></li>
+        <li><a href="progression.html">Season Plan</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Game Day</h4>
+      <ul>
+        <li><a href="lineup.html">Lineup Builder</a></li>
+        <li><a href="pods.html">Pod Rotation</a></li>
+        <li><a href="pitch-tracker.html">Pitch Tracker</a></li>
+        <li><a href="pocket-card.html">Back Pocket Card</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Train and Learn</h4>
+      <ul>
+        <li><a href="training.html">Train</a></li>
+        <li><a href="articles.html">Field Notes</a></li>
+        <li><a href="parents.html">For parents</a></li>
+        <li><a href="how-kids-learn.html">How kids learn</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>DugoutLab</h4>
+      <ul>
+        <li><a href="tools.html">All tools</a></li>
+        <li><a href="ages.html">By age</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DugoutLab. Built for volunteer coaches.</span>
+    <span>Your job is to make them want to come back tomorrow.</span>
+  </div>
+</footer>
+<script src="js/team.js"></script>
+<script src="js/site.js"></script>
+<script src="js/lineup-history.js?v=20261107"></script>
+<script>
+(function () {
+  var H = window.LineupHistory, esc = H.esc;
+  var ALL = [], TEAM = 'all', STATS = null;
+  var TOOL = { compete: 'Compete Mode', pods: 'Pod Rotation' };
+  var MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var SM = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function $(id) { return document.getElementById(id); }
+  function teamKey(r) { return (r.team || 'My Team').trim(); }
+  function filtered() { return TEAM === 'all' ? ALL : ALL.filter(function (r) { return teamKey(r) === TEAM; }); }
+  function shortDate(d) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); return m ? SM[+m[2] - 1] + ' ' + (+m[3]) : d; }
+
+  function syncLine() {
+    var signed = !!(window.DLTeam && DLTeam.token && DLTeam.token());
+    $('sync').innerHTML = signed ? 'Saved to your account. Same history on any phone you sign in on.'
+      : 'Saved on this phone only. <a href="team.html">Sign in to My Team</a> to keep it on every phone.';
+  }
+
+  function renderTeams() {
+    var names = [], seen = {};
+    ALL.forEach(function (r) { var k = teamKey(r); if (!seen[k]) { seen[k] = 1; names.push(k); } });
+    if (names.length < 2) { $('teams').innerHTML = ''; TEAM = 'all'; return; }
+    if (TEAM !== 'all' && !seen[TEAM]) TEAM = 'all';
+    $('teams').innerHTML = ['all'].concat(names).map(function (n) {
+      return '<button type="button" class="chip' + (n === TEAM ? ' on' : '') + '" data-team="' + esc(n) + '">' + (n === 'all' ? 'All teams' : esc(n)) + '</button>';
+    }).join('');
+  }
+
+  function heatCell(n, max) {
+    if (!n) return '<td><span class="c z">0</span></td>';
+    var pct = Math.round(18 + 62 * (n / Math.max(1, max)));
+    return '<td><span class="c" style="background:color-mix(in srgb, var(--fill) ' + pct + '%, transparent)">' + n + '</span></td>';
+  }
+
+  function render() {
+    syncLine(); renderTeams();
+    var recs = filtered();
+    if (!ALL.length) {
+      $('app').innerHTML = '<div class="empty"><h2>No saved games yet</h2>'
+        + '<p>Build a lineup, then tap <b>Save to history</b> under it. Every game you save adds to each kid\'s totals here.</p>'
+        + '<div class="flow">Build lineup  >  Save to history  >  Totals here</div>'
+        + '<div class="acts" style="justify-content:center"><a href="lineup.html" class="btn btn-primary">Compete Mode</a><a href="pods.html" class="btn btn-outline">Pod Rotation</a></div></div>';
+      return;
+    }
+    STATS = H.stats(recs);
+    var innings = 0, off = 0; STATS.kids.forEach(function (k) { innings += k.innings; off += k.off; });
+    var h = '<div class="kpis"><div class="kpi"><b>' + recs.length + '</b><span>Games saved</span></div>'
+      + '<div class="kpi"><b>' + STATS.kids.length + '</b><span>Kids</span></div>'
+      + '<div class="kpi"><b>' + (innings - off) + '</b><span>Innings on the field</span></div></div>';
+
+    // Where they played
+    var anyBat = STATS.kids.some(function (k) { return k.batGames; });
+    h += '<section class="lh-sec"><h2>Where they played</h2><p class="sub">Innings at each spot, all saved games. Tap a name for that kid\'s story.</p>'
+      + '<div class="heat-wrap"><table class="heat"><thead><tr><th class="nm">Player</th><th>G</th>';
+    STATS.cols.forEach(function (c, i) { h += '<th' + (i === 0 ? ' class="sep"' : '') + '>' + esc(c) + '</th>'; });
+    h += '<th class="sep">Off</th>' + (anyBat ? '<th>Avg bat</th>' : '') + '</tr></thead><tbody>';
+    STATS.kids.forEach(function (k, idx) {
+      var max = 0; STATS.cols.forEach(function (c) { if ((k.pos[c] || 0) > max) max = k.pos[c]; });
+      h += '<tr><td class="nm"><button type="button" data-kid="' + idx + '">' + esc(k.name) + '</button></td><td><span class="c">' + k.games + '</span></td>';
+      STATS.cols.forEach(function (c) { h += heatCell(k.pos[c] || 0, max); });
+      h += '<td class="sep"><span class="c' + (k.off ? '' : ' z') + '">' + k.off + '</span></td>';
+      if (anyBat) h += '<td><span class="c' + (k.batGames ? '' : ' z') + '">' + (k.batGames ? (k.batSum / k.batGames).toFixed(1) : '-') + '</span></td>';
+      h += '</tr>';
+    });
+    h += '</tbody></table></div><div class="legend"><i></i> more innings at that spot (shaded within each kid\'s row). Off = EH, sit, or warming up.</div>'
+      + '<div class="acts no-print" style="margin-top:0.75rem"><button type="button" class="btn btn-sm btn-outline" onclick="window.print()">Print totals</button></div></section>';
+
+    // Games
+    h += '<section class="lh-sec" id="games-sec"><h2>Games</h2><p class="sub">Newest first. Tap one to see it, use it again, or delete it.</p><div class="games">';
+    var lastMonth = '';
+    recs.forEach(function (r) {
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(r.date) || [0, '', '01', '01'];
+      var mk = MON[+m[2] - 1] + ' ' + m[1];
+      if (mk !== lastMonth) { h += '<div class="month">' + mk + '</div>'; lastMonth = mk; }
+      var dt = new Date(+m[1], +m[2] - 1, +m[3]);
+      h += '<div class="game" id="g-' + esc(r.id) + '"><button type="button" data-open="' + esc(r.id) + '" aria-expanded="false">'
+        + '<div class="gd"><b>' + (+m[3]) + '</b><span>' + ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dt.getDay()] + '</span></div>'
+        + '<div><div class="gt">' + esc(r.team || 'My Team') + (r.opp ? ' vs ' + esc(r.opp) : '') + '</div>'
+        + '<div class="gm">' + (r.innings || '') + ' innings &middot; ' + (r.rows || []).length + ' players</div></div>'
+        + '<span class="tag">' + (TOOL[r.tool] || '') + '</span></button><div class="gbody"></div></div>';
+    });
+    h += '</div></section>';
+    $('app').innerHTML = h;
+  }
+
+  function miniTable(r) {
+    var inn = r.innings || ((r.rows[0] || {}).cells || []).length, h = '<div class="mini"><table><tr><th>' + (r.tool === 'compete' ? 'Batting' : 'Player') + '</th>';
+    for (var i = 1; i <= inn; i++) h += '<th>' + i + '</th>';
+    h += '</tr>';
+    var rows = r.rows.slice(), lastPod = null;
+    if (r.tool === 'compete') rows.sort(function (a, b) { return (a.bat || 99) - (b.bat || 99); });
+    rows.forEach(function (x) {
+      if (r.tool === 'pods' && x.pod && x.pod !== lastPod) { lastPod = x.pod; h += '<tr class="grp"><td colspan="' + (inn + 1) + '">' + (x.pod === 'right' ? 'Right pod' : 'Left pod') + '</td></tr>'; }
+      h += '<tr><td>' + (x.bat ? x.bat + '. ' : '') + esc(x.name) + '</td>';
+      (x.cells || []).forEach(function (c) {
+        h += '<td class="' + (H.isOff(c) ? 'off' : (c === 'P' || c === 'C' ? 'pc' : '')) + '">' + esc(c || 'EH') + '</td>';
+      });
+      h += '</tr>';
+    });
+    return h + '</table></div>';
+  }
+
+  function openGame(id) {
+    var el = $('g-' + id), r = H.get(id); if (!el || !r) return;
+    var open = !el.classList.contains('open');
+    el.classList.toggle('open', open);
+    el.querySelector('button[data-open]').setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (!open) return;
+    var other = r.tool === 'pods' ? ['lineup.html', 'Compete Mode'] : ['pods.html', 'Pod Rotation'];
+    el.querySelector('.gbody').innerHTML = miniTable(r)
+      + '<div class="acts"><button type="button" class="btn btn-primary btn-sm" data-use="lineup" data-id="' + esc(r.id) + '">Use this lineup</button>'
+      + '<button type="button" class="btn btn-outline btn-sm" data-use="roster" data-id="' + esc(r.id) + '">Use this roster</button>'
+      + '<button type="button" class="btn btn-outline btn-sm" data-use="other" data-id="' + esc(r.id) + '">Roster in ' + other[1] + '</button>'
+      + '<button type="button" class="del" data-del="' + esc(r.id) + '">Delete</button></div>';
+  }
+
+  function use(id, how) {
+    var r = H.get(id); if (!r) return;
+    var page = r.tool === 'pods' ? 'pods.html' : 'lineup.html';
+    if (how === 'other') { page = r.tool === 'pods' ? 'lineup.html' : 'pods.html'; how = 'roster'; }
+    H.handoff(id, how);
+    location.href = page;
+  }
+
+  function openKid(idx) {
+    var k = STATS && STATS.kids[idx]; if (!k) return;
+    var onField = k.innings - k.off;
+    var h = '<div class="sheet-h"><h3 id="kid-name">' + esc(k.name) + '</h3><button type="button" class="x" onclick="closeKid()" aria-label="Close">&#x2715;</button></div>'
+      + '<div class="kpis"><div class="kpi"><b>' + k.games + '</b><span>Games</span></div>'
+      + '<div class="kpi"><b>' + onField + '</b><span>Innings on field</span></div>'
+      + '<div class="kpi"><b>' + Object.keys(k.pos).length + '</b><span>Spots played</span></div></div>';
+    // positions
+    var max = k.off; Object.keys(k.pos).forEach(function (p) { if (k.pos[p] > max) max = k.pos[p]; });
+    h += '<h4>Where they played</h4><div class="bars">';
+    STATS.cols.forEach(function (c) {
+      var n = k.pos[c] || 0;
+      h += '<div class="bar"><span class="k">' + esc(c) + '</span><span class="t"><i style="width:' + (max ? Math.round(100 * n / max) : 0) + '%"></i></span><span class="n">' + n + '</span></div>';
+    });
+    h += '<div class="bar"><span class="k">Off</span><span class="t"><i class="off" style="width:' + (max ? Math.round(100 * k.off / max) : 0) + '%"></i></span><span class="n">' + k.off + '</span></div></div>';
+    // batting
+    if (k.batGames) {
+      var top = 0, spots = 0;
+      Object.keys(k.bat).forEach(function (s) { s = +s; if (s > spots) spots = s; if (k.bat[s] > top) top = k.bat[s]; });
+      spots = Math.max(spots, 9);
+      h += '<h4>Where they hit &middot; avg ' + (k.batSum / k.batGames).toFixed(1) + '</h4><div class="spots">';
+      for (var s = 1; s <= spots; s++) {
+        var n = k.bat[s] || 0;
+        h += '<div class="spot">' + (n ? '<s>' + n + '</s>' : '') + '<i class="' + (n ? '' : 'z') + '" style="height:' + (n ? Math.max(8, Math.round(80 * n / top)) : 2) + '%"></i><b>' + s + '</b></div>';
+      }
+      h += '</div><div class="legend">Spot in the batting order, Compete Mode games.</div>';
+    }
+    // log
+    h += '<h4>Game by game</h4><div class="log">';
+    k.log.forEach(function (g) {
+      h += '<div class="logrow"><span class="d">' + esc(shortDate(g.date)) + '</span><span class="b">' + (g.bat ? '#' + g.bat : '') + '</span><span class="cells">'
+        + g.cells.map(function (c) { return '<span class="' + (H.isOff(c) ? 'off' : '') + '">' + esc(c || 'EH') + '</span>'; }).join('') + '</span></div>';
+    });
+    h += '</div>';
+    $('sheet-in').innerHTML = h;
+    $('sheet').classList.add('open');
+    var x = $('sheet-in').querySelector('.x'); if (x) x.focus();
+  }
+  window.closeKid = function () { $('sheet').classList.remove('open'); };
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeKid(); });
+
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-team],[data-kid],[data-open],[data-use],[data-del]'); if (!t) return;
+    if (t.hasAttribute('data-team')) { TEAM = t.getAttribute('data-team'); render(); }
+    else if (t.hasAttribute('data-kid')) openKid(+t.getAttribute('data-kid'));
+    else if (t.hasAttribute('data-open')) openGame(t.getAttribute('data-open'));
+    else if (t.hasAttribute('data-use')) use(t.getAttribute('data-id'), t.getAttribute('data-use'));
+    else if (t.hasAttribute('data-del')) {
+      var r = H.get(t.getAttribute('data-del')); if (!r) return;
+      if (!confirm('Delete the ' + H.fmtDate(r.date) + ' game? It comes out of every kid\'s totals. This cannot be undone.')) return;
+      H.remove(r.id); ALL = H.list(); render();
+    }
+  });
+
+  ALL = H.list(); render();
+  H.refresh().then(function (list) { ALL = list; render(); });
+})();
+</script>
+</body>
+</html>

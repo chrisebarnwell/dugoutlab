@@ -277,6 +277,7 @@ textarea { width: 100%; min-height: 150px; }
           <button class="btn btn-sm btn-forest" onclick="resplit()">Auto-split pods</button>
         </div>
         <div id="roster-import"></div>
+        <a href="lineups.html" class="lh-link no-print">Use a roster or lineup from a past game &rarr;</a>
       </div>
       <div id="podlist"></div>
     </div>
@@ -311,9 +312,11 @@ textarea { width: 100%; min-height: 150px; }
     <button class="btn btn-outline" onclick="window.print()">Print</button>
   </div>
 
+  <div class="flags no-print" id="from-note" hidden></div>
   <div id="out"></div>
   <div id="email-slot" style="display:none">
-    <div class="pb-row no-print" style="margin-top:0.75rem"><button class="btn btn-outline btn-sm" onclick="window.print()">Print / Save PDF</button></div>
+    <div class="pb-row no-print" style="margin-top:0.75rem"><button class="btn btn-outline btn-sm" onclick="window.print()">Print / Save PDF</button><a class="btn btn-outline btn-sm" href="lineups.html">Past games</a></div>
+    <div id="history-slot"></div>
     <div id="email-box"></div>
   </div>
 </div>
@@ -391,6 +394,8 @@ textarea { width: 100%; min-height: 150px; }
 <script src="js/site.js"></script>
 <script src="js/pods.js"></script>
 <script src="js/lineup-email.js"></script>
+<script src="js/lineup-history.js?v=20261107"></script>
+<style>.lh-link{display:inline-block;font-size:0.86rem;font-weight:600;margin-top:0.6rem}</style>
 <script>
 var KEY = 'dugout_pods_v1';
 var S = { team: '', names: [], pods: {}, innings: 6, game: 1, opp: '', p: [], c: [] };
@@ -472,20 +477,29 @@ function generate() {
   if (res.moved && res.moved.length) flags.push('Moved to balance pods after the switch: ' + res.moved.join(', ') + '.');
 
   var caps = {}; S.p.forEach(function (r) { if (r.name && r.cap) caps[r.name] = r.cap; });
+  LAST = { team: S.team, game: S.game, opp: S.opp, inn: inn, P: P, C: C, caps: caps, pod: res.pod, grid: res.grid, names: S.names.slice() };
+  document.getElementById('from-note').hidden = true;
+  renderCard(LAST, flags, null);
+}
+
+/* Draw the lineup card from a finished plan (a fresh build, or a game from Lineup History). */
+function renderCard(L, flags, fromRec) {
+  var out = document.getElementById('out');
+  var inn = L.inn, P = L.P, C = L.C, caps = L.caps || {}, res = { pod: L.pod, grid: L.grid };
   function planLine(arr) {
     var parts = [], i = 0;
     while (i < arr.length) { var j = i; while (j + 1 < arr.length && arr[j + 1] === arr[i]) j++; if (arr[i]) parts.push(esc(arr[i]) + ' ' + (i + 1) + (j > i ? '-' + (j + 1) : '')); i = j + 1; }
     return parts.join(' &middot; ');
   }
-  var h = '<div class="lc"><h3>' + esc(S.team || 'Lineup Card') + ' / Game ' + S.game + (S.opp ? ' vs ' + esc(S.opp) : '') + '</h3>'
-    + '<div class="sub">Bold box = pitcher or catcher &middot; warm = getting loose to pitch next' + (S.game === 2 ? ' &middot; Every kid switched sides' : '') + '</div>'
+  var h = '<div class="lc"><h3>' + esc(L.team || 'Lineup Card') + ' / Game ' + L.game + (L.opp ? ' vs ' + esc(L.opp) : '') + '</h3>'
+    + '<div class="sub">Bold box = pitcher or catcher &middot; warm = getting loose to pitch next' + (L.game === 2 ? ' &middot; Every kid switched sides' : '') + '</div>'
     + '<div class="plan"><b>Pitchers</b> ' + planLine(P) + '</div><div class="plan"><b>Catchers</b> ' + planLine(C) + '</div>'
     + '<table><tr><th style="text-align:left">Player</th>';
   for (var i = 1; i <= inn; i++) h += '<th>' + i + '</th>';
   h += '<th>Pitch cap</th></tr>';
   [['right', 'RIGHT POD &nbsp;1B / 2B / RF / CF'], ['left', 'LEFT POD &nbsp;3B / SS / LF']].forEach(function (pd) {
     h += '<tr class="podh"><td colspan="' + (inn + 2) + '">' + pd[1] + '</td></tr>';
-    S.names.filter(function (n) { return res.pod[n] === pd[0]; }).forEach(function (n) {
+    L.names.filter(function (n) { return res.pod[n] === pd[0]; }).forEach(function (n) {
       h += '<tr><td class="nm">' + esc(n) + '</td>';
       res.grid[n].forEach(function (v) {
         var cls = v === 'P' || v === 'C' ? 'pc' : (v === 'sit' ? 'sit' : (v === 'warm' ? 'warm' : ''));
@@ -495,12 +509,54 @@ function generate() {
     });
   });
   h += '</table></div>';
-  if (flags.length) h += '<div class="flags no-print">' + flags.map(esc).join('<br>') + '</div>';
+  if (flags && flags.length) h += '<div class="flags no-print">' + flags.map(esc).join('<br>') + '</div>';
   out.innerHTML = h;
-  LAST = { team: S.team, game: S.game, opp: S.opp, inn: inn, P: P, C: C, caps: caps, pod: res.pod, grid: res.grid, names: S.names.slice() };
   document.getElementById('email-slot').style.display = 'block';
+  if (window.LineupHistory) LineupHistory.saveBar(document.getElementById('history-slot'), lineupForHistory, fromRec);
   LineupEmail.mount(document.getElementById('email-box'), lineupForEmail);
   out.scrollIntoView({ behavior: 'smooth' });
+}
+
+// The game as it will be kept in Lineup History.
+function lineupForHistory() {
+  var L = LAST; if (!L) return null;
+  var rows = [];
+  ['right', 'left'].forEach(function (side) {
+    L.names.filter(function (n) { return L.pod[n] === side; }).forEach(function (n) { rows.push({ name: n, pod: side, cells: L.grid[n].slice() }); });
+  });
+  return {
+    tool: 'pods', team: L.team, opp: L.opp, innings: L.inn,
+    title: (L.team || 'Lineup Card') + ' / Game ' + L.game,
+    rows: rows,
+    players: L.names.map(function (n) { return { name: n, pod: L.pod[n] }; }),
+    config: { game: L.game, P: L.P, C: L.C, caps: L.caps, plan: { p: S.p.slice(), c: S.c.slice() } }
+  };
+}
+
+// From Lineup History: "Use this lineup" puts the saved card back; "Use this roster" loads only the names.
+function loadFromHistory() {
+  var h = window.LineupHistory && LineupHistory.takeHandoff();
+  if (!h) return;
+  var r = h.rec, cfg = r.config || {};
+  var roster = r.players && r.players.length ? r.players : r.rows;
+  S.names = roster.map(function (p) { return p.name; });
+  S.pods = {}; roster.forEach(function (p) { if (p.pod) S.pods[p.name] = p.pod; });
+  var fresh = autoSplit(S.names); S.names.forEach(function (n) { if (!S.pods[n]) S.pods[n] = fresh[n]; });
+  S.team = r.team || S.team;
+  if (r.tool === 'pods') {
+    S.innings = r.innings || S.innings; S.game = cfg.game || 1;
+    if (cfg.plan && cfg.plan.p && cfg.plan.p.length) S.p = cfg.plan.p; if (cfg.plan && cfg.plan.c && cfg.plan.c.length) S.c = cfg.plan.c;
+  }
+  save(); renderAll();
+  if (window.DL && DL.track) DL.track('lineup_reused');
+  if (h.mode !== 'lineup' || r.tool !== 'pods') { window.scrollTo({ top: document.getElementById('team').getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth' }); return; }
+  var grid = {}, pod = {};
+  r.rows.forEach(function (x) { grid[x.name] = x.cells.slice(); pod[x.name] = x.pod || S.pods[x.name]; });
+  LAST = { team: r.team, game: cfg.game || 1, opp: r.opp || '', inn: r.innings, P: cfg.P || [], C: cfg.C || [], caps: cfg.caps || {}, pod: pod, grid: grid, names: r.rows.map(function (x) { return x.name; }) };
+  var note = document.getElementById('from-note');
+  note.innerHTML = '<b>From ' + esc(LineupHistory.fmtDate(r.date)) + (r.opp ? ' vs ' + esc(r.opp) : '') + '.</b> This is the card exactly as you saved it. Build the card to make a new one.';
+  note.hidden = false;
+  renderCard(LAST, [], r);
 }
 
 var LAST = null;
@@ -544,6 +600,7 @@ load();
 if (!S.p.length) S.p = [{ name: '', innings: 2, cap: '' }];
 if (!S.c.length) S.c = [{ name: '', innings: 2 }];
 renderAll();
+loadFromHistory();
 </script>
 </body>
 </html>
