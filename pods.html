@@ -190,7 +190,7 @@ textarea { width: 100%; min-height: 150px; }
   <div class="pb-card podx" id="podx">
     <div class="podx-head">
       <div>
-        <div class="podx-print-title" id="podxTitle">Pod System</div>
+        <div class="podx-print-title" id="podxTitle">DugoutLab.com Pod System</div>
         <h2>How pods work</h2>
         <p class="hint">Two halves of the field. Every kid lives on one side all game, then flips next game.</p>
       </div>
@@ -405,8 +405,9 @@ function loadNames() {
   S.names = list; save(); renderAll();
 }
 function printPodSheet() {
-  var t = (document.getElementById('team').value || '').trim();
-  document.getElementById('podxTitle').textContent = t ? t + ' Pod System' : 'Pod System';
+  var cur = null; try { cur = window.DLTeam && DLTeam.current(); } catch (e) {}
+  var t = ((cur && cur.name) || document.getElementById('team').value || '').trim();
+  document.getElementById('podxTitle').textContent = (t || 'DugoutLab.com') + ' Pod System';
   document.body.classList.add('print-podx');
   window.print();
 }
