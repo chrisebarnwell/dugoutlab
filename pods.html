@@ -64,13 +64,77 @@ textarea { width: 100%; min-height: 150px; }
 .lc td.sit { color: #888; }
 .lc td.warm { color: #555; font-style: italic; }
 .lc td.cap { min-width: 60px; }
-.ascii { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-soft); white-space: pre; overflow-x: auto; line-height: 1.35; }
+/* Pod explainer: right pod = sage, left pod = gold, P/C = plain ink ring */
+.podx { --pr: var(--sage); --pr-ink: var(--sage-ink); --pl: var(--fill); --pl-ink: var(--gold); }
+.podx-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+.podx-print-title { display: none; }
+.podx-top { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 1.75rem; align-items: center; margin: 0.5rem 0 1.25rem; }
+.podx-field { width: 100%; height: auto; display: block; }
+.fx-zone-r { fill: var(--pr); fill-opacity: 0.14; }
+.fx-zone-l { fill: var(--pl); fill-opacity: 0.10; }
+.fx-line { fill: none; stroke: var(--ink-faint); stroke-opacity: 0.45; stroke-width: 1.2; }
+.fx-split { stroke: var(--ink-faint); stroke-opacity: 0.4; stroke-width: 1; stroke-dasharray: 3 4; }
+.fx-p circle { stroke-width: 1.5; }
+.fx-p text { font-family: var(--mono); font-size: 10px; font-weight: 600; text-anchor: middle; fill: var(--ink); }
+.fx-p.r circle { fill: var(--pr); fill-opacity: 0.30; stroke: var(--pr); }
+.fx-p.l circle { fill: var(--pl); fill-opacity: 0.24; stroke: var(--pl); }
+.fx-p.pc circle { fill: var(--bg); stroke: var(--ink-faint); }
+.fx-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em; font-weight: 600; text-anchor: middle; }
+.fx-tag.r { fill: var(--pr-ink); }
+.fx-tag.l { fill: var(--pl-ink); }
+.podx-key { border-left: 3px solid var(--rule); padding: 0.15rem 0 0.15rem 0.9rem; margin-bottom: 0.95rem; }
+.podx-key:last-child { margin-bottom: 0; }
+.podx-key.r { border-left-color: var(--pr); }
+.podx-key.l { border-left-color: var(--pl); }
+.podx-key.pc { border-left-color: var(--ink-faint); border-left-style: dashed; }
+.pk-name { font-family: var(--serif); font-size: 1.08rem; font-weight: 600; }
+.pk-name span { font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; color: var(--ink-faint); margin-left: 0.4rem; }
+.podx-key p { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.5; margin: 0.15rem 0 0; }
+.podx-rules { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; border-top: 1px solid var(--rule); padding-top: 1rem; margin-bottom: 1.25rem; }
+.podx-k { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.45rem; }
+.podx-rules ul { list-style: none; margin: 0; padding: 0; }
+.podx-rules li { font-size: 0.9rem; color: var(--ink-soft); padding: 0.42rem 0; border-bottom: 1px solid var(--rule); line-height: 1.4; }
+.podx-rules li:last-child { border-bottom: 0; }
+.podx-strip { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.45rem; }
+.ps-lbl { font-size: 0.8rem; font-weight: 600; width: 7.2rem; flex-shrink: 0; }
+.ps-lbl.r { color: var(--pr-ink); }
+.ps-lbl.l { color: var(--pl-ink); }
+.ch { display: inline-flex; align-items: center; justify-content: center; min-width: 2.7rem; height: 2rem; padding: 0 0.55rem; border-radius: 7px; font-family: var(--mono); font-size: 0.78rem; font-weight: 600; color: var(--ink); border: 1.5px solid transparent; }
+.ch.r { background: color-mix(in srgb, var(--pr) 24%, transparent); border-color: color-mix(in srgb, var(--pr) 60%, transparent); }
+.ch.l { background: color-mix(in srgb, var(--pl) 18%, transparent); border-color: color-mix(in srgb, var(--pl) 55%, transparent); }
+.ch.pc { background: transparent; border-color: var(--ink-faint); }
+.ch.sit { background: transparent; border: 1.5px dashed var(--rule); color: var(--ink-faint); font-weight: 500; font-style: italic; }
+.ch.wide { min-width: 0; padding: 0 0.85rem; font-family: var(--sans); font-size: 0.82rem; }
+.podx-flip { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin: 1rem 0 0; padding-top: 1rem; border-top: 1px solid var(--rule); }
+.podx-arrow { color: var(--ink-faint); }
+.podx-flip-t { font-size: 0.86rem; color: var(--ink-soft); margin-left: 0.4rem; }
+.podx-why { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; margin: 1rem 0 0; }
+.podx-why strong { color: var(--ink); }
+.podx-src { color: var(--ink-faint); font-style: italic; }
+@media (max-width: 640px) {
+  .podx-top, .podx-rules { grid-template-columns: 1fr; }
+  .podx-field { max-width: 300px; margin: 0 auto; }
+  .ps-lbl { width: 100%; }
+  .podx-flip-t { margin-left: 0; width: 100%; }
+  .ch { min-width: 2.15rem; padding: 0 0.3rem; font-size: 0.72rem; }
+  .podx-strip { gap: 0.25rem; }
+  .pk-name span { display: block; margin-left: 0; }
+}
 @media (max-width: 768px) { .mode-switch, .grid-2c { grid-template-columns: 1fr; } }
 @media print {
   .nav, .mobile-menu, .page-hero, .mode-switch, .pb-card, .footer, .no-print { display: none !important; }
   body { background: #fff; }
   .pb-wrap { padding: 0; }
   .lc { padding: 0; border-radius: 0; break-inside: avoid; }
+  /* Print this sheet: only the pod explainer, light paper, toner-light */
+  html:has(body.print-podx), body.print-podx { background: #fff !important; color-scheme: light; }
+  body.print-podx #out, body.print-podx #email-slot, body.print-podx .flags { display: none !important; }
+  body.print-podx .pb-card.podx { display: block !important; background: #fff; border: 0; padding: 0; margin: 0; break-inside: avoid;
+    --bg: #fff; --ink: #14241b; --ink-soft: #3d4a41; --ink-faint: #5a655d; --rule: rgba(15,31,24,0.18); --gold: #8a5a12; --sage-ink: #4a6b50; color: #14241b; }
+  body.print-podx .podx-print-title { display: block; font-family: var(--serif); font-size: 1.6rem; font-weight: 600; margin-bottom: 0.2rem; }
+  body.print-podx .podx-head h2 { font-family: var(--sans); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #5a655d; }
+  body.print-podx .podx-top { grid-template-columns: 260px 1fr; }
+  body.print-podx .podx-rules { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -123,19 +187,82 @@ textarea { width: 100%; min-height: 150px; }
 
 <div class="pb-wrap">
 
-  <div class="pb-card">
-    <h2>How pods work</h2>
-<div class="ascii">+-------------------------------+   +--------------------------+
-| RIGHT POD   1B  2B  RF  CF    |   | LEFT POD    3B  SS  LF   |
-| about 4/7 of the roster       |   | about 3/7 of the roster  |
-+---------------+---------------+   +------------+-------------+
-                |      P / C step out for their turn  |
-                +-----------> return to same pod <----+
+  <div class="pb-card podx" id="podx">
+    <div class="podx-head">
+      <div>
+        <div class="podx-print-title" id="podxTitle">Pod System</div>
+        <h2>How pods work</h2>
+        <p class="hint">Two halves of the field. Every kid lives on one side all game, then flips next game.</p>
+      </div>
+      <button class="btn btn-outline btn-sm no-print" onclick="printPodSheet()">Print this sheet</button>
+    </div>
 
- EACH INNING   new spot (only P and C may repeat)
-               pitcher-up-next sits to get loose
-               nobody sits back-to-back
- NEXT GAME     every kid switches sides</div>
+    <div class="podx-top">
+      <svg class="podx-field" viewBox="0 0 300 278" role="img" aria-label="Field split into a right pod (first base, second base, right field, center field) and a left pod (third base, shortstop, left field), with pitcher and catcher in the middle">
+        <path class="fx-zone-r" d="M150 240 L288 102 A195 195 0 0 0 150 45 Z"/>
+        <path class="fx-zone-l" d="M150 240 L150 45 A195 195 0 0 0 12 102 Z"/>
+        <path class="fx-line" d="M150 240 L288 102 A195 195 0 0 0 12 102 Z"/>
+        <path class="fx-split" d="M150 240 L150 45"/>
+        <path class="fx-line" d="M150 240 L199 191 L150 142 L101 191 Z"/>
+        <g class="fx-p r"><circle cx="207" cy="176" r="14"/><text x="207" y="180">1B</text></g>
+        <g class="fx-p r"><circle cx="180" cy="148" r="14"/><text x="180" y="152">2B</text></g>
+        <g class="fx-p r"><circle cx="214" cy="104" r="14"/><text x="214" y="108">RF</text></g>
+        <g class="fx-p r"><circle cx="166" cy="78" r="14"/><text x="166" y="82">CF</text></g>
+        <g class="fx-p l"><circle cx="120" cy="148" r="14"/><text x="120" y="152">SS</text></g>
+        <g class="fx-p l"><circle cx="93" cy="176" r="14"/><text x="93" y="180">3B</text></g>
+        <g class="fx-p l"><circle cx="86" cy="104" r="14"/><text x="86" y="108">LF</text></g>
+        <g class="fx-p pc"><circle cx="150" cy="196" r="14"/><text x="150" y="200">P</text></g>
+        <g class="fx-p pc"><circle cx="150" cy="260" r="14"/><text x="150" y="264">C</text></g>
+        <text class="fx-tag r" x="276" y="62">RIGHT</text>
+        <text class="fx-tag l" x="24" y="62">LEFT</text>
+      </svg>
+      <div class="podx-keys">
+        <div class="podx-key r">
+          <div class="pk-name">Right pod <span>1B &middot; 2B &middot; RF &middot; CF</span></div>
+          <p>About 4 of every 7 kids. New spot every inning.</p>
+        </div>
+        <div class="podx-key l">
+          <div class="pk-name">Left pod <span>3B &middot; SS &middot; LF</span></div>
+          <p>About 3 of every 7 kids. New spot every inning.</p>
+        </div>
+        <div class="podx-key pc">
+          <div class="pk-name">Pitcher and catcher <span>a turn, not a pod</span></div>
+          <p>Step out of your pod to pitch or catch. Step back into the same pod when you are done. Not every kid pitches or catches every week.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="podx-rules">
+      <div>
+        <div class="podx-k">Rotation</div>
+        <ul>
+          <li>Every kid stays in Right or Left all game</li>
+          <li>New spot every inning inside your pod</li>
+          <li>Only P and C can repeat an inning</li>
+          <li>The inning before you pitch, you sit to get loose</li>
+        </ul>
+      </div>
+      <div>
+        <div class="podx-k">Sitting</div>
+        <ul>
+          <li>Each inning: P and C, 7 pod spots, the rest sit</li>
+          <li>Nobody sits two innings in a row</li>
+          <li>Warming up counts as your sit</li>
+          <li>Sits spread as evenly as the roster allows</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="podx-k">One game, two kids</div>
+    <div class="podx-strip"><span class="ps-lbl r">Right pod kid</span><span class="ch r">1B</span><span class="ch r">2B</span><span class="ch r">RF</span><span class="ch sit">warm</span><span class="ch pc">P</span><span class="ch r">1B</span></div>
+    <div class="podx-strip"><span class="ps-lbl l">Left pod kid</span><span class="ch l">3B</span><span class="ch sit">sit</span><span class="ch pc">C</span><span class="ch pc">C</span><span class="ch l">SS</span><span class="ch l">LF</span></div>
+
+    <div class="podx-flip">
+      <span class="ch r wide">Game 1: Right</span><span class="podx-arrow">&rarr;</span><span class="ch l wide">Game 2: Left</span>
+      <span class="podx-flip-t">Every kid flips sides. Nobody owns a position.</span>
+    </div>
+
+    <p class="podx-why"><strong>Why pods.</strong> A kid needs a few innings on the same side of the field to stop thinking about where to stand and start reading the play. Right field backs up first. Left field backs up third. One side all game means the same angles and the same jobs. Flipping next game means they learn both. Nobody gets a permanent label. <span class="podx-src">Our coaching call from the dugout, not a study.</span></p>
   </div>
 
   <div class="pb-card">
@@ -277,6 +404,13 @@ function loadNames() {
   list.forEach(function (n) { if (!S.pods[n]) S.pods[n] = fresh[n]; });
   S.names = list; save(); renderAll();
 }
+function printPodSheet() {
+  var t = (document.getElementById('team').value || '').trim();
+  document.getElementById('podxTitle').textContent = t ? t + ' Pod System' : 'Pod System';
+  document.body.classList.add('print-podx');
+  window.print();
+}
+window.addEventListener('afterprint', function () { document.body.classList.remove('print-podx'); });
 function resplit() { S.pods = autoSplit(S.names); save(); renderPods(); }
 function flip(i) { var n = S.names[i]; S.pods[n] = S.pods[n] === 'right' ? 'left' : 'right'; save(); renderPods(); }
 
