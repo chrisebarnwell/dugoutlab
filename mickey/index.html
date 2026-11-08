@@ -83,7 +83,23 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
 #sheet .row{display:flex;gap:8px}
 #sheet button{flex:1;border:0;border-radius:12px;padding:12px;font-weight:800}
 .b-gold{background:var(--gold);color:#1b1405}.b-ghost{background:#2a3a66}
-#confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:80}
+.ride-btn{margin-top:10px;width:100%;border:2px solid var(--gold);border-radius:16px;padding:13px;background:transparent;color:var(--gold);font-family:var(--display);font-size:19px;font-weight:800}
+.arbtns{display:flex;gap:8px;align-items:center}
+#ride{position:fixed;inset:0;z-index:70;background:var(--night);display:flex;flex-direction:column}
+#ride .rbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) max(14px,env(safe-area-inset-right,0px)) 10px max(14px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
+#ride .rbar b{font-family:var(--display);font-size:22px;line-height:1.1}
+#ride .rbody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px max(14px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 20px) max(14px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:10px}
+.rpick{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid var(--line);border-left:5px solid var(--c);background:var(--night2);border-radius:14px;padding:14px;font-size:16px;font-weight:800;touch-action:manipulation}
+.rpick small{color:var(--muted);font-weight:700;font-size:12px;white-space:nowrap}
+.rstep{background:var(--night2);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.rstep.found{opacity:.6}
+.rstep h3{margin:0;font-family:var(--display);font-size:20px;line-height:1.15;display:flex;gap:10px;align-items:center}
+.rstep h3 i{font-style:normal;flex:none;width:32px;height:32px;border-radius:50%;background:var(--gold);color:#1b1405;display:grid;place-items:center;font-size:16px}
+.rstep p{margin:0;font-size:18px;line-height:1.4}
+.rstep button{border:0;border-radius:12px;padding:14px;font-weight:800;font-size:16px;background:var(--gold);color:#1b1405;touch-action:manipulation}
+.rstep.found button{background:#2a3a66;color:var(--ink)}
+.rnote{font-size:13px;color:var(--muted);margin:2px 2px 0}
 #radarBtn{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 14px);width:120px;height:120px;border:0;padding:0;background:none;border-radius:50%}
 #radarBtn canvas{position:static;width:120px;height:120px}
 #radarBtn em{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);font-style:normal;font-size:11px;font-weight:800;letter-spacing:.08em;background:var(--gold);color:#1b1405;border-radius:8px;padding:2px 8px}
@@ -122,6 +138,7 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
   <svg width="26" height="22" viewBox="0 0 26 22" aria-hidden="true"><rect x="1" y="4" width="24" height="17" rx="4" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="13" cy="12.5" r="4.5" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="8" y="1" width="10" height="4" rx="1.5" fill="currentColor"/></svg>
   Open AR Camera
 </button>
+<button class="ride-btn" id="rideBtn" type="button">🎢 I'm on a ride</button>
 <p class="status" id="status">Starting point: Gaston's Tavern. Tap the map to move your pin.</p>
 
 <section class="mapwrap">
@@ -140,7 +157,7 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
   <div id="arLayer"></div>
   <div class="arbar">
     <div><b id="arTitle">Scanning…</b><small id="arSub">Point your phone around slowly</small></div>
-    <button class="x" id="closeAR" type="button" aria-label="Close camera">×</button>
+    <div class="arbtns"><button class="pill on" id="rideBtnAR" type="button">🎢 On a ride</button><button class="x" id="closeAR" type="button" aria-label="Close camera">×</button></div>
   </div>
   <div id="guide" aria-live="polite"></div>
   <button id="radarBtn" type="button" aria-label="Open overhead map"><canvas id="radar" width="240" height="240"></canvas><em>MAP</em></button>
@@ -150,6 +167,10 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
     <svg id="bigMap" viewBox="0 0 360 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Overhead park map"></svg>
     <div id="sheet2" hidden></div>
   </div>
+</div>
+<div id="ride" hidden>
+  <div class="rbar"><b id="rideTitle">Which ride?</b><button class="pill on" id="rideClose" type="button">Done</button></div>
+  <div class="rbody" id="rideBody"></div>
 </div>
 <canvas id="confetti"></canvas>
 
@@ -380,7 +401,7 @@ const legend=document.getElementById("legend");Object.values(LANDS).forEach(l=>{
 
 // ---------- GPS (works outside Claude's viewer) ----------
 let watchId=null;
-function startGPS(){return new Promise(res=>{if(!navigator.geolocation)return res(false);let done=false;watchId=navigator.geolocation.watchPosition(p=>{const nl=[p.coords.latitude,p.coords.longitude];if(me.gps&&dist(me.ll,nl)<60){const a=p.coords.accuracy<15?.5:.3;me.ll=[me.ll[0]+(nl[0]-me.ll[0])*a,me.ll[1]+(nl[1]-me.ll[1])*a]}else me.ll=nl;me.acc=p.coords.accuracy;me.gps=true;if(!done){done=true;res(true)}render();if(arOn)drawAR(true)},()=>{if(!done){done=true;res(false)}},{enableHighAccuracy:true,maximumAge:2000,timeout:12000})})}
+function startGPS(){return new Promise(res=>{if(!navigator.geolocation)return res(false);let done=false;watchId=navigator.geolocation.watchPosition(p=>{if(rideOn)return;if(me.gps&&p.coords.accuracy>60&&me.acc&&me.acc<40)return;const nl=[p.coords.latitude,p.coords.longitude];if(me.gps&&dist(me.ll,nl)<60){const a=p.coords.accuracy<15?.5:.3;me.ll=[me.ll[0]+(nl[0]-me.ll[0])*a,me.ll[1]+(nl[1]-me.ll[1])*a]}else me.ll=nl;me.acc=p.coords.accuracy;me.gps=true;if(!done){done=true;res(true)}render();if(arOn)drawAR(true)},()=>{if(!done){done=true;res(false)}},{enableHighAccuracy:true,maximumAge:2000,timeout:12000})})}
 
 // ---------- AR ----------
 let arOn=false,heading=null,stream=null;
@@ -478,6 +499,33 @@ function openSheet(s,which="sheet"){
 // ---------- confetti ----------
 function burst(){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;const c=document.getElementById("confetti"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;const cols=["#f4b942","#e8503f","#c77dff","#5aa7ff","#7bc96f"];const P=Array.from({length:90},()=>({x:innerWidth/2,y:innerHeight*.45,vx:(Math.random()-.5)*12,vy:-Math.random()*13-4,s:Math.random()*6+4,c:cols[Math.random()*5|0],r:Math.random()*6}));let f=0;(function t(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.45;p.x+=p.vx;p.y+=p.vy;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()});if(++f<80)requestAnimationFrame(t);else x.clearRect(0,0,c.width,c.height)})()}
 
+// ---------- Ride mode (GPS dies indoors: pick the ride, get its Mickeys in scene order) ----------
+let rideOn=false;
+const RIDE_ORDER={"Haunted Mansion":["hmfoyer","hmdonald","hmplates","hmreaper"],"Pirates of the Caribbean":["piratesqueue","pirateslock","piratestreasure"],"Jingle Cruise":["junglerope","junglerhino","jungleplane","jungletemple"],"Big Thunder Mountain Railroad":["thundercave","thunder"],"Seven Dwarfs Mine Train":["sdmtqueue","sdmtride"],"Buzz Lightyear's Space Ranger Spin":["buzzposter","buzzride"],"Under the Sea - Journey of The Little Mermaid":["mermaidsign","mermaidsun","mermaidcoral"]};
+const RIDE_NAME={"Jingle Cruise":"Jungle Cruise","\"it's a small world\"":"\"it's a small world\"","Under the Sea - Journey of The Little Mermaid":"Little Mermaid","Walt Disney's Carousel of Progress":"Carousel of Progress","Tomorrowland Transit Authority PeopleMover":"PeopleMover","Walt Disney's Enchanted Tiki Room":"Enchanted Tiki Room"};
+function rideGroups(){const g={};SPOTS.forEach(s=>{if((s.access==="ride"||s.access==="queue")&&s.live){(g[s.live]=g[s.live]||[]).push(s)}});
+  Object.keys(g).forEach(k=>{const o=RIDE_ORDER[k];if(o)g[k].sort((a,b)=>(o.indexOf(a.id)+99)%99-(o.indexOf(b.id)+99)%99)});return g}
+function openRide(){rideOn=false;const R=document.getElementById("ride");R.hidden=false;document.getElementById("rideTitle").textContent="Which ride are you on?";
+  const g=rideGroups(),keys=Object.keys(g).sort((a,b)=>dist(me.ll,g[a][0].ll)-dist(me.ll,g[b][0].ll));
+  const body=document.getElementById("rideBody");body.innerHTML=`<p class="rnote">Closest first. GPS doesn't work inside ride buildings, so this shows every Mickey in the order you'll pass it.</p>`;
+  keys.forEach(k=>{const b=document.createElement("button");b.type="button";b.className="rpick";b.dataset.ride=k;b.style.setProperty("--c",LANDS[g[k][0].land].c);
+    const left=g[k].filter(s=>!found.has(s.id)).length,st=liveStatus(g[k][0]);
+    b.innerHTML=`<span></span><small>${st==="REFURBISHMENT"?"Refurb · ":st==="CLOSED"?"Closed · ":""}${left}/${g[k].length} left</small>`;b.firstChild.textContent=RIDE_NAME[k]||k;body.appendChild(b)})}
+function showRide(k){rideOn=true;const g=rideGroups()[k];if(!g)return;me.ll=g[0].ll.slice();store.set("mh_me",me.ll);
+  document.getElementById("rideTitle").textContent=RIDE_NAME[k]||k;
+  const body=document.getElementById("rideBody");body.innerHTML="";
+  g.forEach((s,i)=>{const d=document.createElement("div");d.className="rstep"+(found.has(s.id)?" found":"");
+    d.innerHTML=`<h3><i>${i+1}</i><span></span></h3><p></p><button type="button" data-got="${s.id}">${found.has(s.id)?"Found ✓":"Found it!"}</button>`;
+    d.querySelector("span").textContent=s.place;d.querySelector("p").textContent=s.clue;body.appendChild(d)});
+  const back=document.createElement("button");back.type="button";back.className="rpick";back.dataset.back="1";back.style.setProperty("--c","var(--gold)");back.innerHTML="<span>← Different ride</span><small></small>";body.appendChild(back);
+  body.scrollTop=0}
+function closeRide(){rideOn=false;document.getElementById("ride").hidden=true;render();if(arOn)drawAR(true)}
+onTap(document.getElementById("rideBody"),e=>{const t=e.target.closest("[data-ride],[data-got],[data-back]");if(!t)return;
+  if(t.dataset.ride)showRide(t.dataset.ride);else if(t.dataset.back)openRide();
+  else if(t.dataset.got){const id=t.dataset.got;if(!found.has(id)){found.add(id);burst()}else found.delete(id);store.set("mh_found",[...found]);drawRing();const st=t.closest(".rstep");st.classList.toggle("found",found.has(id));t.textContent=found.has(id)?"Found ✓":"Found it!"}});
+onTap(document.getElementById("rideClose"),closeRide);
+onTap(document.getElementById("rideBtnAR"),openRide);
+document.getElementById("rideBtn").onclick=openRide;
 drawFilters();render();loadLive();
 </script>
 
