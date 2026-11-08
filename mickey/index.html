@@ -18,7 +18,7 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{background:var(--night);color:var(--ink)}
-body{font-family:var(--body);font-size:15px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 40px;max-width:720px;margin:0 auto}
+body{font-family:var(--body);font-size:15px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px calc(env(safe-area-inset-bottom,0px) + 96px);max-width:720px;margin:0 auto}
 h1,h2{font-family:var(--display);margin:0;line-height:1.05;text-wrap:balance}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
@@ -77,7 +77,7 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
 .arbar small{display:block;font-size:12px;color:var(--muted);font-weight:700}
 .x{border:0;background:rgba(16,26,51,.85);border-radius:50%;width:44px;height:44px;font-size:22px;font-weight:800}
 #radar{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 14px);width:120px;height:120px}
-#sheet{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 144px);background:var(--night2);border:1px solid var(--gold);border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+#sheet{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 214px);background:var(--night2);border:1px solid var(--gold);border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 #sheet h3{margin:0 0 4px;font-family:var(--display);font-size:20px}
 #sheet p{margin:0 0 10px}
 #sheet .row{display:flex;gap:8px}
@@ -86,10 +86,37 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:80}
 .ride-btn{margin-top:10px;width:100%;border:2px solid var(--gold);border-radius:16px;padding:13px;background:transparent;color:var(--gold);font-family:var(--display);font-size:19px;font-weight:800}
 .arbtns{display:flex;gap:8px;align-items:center}
+#tabs{position:fixed;left:0;right:0;bottom:0;z-index:75;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--night);border-top:1px solid var(--line);padding:8px max(12px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 8px) max(12px,env(safe-area-inset-left,0px))}
+#tabs button{border:0;background:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:800;font-size:13px;padding:7px 4px;border-radius:14px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#tabs button svg{width:24px;height:24px}
+#tabs button[aria-current="true"]{background:var(--gold);color:#1b1405}
+.search{position:relative;margin-top:14px}
+.search>svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--muted)}
+.search input{width:100%;font:inherit;font-size:16px;font-weight:700;padding:13px 14px 13px 42px;border-radius:14px;border:1px solid var(--line);background:var(--night2);color:var(--ink);-webkit-appearance:none;appearance:none}
+.search input:focus{outline:none;border-color:var(--gold)}
+.search input::placeholder{color:var(--muted);font-weight:600}
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--night2);border:1px solid var(--gold);border-radius:14px;z-index:30;max-height:56vh;overflow-y:auto;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.sugg button{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:none;padding:13px 14px;font-weight:800;font-size:15px;color:var(--ink)}
+.sugg button:last-child{border-bottom:0}
+.sugg button span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sugg small{color:var(--muted);font-weight:700;font-size:12px;white-space:nowrap}
+.sugg i{font-style:normal;display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;background:var(--c)}
+.sugg .ride{color:var(--gold)}
+.sugg .none{padding:13px 14px;color:var(--muted);font-weight:700}
+#mapView{position:fixed;left:0;right:0;top:0;bottom:calc(env(safe-area-inset-bottom,0px) + 70px);z-index:65;background:#4f7f42;display:flex;flex-direction:column}
+#mapView .mtop{padding:calc(env(safe-area-inset-top,0px) + 8px) max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px));background:var(--night)}
+#mapView .search{margin-top:0}
+#mapSvg{flex:1;min-height:0;width:100%;display:block;touch-action:none}
+.zoom{position:absolute;right:max(12px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 84px);display:flex;flex-direction:column;gap:8px}
+.zoom button{width:48px;height:48px;border-radius:14px;border:0;background:var(--night);color:var(--ink);font-size:24px;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,.4);touch-action:manipulation}
+.zoom button.me{font-size:20px;background:#2f6fe0}
+#sheet3{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:12px;z-index:5}
+.maphint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:rgba(16,26,51,.85);color:var(--ink);font-size:12px;font-weight:800;padding:6px 12px;border-radius:999px;pointer-events:none;white-space:nowrap}
+.mapwrap{cursor:pointer}
 #ride{position:fixed;inset:0;z-index:70;background:var(--night);display:flex;flex-direction:column}
 #ride .rbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) max(14px,env(safe-area-inset-right,0px)) 10px max(14px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
 #ride .rbar b{font-family:var(--display);font-size:22px;line-height:1.1}
-#ride .rbody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px max(14px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 20px) max(14px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:10px}
+#ride .rbody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px max(14px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 96px) max(14px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:10px}
 .rpick{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid var(--line);border-left:5px solid var(--c);background:var(--night2);border-radius:14px;padding:14px;font-size:16px;font-weight:800;touch-action:manipulation}
 .rpick small{color:var(--muted);font-weight:700;font-size:12px;white-space:nowrap}
 .rstep{background:var(--night2);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}
@@ -100,10 +127,10 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
 .rstep button{border:0;border-radius:12px;padding:14px;font-weight:800;font-size:16px;background:var(--gold);color:#1b1405;touch-action:manipulation}
 .rstep.found button{background:#2a3a66;color:var(--ink)}
 .rnote{font-size:13px;color:var(--muted);margin:2px 2px 0}
-#radarBtn{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 14px);width:120px;height:120px;border:0;padding:0;background:none;border-radius:50%}
+#radarBtn{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 84px);width:120px;height:120px;border:0;padding:0;background:none;border-radius:50%}
 #radarBtn canvas{position:static;width:120px;height:120px}
 #radarBtn em{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);font-style:normal;font-size:11px;font-weight:800;letter-spacing:.08em;background:var(--gold);color:#1b1405;border-radius:8px;padding:2px 8px}
-#guide{position:absolute;left:max(14px,env(safe-area-inset-left,0px));right:calc(max(14px,env(safe-area-inset-right,0px)) + 132px);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);min-height:120px;background:rgba(16,26,51,.88);border:1px solid var(--line);border-radius:18px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+#guide{position:absolute;left:max(14px,env(safe-area-inset-left,0px));right:calc(max(14px,env(safe-area-inset-right,0px)) + 132px);bottom:calc(env(safe-area-inset-bottom,0px) + 84px);min-height:120px;background:rgba(16,26,51,.88);border:1px solid var(--line);border-radius:18px;padding:10px 12px;display:flex;align-items:center;gap:10px}
 #guide svg{flex:none;transition:transform .15s linear}
 #guide b{display:block;font-family:var(--display);font-size:24px;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
 #guide span{display:block;font-size:13px;font-weight:800;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -139,14 +166,15 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
   Open AR Camera
 </button>
 <button class="ride-btn" id="rideBtn" type="button">🎢 I'm on a ride</button>
-<p class="status" id="status">Starting point: Gaston's Tavern. Tap the map to move your pin.</p>
+<p class="status" id="status">Tap the map to open it full screen. Search finds any ride, shop or Mickey.</p>
 
 <section class="mapwrap">
-  <div class="maphead"><h2>Park radar</h2><span id="nearTxt"></span></div>
+  <div class="maphead"><h2>Park map</h2><span id="nearTxt"></span></div>
   <svg id="map" viewBox="0 0 360 300" role="img" aria-label="Plotted map of hidden Mickey spots"></svg>
   <div class="legend" id="legend"></div>
 </section>
 
+<div id="listSearch"></div>
 <div class="filters" id="filters" role="group" aria-label="Filter spots"></div>
 <div class="list" id="list"></div>
 
@@ -172,6 +200,18 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
   <div class="rbar"><b id="rideTitle">Which ride?</b><button class="pill on" id="rideClose" type="button">Done</button></div>
   <div class="rbody" id="rideBody"></div>
 </div>
+<div id="mapView" hidden>
+  <div class="mtop"><div id="mapSearch"></div></div>
+  <svg id="mapSvg" viewBox="0 0 360 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Interactive park map"></svg>
+  <div class="zoom"><button type="button" id="zIn" aria-label="Zoom in">+</button><button type="button" id="zOut" aria-label="Zoom out">−</button><button type="button" id="zMe" class="me" aria-label="Center on me">◎</button></div>
+  <div class="maphint" id="mapHint">Drag to move · pinch or +/− to zoom · tap a pin</div>
+  <div id="sheet3" hidden></div>
+</div>
+<nav id="tabs" aria-label="Views">
+  <button type="button" data-v="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>Map</button>
+  <button type="button" data-v="list" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.3" fill="currentColor"/><circle cx="3.5" cy="12" r="1.3" fill="currentColor"/><circle cx="3.5" cy="18" r="1.3" fill="currentColor"/></svg>List</button>
+  <button type="button" data-v="ar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="6" width="20" height="14" rx="3"/><circle cx="12" cy="13" r="4"/><path d="M8 6l1.5-3h5L16 6"/></svg>AR</button>
+</nav>
 <canvas id="confetti"></canvas>
 
 <script>
@@ -334,30 +374,27 @@ function drawPark(m,o={}){
   el("path",{d:`M${cx-9} ${cy+7}h18v-10h-3v-5l-2-6-2 6v-3l-2-8-2 8v3l-2-6-2 6v5h-3z`,fill:"#fffaf0",stroke:"#7b8bb8","stroke-width":1},m);
   [[-6,-11],[0,-17],[6,-11]].forEach(([dx,dy])=>el("path",{d:`M${cx+dx-2} ${cy+dy+4}l2-5 2 5z`,fill:"#5a7fd6"},m));
   // labels
-  Object.keys(LANDC).forEach(k=>{const[x,y]=proj(LANDC[k]);const t=el("text",{x,y:y-(k==="main"?0:14),"text-anchor":"middle","font-size":z?"6":"8.5","font-weight":"800","font-family":"Baloo 2, sans-serif",fill:"#1c2a14",stroke:"#fffaf0","stroke-width":2.6,"paint-order":"stroke","letter-spacing":".5"},m);t.textContent=LANDS[k].name});
+  Object.keys(LANDC).forEach(k=>{const[x,y]=proj(LANDC[k]);const t=el("text",{x,y:y-(k==="main"?0:14),"text-anchor":"middle","font-size":String((z?6:8.5)*(o.k||1)),"font-weight":"800","font-family":"Baloo 2, sans-serif",fill:"#1c2a14",stroke:"#fffaf0","stroke-width":2.6,"paint-order":"stroke","letter-spacing":".5"},m);t.textContent=LANDS[k].name});
   // spots
   const tgt=currentTarget();
-  SPOTS.forEach(s=>{const[x,y]=proj(s.ll);const g=el("g",{style:"cursor:pointer"},m);const r=z?4.5:6.5;
+  SPOTS.forEach(s=>{const[x,y]=proj(s.ll);const k=o.k||1;const g=el("g",{style:"cursor:pointer","data-id":s.id},m);const r=(z?4.5:6.5)*k;
     if(tgt&&tgt.id===s.id){el("circle",{cx:x,cy:y,r:r+4,fill:"none",stroke:"#e8503f","stroke-width":2.5,class:"pulse"},g)}
     el("circle",{cx:x,cy:y,r,fill:found.has(s.id)?"#f4b942":LANDS[s.land].hex,stroke:"#101a33","stroke-width":1.4},g);
-    const t=el("text",{x,y:y+r*.42,"text-anchor":"middle","font-size":z?"5":"7","font-weight":"800",fill:"#0e1426"},g);t.textContent=found.has(s.id)?"✓":s.n;
-    el("circle",{cx:x,cy:y,r:r+5,fill:"transparent"},g);
-    if(o.press)g.addEventListener("pointerdown",ev=>{ev.preventDefault();ev.stopPropagation();o.onSpot(s)});else g.addEventListener("click",ev=>{ev.stopPropagation();o.onSpot?o.onSpot(s):focusCard(s.id)})});
+    const t=el("text",{x,y:y+r*.42,"text-anchor":"middle","font-size":String((z?5:7)*k),"font-weight":"800",fill:"#0e1426"},g);t.textContent=found.has(s.id)?"✓":s.n;
+    el("circle",{cx:x,cy:y,r:r+5*k,fill:"transparent"},g);
+    if(o.delegate);else if(o.press)g.addEventListener("pointerdown",ev=>{ev.preventDefault();ev.stopPropagation();o.onSpot(s)});else g.addEventListener("click",ev=>{ev.stopPropagation();o.onSpot?o.onSpot(s):focusCard(s.id)})});
   // me + heading cone
   const[mx,my]=proj(me.ll);
   if(heading!=null&&o.cone){const a1=rad(heading-28-90),a2=rad(heading+28-90),L=z?26:34;el("path",{d:`M${mx} ${my}L${mx+Math.cos(a1)*L} ${my+Math.sin(a1)*L}A${L} ${L} 0 0 1 ${mx+Math.cos(a2)*L} ${my+Math.sin(a2)*L}Z`,fill:"#2f6fe0",opacity:.28},m)}
   const accPx=me.gps&&me.acc?Math.abs(proj([me.ll[0]+me.acc/111320,me.ll[1]])[1]-my):0;
-  el("circle",{cx:mx,cy:my,r:Math.max(z?9:13,accPx),fill:"#2f6fe0",opacity:.2,stroke:"#2f6fe0","stroke-opacity":.5},m);
-  el("circle",{cx:mx,cy:my,r:z?4:5.5,fill:"#2f6fe0",stroke:"#fff","stroke-width":2},m);
-  const lt=el("text",{x:mx,y:my-(z?7:10),"text-anchor":"middle","font-size":z?"6":"8","font-weight":"800",fill:"#fff",stroke:"#1c2a14","stroke-width":2,"paint-order":"stroke"},m);lt.textContent="YOU";
-  if(z){const w=150,h=125;m.setAttribute("viewBox",`${mx-w/2} ${my-h/2} ${w} ${h}`)}else m.setAttribute("viewBox","0 0 360 300");
+  el("circle",{cx:mx,cy:my,r:Math.max((z?9:13)*(o.k||1),accPx),fill:"#2f6fe0",opacity:.2,stroke:"#2f6fe0","stroke-opacity":.5},m);
+  el("circle",{cx:mx,cy:my,r:(z?4:5.5)*(o.k||1),fill:"#2f6fe0",stroke:"#fff","stroke-width":2},m);
+  const lt=el("text",{x:mx,y:my-(z?7:10)*(o.k||1),"text-anchor":"middle","font-size":String((z?6:8)*(o.k||1)),"font-weight":"800",fill:"#fff",stroke:"#1c2a14","stroke-width":2,"paint-order":"stroke"},m);lt.textContent="YOU";
+  if(o.keepVB);else if(z){const w=150,h=125;m.setAttribute("viewBox",`${mx-w/2} ${my-h/2} ${w} ${h}`)}else m.setAttribute("viewBox","0 0 360 300");
 }
 function drawMap(){drawPark(document.getElementById("map"))}
 function currentTarget(){if(targetId&&!found.has(targetId))return SPOTS.find(s=>s.id===targetId);const r=SPOTS.filter(s=>!found.has(s.id)&&targetable(s)).sort((a,b)=>dist(me.ll,a.ll)-dist(me.ll,b.ll));return r[0]||null}
-document.getElementById("map").addEventListener("click",e=>{
-  if(me.gps)return;const svg=e.currentTarget,pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());me.ll=unproj(p.x,p.y);store.set("mh_me",me.ll);render();
-  setStatus("Pin moved. Nearest Mickeys re-sorted.");
-});
+document.getElementById("map").addEventListener("click",()=>setView("map"));
 
 // ---------- list ----------
 const FILTERS=[["near","Nearest"],["walk","Walk-up only"],["ride","On rides"],["verified","2+ sources"],["todo","Not found"],...Object.keys(LANDS).map(k=>[k,LANDS[k].name])];
@@ -381,6 +418,7 @@ function drawList(){
   const L=document.getElementById("list");L.innerHTML="";
   let rows=SPOTS.map(s=>({s,d:dist(me.ll,s.ll)}));
   if(filter==="walk")rows=rows.filter(r=>r.s.access==="walk"||r.s.access==="queue");else if(filter==="ride")rows=rows.filter(r=>r.s.ride);else if(filter==="verified")rows=rows.filter(r=>r.s.src.length>=2);else if(filter==="todo")rows=rows.filter(r=>!found.has(r.s.id));else if(LANDS[filter])rows=rows.filter(r=>r.s.land===filter);
+  if(listQuery.trim()){const tk=norm(listQuery).split(" ");rows=rows.filter(r=>tk.every(t=>r.s._h.includes(t)))}
   rows.sort((a,b)=>a.d-b.d);
   rows.forEach(({s,d})=>{
     const c=document.createElement("article");c.className="card"+(found.has(s.id)?" found":"");c.id="c-"+s.id;c.style.setProperty("--c",LANDS[s.land].c);
@@ -401,7 +439,7 @@ const legend=document.getElementById("legend");Object.values(LANDS).forEach(l=>{
 
 // ---------- GPS (works outside Claude's viewer) ----------
 let watchId=null;
-function startGPS(){return new Promise(res=>{if(!navigator.geolocation)return res(false);let done=false;watchId=navigator.geolocation.watchPosition(p=>{if(rideOn)return;if(me.gps&&p.coords.accuracy>60&&me.acc&&me.acc<40)return;const nl=[p.coords.latitude,p.coords.longitude];if(me.gps&&dist(me.ll,nl)<60){const a=p.coords.accuracy<15?.5:.3;me.ll=[me.ll[0]+(nl[0]-me.ll[0])*a,me.ll[1]+(nl[1]-me.ll[1])*a]}else me.ll=nl;me.acc=p.coords.accuracy;me.gps=true;if(!done){done=true;res(true)}render();if(arOn)drawAR(true)},()=>{if(!done){done=true;res(false)}},{enableHighAccuracy:true,maximumAge:2000,timeout:12000})})}
+function startGPS(){return new Promise(res=>{if(!navigator.geolocation)return res(false);if(watchId!==null&&me.gps)return res(true);let done=false;watchId=navigator.geolocation.watchPosition(p=>{if(rideOn)return;if(me.gps&&p.coords.accuracy>60&&me.acc&&me.acc<40)return;const nl=[p.coords.latitude,p.coords.longitude];if(me.gps&&dist(me.ll,nl)<60){const a=p.coords.accuracy<15?.5:.3;me.ll=[me.ll[0]+(nl[0]-me.ll[0])*a,me.ll[1]+(nl[1]-me.ll[1])*a]}else me.ll=nl;me.acc=p.coords.accuracy;me.gps=true;if(!done){done=true;res(true)}render();if(arOn)drawAR(true)},()=>{if(!done){done=true;res(false)}},{enableHighAccuracy:true,maximumAge:2000,timeout:12000})})}
 
 // ---------- AR ----------
 let arOn=false,heading=null,stream=null;
@@ -410,17 +448,18 @@ function onOrient(e){let h=null;if(typeof e.webkitCompassHeading==="number")h=e.
 let arQueued=false;function scheduleAR(){if(arQueued)return;arQueued=true;requestAnimationFrame(()=>{arQueued=false;if(arOn)drawAR(false)})}
 function smooth(a,b){let d=((b-a+540)%360)-180;return (a+d*0.25+360)%360}
 async function startOrientation(){try{if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){const r=await DeviceOrientationEvent.requestPermission();if(r!=="granted")return false}window.addEventListener("deviceorientationabsolute",onOrient,true);window.addEventListener("deviceorientation",onOrient,true);return true}catch(e){return false}}
-document.getElementById("startAR").onclick=async()=>{
+async function startARFlow(){
   setStatus("Asking for camera, location and compass…");
   const oriP=startOrientation();
   let camOK=false;
   try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false});camOK=true}catch(e){}
   const gpsOK=await startGPS();await oriP;
   if(!camOK||!gpsOK){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
-    setStatus("Camera or GPS is blocked in this viewer. Map mode is on: tap the map where you are. Open the live link in Safari for full AR.",true);return}
-  const v=document.getElementById("cam");v.srcObject=stream;document.getElementById("ar").hidden=false;arOn=true;setStatus("AR running.");drawAR(true);
-};
-onTap(document.getElementById("closeAR"),()=>{arOn=false;document.getElementById("ar").hidden=true;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}document.getElementById("sheet").hidden=true;document.getElementById("over").hidden=true});
+    setStatus("Camera or GPS is blocked. Use Map and List, or open dugoutlab.com/mickey in Safari and allow camera + location.",true);return false}
+  const v=document.getElementById("cam");v.srcObject=stream;document.getElementById("ar").hidden=false;arOn=true;setStatus("AR running.");drawAR(true);return true;
+}
+document.getElementById("startAR").onclick=()=>setView("ar");
+onTap(document.getElementById("closeAR"),()=>{arOn=false;document.getElementById("ar").hidden=true;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}document.getElementById("sheet").hidden=true;document.getElementById("over").hidden=true;setView("list")});
 const MK_SVG=(s,col)=>`<svg width="${s}" height="${s*.9}" viewBox="0 0 44 40"><circle cx="9" cy="10" r="8" fill="${col}"/><circle cx="35" cy="10" r="8" fill="${col}"/><circle cx="22" cy="25" r="14" fill="${col}"/><circle cx="22" cy="25" r="14" fill="none" stroke="#fff" stroke-width="2"/></svg>`;
 let lastAR=0,lastOver=0;
 function drawAR(force){const now=performance.now();if(!force&&now-lastAR<120){drawGuide();return}lastAR=now;
@@ -479,19 +518,19 @@ let overZoom=true;
 function overOpts(){return{zoom:overZoom,cone:true,press:true,onSpot:s=>openSheet(s,"sheet2")}}
 function openOver(){document.getElementById("sheet").hidden=true;document.getElementById("over").hidden=false;drawPark(document.getElementById("bigMap"),overOpts())}
 function closeOver(){document.getElementById("over").hidden=true;document.getElementById("sheet2").hidden=true;if(arOn)drawAR(true)}
-onTap(document.getElementById("radarBtn"),openOver);
+onTap(document.getElementById("radarBtn"),()=>setView("map"));
 onTap(document.getElementById("backAR"),closeOver);
 onTap(document.getElementById("zoomBtn"),()=>{const zb=document.getElementById("zoomBtn");overZoom=!overZoom;zb.textContent=overZoom?"Whole park":"Zoom to me";drawPark(document.getElementById("bigMap"),overOpts())});
 document.getElementById("zoomBtn").textContent="Whole park";
 function openSheet(s,which="sheet"){
   const sh=document.getElementById(which);const d=dist(me.ll,s.ll);const isF=found.has(s.id);
-  sh.innerHTML=`<h3></h3><div class="meta"><span class="d">${fmtD(d)}</span><span>${LV[s.lvl]}</span>${tags(s)}</div><p></p><div class="row"><button class="b-gold" type="button" data-a="got">${isF?"Found ✓":"Found it!"}</button><button class="b-ghost" type="button" data-a="go">${which==="sheet2"?"Point me there":"Next"}</button><button class="b-ghost" type="button" data-a="x" aria-label="Close">✕</button></div>`;
-  sh.style.cssText=which==="sheet2"?"background:var(--night2);border:1px solid var(--gold);border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.5)":"";
+  sh.innerHTML=`<h3></h3><div class="meta"><span class="d">${fmtD(d)}</span><span>${LV[s.lvl]}</span>${tags(s)}</div><p></p><div class="row"><button class="b-gold" type="button" data-a="got">${isF?"Found ✓":"Found it!"}</button><button class="b-ghost" type="button" data-a="go">${which!=="sheet"?"Point me there":"Next"}</button><button class="b-ghost" type="button" data-a="x" aria-label="Close">✕</button></div>`;
+  sh.style.cssText=which!=="sheet"?"background:var(--night2);border:1px solid var(--gold);border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.5)":"";
   sh.querySelector("h3").textContent=`${s.n}. ${s.place}`;sh.querySelector("p").textContent=s.clue;sh.hidden=false;
   sh.querySelectorAll("button").forEach(b=>b.style.cssText="flex:1;border:0;border-radius:12px;padding:12px;font-weight:800;"+(b.dataset.a==="got"?"background:var(--gold);color:#1b1405":"background:#2a3a66")+(b.dataset.a==="x"?";flex:0 0 48px":""));
-  onTap(sh.querySelector('[data-a="got"]'),()=>{if(!found.has(s.id)){toggleFound(s.id);if(targetId===s.id)targetId=null}sh.hidden=true;if(which==="sheet2")drawPark(document.getElementById("bigMap"),overOpts());drawAR(true)});
+  onTap(sh.querySelector('[data-a="got"]'),()=>{if(!found.has(s.id)){toggleFound(s.id);if(targetId===s.id)targetId=null}sh.hidden=true;if(which==="sheet2")drawPark(document.getElementById("bigMap"),overOpts());if(which==="sheet3")drawMapView();drawAR(true)});
   onTap(sh.querySelector('[data-a="go"]'),()=>{
-    if(which==="sheet2"){targetId=s.id;sh.hidden=true;closeOver()}
+    if(which==="sheet3"){targetId=s.id;sh.hidden=true;setView("ar")}else if(which==="sheet2"){targetId=s.id;sh.hidden=true;closeOver()}
     else{const rest=SPOTS.filter(x=>!found.has(x.id)&&x.id!==s.id).sort((a,b)=>dist(s.ll,a.ll)-dist(s.ll,b.ll));targetId=rest[0]?rest[0].id:null;sh.hidden=true;drawAR(true)}});
   onTap(sh.querySelector('[data-a="x"]'),()=>{sh.hidden=true});
 }
@@ -526,6 +565,78 @@ onTap(document.getElementById("rideBody"),e=>{const t=e.target.closest("[data-ri
 onTap(document.getElementById("rideClose"),closeRide);
 onTap(document.getElementById("rideBtnAR"),openRide);
 document.getElementById("rideBtn").onclick=openRide;
+// ---------- Search with live suggestions ----------
+let listQuery="";
+function norm(t){return String(t).toLowerCase().replace(/[“”"'’.,!?:()\-&]/g," ").replace(/\s+/g," ").trim()}
+SPOTS.forEach(s=>{const rn=s.live?(RIDE_NAME[s.live]||s.live):"";s._t=norm(s.place+" "+rn);s._h=norm([s.place,rn,LANDS[s.land].name,s.clue].join(" "))});
+function searchAll(q){const nq=norm(q);if(!nq)return[];const tk=nq.split(" "),out=[],g=rideGroups();
+  Object.keys(g).forEach(k=>{if(g[k].length<2)return;const name=RIDE_NAME[k]||k,h=norm(name);if(tk.every(t=>h.includes(t)))out.push({type:"ride",k,name,n:g[k].length,land:g[k][0].land,score:h.startsWith(nq)?0:1,d:dist(me.ll,g[k][0].ll)})});
+  SPOTS.forEach(s=>{if(!tk.every(t=>s._h.includes(t)))return;const tp=norm(s.place);out.push({type:"spot",s,score:tp.startsWith(nq)?2:tk.every(t=>s._t.includes(t))?3:6,d:dist(me.ll,s.ll)})});
+  return out.sort((a,b)=>a.score-b.score||a.d-b.d).slice(0,8)}
+function makeSearch(root,opts){root.className="search";
+  root.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.5-4.5"/></svg><input type="search" placeholder="Search rides, shops, Mickeys…" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search" aria-label="Search"><div class="sugg" hidden></div>`;
+  const inp=root.querySelector("input"),box=root.querySelector(".sugg");
+  function show(){const q=inp.value;opts.onInput&&opts.onInput(q);if(!q.trim()){box.hidden=true;box.innerHTML="";return}
+    const r=searchAll(q);box.innerHTML="";
+    if(!r.length){box.innerHTML=`<div class="none">No match. Try "mansion", "pirates" or "gaston".</div>`;box.hidden=false;return}
+    r.forEach(x=>{const b=document.createElement("button");b.type="button";const c=LANDS[x.type==="ride"?x.land:x.s.land].hex;
+      if(x.type==="ride"){b.dataset.ride=x.k;b.innerHTML=`<span class="ride"><i style="--c:${c}"></i></span><small>${x.n} Mickeys · ride mode</small>`;b.querySelector("span").append("🎢 "+x.name)}
+      else{b.dataset.id=x.s.id;b.innerHTML=`<span><i style="--c:${c}"></i></span><small>${fmtD(x.d)}${found.has(x.s.id)?" · ✓":""}</small>`;b.querySelector("span").append(x.s.place)}
+      box.appendChild(b)});box.hidden=false}
+  inp.addEventListener("input",show);inp.addEventListener("focus",show);
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter"){const f=box.querySelector("button");if(f){e.preventDefault();f.click()}}if(e.key==="Escape"){box.hidden=true;inp.blur()}});
+  box.addEventListener("pointerdown",e=>e.preventDefault());
+  box.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;box.hidden=true;inp.blur();
+    if(b.dataset.ride)opts.onRide(b.dataset.ride);else opts.onSpot(SPOTS.find(s=>s.id===b.dataset.id))});
+  document.addEventListener("pointerdown",e=>{if(!root.contains(e.target))box.hidden=true},true);
+  return inp}
+function openRideTo(k){document.getElementById("ride").hidden=false;showRide(k)}
+makeSearch(document.getElementById("listSearch"),{onInput:q=>{listQuery=q;drawList()},onSpot:s=>focusCard(s.id),onRide:openRideTo});
+makeSearch(document.getElementById("mapSearch"),{onSpot:s=>{centerOn(s.ll,110);openSheet(s,"sheet3")},onRide:openRideTo});
+
+// ---------- Full-screen map: drag, pinch, zoom, tap pins ----------
+const MV={x:0,y:0,w:360,h:300};let mvInit=false;
+function mvAspect(){const r=document.getElementById("mapSvg").getBoundingClientRect();return r.width?r.height/r.width:300/360}
+function applyMV(){document.getElementById("mapSvg").setAttribute("viewBox",`${MV.x} ${MV.y} ${MV.w} ${MV.h}`)}
+function centerOn(ll,w){const[x,y]=proj(ll);MV.w=Math.max(40,Math.min(420,w||MV.w));MV.h=MV.w*mvAspect();MV.x=x-MV.w/2;MV.y=y-MV.h/2;drawMapView()}
+function zoomBy(f,cx,cy){const nw=Math.max(40,Math.min(420,MV.w*f));if(cx==null){cx=MV.x+MV.w/2;cy=MV.y+MV.h/2}const fx=(cx-MV.x)/MV.w,fy=(cy-MV.y)/MV.h;MV.w=nw;MV.h=nw*mvAspect();MV.x=cx-fx*MV.w;MV.y=cy-fy*MV.h;drawMapView()}
+function drawMapView(){const m=document.getElementById("mapSvg");drawPark(m,{k:Math.max(.3,Math.min(1.5,MV.w/220)),cone:true,keepVB:true,delegate:true});applyMV()}
+(function(){const svg=document.getElementById("mapSvg"),P=new Map();let startVB=null,startPts=null,moved=0,downSpot=null;
+  const snap=()=>{startVB={...MV};startPts=[...P.values()].map(p=>({...p}))};
+  svg.addEventListener("pointerdown",e=>{try{svg.setPointerCapture(e.pointerId)}catch(_){}P.set(e.pointerId,{x:e.clientX,y:e.clientY});if(P.size===1){moved=0;const t=e.target.closest&&e.target.closest("[data-id]");downSpot=t?t.dataset.id:null}else moved=99;snap();document.getElementById("mapHint").hidden=true});
+  svg.addEventListener("pointermove",e=>{if(!P.has(e.pointerId))return;P.set(e.pointerId,{x:e.clientX,y:e.clientY});const r=svg.getBoundingClientRect(),sc=startVB.w/r.width,pts=[...P.values()];
+    if(P.size===1){const dx=pts[0].x-startPts[0].x,dy=pts[0].y-startPts[0].y;moved=Math.max(moved,Math.hypot(dx,dy));if(moved<6)return;MV.x=startVB.x-dx*sc;MV.y=startVB.y-dy*sc;applyMV()}
+    else if(P.size>=2&&startPts.length>=2){const d0=Math.hypot(startPts[0].x-startPts[1].x,startPts[0].y-startPts[1].y)||1,d1=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y)||1;
+      const m0x=(startPts[0].x+startPts[1].x)/2-r.left,m0y=(startPts[0].y+startPts[1].y)/2-r.top,m1x=(pts[0].x+pts[1].x)/2-r.left,m1y=(pts[0].y+pts[1].y)/2-r.top;
+      const sx=startVB.x+m0x*sc,sy=startVB.y+m0y*sc,nw=Math.max(40,Math.min(420,startVB.w*d0/d1)),ns=nw/r.width;MV.w=nw;MV.h=nw*mvAspect();MV.x=sx-m1x*ns;MV.y=sy-m1y*ns;applyMV()}});
+  const end=e=>{if(!P.has(e.pointerId))return;P.delete(e.pointerId);
+    if(P.size===0){if(moved<10&&e.type==="pointerup"){if(downSpot){const s=SPOTS.find(x=>x.id===downSpot);if(s)openSheet(s,"sheet3")}
+        else if(!me.gps){const r=svg.getBoundingClientRect();me.ll=unproj(MV.x+(e.clientX-r.left)*MV.w/r.width,MV.y+(e.clientY-r.top)*MV.h/r.height);store.set("mh_me",me.ll);render();setStatus("Your spot is set. Nearest Mickeys re-sorted.")}
+        else document.getElementById("sheet3").hidden=true}
+      drawMapView()}else snap()};
+  svg.addEventListener("pointerup",end);svg.addEventListener("pointercancel",end);
+  svg.addEventListener("wheel",e=>{e.preventDefault();const r=svg.getBoundingClientRect();zoomBy(e.deltaY>0?1.15:1/1.15,MV.x+(e.clientX-r.left)*MV.w/r.width,MV.y+(e.clientY-r.top)*MV.h/r.height)},{passive:false});
+})();
+onTap(document.getElementById("zIn"),()=>zoomBy(1/1.4));
+onTap(document.getElementById("zOut"),()=>zoomBy(1.4));
+onTap(document.getElementById("zMe"),()=>centerOn(me.ll,120));
+
+// ---------- Tabs: Map / List / AR ----------
+let view="list";
+async function setView(v){
+  document.getElementById("ride").hidden=true;rideOn=false;
+  ["sheet","sheet2","sheet3"].forEach(id=>{const e=document.getElementById(id);if(e)e.hidden=true});
+  if(v==="ar"){
+    if(!stream){const ok=await startARFlow();if(!ok){v="list"}}
+    if(stream){document.getElementById("mapView").hidden=true;document.getElementById("over").hidden=true;document.getElementById("ar").hidden=false;arOn=true;drawAR(true)}
+  }
+  if(v!=="ar"){arOn=false;document.getElementById("ar").hidden=true}
+  if(v==="map"){document.getElementById("mapView").hidden=false;if(!mvInit){mvInit=true;requestAnimationFrame(()=>centerOn(me.ll,170))}else{MV.h=MV.w*mvAspect();drawMapView()}}
+  else document.getElementById("mapView").hidden=true;
+  if(v==="list"){render();if(document.getElementById("status").classList.contains("warn"))scrollTo({top:0,behavior:"smooth"})}
+  view=v;document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-current",b.dataset.v===v))}
+document.querySelectorAll("#tabs button").forEach(b=>onTap(b,()=>setView(b.dataset.v)));
+const _render=render;render=function(){_render();if(view==="map"&&!document.getElementById("mapView").hidden)drawMapView()};
 drawFilters();render();loadLive();
 </script>
 
