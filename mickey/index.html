@@ -213,7 +213,7 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
   <div class="mtop"><div id="mapSearch"></div></div>
   <svg id="mapSvg" viewBox="0 0 360 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Interactive park map"></svg>
   <div class="zoom"><button type="button" id="zIn" aria-label="Zoom in">+</button><button type="button" id="zOut" aria-label="Zoom out">−</button><button type="button" id="zMe" class="me" aria-label="Center on me">◎</button></div>
-  <div class="maphint" id="mapHint">Drag to move · pinch or +/− to zoom · tap a pin</div>
+  <div class="maphint" id="mapHint">Double-tap to zoom · drag to move · tap a pin</div>
   <div id="sheet3" hidden></div>
 </div>
 <nav id="tabs" aria-label="Views">
@@ -616,10 +616,14 @@ const MV={x:0,y:0,w:360,h:300};let mvInit=false;
 function mvAspect(){const r=document.getElementById("mapSvg").getBoundingClientRect();return r.width?r.height/r.width:300/360}
 function applyMV(){document.getElementById("mapSvg").setAttribute("viewBox",`${MV.x} ${MV.y} ${MV.w} ${MV.h}`)}
 function centerOn(ll,w){const[x,y]=proj(ll);MV.w=Math.max(40,Math.min(420,w||MV.w));MV.h=MV.w*mvAspect();MV.x=x-MV.w/2;MV.y=y-MV.h/2;drawMapView()}
-function zoomBy(f,cx,cy){const nw=Math.max(40,Math.min(420,MV.w*f));if(cx==null){cx=MV.x+MV.w/2;cy=MV.y+MV.h/2}const fx=(cx-MV.x)/MV.w,fy=(cy-MV.y)/MV.h;MV.w=nw;MV.h=nw*mvAspect();MV.x=cx-fx*MV.w;MV.y=cy-fy*MV.h;drawMapView()}
+let mvAnim=0;
+function zoomBy(f,cx,cy){const nw=Math.max(40,Math.min(420,MV.w*f));if(cx==null){cx=MV.x+MV.w/2;cy=MV.y+MV.h/2}const fx=(cx-MV.x)/MV.w,fy=(cy-MV.y)/MV.h,nh=nw*mvAspect();
+  const from={...MV},to={x:cx-fx*nw,y:cy-fy*nh,w:nw,h:nh},t0=performance.now(),D=matchMedia("(prefers-reduced-motion: reduce)").matches?0:220,id=++mvAnim;
+  (function step(now){if(id!==mvAnim)return;const k=D?Math.min(1,(now-t0)/D):1,e=1-Math.pow(1-k,3);MV.x=from.x+(to.x-from.x)*e;MV.y=from.y+(to.y-from.y)*e;MV.w=from.w+(to.w-from.w)*e;MV.h=from.h+(to.h-from.h)*e;applyMV();if(k<1)requestAnimationFrame(step);else drawMapView()})(t0)}
 function drawMapView(){const m=document.getElementById("mapSvg");drawPark(m,{k:Math.max(.3,Math.min(1.5,MV.w/220)),cone:true,keepVB:true,delegate:true});applyMV()}
 (function(){const svg=document.getElementById("mapSvg"),P=new Map();let startVB=null,startPts=null,moved=0,downSpot=null;
-  const snap=()=>{startVB={...MV};startPts=[...P.values()].map(p=>({...p}))};
+  let lastTap={t:0,x:0,y:0},tapTimer=null;
+  const snap=()=>{mvAnim++;startVB={...MV};startPts=[...P.values()].map(p=>({...p}))};
   svg.addEventListener("pointerdown",e=>{try{svg.setPointerCapture(e.pointerId)}catch(_){}P.set(e.pointerId,{x:e.clientX,y:e.clientY});if(P.size===1){moved=0;const t=e.target.closest&&e.target.closest("[data-id]");downSpot=t?t.dataset.id:null}else moved=99;snap();document.getElementById("mapHint").hidden=true});
   svg.addEventListener("pointermove",e=>{if(!P.has(e.pointerId))return;P.set(e.pointerId,{x:e.clientX,y:e.clientY});const r=svg.getBoundingClientRect(),sc=startVB.w/r.width,pts=[...P.values()];
     if(P.size===1){const dx=pts[0].x-startPts[0].x,dy=pts[0].y-startPts[0].y;moved=Math.max(moved,Math.hypot(dx,dy));if(moved<6)return;MV.x=startVB.x-dx*sc;MV.y=startVB.y-dy*sc;applyMV()}
@@ -627,9 +631,12 @@ function drawMapView(){const m=document.getElementById("mapSvg");drawPark(m,{k:M
       const m0x=(startPts[0].x+startPts[1].x)/2-r.left,m0y=(startPts[0].y+startPts[1].y)/2-r.top,m1x=(pts[0].x+pts[1].x)/2-r.left,m1y=(pts[0].y+pts[1].y)/2-r.top;
       const sx=startVB.x+m0x*sc,sy=startVB.y+m0y*sc,nw=Math.max(40,Math.min(420,startVB.w*d0/d1)),ns=nw/r.width;MV.w=nw;MV.h=nw*mvAspect();MV.x=sx-m1x*ns;MV.y=sy-m1y*ns;applyMV()}});
   const end=e=>{if(!P.has(e.pointerId))return;P.delete(e.pointerId);
-    if(P.size===0){if(moved<10&&e.type==="pointerup"){if(downSpot){const s=SPOTS.find(x=>x.id===downSpot);if(s)openSheet(s,"sheet3")}
-        else if(!me.gps){const r=svg.getBoundingClientRect();me.ll=unproj(MV.x+(e.clientX-r.left)*MV.w/r.width,MV.y+(e.clientY-r.top)*MV.h/r.height);store.set("mh_me",me.ll);render();setStatus("Your spot is set. Nearest Mickeys re-sorted.")}
-        else document.getElementById("sheet3").hidden=true}
+    if(P.size===0){if(moved<10&&e.type==="pointerup"){
+        const r=svg.getBoundingClientRect(),px=MV.x+(e.clientX-r.left)*MV.w/r.width,py=MV.y+(e.clientY-r.top)*MV.h/r.height,now=performance.now();
+        if(now-lastTap.t<320&&Math.hypot(e.clientX-lastTap.x,e.clientY-lastTap.y)<40){clearTimeout(tapTimer);lastTap={t:0,x:0,y:0};zoomBy(MV.w<=60?3:.5,px,py);return}
+        lastTap={t:now,x:e.clientX,y:e.clientY};
+        if(downSpot){const sp=SPOTS.find(x=>x.id===downSpot);if(sp)openSheet(sp,"sheet3")}
+        else{clearTimeout(tapTimer);tapTimer=setTimeout(()=>{if(!me.gps){me.ll=unproj(px,py);store.set("mh_me",me.ll);render();setStatus("Your spot is set. Nearest Mickeys re-sorted.")}else document.getElementById("sheet3").hidden=true},280)}}
       drawMapView()}else snap()};
   svg.addEventListener("pointerup",end);svg.addEventListener("pointercancel",end);
   svg.addEventListener("wheel",e=>{e.preventDefault();const r=svg.getBoundingClientRect();zoomBy(e.deltaY>0?1.15:1/1.15,MV.x+(e.clientX-r.left)*MV.w/r.width,MV.y+(e.clientY-r.top)*MV.h/r.height)},{passive:false});
