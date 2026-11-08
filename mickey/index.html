@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style></head><body>
+<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}</style></head><body>
 <title>Mickey Hunt MK</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,6 +16,7 @@
   --body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{background:var(--night);color:var(--ink)}
 body{font-family:var(--body);font-size:15px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 40px;max-width:720px;margin:0 auto}
 h1,h2{font-family:var(--display);margin:0;line-height:1.05;text-wrap:balance}
@@ -79,6 +80,26 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
 #sheet button{flex:1;border:0;border-radius:12px;padding:12px;font-weight:800}
 .b-gold{background:var(--gold);color:#1b1405}.b-ghost{background:#2a3a66}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
+#radarBtn{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 14px);width:120px;height:120px;border:0;padding:0;background:none;border-radius:50%}
+#radarBtn canvas{position:static;width:120px;height:120px}
+#radarBtn em{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);font-style:normal;font-size:11px;font-weight:800;letter-spacing:.08em;background:var(--gold);color:#1b1405;border-radius:8px;padding:2px 8px}
+#guide{position:absolute;left:max(14px,env(safe-area-inset-left,0px));right:calc(max(14px,env(safe-area-inset-right,0px)) + 132px);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);min-height:120px;background:rgba(16,26,51,.88);border:1px solid var(--line);border-radius:18px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+#guide svg{flex:none;transition:transform .15s linear}
+#guide b{display:block;font-family:var(--display);font-size:24px;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+#guide span{display:block;font-size:13px;font-weight:800;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+#guide small{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-top:3px}
+#guide.here{border-color:var(--gold);background:rgba(60,48,12,.92)}
+#over{position:absolute;inset:0;background:#4f7f42;display:flex;flex-direction:column;z-index:5}
+#over .obar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 10px) max(12px,env(safe-area-inset-right,0px)) 8px max(12px,env(safe-area-inset-left,0px));background:var(--night)}
+#over .obar b{font-family:var(--display);font-size:20px}
+#over .obar div{display:flex;gap:8px}
+.pill{border:0;border-radius:999px;padding:10px 14px;font-weight:800;font-size:14px;background:#2a3a66}
+.pill.on{background:var(--gold);color:#1b1405}
+#bigMap{flex:1;width:100%;min-height:0;display:block;touch-action:manipulation}
+#over #sheet2{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 14px)}
+.pulse{animation:pulse 1.4s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.8);opacity:0}}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}}
 @media (prefers-reduced-motion:reduce){.mk svg{animation:none}.card.flash{animation:none}}
 </style>
 
@@ -117,8 +138,14 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
     <div><b id="arTitle">Scanning…</b><small id="arSub">Point your phone around slowly</small></div>
     <button class="x" id="closeAR" type="button" aria-label="Close camera">×</button>
   </div>
-  <canvas id="radar" width="240" height="240"></canvas>
+  <div id="guide" aria-live="polite"></div>
+  <button id="radarBtn" type="button" aria-label="Open overhead map"><canvas id="radar" width="240" height="240"></canvas><em>MAP</em></button>
   <div id="sheet" hidden></div>
+  <div id="over" hidden>
+    <div class="obar"><b>Overhead</b><div><button class="pill" id="zoomBtn" type="button">Zoom to me</button><button class="pill on" id="backAR" type="button">Back to AR</button></div></div>
+    <svg id="bigMap" viewBox="0 0 360 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Overhead park map"></svg>
+    <div id="sheet2" hidden></div>
+  </div>
 </div>
 <canvas id="confetti"></canvas>
 
@@ -149,8 +176,8 @@ const SPOTS=[
  {id:"mansionreaper",land:"lib",place:"Haunted Mansion graveyard",ll:[28.42080,-81.58290],lvl:3,ride:true,clue:"Graveyard scene: the grim reaper's left hand. His fingers form a Mickey outline."},
  {id:"harbour",land:"lib",place:"Columbia Harbour House",ll:[28.42035,-81.58245],lvl:1,ride:false,clue:"Main dining room: the framed map built from three circular sections."},
  {id:"libtree",land:"lib",place:"Liberty Tree Tavern",ll:[28.41960,-81.58300],lvl:2,ride:false,clue:"Waiting area, rear wall."},
- {id:"stocks",land:"lib",place:"Liberty Square stocks",ll:[28.41992,-81.58335],lvl:2,ride:false,clue:"The wooden stocks near the Riverboat entrance."},
- {id:"thunder",land:"fro",place:"Big Thunder Mountain",ll:[28.41998,-81.58505],lvl:2,ride:true,clue:"Coming back into the station: three rusty gears lying in the grass."},
+ {id:"stocks",land:"lib",place:"Liberty Square stocks",ll:[28.41992,-81.58335],lvl:2,ride:false,recheck:true,clue:"The wooden stocks in Liberty Square, toward the old Riverboat dock (Riverboat closed 2025, stocks reported still there)."},
+ {id:"thunder",land:"fro",place:"Big Thunder Mountain",ll:[28.41998,-81.58505],lvl:2,ride:true,recheck:true,clue:"Coming back into the station: three rusty gears lying in the grass. Recheck: ride was refurbished."},
  {id:"junglesign",land:"adv",place:"Jungle Cruise sign",ll:[28.41815,-81.58375],lvl:2,ride:false,clue:"Bottom edge of the Jungle Cruise sign."},
  {id:"jungleplane",land:"adv",place:"Jungle Cruise plane",ll:[28.41790,-81.58405],lvl:2,ride:true,clue:"The crashed half-plane: check its side."},
  {id:"jungletemple",land:"adv",place:"Jungle Cruise temple",ll:[28.41800,-81.58420],lvl:2,ride:true,clue:"Dark temple near the end: three plates, and a broken pillar on your left shaped like Mickey."},
@@ -187,29 +214,63 @@ const walk=m=>Math.max(1,Math.round(m/75))+" min walk";
 function daysTo1118(){const n=new Date();let t=new Date(n.getFullYear(),10,18);if(n>new Date(n.getFullYear(),10,18,23,59))t=new Date(n.getFullYear()+1,10,18);return Math.ceil((t-new Date(n.getFullYear(),n.getMonth(),n.getDate()))/864e5)}
 
 // ---------- map ----------
-const B={s:28.4155,n:28.4222,w:-81.5865,e:-81.5768};
+const B={s:28.4152,n:28.4232,w:-81.5878,e:-81.5762};
 const kx=Math.cos(rad(28.419));
 function proj(ll){const W=(B.e-B.w)*kx,H=B.n-B.s;const sc=Math.min(340/W,280/H);const ox=(360-W*sc)/2,oy=(300-H*sc)/2;return [ox+(ll[1]-B.w)*kx*sc, oy+(B.n-ll[0])*sc]}
 function unproj(x,y){const W=(B.e-B.w)*kx,H=B.n-B.s;const sc=Math.min(340/W,280/H);const ox=(360-W*sc)/2,oy=(300-H*sc)/2;return [B.n-(y-oy)/sc, B.w+(x-ox)/sc/kx]}
 const NS="http://www.w3.org/2000/svg";
 function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p&&p.appendChild(e);return e}
-function drawMap(){
-  const m=document.getElementById("map");m.innerHTML="";
-  // land halos
-  Object.keys(LANDS).forEach(k=>{const pts=SPOTS.filter(s=>s.land===k).map(s=>proj(s.ll));const cx=pts.reduce((a,p)=>a+p[0],0)/pts.length,cy=pts.reduce((a,p)=>a+p[1],0)/pts.length;const r=Math.max(26,...pts.map(p=>Math.hypot(p[0]-cx,p[1]-cy)))+14;el("circle",{cx,cy,r,fill:LANDS[k].hex,opacity:.09},m);const t=el("text",{x:cx,y:cy-r+12,"text-anchor":"middle","font-size":"9","font-weight":"800",fill:LANDS[k].hex,opacity:.9,"letter-spacing":"1"},m);t.textContent=LANDS[k].name.toUpperCase()});
-  // hub + castle + main street spine
-  const hub=proj([28.41890,-81.58120]),castle=proj([28.41941,-81.58120]),gate=proj([28.41580,-81.58120]);
-  el("line",{x1:gate[0],y1:gate[1],x2:hub[0],y2:hub[1],stroke:"#2a3a66","stroke-width":6,"stroke-linecap":"round"},m);
-  el("circle",{cx:hub[0],cy:hub[1],r:13,fill:"none",stroke:"#2a3a66","stroke-width":5},m);
-  el("path",{d:`M${castle[0]-7} ${castle[1]+6}h14v-9l-2-4-2 3-3-7-3 7-2-3-2 4z`,fill:"#f3efe4",opacity:.8},m);
+// Original illustrated park map (grass, berm, river, moat, paths, lands)
+const BERM=[[28.4229,-81.5872],[28.4231,-81.5805],[28.4224,-81.5772],[28.4196,-81.5766],[28.4172,-81.5779],[28.4157,-81.5801],[28.4156,-81.5824],[28.4166,-81.5851],[28.4182,-81.5873],[28.4208,-81.5880]];
+const RIVER=[[28.42040,-81.58350],[28.42150,-81.58360],[28.42240,-81.58450],[28.42262,-81.58620],[28.42185,-81.58710],[28.42080,-81.58665],[28.42030,-81.58560],[28.42008,-81.58420]];
+const ISLAND=[[28.42075,-81.58450],[28.42160,-81.58470],[28.42192,-81.58580],[28.42122,-81.58625],[28.42072,-81.58552]];
+const HUB=[28.41890,-81.58120],CASTLE=[28.41941,-81.58120],GATE=[28.41585,-81.58120];
+const LANDC={fan:[28.42080,-81.58060],lib:[28.42010,-81.58270],fro:[28.41960,-81.58440],adv:[28.41800,-81.58380],tom:[28.41850,-81.57900],main:[28.41700,-81.58120]};
+const pathD=pts=>pts.map((p,i)=>{const[x,y]=proj(p);return(i?"L":"M")+x.toFixed(1)+" "+y.toFixed(1)}).join("");
+let targetId=null;
+function drawPark(m,o={}){
+  m.innerHTML="";const z=o.zoom;
+  el("rect",{x:-400,y:-400,width:1200,height:1100,fill:"#4f7f42"},m);
+  el("path",{d:pathD(BERM)+"Z",fill:"#9fcf7c",stroke:"#3f6b35","stroke-width":5,"stroke-linejoin":"round"},m);
+  // lagoon hint south of the gate
+  const g0=proj([28.4151,-81.5845]),g1=proj([28.4151,-81.5779]);el("rect",{x:g0[0],y:g0[1]-4,width:g1[0]-g0[0],height:40,rx:14,fill:"#6cc0e5"},m);
+  // land tints
+  Object.keys(LANDS).forEach(k=>{const pts=SPOTS.filter(s=>s.land===k).map(s=>proj(s.ll));const[cx,cy]=proj(LANDC[k]);const r=Math.max(22,...pts.map(p=>Math.hypot(p[0]-cx,p[1]-cy)))+10;el("circle",{cx,cy,r,fill:LANDS[k].hex,opacity:.28},m)});
+  // water
+  el("path",{d:pathD(RIVER)+"Z",fill:"#6cc0e5",stroke:"#4ea6cf","stroke-width":2,"stroke-linejoin":"round"},m);
+  el("path",{d:pathD(ISLAND)+"Z",fill:"#7fb662",stroke:"#5e9447","stroke-width":1.5},m);
+  const[cx,cy]=proj(CASTLE),rm=Math.abs(proj([CASTLE[0]+0.00055,CASTLE[1]])[1]-cy);
+  el("circle",{cx,cy:cy+rm*.25,r:rm,fill:"none",stroke:"#6cc0e5","stroke-width":5},m);
+  // paths
+  const P={stroke:"#f3e2b5","stroke-width":z?5:6,"stroke-linecap":"round","stroke-linejoin":"round",fill:"none"};
+  el("path",Object.assign({d:pathD([GATE,HUB])},P,{"stroke-width":z?8:9}),m);
+  Object.keys(LANDC).filter(k=>k!=="main").forEach(k=>el("path",Object.assign({d:pathD([HUB,LANDC[k]])},P),m));
+  el("path",Object.assign({d:pathD([LANDC.adv,LANDC.fro,LANDC.lib,LANDC.fan,LANDC.tom])},P),m);
+  const[hx,hy]=proj(HUB);el("circle",{cx:hx,cy:hy,r:9,fill:"#f3e2b5"},m);el("circle",{cx:hx,cy:hy,r:5,fill:"#9fcf7c"},m);
+  // castle
+  el("path",{d:`M${cx-9} ${cy+7}h18v-10h-3v-5l-2-6-2 6v-3l-2-8-2 8v3l-2-6-2 6v5h-3z`,fill:"#fffaf0",stroke:"#7b8bb8","stroke-width":1},m);
+  [[-6,-11],[0,-17],[6,-11]].forEach(([dx,dy])=>el("path",{d:`M${cx+dx-2} ${cy+dy+4}l2-5 2 5z`,fill:"#5a7fd6"},m));
+  // labels
+  Object.keys(LANDC).forEach(k=>{const[x,y]=proj(LANDC[k]);const t=el("text",{x,y:y-(k==="main"?0:14),"text-anchor":"middle","font-size":z?"6":"8.5","font-weight":"800","font-family":"Baloo 2, sans-serif",fill:"#1c2a14",stroke:"#fffaf0","stroke-width":2.6,"paint-order":"stroke","letter-spacing":".5"},m);t.textContent=LANDS[k].name});
   // spots
-  SPOTS.forEach(s=>{const [x,y]=proj(s.ll);const g=el("g",{style:"cursor:pointer"},m);el("circle",{cx:x,cy:y,r:6.5,fill:found.has(s.id)?"#f4b942":LANDS[s.land].hex,stroke:"#101a33","stroke-width":1.5},g);const t=el("text",{x,y:y+3,"text-anchor":"middle","font-size":"7","font-weight":"800",fill:"#0e1426"},g);t.textContent=s.n;g.addEventListener("click",ev=>{ev.stopPropagation();focusCard(s.id)})});
-  // me
-  const [mx,my]=proj(me.ll);
-  el("circle",{cx:mx,cy:my,r:14,fill:"#e8503f",opacity:.25},m);
-  el("circle",{cx:mx,cy:my,r:6,fill:"#e8503f",stroke:"#fff","stroke-width":2},m);
-  const lt=el("text",{x:mx,y:my-11,"text-anchor":"middle","font-size":"9","font-weight":"800",fill:"#fff"},m);lt.textContent="YOU";
+  const tgt=currentTarget();
+  SPOTS.forEach(s=>{const[x,y]=proj(s.ll);const g=el("g",{style:"cursor:pointer"},m);const r=z?4.5:6.5;
+    if(tgt&&tgt.id===s.id){el("circle",{cx:x,cy:y,r:r+4,fill:"none",stroke:"#e8503f","stroke-width":2.5,class:"pulse"},g)}
+    el("circle",{cx:x,cy:y,r,fill:found.has(s.id)?"#f4b942":LANDS[s.land].hex,stroke:"#101a33","stroke-width":1.4},g);
+    const t=el("text",{x,y:y+r*.42,"text-anchor":"middle","font-size":z?"5":"7","font-weight":"800",fill:"#0e1426"},g);t.textContent=found.has(s.id)?"✓":s.n;
+    el("circle",{cx:x,cy:y,r:r+5,fill:"transparent"},g);
+    g.addEventListener("click",ev=>{ev.stopPropagation();o.onSpot?o.onSpot(s):focusCard(s.id)})});
+  // me + heading cone
+  const[mx,my]=proj(me.ll);
+  if(heading!=null&&o.cone){const a1=rad(heading-28-90),a2=rad(heading+28-90),L=z?26:34;el("path",{d:`M${mx} ${my}L${mx+Math.cos(a1)*L} ${my+Math.sin(a1)*L}A${L} ${L} 0 0 1 ${mx+Math.cos(a2)*L} ${my+Math.sin(a2)*L}Z`,fill:"#2f6fe0",opacity:.28},m)}
+  const accPx=me.gps&&me.acc?Math.abs(proj([me.ll[0]+me.acc/111320,me.ll[1]])[1]-my):0;
+  el("circle",{cx:mx,cy:my,r:Math.max(z?9:13,accPx),fill:"#2f6fe0",opacity:.2,stroke:"#2f6fe0","stroke-opacity":.5},m);
+  el("circle",{cx:mx,cy:my,r:z?4:5.5,fill:"#2f6fe0",stroke:"#fff","stroke-width":2},m);
+  const lt=el("text",{x:mx,y:my-(z?7:10),"text-anchor":"middle","font-size":z?"6":"8","font-weight":"800",fill:"#fff",stroke:"#1c2a14","stroke-width":2,"paint-order":"stroke"},m);lt.textContent="YOU";
+  if(z){const w=150,h=125;m.setAttribute("viewBox",`${mx-w/2} ${my-h/2} ${w} ${h}`)}else m.setAttribute("viewBox","0 0 360 300");
 }
+function drawMap(){drawPark(document.getElementById("map"))}
+function currentTarget(){if(targetId&&!found.has(targetId))return SPOTS.find(s=>s.id===targetId);const r=SPOTS.filter(s=>!found.has(s.id)).sort((a,b)=>dist(me.ll,a.ll)-dist(me.ll,b.ll));return r[0]||null}
 document.getElementById("map").addEventListener("click",e=>{
   if(me.gps)return;const svg=e.currentTarget,pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());me.ll=unproj(p.x,p.y);store.set("mh_me",me.ll);render();
   setStatus("Pin moved. Nearest Mickeys re-sorted.");
@@ -225,7 +286,7 @@ function drawList(){
   rows.sort((a,b)=>a.d-b.d);
   rows.forEach(({s,d})=>{
     const c=document.createElement("article");c.className="card"+(found.has(s.id)?" found":"");c.id="c-"+s.id;c.style.setProperty("--c",LANDS[s.land].c);
-    const sp=s.special==="nov18"?`<span class="tag special">${daysTo1118()===0?"TODAY":"In "+daysTo1118()+" days"}</span>`:"";
+    const sp=(s.special==="nov18"?`<span class="tag special">${daysTo1118()===0?"TODAY":"In "+daysTo1118()+" days"}</span>`:"")+(s.recheck?`<span class="tag">Recheck</span>`:"");
     c.innerHTML=`<div class="num">${s.n}</div><div style="min-width:0"><h3></h3><div class="meta"><span class="d">${fmtD(d)}</span><span>${walk(d)}</span><span>${LV[s.lvl]}</span><span class="tag">${s.ride?"On ride":"Walk-up"}</span>${sp}</div><p class="clue"></p></div><button class="got" type="button" aria-pressed="${found.has(s.id)}" aria-label="Mark found">${found.has(s.id)?"GOT":"FIND"}</button>`;
     c.querySelector("h3").textContent=s.place;c.querySelector(".clue").textContent=s.clue;
     c.querySelector(".got").onclick=()=>toggleFound(s.id);
@@ -235,7 +296,7 @@ function drawList(){
   document.getElementById("nearTxt").textContent=near?`${near} within 400 ft`:"Walk toward a cluster";
 }
 function focusCard(id){if(filter!=="near"){filter="near";drawFilters();drawList()}const c=document.getElementById("c-"+id);if(c){c.scrollIntoView({behavior:"smooth",block:"center"});c.classList.remove("flash");void c.offsetWidth;c.classList.add("flash")}}
-function toggleFound(id){if(found.has(id))found.delete(id);else{found.add(id);burst()}store.set("mh_found",[...found]);render();if(arOn)openSheet(SPOTS.find(s=>s.id===id))}
+function toggleFound(id){if(found.has(id))found.delete(id);else{found.add(id);burst()}store.set("mh_found",[...found]);render()}
 function drawRing(){const n=found.size,t=SPOTS.length;document.getElementById("ringTxt").textContent=n;document.getElementById("ringArc").setAttribute("stroke-dashoffset",169.6*(1-n/t))}
 function render(){drawMap();drawList();drawRing()}
 function setStatus(t,warn){const s=document.getElementById("status");s.textContent=t;s.className="status"+(warn?" warn":"")}
@@ -243,12 +304,13 @@ const legend=document.getElementById("legend");Object.values(LANDS).forEach(l=>{
 
 // ---------- GPS (works outside Claude's viewer) ----------
 let watchId=null;
-function startGPS(){return new Promise(res=>{if(!navigator.geolocation)return res(false);let done=false;watchId=navigator.geolocation.watchPosition(p=>{me.ll=[p.coords.latitude,p.coords.longitude];me.acc=p.coords.accuracy;me.gps=true;if(!done){done=true;res(true)}render();if(arOn)drawAR()},()=>{if(!done){done=true;res(false)}},{enableHighAccuracy:true,maximumAge:2000,timeout:12000})})}
+function startGPS(){return new Promise(res=>{if(!navigator.geolocation)return res(false);let done=false;watchId=navigator.geolocation.watchPosition(p=>{const nl=[p.coords.latitude,p.coords.longitude];if(me.gps&&dist(me.ll,nl)<60){const a=p.coords.accuracy<15?.5:.3;me.ll=[me.ll[0]+(nl[0]-me.ll[0])*a,me.ll[1]+(nl[1]-me.ll[1])*a]}else me.ll=nl;me.acc=p.coords.accuracy;me.gps=true;if(!done){done=true;res(true)}render();if(arOn)drawAR()},()=>{if(!done){done=true;res(false)}},{enableHighAccuracy:true,maximumAge:2000,timeout:12000})})}
 
 // ---------- AR ----------
 let arOn=false,heading=null,stream=null;
 const FOV=60;
-function onOrient(e){let h=null;if(typeof e.webkitCompassHeading==="number")h=e.webkitCompassHeading;else if(e.absolute&&e.alpha!=null)h=360-e.alpha;if(h!=null){heading=heading==null?h:smooth(heading,h);if(arOn)drawAR()}}
+function onOrient(e){let h=null;if(typeof e.webkitCompassHeading==="number")h=e.webkitCompassHeading;else if(e.absolute&&e.alpha!=null)h=360-e.alpha;if(h!=null){const sa=(screen.orientation&&typeof screen.orientation.angle==="number")?screen.orientation.angle:(typeof window.orientation==="number"?window.orientation:0);h=(h+sa+360)%360;heading=heading==null?h:smooth(heading,h);if(arOn)scheduleAR()}}
+let arQueued=false;function scheduleAR(){if(arQueued)return;arQueued=true;requestAnimationFrame(()=>{arQueued=false;if(arOn)drawAR()})}
 function smooth(a,b){let d=((b-a+540)%360)-180;return (a+d*0.25+360)%360}
 async function startOrientation(){try{if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){const r=await DeviceOrientationEvent.requestPermission();if(r!=="granted")return false}window.addEventListener("deviceorientationabsolute",onOrient,true);window.addEventListener("deviceorientation",onOrient,true);return true}catch(e){return false}}
 document.getElementById("startAR").onclick=async()=>{
@@ -261,15 +323,18 @@ document.getElementById("startAR").onclick=async()=>{
     setStatus("Camera or GPS is blocked in this viewer. Map mode is on: tap the map where you are. Open the live link in Safari for full AR.",true);return}
   const v=document.getElementById("cam");v.srcObject=stream;document.getElementById("ar").hidden=false;arOn=true;setStatus("AR running.");drawAR();
 };
-document.getElementById("closeAR").onclick=()=>{arOn=false;document.getElementById("ar").hidden=true;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}document.getElementById("sheet").hidden=true};
+document.getElementById("closeAR").onclick=()=>{arOn=false;document.getElementById("ar").hidden=true;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}document.getElementById("sheet").hidden=true;document.getElementById("over").hidden=true};
 const MK_SVG=(s,col)=>`<svg width="${s}" height="${s*.9}" viewBox="0 0 44 40"><circle cx="9" cy="10" r="8" fill="${col}"/><circle cx="35" cy="10" r="8" fill="${col}"/><circle cx="22" cy="25" r="14" fill="${col}"/><circle cx="22" cy="25" r="14" fill="none" stroke="#fff" stroke-width="2"/></svg>`;
 function drawAR(){
   const layer=document.getElementById("arLayer");layer.innerHTML="";
   const rows=SPOTS.filter(s=>!found.has(s.id)).map(s=>({s,d:dist(me.ll,s.ll),b:bearing(me.ll,s.ll)})).filter(r=>r.d<450).sort((a,b)=>a.d-b.d).slice(0,10);
   const near=rows[0];
-  document.getElementById("arTitle").textContent=near?`${near.s.place}`:"No Mickeys close";
-  document.getElementById("arSub").textContent=near?`${fmtD(near.d)} away${me.acc?` · GPS ±${Math.round(me.acc*3.281)} ft`:""}`:"Walk toward another land";
-  if(heading==null){document.getElementById("arSub").textContent="Compass warming up. Wave phone in a figure 8.";}
+  const done=found.size;
+  document.getElementById("arTitle").textContent=`${done}/${SPOTS.length} found`;
+  const accFt=me.acc?Math.round(me.acc*3.281):null;
+  document.getElementById("arSub").textContent=heading==null?"Compass warming up. Wave phone in a figure 8.":accFt?(accFt>100?`Weak GPS ±${accFt} ft. Use the map.`:`GPS ±${accFt} ft`):"Locating…";
+  drawGuide();
+  if(!document.getElementById("over").hidden)drawPark(document.getElementById("bigMap"),overOpts());
   let left=0,right=0;
   rows.forEach((r,i)=>{
     const rel=heading==null?null:((r.b-heading+540)%360)-180;
@@ -291,12 +356,37 @@ function drawRadar(rows){
   rows.forEach(r=>{const rel=rad(((r.b-(heading||0))+360)%360-90);const rr=Math.min(r.d,450)/450*(M-10);x.fillStyle=LANDS[r.s.land].hex;x.beginPath();x.arc(M+Math.cos(rel)*rr,M+Math.sin(rel)*rr,7,0,7);x.fill()});
   x.fillStyle="#e8503f";x.beginPath();x.arc(M,M,7,0,7);x.fill();
 }
-function openSheet(s){
-  const sh=document.getElementById("sheet");const d=dist(me.ll,s.ll);const isF=found.has(s.id);
-  sh.innerHTML=`<h3></h3><div class="meta"><span class="d">${fmtD(d)}</span><span>${LV[s.lvl]}</span><span class="tag">${s.ride?"On ride":"Walk-up"}</span></div><p></p><div class="row"><button class="b-gold" type="button" id="shGot">${isF?"Found ✓":"I found it!"}</button><button class="b-ghost" type="button" id="shX">Close</button></div>`;
+// Big walking arrow toward the current target
+const ARROW=`<svg width="78" height="78" viewBox="0 0 78 78" aria-hidden="true"><circle cx="39" cy="39" r="37" fill="#101a33" stroke="#f4b942" stroke-width="3"/><path d="M39 9 L60 50 L44 44 L44 66 L34 66 L34 44 L18 50 Z" fill="#f4b942" stroke="#1b1405" stroke-width="2" stroke-linejoin="round"/></svg>`;
+function drawGuide(){
+  const g=document.getElementById("guide");const t=currentTarget();
+  if(!t){g.className="";g.innerHTML=`<div><b>All found!</b><span>Every Mickey on the list. Legend.</span></div>`;return}
+  const d=dist(me.ll,t.ll),b=bearing(me.ll,t.ll);const near=d<(me.acc?Math.max(18,me.acc):18);
+  if(near){g.className="here";g.innerHTML=`<div style="min-width:0"><b>You're here!</b><span></span><small>Tap for the clue</small></div>`;g.querySelector("span").textContent=`${t.n}. ${t.place}`;}
+  else{g.className="";g.innerHTML=ARROW+`<div style="min-width:0"><b>${fmtD(d)}</b><span></span><small>${heading==null?"Calibrating compass":"Walk where the arrow points"}</small></div>`;g.querySelector("span").textContent=`${t.n}. ${t.place}`;
+    const rel=heading==null?0:((b-heading+540)%360)-180;g.querySelector("svg").style.transform=`rotate(${rel}deg)`;g.querySelector("svg").style.opacity=heading==null?.4:1}
+  g.onclick=()=>openSheet(t);
+}
+// Overhead map: tap the radar to expand, Back to AR to shrink
+let overZoom=true;
+function overOpts(){return{zoom:overZoom,cone:true,onSpot:s=>openSheet(s,"sheet2")}}
+function openOver(){document.getElementById("sheet").hidden=true;document.getElementById("over").hidden=false;drawPark(document.getElementById("bigMap"),overOpts())}
+function closeOver(){document.getElementById("over").hidden=true;document.getElementById("sheet2").hidden=true;if(arOn)drawAR()}
+document.getElementById("radarBtn").onclick=openOver;
+document.getElementById("backAR").onclick=closeOver;
+document.getElementById("zoomBtn").onclick=e=>{overZoom=!overZoom;e.currentTarget.textContent=overZoom?"Whole park":"Zoom to me";drawPark(document.getElementById("bigMap"),overOpts())};
+document.getElementById("zoomBtn").textContent="Whole park";
+function openSheet(s,which="sheet"){
+  const sh=document.getElementById(which);const d=dist(me.ll,s.ll);const isF=found.has(s.id);
+  sh.innerHTML=`<h3></h3><div class="meta"><span class="d">${fmtD(d)}</span><span>${LV[s.lvl]}</span><span class="tag">${s.ride?"On ride":"Walk-up"}</span>${s.recheck?'<span class="tag">Recheck</span>':""}</div><p></p><div class="row"><button class="b-gold" type="button" data-a="got">${isF?"Found ✓":"Found it!"}</button><button class="b-ghost" type="button" data-a="go">${which==="sheet2"?"Point me there":"Next"}</button><button class="b-ghost" type="button" data-a="x" aria-label="Close">✕</button></div>`;
+  sh.style.cssText=which==="sheet2"?"background:var(--night2);border:1px solid var(--gold);border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.5)":"";
   sh.querySelector("h3").textContent=`${s.n}. ${s.place}`;sh.querySelector("p").textContent=s.clue;sh.hidden=false;
-  sh.querySelector("#shGot").onclick=()=>{if(!found.has(s.id))toggleFound(s.id);sh.hidden=true;drawAR()};
-  sh.querySelector("#shX").onclick=()=>{sh.hidden=true};
+  sh.querySelectorAll("button").forEach(b=>b.style.cssText="flex:1;border:0;border-radius:12px;padding:12px;font-weight:800;"+(b.dataset.a==="got"?"background:var(--gold);color:#1b1405":"background:#2a3a66")+(b.dataset.a==="x"?";flex:0 0 48px":""));
+  sh.querySelector('[data-a="got"]').onclick=()=>{if(!found.has(s.id)){toggleFound(s.id);if(targetId===s.id)targetId=null}sh.hidden=true;if(which==="sheet2")drawPark(document.getElementById("bigMap"),overOpts());drawAR()};
+  sh.querySelector('[data-a="go"]').onclick=()=>{
+    if(which==="sheet2"){targetId=s.id;sh.hidden=true;closeOver()}
+    else{const rest=SPOTS.filter(x=>!found.has(x.id)&&x.id!==s.id).sort((a,b)=>dist(s.ll,a.ll)-dist(s.ll,b.ll));targetId=rest[0]?rest[0].id:null;sh.hidden=true;drawAR()}};
+  sh.querySelector('[data-a="x"]').onclick=()=>{sh.hidden=true};
 }
 
 // ---------- confetti ----------
