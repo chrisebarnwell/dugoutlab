@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style></head><body>
+<title>Mickey Hunt MK</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,700;6..12,800&display=swap">
+<style>
+/* Layout: night-park field guide. One scroll: progress, AR launch, plotted park map, nearest-first hunt cards. AR is a full-screen camera overlay. Single dark look by choice. */
+:root{
+  color-scheme:dark;
+  --night:#101a33; --night2:#18264a; --line:#2a3a66;
+  --ink:#f3efe4; --muted:#a9b3cf;
+  --gold:#f4b942; --red:#e8503f;
+  --fan:#c77dff; --lib:#3cc6b4; --fro:#f0954a; --adv:#7bc96f; --tom:#5aa7ff; --main:#ff6b6b;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{background:var(--night);color:var(--ink)}
+body{font-family:var(--body);font-size:15px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 40px;max-width:720px;margin:0 auto}
+h1,h2{font-family:var(--display);margin:0;line-height:1.05;text-wrap:balance}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.top{display:flex;align-items:center;gap:14px;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px}
+.brand h1{font-size:30px;font-weight:800;letter-spacing:.2px}
+.brand small{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:800}
+.ring{position:relative;width:64px;height:64px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-size:18px;font-variant-numeric:tabular-nums}
+.ar-btn{margin-top:14px;width:100%;border:0;border-radius:18px;padding:16px;background:var(--gold);color:#1b1405;font-family:var(--display);font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 0 #b9832a}
+.ar-btn:active{transform:translateY(3px);box-shadow:0 3px 0 #b9832a}
+.status{margin:10px 2px 0;font-size:13px;color:var(--muted);min-height:1.2em}
+.status.warn{color:var(--gold)}
+.mapwrap{margin-top:14px;background:var(--night2);border:1px solid var(--line);border-radius:18px;padding:10px;position:relative}
+.maphead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:2px 4px 8px}
+.maphead h2{font-size:18px}
+.maphead span{font-size:12px;color:var(--muted)}
+#map{width:100%;height:auto;display:block;touch-action:manipulation}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 4px 2px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:0}
+.filters{display:flex;gap:8px;margin:16px 0 10px;overflow-x:auto;padding-bottom:4px}
+.chip{flex:none;border:1px solid var(--line);background:transparent;border-radius:999px;padding:7px 13px;font-size:13px;font-weight:700;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--night);border-color:var(--ink)}
+.list{display:flex;flex-direction:column;gap:10px}
+.card{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;background:var(--night2);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:14px;padding:12px}
+.card.found{opacity:.55}
+.card.flash{animation:flash 1.2s ease}
+@keyframes flash{0%,100%{background:var(--night2)}30%{background:#2b3a6a}}
+.num{width:34px;height:34px;border-radius:50%;background:var(--c);color:#0e1426;font-family:var(--display);font-weight:800;display:grid;place-items:center;font-size:16px}
+.card h3{margin:0;font-size:16px;font-weight:800;line-height:1.2}
+.meta{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12px;color:var(--muted);margin:3px 0 6px}
+.meta .d{color:var(--gold);font-weight:800;font-variant-numeric:tabular-nums}
+.clue{margin:0;font-size:14px}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:6px;background:#2a3a66;color:var(--ink)}
+.tag.special{background:var(--red)}
+.got{border:2px solid var(--line);background:transparent;border-radius:12px;width:46px;height:46px;display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted)}
+.found .got{background:var(--gold);border-color:var(--gold);color:#1b1405}
+.foot{margin-top:22px;font-size:12px;color:var(--muted)}
+.foot a{color:var(--muted)}
+/* AR overlay */
+#ar{position:fixed;inset:0;z-index:50;background:#000;overflow:hidden}
+#ar video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#arLayer{position:absolute;inset:0}
+.mk{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;padding:0;transition:left .12s linear}
+.mk svg{filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.mk span{background:rgba(16,26,51,.85);border:1px solid var(--gold);color:var(--ink);border-radius:10px;padding:3px 8px;font-size:12px;font-weight:800;white-space:nowrap;max-width:46vw;overflow:hidden;text-overflow:ellipsis}
+.edge{position:absolute;top:50%;transform:translateY(-50%);background:rgba(16,26,51,.85);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:13px;font-weight:800}
+.arbar{position:absolute;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top,0px) + 10px) max(14px,env(safe-area-inset-right,0px)) 10px max(14px,env(safe-area-inset-left,0px));display:flex;justify-content:space-between;align-items:center;gap:10px;background:linear-gradient(rgba(0,0,0,.6),transparent)}
+.arbar b{font-family:var(--display);font-size:20px}
+.arbar small{display:block;font-size:12px;color:var(--muted);font-weight:700}
+.x{border:0;background:rgba(16,26,51,.85);border-radius:50%;width:44px;height:44px;font-size:22px;font-weight:800}
+#radar{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 14px);width:120px;height:120px}
+#sheet{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 144px);background:var(--night2);border:1px solid var(--gold);border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+#sheet h3{margin:0 0 4px;font-family:var(--display);font-size:20px}
+#sheet p{margin:0 0 10px}
+#sheet .row{display:flex;gap:8px}
+#sheet button{flex:1;border:0;border-radius:12px;padding:12px;font-weight:800}
+.b-gold{background:var(--gold);color:#1b1405}.b-ghost{background:#2a3a66}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
+@media (prefers-reduced-motion:reduce){.mk svg{animation:none}.card.flash{animation:none}}
+</style>
+
+<header class="top">
+  <div class="brand">
+    <svg width="44" height="40" viewBox="0 0 44 40" aria-hidden="true"><circle cx="9" cy="10" r="8" fill="#f4b942"/><circle cx="35" cy="10" r="8" fill="#f4b942"/><circle cx="22" cy="25" r="14" fill="#f4b942"/></svg>
+    <div><small>Magic Kingdom</small><h1>Mickey Hunt</h1></div>
+  </div>
+  <div class="ring" aria-label="Found progress">
+    <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" fill="none" stroke="#2a3a66" stroke-width="7"/><circle id="ringArc" cx="32" cy="32" r="27" fill="none" stroke="#f4b942" stroke-width="7" stroke-linecap="round" stroke-dasharray="169.6" stroke-dashoffset="169.6"/></svg>
+    <b id="ringTxt">0</b>
+  </div>
+</header>
+
+<button class="ar-btn" id="startAR" type="button">
+  <svg width="26" height="22" viewBox="0 0 26 22" aria-hidden="true"><rect x="1" y="4" width="24" height="17" rx="4" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="13" cy="12.5" r="4.5" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="8" y="1" width="10" height="4" rx="1.5" fill="currentColor"/></svg>
+  Open AR Camera
+</button>
+<p class="status" id="status">Starting point: Gaston's Tavern. Tap the map to move your pin.</p>
+
+<section class="mapwrap">
+  <div class="maphead"><h2>Park radar</h2><span id="nearTxt"></span></div>
+  <svg id="map" viewBox="0 0 360 300" role="img" aria-label="Plotted map of hidden Mickey spots"></svg>
+  <div class="legend" id="legend"></div>
+</section>
+
+<div class="filters" id="filters" role="group" aria-label="Filter spots"></div>
+<div class="list" id="list"></div>
+
+<p class="foot">Pins are placed by attraction, accurate to about 20 m. The arrow gets you to the spot; the clue finds the Mickey. Clues gathered from AllEars, WDWInfo, Disney Tips, Disney Day By Day and Disney Food Blog. Some on-ride Mickeys move when props get cleaned.</p>
+
+<div id="ar" hidden>
+  <video id="cam" playsinline muted autoplay></video>
+  <div id="arLayer"></div>
+  <div class="arbar">
+    <div><b id="arTitle">Scanning…</b><small id="arSub">Point your phone around slowly</small></div>
+    <button class="x" id="closeAR" type="button" aria-label="Close camera">×</button>
+  </div>
+  <canvas id="radar" width="240" height="240"></canvas>
+  <div id="sheet" hidden></div>
+</div>
+<canvas id="confetti"></canvas>
+
+<script>
+const LANDS={
+  fan:{name:"Fantasyland",c:"var(--fan)",hex:"#c77dff"},
+  lib:{name:"Liberty Square",c:"var(--lib)",hex:"#3cc6b4"},
+  fro:{name:"Frontierland",c:"var(--fro)",hex:"#f0954a"},
+  adv:{name:"Adventureland",c:"var(--adv)",hex:"#7bc96f"},
+  tom:{name:"Tomorrowland",c:"var(--tom)",hex:"#5aa7ff"},
+  main:{name:"Main Street",c:"var(--main)",hex:"#ff6b6b"}
+};
+// lvl 1 easy, 2 medium, 3 pro. ride:true = seen from the ride vehicle / show seat
+const SPOTS=[
+ {id:"gaston",land:"fan",place:"Gaston's Fountain",ll:[28.42088,-81.58005],lvl:2,ride:false,clue:"Go to the BACK of the Gaston statue. Follow his left foot straight down almost to the waterline. Three small gray circles pressed into the rock."},
+ {id:"bonjour",land:"fan",place:"Bonjour! Village Gifts",ll:[28.42078,-81.58028],lvl:1,ride:false,clue:"Front display window, bottom left corner."},
+ {id:"bog",land:"fan",place:"Be Our Guest entrance",ll:[28.42112,-81.58042],lvl:2,ride:false,clue:"Look behind the reservation check-in podium at the restaurant entrance."},
+ {id:"mermaidrocks",land:"fan",place:"Under the Sea exit",ll:[28.42150,-81.57952],lvl:3,ride:false,clue:"Rock cluster in the water by the exit. Line it up and it's Steamboat Willie: wheel, legs, shorts, then his head further back."},
+ {id:"mermaidsun",land:"fan",place:"Under the Sea queue",ll:[28.42138,-81.57975],lvl:3,ride:false,special:"nov18",clue:"Only around noon on November 18: sunlight through the queue rocks casts a Mickey on the ground and wall."},
+ {id:"philhar",land:"fan",place:"Mickey's PhilharMagic",ll:[28.42005,-81.58170],lvl:2,ride:true,clue:"Once seated, check the screen's border, top right corner. The French horn tubing curls into a Mickey."},
+ {id:"smallworld",land:"fan",place:"\"it's a small world\"",ll:[28.42070,-81.58210],lvl:2,ride:true,clue:"Africa scene: purple flowers on the vine on the elephant's left side."},
+ {id:"peterpan",land:"fan",place:"Peter Pan's Flight",ll:[28.42035,-81.58195],lvl:2,ride:false,clue:"Study the tree bark just before the entrance queue."},
+ {id:"pinocchio",land:"fan",place:"Pinocchio Village Haus",ll:[28.42045,-81.58155],lvl:2,ride:false,clue:"Blue Fairy room: dark blue sparkle painted above the banner."},
+ {id:"sirmickey",land:"fan",place:"Sir Mickey's",ll:[28.42015,-81.58140],lvl:1,ride:false,clue:"Look at the store's sign out front."},
+ {id:"royaltable",land:"fan",place:"Cinderella's Royal Table",ll:[28.41955,-81.58120],lvl:1,ride:false,clue:"Dining inside? Check the crest on the dinnerware."},
+ {id:"mansionportrait",land:"lib",place:"Haunted Mansion foyer",ll:[28.42065,-81.58305],lvl:2,ride:false,clue:"First room after the doors: the border around a portrait."},
+ {id:"mansionplates",land:"lib",place:"Haunted Mansion ballroom",ll:[28.42072,-81.58318],lvl:1,ride:true,clue:"Banquet table, bottom left place setting: one plate plus two saucers."},
+ {id:"mansionreaper",land:"lib",place:"Haunted Mansion graveyard",ll:[28.42080,-81.58290],lvl:3,ride:true,clue:"Graveyard scene: the grim reaper's left hand. His fingers form a Mickey outline."},
+ {id:"harbour",land:"lib",place:"Columbia Harbour House",ll:[28.42035,-81.58245],lvl:1,ride:false,clue:"Main dining room: the framed map built from three circular sections."},
+ {id:"libtree",land:"lib",place:"Liberty Tree Tavern",ll:[28.41960,-81.58300],lvl:2,ride:false,clue:"Waiting area, rear wall."},
+ {id:"stocks",land:"lib",place:"Liberty Square stocks",ll:[28.41992,-81.58335],lvl:2,ride:false,clue:"The wooden stocks near the Riverboat entrance."},
+ {id:"thunder",land:"fro",place:"Big Thunder Mountain",ll:[28.41998,-81.58505],lvl:2,ride:true,clue:"Coming back into the station: three rusty gears lying in the grass."},
+ {id:"junglesign",land:"adv",place:"Jungle Cruise sign",ll:[28.41815,-81.58375],lvl:2,ride:false,clue:"Bottom edge of the Jungle Cruise sign."},
+ {id:"jungleplane",land:"adv",place:"Jungle Cruise plane",ll:[28.41790,-81.58405],lvl:2,ride:true,clue:"The crashed half-plane: check its side."},
+ {id:"jungletemple",land:"adv",place:"Jungle Cruise temple",ll:[28.41800,-81.58420],lvl:2,ride:true,clue:"Dark temple near the end: three plates, and a broken pillar on your left shaped like Mickey."},
+ {id:"junglerhino",land:"adv",place:"Jungle Cruise rhino",ll:[28.41775,-81.58395],lvl:3,ride:true,clue:"Rhino chasing the safari crew up a pole: three small rocks halfway up on the right."},
+ {id:"pirateslamps",land:"adv",place:"Pirates treasure room",ll:[28.41780,-81.58452],lvl:2,ride:true,clue:"Treasure room: the ironwork at the bottom of the lamps on the left side."},
+ {id:"pirateslock",land:"adv",place:"Pirates jail scene",ll:[28.41770,-81.58440],lvl:2,ride:true,clue:"Pirates bribing the dog for the keys: look at the lock on their cell."},
+ {id:"cop1",land:"tom",place:"Carousel of Progress",ll:[28.41800,-81.57890],lvl:1,ride:true,clue:"Final scene: Mickey nutcracker on the mantel and a plush peeking out of a present."},
+ {id:"cop2",land:"tom",place:"Carousel of Progress kitchen",ll:[28.41806,-81.57880],lvl:2,ride:true,clue:"Final scene: white pepper mill on the kitchen counter, the wrapping paper, and the abstract painting on the back wall."},
+ {id:"buzz",land:"tom",place:"Buzz Lightyear queue",ll:[28.41840,-81.57925],lvl:1,ride:false,clue:"Planet on your right as you enter: its continents. It shows up again 4 more times on the ride."},
+ {id:"peoplemover",land:"tom",place:"PeopleMover",ll:[28.41862,-81.57950],lvl:3,ride:true,clue:"\"Take Flight\" display: the woman getting her hair done has mouse ears on her belt buckle."},
+ {id:"astro",land:"tom",place:"Astro Orbiter base",ll:[28.41872,-81.57978],lvl:3,ride:false,clue:"Far side of the base, the side facing Space Mountain: an indentation in the cement."},
+ {id:"startraders",land:"tom",place:"Mickey's Star Traders",ll:[28.41828,-81.57955],lvl:2,ride:false,clue:"Behind the Mickey statue: a star constellation shaped like Steamboat Willie."},
+ {id:"spacemtn",land:"tom",place:"Space Mountain exit",ll:[28.41905,-81.57760],lvl:2,ride:false,clue:"Exit walkway: check the dog's collar."},
+ {id:"station",land:"main",place:"Main Street Station",ll:[28.41622,-81.58120],lvl:1,ride:false,clue:"The big flower bed in front of the train station."},
+ {id:"horsecar",land:"main",place:"Main Street streetcars",ll:[28.41720,-81.58115],lvl:1,ride:false,clue:"When the horse-drawn streetcars run: the horses' blinders."},
+ {id:"confection",land:"main",place:"Main Street Confectionery",ll:[28.41742,-81.58078],lvl:2,ride:false,clue:"Candy-making room: the trim on the white cupboards."}
+];
+SPOTS.forEach((s,i)=>s.n=i+1);
+const GASTON=[28.42084,-81.58010];
+const LV=["","Easy","Medium","Pro"];
+
+// ---------- storage (safe) ----------
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let found=new Set(store.get("mh_found",[]));
+let me={ll:store.get("mh_me",GASTON),gps:false,acc:null};
+let filter="near";
+
+// ---------- geo ----------
+const R=6371000,rad=d=>d*Math.PI/180,deg=r=>r*180/Math.PI;
+function dist(a,b){const dLa=rad(b[0]-a[0]),dLo=rad(b[1]-a[1]);const h=Math.sin(dLa/2)**2+Math.cos(rad(a[0]))*Math.cos(rad(b[0]))*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+function bearing(a,b){const y=Math.sin(rad(b[1]-a[1]))*Math.cos(rad(b[0]));const x=Math.cos(rad(a[0]))*Math.sin(rad(b[0]))-Math.sin(rad(a[0]))*Math.cos(rad(b[0]))*Math.cos(rad(b[1]-a[1]));return (deg(Math.atan2(y,x))+360)%360}
+const fmtD=m=>m<1000?Math.round(m*3.281/10)*10+" ft":(m/1609).toFixed(1)+" mi";
+const walk=m=>Math.max(1,Math.round(m/75))+" min walk";
+function daysTo1118(){const n=new Date();let t=new Date(n.getFullYear(),10,18);if(n>new Date(n.getFullYear(),10,18,23,59))t=new Date(n.getFullYear()+1,10,18);return Math.ceil((t-new Date(n.getFullYear(),n.getMonth(),n.getDate()))/864e5)}
+
+// ---------- map ----------
+const B={s:28.4155,n:28.4222,w:-81.5865,e:-81.5768};
+const kx=Math.cos(rad(28.419));
+function proj(ll){const W=(B.e-B.w)*kx,H=B.n-B.s;const sc=Math.min(340/W,280/H);const ox=(360-W*sc)/2,oy=(300-H*sc)/2;return [ox+(ll[1]-B.w)*kx*sc, oy+(B.n-ll[0])*sc]}
+function unproj(x,y){const W=(B.e-B.w)*kx,H=B.n-B.s;const sc=Math.min(340/W,280/H);const ox=(360-W*sc)/2,oy=(300-H*sc)/2;return [B.n-(y-oy)/sc, B.w+(x-ox)/sc/kx]}
+const NS="http://www.w3.org/2000/svg";
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p&&p.appendChild(e);return e}
+function drawMap(){
+  const m=document.getElementById("map");m.innerHTML="";
+  // land halos
+  Object.keys(LANDS).forEach(k=>{const pts=SPOTS.filter(s=>s.land===k).map(s=>proj(s.ll));const cx=pts.reduce((a,p)=>a+p[0],0)/pts.length,cy=pts.reduce((a,p)=>a+p[1],0)/pts.length;const r=Math.max(26,...pts.map(p=>Math.hypot(p[0]-cx,p[1]-cy)))+14;el("circle",{cx,cy,r,fill:LANDS[k].hex,opacity:.09},m);const t=el("text",{x:cx,y:cy-r+12,"text-anchor":"middle","font-size":"9","font-weight":"800",fill:LANDS[k].hex,opacity:.9,"letter-spacing":"1"},m);t.textContent=LANDS[k].name.toUpperCase()});
+  // hub + castle + main street spine
+  const hub=proj([28.41890,-81.58120]),castle=proj([28.41941,-81.58120]),gate=proj([28.41580,-81.58120]);
+  el("line",{x1:gate[0],y1:gate[1],x2:hub[0],y2:hub[1],stroke:"#2a3a66","stroke-width":6,"stroke-linecap":"round"},m);
+  el("circle",{cx:hub[0],cy:hub[1],r:13,fill:"none",stroke:"#2a3a66","stroke-width":5},m);
+  el("path",{d:`M${castle[0]-7} ${castle[1]+6}h14v-9l-2-4-2 3-3-7-3 7-2-3-2 4z`,fill:"#f3efe4",opacity:.8},m);
+  // spots
+  SPOTS.forEach(s=>{const [x,y]=proj(s.ll);const g=el("g",{style:"cursor:pointer"},m);el("circle",{cx:x,cy:y,r:6.5,fill:found.has(s.id)?"#f4b942":LANDS[s.land].hex,stroke:"#101a33","stroke-width":1.5},g);const t=el("text",{x,y:y+3,"text-anchor":"middle","font-size":"7","font-weight":"800",fill:"#0e1426"},g);t.textContent=s.n;g.addEventListener("click",ev=>{ev.stopPropagation();focusCard(s.id)})});
+  // me
+  const [mx,my]=proj(me.ll);
+  el("circle",{cx:mx,cy:my,r:14,fill:"#e8503f",opacity:.25},m);
+  el("circle",{cx:mx,cy:my,r:6,fill:"#e8503f",stroke:"#fff","stroke-width":2},m);
+  const lt=el("text",{x:mx,y:my-11,"text-anchor":"middle","font-size":"9","font-weight":"800",fill:"#fff"},m);lt.textContent="YOU";
+}
+document.getElementById("map").addEventListener("click",e=>{
+  if(me.gps)return;const svg=e.currentTarget,pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());me.ll=unproj(p.x,p.y);store.set("mh_me",me.ll);render();
+  setStatus("Pin moved. Nearest Mickeys re-sorted.");
+});
+
+// ---------- list ----------
+const FILTERS=[["near","Nearest"],["walk","Walk-up only"],["ride","On rides"],["todo","Not found"],...Object.keys(LANDS).map(k=>[k,LANDS[k].name])];
+function drawFilters(){const f=document.getElementById("filters");f.innerHTML="";FILTERS.forEach(([k,l])=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=l;b.setAttribute("aria-pressed",filter===k);b.onclick=()=>{filter=k;drawFilters();drawList()};f.appendChild(b)})}
+function drawList(){
+  const L=document.getElementById("list");L.innerHTML="";
+  let rows=SPOTS.map(s=>({s,d:dist(me.ll,s.ll)}));
+  if(filter==="walk")rows=rows.filter(r=>!r.s.ride);else if(filter==="ride")rows=rows.filter(r=>r.s.ride);else if(filter==="todo")rows=rows.filter(r=>!found.has(r.s.id));else if(LANDS[filter])rows=rows.filter(r=>r.s.land===filter);
+  rows.sort((a,b)=>a.d-b.d);
+  rows.forEach(({s,d})=>{
+    const c=document.createElement("article");c.className="card"+(found.has(s.id)?" found":"");c.id="c-"+s.id;c.style.setProperty("--c",LANDS[s.land].c);
+    const sp=s.special==="nov18"?`<span class="tag special">${daysTo1118()===0?"TODAY":"In "+daysTo1118()+" days"}</span>`:"";
+    c.innerHTML=`<div class="num">${s.n}</div><div style="min-width:0"><h3></h3><div class="meta"><span class="d">${fmtD(d)}</span><span>${walk(d)}</span><span>${LV[s.lvl]}</span><span class="tag">${s.ride?"On ride":"Walk-up"}</span>${sp}</div><p class="clue"></p></div><button class="got" type="button" aria-pressed="${found.has(s.id)}" aria-label="Mark found">${found.has(s.id)?"GOT":"FIND"}</button>`;
+    c.querySelector("h3").textContent=s.place;c.querySelector(".clue").textContent=s.clue;
+    c.querySelector(".got").onclick=()=>toggleFound(s.id);
+    L.appendChild(c);
+  });
+  const near=SPOTS.filter(s=>!found.has(s.id)&&dist(me.ll,s.ll)<120).length;
+  document.getElementById("nearTxt").textContent=near?`${near} within 400 ft`:"Walk toward a cluster";
+}
+function focusCard(id){if(filter!=="near"){filter="near";drawFilters();drawList()}const c=document.getElementById("c-"+id);if(c){c.scrollIntoView({behavior:"smooth",block:"center"});c.classList.remove("flash");void c.offsetWidth;c.classList.add("flash")}}
+function toggleFound(id){if(found.has(id))found.delete(id);else{found.add(id);burst()}store.set("mh_found",[...found]);render();if(arOn)openSheet(SPOTS.find(s=>s.id===id))}
+function drawRing(){const n=found.size,t=SPOTS.length;document.getElementById("ringTxt").textContent=n;document.getElementById("ringArc").setAttribute("stroke-dashoffset",169.6*(1-n/t))}
+function render(){drawMap();drawList();drawRing()}
+function setStatus(t,warn){const s=document.getElementById("status");s.textContent=t;s.className="status"+(warn?" warn":"")}
+const legend=document.getElementById("legend");Object.values(LANDS).forEach(l=>{const s=document.createElement("span");s.innerHTML=`<i style="background:${l.hex}"></i>${l.name}`;legend.appendChild(s)});
+
+// ---------- GPS (works outside Claude's viewer) ----------
+let watchId=null;
+function startGPS(){return new Promise(res=>{if(!navigator.geolocation)return res(false);let done=false;watchId=navigator.geolocation.watchPosition(p=>{me.ll=[p.coords.latitude,p.coords.longitude];me.acc=p.coords.accuracy;me.gps=true;if(!done){done=true;res(true)}render();if(arOn)drawAR()},()=>{if(!done){done=true;res(false)}},{enableHighAccuracy:true,maximumAge:2000,timeout:12000})})}
+
+// ---------- AR ----------
+let arOn=false,heading=null,stream=null;
+const FOV=60;
+function onOrient(e){let h=null;if(typeof e.webkitCompassHeading==="number")h=e.webkitCompassHeading;else if(e.absolute&&e.alpha!=null)h=360-e.alpha;if(h!=null){heading=heading==null?h:smooth(heading,h);if(arOn)drawAR()}}
+function smooth(a,b){let d=((b-a+540)%360)-180;return (a+d*0.25+360)%360}
+async function startOrientation(){try{if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){const r=await DeviceOrientationEvent.requestPermission();if(r!=="granted")return false}window.addEventListener("deviceorientationabsolute",onOrient,true);window.addEventListener("deviceorientation",onOrient,true);return true}catch(e){return false}}
+document.getElementById("startAR").onclick=async()=>{
+  setStatus("Asking for camera, location and compass…");
+  const oriP=startOrientation();
+  let camOK=false;
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false});camOK=true}catch(e){}
+  const gpsOK=await startGPS();await oriP;
+  if(!camOK||!gpsOK){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
+    setStatus("Camera or GPS is blocked in this viewer. Map mode is on: tap the map where you are. Open the live link in Safari for full AR.",true);return}
+  const v=document.getElementById("cam");v.srcObject=stream;document.getElementById("ar").hidden=false;arOn=true;setStatus("AR running.");drawAR();
+};
+document.getElementById("closeAR").onclick=()=>{arOn=false;document.getElementById("ar").hidden=true;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}document.getElementById("sheet").hidden=true};
+const MK_SVG=(s,col)=>`<svg width="${s}" height="${s*.9}" viewBox="0 0 44 40"><circle cx="9" cy="10" r="8" fill="${col}"/><circle cx="35" cy="10" r="8" fill="${col}"/><circle cx="22" cy="25" r="14" fill="${col}"/><circle cx="22" cy="25" r="14" fill="none" stroke="#fff" stroke-width="2"/></svg>`;
+function drawAR(){
+  const layer=document.getElementById("arLayer");layer.innerHTML="";
+  const rows=SPOTS.filter(s=>!found.has(s.id)).map(s=>({s,d:dist(me.ll,s.ll),b:bearing(me.ll,s.ll)})).filter(r=>r.d<450).sort((a,b)=>a.d-b.d).slice(0,10);
+  const near=rows[0];
+  document.getElementById("arTitle").textContent=near?`${near.s.place}`:"No Mickeys close";
+  document.getElementById("arSub").textContent=near?`${fmtD(near.d)} away${me.acc?` · GPS ±${Math.round(me.acc*3.281)} ft`:""}`:"Walk toward another land";
+  if(heading==null){document.getElementById("arSub").textContent="Compass warming up. Wave phone in a figure 8.";}
+  let left=0,right=0;
+  rows.forEach((r,i)=>{
+    const rel=heading==null?null:((r.b-heading+540)%360)-180;
+    if(rel!=null&&Math.abs(rel)<=FOV/2){
+      const x=50+rel/FOV*100;const y=34+Math.min(r.d,300)/300*30-(i%3)*6;const size=Math.round(Math.max(36,90-r.d/5));
+      const b=document.createElement("button");b.className="mk";b.type="button";b.style.left=x+"%";b.style.top=y+"%";
+      b.innerHTML=MK_SVG(size,LANDS[r.s.land].hex)+`<span>${r.s.n}. ${fmtD(r.d)}</span>`;b.onclick=()=>openSheet(r.s);layer.appendChild(b);
+    }else if(rel!=null){rel<0?left++:right++}
+  });
+  if(left){const e=document.createElement("div");e.className="edge";e.style.left="max(10px,env(safe-area-inset-left,0px))";e.textContent=`◀ ${left}`;layer.appendChild(e)}
+  if(right){const e=document.createElement("div");e.className="edge";e.style.right="max(10px,env(safe-area-inset-right,0px))";e.textContent=`${right} ▶`;layer.appendChild(e)}
+  drawRadar(rows);
+}
+function drawRadar(rows){
+  const c=document.getElementById("radar"),x=c.getContext("2d"),W=240,M=W/2;x.clearRect(0,0,W,W);
+  x.fillStyle="rgba(16,26,51,.85)";x.beginPath();x.arc(M,M,M-2,0,7);x.fill();
+  x.strokeStyle="#2a3a66";x.lineWidth=2;[.33,.66,1].forEach(f=>{x.beginPath();x.arc(M,M,(M-4)*f,0,7);x.stroke()});
+  x.fillStyle="rgba(244,185,66,.18)";x.beginPath();x.moveTo(M,M);x.arc(M,M,M-4,rad(-90-FOV/2),rad(-90+FOV/2));x.fill();
+  rows.forEach(r=>{const rel=rad(((r.b-(heading||0))+360)%360-90);const rr=Math.min(r.d,450)/450*(M-10);x.fillStyle=LANDS[r.s.land].hex;x.beginPath();x.arc(M+Math.cos(rel)*rr,M+Math.sin(rel)*rr,7,0,7);x.fill()});
+  x.fillStyle="#e8503f";x.beginPath();x.arc(M,M,7,0,7);x.fill();
+}
+function openSheet(s){
+  const sh=document.getElementById("sheet");const d=dist(me.ll,s.ll);const isF=found.has(s.id);
+  sh.innerHTML=`<h3></h3><div class="meta"><span class="d">${fmtD(d)}</span><span>${LV[s.lvl]}</span><span class="tag">${s.ride?"On ride":"Walk-up"}</span></div><p></p><div class="row"><button class="b-gold" type="button" id="shGot">${isF?"Found ✓":"I found it!"}</button><button class="b-ghost" type="button" id="shX">Close</button></div>`;
+  sh.querySelector("h3").textContent=`${s.n}. ${s.place}`;sh.querySelector("p").textContent=s.clue;sh.hidden=false;
+  sh.querySelector("#shGot").onclick=()=>{if(!found.has(s.id))toggleFound(s.id);sh.hidden=true;drawAR()};
+  sh.querySelector("#shX").onclick=()=>{sh.hidden=true};
+}
+
+// ---------- confetti ----------
+function burst(){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;const c=document.getElementById("confetti"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;const cols=["#f4b942","#e8503f","#c77dff","#5aa7ff","#7bc96f"];const P=Array.from({length:90},()=>({x:innerWidth/2,y:innerHeight*.45,vx:(Math.random()-.5)*12,vy:-Math.random()*13-4,s:Math.random()*6+4,c:cols[Math.random()*5|0],r:Math.random()*6}));let f=0;(function t(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.45;p.x+=p.vx;p.y+=p.vy;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()});if(++f<80)requestAnimationFrame(t);else x.clearRect(0,0,c.width,c.height)})()}
+
+drawFilters();render();
+</script>
+
+</body></html>
