@@ -71,6 +71,15 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
 .mk svg{filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));animation:bob 2.2s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-6px)}}
 .mk span{background:rgba(16,26,51,.85);border:1px solid var(--gold);color:var(--ink);border-radius:10px;padding:3px 8px;font-size:12px;font-weight:800;white-space:nowrap;max-width:46vw;overflow:hidden;text-overflow:ellipsis}
+.mk.dim{opacity:.55}.mk.dim svg{animation:none;filter:grayscale(.5) drop-shadow(0 2px 4px rgba(0,0,0,.6))}
+.mk.next{z-index:6}
+.mk.next svg{position:relative;z-index:1;filter:drop-shadow(0 0 8px #f4b942) drop-shadow(0 0 22px rgba(244,185,66,.9))}
+.mk.next .halo{position:absolute;left:50%;top:0;width:var(--hs);height:var(--hs);margin-left:calc(var(--hs) / -2);margin-top:calc(var(--hs) * -.1);border-radius:50%;border:4px solid #f4b942;animation:halo 1.3s ease-out infinite;pointer-events:none}
+.mk.next span{background:#f4b942;color:#1b1405;border:2px solid #fff;font-size:15px;padding:4px 10px;max-width:70vw}
+@keyframes halo{0%{transform:scale(.7);opacity:1}100%{transform:scale(1.9);opacity:0}}
+.edge.next{background:#f4b942;color:#1b1405;border:2px solid #fff;font-size:16px;padding:10px 12px;top:42%;box-shadow:0 0 18px rgba(244,185,66,.8);animation:nudge 1s ease-in-out infinite}
+@keyframes nudge{50%{filter:brightness(1.25)}}
+@media (prefers-reduced-motion:reduce){.mk.next .halo,.edge.next{animation:none}}
 .edge{position:absolute;top:50%;transform:translateY(-50%);background:rgba(16,26,51,.85);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:13px;font-weight:800}
 .arbar{position:absolute;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top,0px) + 10px) max(14px,env(safe-area-inset-right,0px)) 10px max(14px,env(safe-area-inset-left,0px));display:flex;justify-content:space-between;align-items:center;gap:10px;background:linear-gradient(rgba(0,0,0,.6),transparent)}
 .arbar b{font-family:var(--display);font-size:20px}
@@ -460,7 +469,7 @@ async function startARFlow(){
 }
 document.getElementById("startAR").onclick=()=>setView("ar");
 onTap(document.getElementById("closeAR"),()=>{arOn=false;document.getElementById("ar").hidden=true;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}document.getElementById("sheet").hidden=true;document.getElementById("over").hidden=true;setView("list")});
-const MK_SVG=(s,col)=>`<svg width="${s}" height="${s*.9}" viewBox="0 0 44 40"><circle cx="9" cy="10" r="8" fill="${col}"/><circle cx="35" cy="10" r="8" fill="${col}"/><circle cx="22" cy="25" r="14" fill="${col}"/><circle cx="22" cy="25" r="14" fill="none" stroke="#fff" stroke-width="2"/></svg>`;
+const MK_SVG=(s,col,gold)=>`<svg width="${s}" height="${s*.9}" viewBox="-2 -2 48 44"><circle cx="9" cy="10" r="8" fill="${col}"/><circle cx="35" cy="10" r="8" fill="${col}"/><circle cx="22" cy="25" r="14" fill="${col}"/>${gold?`<g fill="none" stroke="#fff" stroke-width="2.6"><circle cx="9" cy="10" r="8"/><circle cx="35" cy="10" r="8"/><circle cx="22" cy="25" r="14"/></g><path d="M22 16l2.6 5.4 5.9.8-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z" fill="#fff"/>`:`<circle cx="22" cy="25" r="14" fill="none" stroke="#fff" stroke-width="2"/>`}</svg>`;
 let lastAR=0,lastOver=0;
 function drawAR(force){const now=performance.now();if(!force&&now-lastAR<120){drawGuide();return}lastAR=now;
   const layer=document.getElementById("arLayer");layer.innerHTML="";
@@ -472,17 +481,25 @@ function drawAR(force){const now=performance.now();if(!force&&now-lastAR<120){dr
   document.getElementById("arSub").textContent=heading==null?"Compass warming up. Wave phone in a figure 8.":accFt?(accFt>100?`Weak GPS ±${accFt} ft. Use the map.`:`GPS ±${accFt} ft`):"Locating…";
   drawGuide();
   if(!document.getElementById("over").hidden&&(force||now-lastOver>1000)){lastOver=now;drawPark(document.getElementById("bigMap"),overOpts())}
-  let left=0,right=0;
+  const tgt=currentTarget();
+  if(tgt&&!rows.some(r=>r.s.id===tgt.id))rows.push({s:tgt,d:dist(me.ll,tgt.ll),b:bearing(me.ll,tgt.ll)});
+  let left=0,right=0,tgtSide=null,tgtRow=null;
   rows.forEach((r,i)=>{
+    const isT=tgt&&r.s.id===tgt.id;if(isT)tgtRow=r;
     const rel=heading==null?null:((r.b-heading+540)%360)-180;
     if(rel!=null&&Math.abs(rel)<=FOV/2){
-      const x=50+rel/FOV*100;const y=34+Math.min(r.d,300)/300*30-(i%3)*6;const size=Math.round(Math.max(36,90-r.d/5));
-      const b=document.createElement("button");b.className="mk";b.type="button";b.style.left=x+"%";b.style.top=y+"%";
-      b.innerHTML=MK_SVG(size,LANDS[r.s.land].hex)+`<span>${r.s.n}. ${fmtD(r.d)}</span>`;b.addEventListener("pointerdown",e=>{e.preventDefault();openSheet(r.s)});layer.appendChild(b);
-    }else if(rel!=null){rel<0?left++:right++}
+      const x=50+rel/FOV*100;const y=isT?40:34+Math.min(r.d,300)/300*30-(i%3)*6;
+      const size=isT?Math.round(Math.max(84,120-r.d/4)):Math.round(Math.max(30,70-r.d/5));
+      const b=document.createElement("button");b.className="mk "+(isT?"next":"dim");b.type="button";b.style.left=x+"%";b.style.top=y+"%";
+      if(isT)b.style.setProperty("--hs",size+"px");
+      b.innerHTML=(isT?'<i class="halo"></i>':"")+MK_SVG(size,isT?"#f4b942":LANDS[r.s.land].hex,isT)+`<span></span>`;
+      b.querySelector("span").textContent=isT?`★ ${r.s.place} · ${fmtD(r.d)}`:`${r.s.n}. ${fmtD(r.d)}`;
+      b.addEventListener("pointerdown",e=>{e.preventDefault();openSheet(r.s)});layer.appendChild(b);
+    }else if(rel!=null){if(isT)tgtSide=rel<0?"L":"R";else rel<0?left++:right++}
   });
-  if(left){const e=document.createElement("div");e.className="edge";e.style.left="max(10px,env(safe-area-inset-left,0px))";e.textContent=`◀ ${left}`;layer.appendChild(e)}
-  if(right){const e=document.createElement("div");e.className="edge";e.style.right="max(10px,env(safe-area-inset-right,0px))";e.textContent=`${right} ▶`;layer.appendChild(e)}
+  if(left){const e=document.createElement("div");e.className="edge";e.style.left="max(10px,env(safe-area-inset-left,0px))";e.style.top="58%";e.textContent=`◀ ${left}`;layer.appendChild(e)}
+  if(right){const e=document.createElement("div");e.className="edge";e.style.right="max(10px,env(safe-area-inset-right,0px))";e.style.top="58%";e.textContent=`${right} ▶`;layer.appendChild(e)}
+  if(tgtSide&&tgtRow){const e=document.createElement("div");e.className="edge next";if(tgtSide==="L"){e.style.left="max(10px,env(safe-area-inset-left,0px))";e.textContent=`◀ ★ ${fmtD(tgtRow.d)}`}else{e.style.right="max(10px,env(safe-area-inset-right,0px))";e.textContent=`★ ${fmtD(tgtRow.d)} ▶`}layer.appendChild(e)}
   drawRadar(rows);
 }
 function drawRadar(rows){
@@ -490,7 +507,7 @@ function drawRadar(rows){
   x.fillStyle="rgba(16,26,51,.85)";x.beginPath();x.arc(M,M,M-2,0,7);x.fill();
   x.strokeStyle="#2a3a66";x.lineWidth=2;[.33,.66,1].forEach(f=>{x.beginPath();x.arc(M,M,(M-4)*f,0,7);x.stroke()});
   x.fillStyle="rgba(244,185,66,.18)";x.beginPath();x.moveTo(M,M);x.arc(M,M,M-4,rad(-90-FOV/2),rad(-90+FOV/2));x.fill();
-  rows.forEach(r=>{const rel=rad(((r.b-(heading||0))+360)%360-90);const rr=Math.min(r.d,450)/450*(M-10);x.fillStyle=LANDS[r.s.land].hex;x.beginPath();x.arc(M+Math.cos(rel)*rr,M+Math.sin(rel)*rr,7,0,7);x.fill()});
+  const _t=currentTarget();rows.forEach(r=>{const isT=_t&&r.s.id===_t.id;const rel=rad(((r.b-(heading||0))+360)%360-90);const rr=Math.min(r.d,450)/450*(M-10);const px=M+Math.cos(rel)*rr,py=M+Math.sin(rel)*rr;x.fillStyle=isT?"#f4b942":LANDS[r.s.land].hex;x.globalAlpha=isT?1:.6;x.beginPath();x.arc(px,py,isT?12:6,0,7);x.fill();if(isT){x.strokeStyle="#fff";x.lineWidth=3;x.stroke()}x.globalAlpha=1});
   x.fillStyle="#e8503f";x.beginPath();x.arc(M,M,7,0,7);x.fill();
 }
 // iOS Safari drops "click" when the DOM changes mid-tap. Fire on pointerup instead.
