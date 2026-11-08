@@ -4,6 +4,585 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,700;6..12,800&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin=""></script>
+<style>.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+position: absolute;
+left: 0;
+top: 0;
+}
+.leaflet-container {
+overflow: hidden;
+}
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+-webkit-user-select: none;
+   -moz-user-select: none;
+        user-select: none;
+  -webkit-user-drag: none;
+}
+.leaflet-tile::selection {
+background: transparent;
+}
+.leaflet-safari .leaflet-tile {
+image-rendering: -webkit-optimize-contrast;
+}
+.leaflet-safari .leaflet-tile-container {
+width: 1600px;
+height: 1600px;
+-webkit-transform-origin: 0 0;
+}
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+display: block;
+}
+.leaflet-container .leaflet-overlay-pane svg {
+max-width: none !important;
+max-height: none !important;
+}
+.leaflet-container .leaflet-marker-pane img,
+.leaflet-container .leaflet-shadow-pane img,
+.leaflet-container .leaflet-tile-pane img,
+.leaflet-container img.leaflet-image-layer,
+.leaflet-container .leaflet-tile {
+max-width: none !important;
+max-height: none !important;
+width: auto;
+padding: 0;
+}
+.leaflet-container img.leaflet-tile {
+mix-blend-mode: plus-lighter;
+}
+.leaflet-container.leaflet-touch-zoom {
+-ms-touch-action: pan-x pan-y;
+touch-action: pan-x pan-y;
+}
+.leaflet-container.leaflet-touch-drag {
+-ms-touch-action: pinch-zoom;
+touch-action: none;
+touch-action: pinch-zoom;
+}
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+-ms-touch-action: none;
+touch-action: none;
+}
+.leaflet-container {
+-webkit-tap-highlight-color: transparent;
+}
+.leaflet-container a {
+-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
+}
+.leaflet-tile {
+filter: inherit;
+visibility: hidden;
+}
+.leaflet-tile-loaded {
+visibility: inherit;
+}
+.leaflet-zoom-box {
+width: 0;
+height: 0;
+-moz-box-sizing: border-box;
+     box-sizing: border-box;
+z-index: 800;
+}
+.leaflet-overlay-pane svg {
+-moz-user-select: none;
+}
+.leaflet-pane         { z-index: 400; }
+.leaflet-tile-pane    { z-index: 200; }
+.leaflet-overlay-pane { z-index: 400; }
+.leaflet-shadow-pane  { z-index: 500; }
+.leaflet-marker-pane  { z-index: 600; }
+.leaflet-tooltip-pane   { z-index: 650; }
+.leaflet-popup-pane   { z-index: 700; }
+.leaflet-map-pane canvas { z-index: 100; }
+.leaflet-map-pane svg    { z-index: 200; }
+.leaflet-vml-shape {
+width: 1px;
+height: 1px;
+}
+.lvml {
+behavior: url(#default#VML);
+display: inline-block;
+position: absolute;
+}
+.leaflet-control {
+position: relative;
+z-index: 800;
+pointer-events: visiblePainted; 
+pointer-events: auto;
+}
+.leaflet-top,
+.leaflet-bottom {
+position: absolute;
+z-index: 1000;
+pointer-events: none;
+}
+.leaflet-top {
+top: 0;
+}
+.leaflet-right {
+right: 0;
+}
+.leaflet-bottom {
+bottom: 0;
+}
+.leaflet-left {
+left: 0;
+}
+.leaflet-control {
+float: left;
+clear: both;
+}
+.leaflet-right .leaflet-control {
+float: right;
+}
+.leaflet-top .leaflet-control {
+margin-top: 10px;
+}
+.leaflet-bottom .leaflet-control {
+margin-bottom: 10px;
+}
+.leaflet-left .leaflet-control {
+margin-left: 10px;
+}
+.leaflet-right .leaflet-control {
+margin-right: 10px;
+}
+.leaflet-fade-anim .leaflet-popup {
+opacity: 0;
+-webkit-transition: opacity 0.2s linear;
+   -moz-transition: opacity 0.2s linear;
+        transition: opacity 0.2s linear;
+}
+.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
+opacity: 1;
+}
+.leaflet-zoom-animated {
+-webkit-transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
+        transform-origin: 0 0;
+}
+svg.leaflet-zoom-animated {
+will-change: transform;
+}
+.leaflet-zoom-anim .leaflet-zoom-animated {
+-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
+   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
+        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
+}
+.leaflet-zoom-anim .leaflet-tile,
+.leaflet-pan-anim .leaflet-tile {
+-webkit-transition: none;
+   -moz-transition: none;
+        transition: none;
+}
+.leaflet-zoom-anim .leaflet-zoom-hide {
+visibility: hidden;
+}
+.leaflet-interactive {
+cursor: pointer;
+}
+.leaflet-grab {
+cursor: -webkit-grab;
+cursor:    -moz-grab;
+cursor:         grab;
+}
+.leaflet-crosshair,
+.leaflet-crosshair .leaflet-interactive {
+cursor: crosshair;
+}
+.leaflet-popup-pane,
+.leaflet-control {
+cursor: auto;
+}
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+cursor: move;
+cursor: -webkit-grabbing;
+cursor:    -moz-grabbing;
+cursor:         grabbing;
+}
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-image-layer,
+.leaflet-pane > svg path,
+.leaflet-tile-container {
+pointer-events: none;
+}
+.leaflet-marker-icon.leaflet-interactive,
+.leaflet-image-layer.leaflet-interactive,
+.leaflet-pane > svg path.leaflet-interactive,
+svg.leaflet-image-layer.leaflet-interactive path {
+pointer-events: visiblePainted; 
+pointer-events: auto;
+}
+.leaflet-container {
+background: #ddd;
+outline-offset: 1px;
+}
+.leaflet-container a {
+color: #0078A8;
+}
+.leaflet-zoom-box {
+border: 2px dotted #38f;
+background: rgba(255,255,255,0.5);
+}
+.leaflet-container {
+font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+font-size: 12px;
+font-size: 0.75rem;
+line-height: 1.5;
+}
+.leaflet-bar {
+box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+border-radius: 4px;
+}
+.leaflet-bar a {
+background-color: #fff;
+border-bottom: 1px solid #ccc;
+width: 26px;
+height: 26px;
+line-height: 26px;
+display: block;
+text-align: center;
+text-decoration: none;
+color: black;
+}
+.leaflet-bar a,
+.leaflet-control-layers-toggle {
+background-position: 50% 50%;
+background-repeat: no-repeat;
+display: block;
+}
+.leaflet-bar a:hover,
+.leaflet-bar a:focus {
+background-color: #f4f4f4;
+}
+.leaflet-bar a:first-child {
+border-top-left-radius: 4px;
+border-top-right-radius: 4px;
+}
+.leaflet-bar a:last-child {
+border-bottom-left-radius: 4px;
+border-bottom-right-radius: 4px;
+border-bottom: none;
+}
+.leaflet-bar a.leaflet-disabled {
+cursor: default;
+background-color: #f4f4f4;
+color: #bbb;
+}
+.leaflet-touch .leaflet-bar a {
+width: 30px;
+height: 30px;
+line-height: 30px;
+}
+.leaflet-touch .leaflet-bar a:first-child {
+border-top-left-radius: 2px;
+border-top-right-radius: 2px;
+}
+.leaflet-touch .leaflet-bar a:last-child {
+border-bottom-left-radius: 2px;
+border-bottom-right-radius: 2px;
+}
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+font: bold 18px 'Lucida Console', Monaco, monospace;
+text-indent: 1px;
+}
+.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
+font-size: 22px;
+}
+.leaflet-control-layers {
+box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+background: #fff;
+border-radius: 5px;
+}
+.leaflet-control-layers-toggle {
+background-image: url(images/layers.png);
+width: 36px;
+height: 36px;
+}
+.leaflet-retina .leaflet-control-layers-toggle {
+background-image: url(images/layers-2x.png);
+background-size: 26px 26px;
+}
+.leaflet-touch .leaflet-control-layers-toggle {
+width: 44px;
+height: 44px;
+}
+.leaflet-control-layers .leaflet-control-layers-list,
+.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+display: none;
+}
+.leaflet-control-layers-expanded .leaflet-control-layers-list {
+display: block;
+position: relative;
+}
+.leaflet-control-layers-expanded {
+padding: 6px 10px 6px 6px;
+color: #333;
+background: #fff;
+}
+.leaflet-control-layers-scrollbar {
+overflow-y: scroll;
+overflow-x: hidden;
+padding-right: 5px;
+}
+.leaflet-control-layers-selector {
+margin-top: 2px;
+position: relative;
+top: 1px;
+}
+.leaflet-control-layers label {
+display: block;
+font-size: 13px;
+font-size: 1.08333em;
+}
+.leaflet-control-layers-separator {
+height: 0;
+border-top: 1px solid #ddd;
+margin: 5px -10px 5px -6px;
+}
+.leaflet-default-icon-path { 
+background-image: url(images/marker-icon.png);
+}
+.leaflet-container .leaflet-control-attribution {
+background: #fff;
+background: rgba(255, 255, 255, 0.8);
+margin: 0;
+}
+.leaflet-control-attribution,
+.leaflet-control-scale-line {
+padding: 0 5px;
+color: #333;
+line-height: 1.4;
+}
+.leaflet-control-attribution a {
+text-decoration: none;
+}
+.leaflet-control-attribution a:hover,
+.leaflet-control-attribution a:focus {
+text-decoration: underline;
+}
+.leaflet-attribution-flag {
+display: inline !important;
+vertical-align: baseline !important;
+width: 1em;
+height: 0.6669em;
+}
+.leaflet-left .leaflet-control-scale {
+margin-left: 5px;
+}
+.leaflet-bottom .leaflet-control-scale {
+margin-bottom: 5px;
+}
+.leaflet-control-scale-line {
+border: 2px solid #777;
+border-top: none;
+line-height: 1.1;
+padding: 2px 5px 1px;
+white-space: nowrap;
+-moz-box-sizing: border-box;
+     box-sizing: border-box;
+background: rgba(255, 255, 255, 0.8);
+text-shadow: 1px 1px #fff;
+}
+.leaflet-control-scale-line:not(:first-child) {
+border-top: 2px solid #777;
+border-bottom: none;
+margin-top: -2px;
+}
+.leaflet-control-scale-line:not(:first-child):not(:last-child) {
+border-bottom: 2px solid #777;
+}
+.leaflet-touch .leaflet-control-attribution,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+box-shadow: none;
+}
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+border: 2px solid rgba(0,0,0,0.2);
+background-clip: padding-box;
+}
+.leaflet-popup {
+position: absolute;
+text-align: center;
+margin-bottom: 20px;
+}
+.leaflet-popup-content-wrapper {
+padding: 1px;
+text-align: left;
+border-radius: 12px;
+}
+.leaflet-popup-content {
+margin: 13px 24px 13px 20px;
+line-height: 1.3;
+font-size: 13px;
+font-size: 1.08333em;
+min-height: 1px;
+}
+.leaflet-popup-content p {
+margin: 17px 0;
+margin: 1.3em 0;
+}
+.leaflet-popup-tip-container {
+width: 40px;
+height: 20px;
+position: absolute;
+left: 50%;
+margin-top: -1px;
+margin-left: -20px;
+overflow: hidden;
+pointer-events: none;
+}
+.leaflet-popup-tip {
+width: 17px;
+height: 17px;
+padding: 1px;
+margin: -10px auto 0;
+pointer-events: auto;
+-webkit-transform: rotate(45deg);
+   -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+background: white;
+color: #333;
+box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+}
+.leaflet-container a.leaflet-popup-close-button {
+position: absolute;
+top: 0;
+right: 0;
+border: none;
+text-align: center;
+width: 24px;
+height: 24px;
+font: 16px/24px Tahoma, Verdana, sans-serif;
+color: #757575;
+text-decoration: none;
+background: transparent;
+}
+.leaflet-container a.leaflet-popup-close-button:hover,
+.leaflet-container a.leaflet-popup-close-button:focus {
+color: #585858;
+}
+.leaflet-popup-scrolled {
+overflow: auto;
+}
+.leaflet-oldie .leaflet-popup-content-wrapper {
+-ms-zoom: 1;
+}
+.leaflet-oldie .leaflet-popup-tip {
+width: 24px;
+margin: 0 auto;
+-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
+filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
+}
+.leaflet-oldie .leaflet-control-zoom,
+.leaflet-oldie .leaflet-control-layers,
+.leaflet-oldie .leaflet-popup-content-wrapper,
+.leaflet-oldie .leaflet-popup-tip {
+border: 1px solid #999;
+}
+.leaflet-div-icon {
+background: #fff;
+border: 1px solid #666;
+}
+.leaflet-tooltip {
+position: absolute;
+padding: 6px;
+background-color: #fff;
+border: 1px solid #fff;
+border-radius: 3px;
+color: #222;
+white-space: nowrap;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+pointer-events: none;
+box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+.leaflet-tooltip.leaflet-interactive {
+cursor: pointer;
+pointer-events: auto;
+}
+.leaflet-tooltip-top:before,
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+position: absolute;
+pointer-events: none;
+border: 6px solid transparent;
+background: transparent;
+content: "";
+}
+.leaflet-tooltip-bottom {
+margin-top: 6px;
+}
+.leaflet-tooltip-top {
+margin-top: -6px;
+}
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-top:before {
+left: 50%;
+margin-left: -6px;
+}
+.leaflet-tooltip-top:before {
+bottom: 0;
+margin-bottom: -12px;
+border-top-color: #fff;
+}
+.leaflet-tooltip-bottom:before {
+top: 0;
+margin-top: -12px;
+margin-left: -6px;
+border-bottom-color: #fff;
+}
+.leaflet-tooltip-left {
+margin-left: -6px;
+}
+.leaflet-tooltip-right {
+margin-left: 6px;
+}
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+top: 50%;
+margin-top: -6px;
+}
+.leaflet-tooltip-left:before {
+right: 0;
+margin-right: -12px;
+border-left-color: #fff;
+}
+.leaflet-tooltip-right:before {
+left: 0;
+margin-left: -12px;
+border-right-color: #fff;
+}
+@media print {
+.leaflet-control {
+-webkit-print-color-adjust: exact;
+print-color-adjust: exact;
+}
+}</style>
 <style>
 /* Layout: night-park field guide. One scroll: progress, AR launch, plotted park map, nearest-first hunt cards. AR is a full-screen camera overlay. Single dark look by choice. */
 :root{
@@ -116,6 +695,45 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
 #mapView .mtop{padding:calc(env(safe-area-inset-top,0px) + 8px) max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px));background:var(--night)}
 #mapView .search{margin-top:0}
 #mapSvg{flex:1;min-height:0;width:100%;display:block;touch-action:none}
+#lmap{flex:1;min-height:0;width:100%;background:#1b2a3a;position:relative;z-index:0}
+#lmini{width:100%;height:220px;border-radius:12px;overflow:hidden;background:#1b2a3a;cursor:pointer;position:relative;z-index:0}
+#lmini .leaflet-control-attribution{display:none}
+.leaflet-container{font-family:var(--body)}
+.leaflet-container .leaflet-control-attribution{background:rgba(16,26,51,.75);color:var(--muted);font-size:10px}
+.leaflet-container .leaflet-control-attribution a{color:var(--muted)}
+.leaflet-div-icon{background:none;border:0}
+.lm{position:relative;width:30px;height:30px;border-radius:50%;background:var(--c);border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.55);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:14px;color:#0e1426;transform:translate(-50%,-50%);left:50%;top:50%}
+.lm.found{background:#f4b942;opacity:.75}
+.lm .cnt{position:absolute;right:-7px;top:-7px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--night);color:var(--ink);border:2px solid #fff;font-size:11px;display:grid;place-items:center}
+.lm.tgt{width:52px;height:52px;background:#f4b942;border:3px solid #fff;font-size:22px;box-shadow:0 0 0 4px rgba(244,185,66,.35),0 0 24px rgba(244,185,66,.9);z-index:5}
+.lm.tgt::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:4px solid #f4b942;animation:halo 1.3s ease-out infinite}
+.lm.tgt .lbl{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#f4b942;color:#1b1405;border:2px solid #fff;border-radius:10px;padding:3px 9px;font-size:13px;white-space:nowrap;font-family:var(--body)}
+.lm.sm{width:14px;height:14px;border-width:2px;font-size:0}
+.lm.sm.tgt{width:24px;height:24px;font-size:12px}
+.you{position:relative;width:22px;height:22px;transform:translate(-50%,-50%);left:50%;top:50%}
+.you .dot{position:absolute;inset:0;border-radius:50%;background:#2f6fe0;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.5);z-index:2}
+.you .cone{position:absolute;left:50%;top:50%;width:0;height:0;transform:translate(-50%,-100%) rotate(var(--h,0deg));transform-origin:50% 100%;border-left:26px solid transparent;border-right:26px solid transparent;border-top:64px solid rgba(47,111,224,.35);z-index:1}
+.you .lbl{position:absolute;top:-22px;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:800;text-shadow:0 1px 3px #000;white-space:nowrap}
+.zoom button.lay{font-size:18px;background:var(--night2)}
+.zoom button.lay.on{background:var(--gold);color:#1b1405}
+.leaflet-marker-icon.lm-wrap{overflow:visible}
+.next-up{margin-top:14px;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#2b2308,#3d3110);border:2px solid var(--gold);border-radius:18px;padding:12px 14px}
+.next-up .star{flex:none;width:44px;height:44px;border-radius:50%;background:var(--gold);color:#1b1405;display:grid;place-items:center;font-size:22px}
+.next-up b{display:block;font-family:var(--display);font-size:18px;line-height:1.1}
+.next-up small{display:block;color:var(--muted);font-weight:700;font-size:12px;margin-top:2px}
+.next-up .acts{display:flex;gap:6px;flex:none}
+.next-up .acts button{border:0;border-radius:10px;padding:9px 10px;font-weight:800;font-size:12px;background:var(--gold);color:#1b1405;touch-action:manipulation}
+.next-up .acts button.g{background:#2a3a66;color:var(--ink)}
+.lands{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:12px}
+.lands div{display:flex;flex-direction:column;gap:4px}
+.lands i{display:block;height:6px;border-radius:3px;background:#2a3a66;overflow:hidden}
+.lands i b{display:block;height:100%;background:var(--c);border-radius:3px}
+.lands small{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lands small em{font-style:normal;color:var(--ink)}
+.sheet-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.sheet-list button{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;border:1px solid var(--line);border-left:5px solid var(--c);background:var(--night);color:var(--ink);border-radius:10px;padding:11px 12px;font-weight:800;font-size:14px;touch-action:manipulation}
+.sheet-list button span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sheet-list button small{color:var(--muted);font-weight:700;white-space:nowrap}
 .zoom{position:absolute;right:max(12px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 84px);display:flex;flex-direction:column;gap:8px}
 .zoom button{width:48px;height:48px;border-radius:14px;border:0;background:var(--night);color:var(--ink);font-size:24px;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,.4);touch-action:manipulation}
 .zoom button.me{font-size:20px;background:#2f6fe0}
@@ -169,6 +787,7 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
     <b id="ringTxt">0</b>
   </div>
 </header>
+<div class="lands" id="lands" aria-label="Progress by land"></div>
 
 <button class="ar-btn" id="startAR" type="button">
   <svg width="26" height="22" viewBox="0 0 26 22" aria-hidden="true"><rect x="1" y="4" width="24" height="17" rx="4" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="13" cy="12.5" r="4.5" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="8" y="1" width="10" height="4" rx="1.5" fill="currentColor"/></svg>
@@ -179,12 +798,14 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
 
 <section class="mapwrap">
   <div class="maphead"><h2>Park map</h2><span id="nearTxt"></span></div>
-  <svg id="map" viewBox="0 0 360 300" role="img" aria-label="Plotted map of hidden Mickey spots"></svg>
+  <div id="lmini" aria-label="Park map preview, tap to open"></div>
+  <svg id="map" viewBox="0 0 360 300" role="img" aria-label="Plotted map of hidden Mickey spots" hidden></svg>
   <div class="legend" id="legend"></div>
 </section>
 
 <div id="listSearch"></div>
 <div class="filters" id="filters" role="group" aria-label="Filter spots"></div>
+<div id="nextUp"></div>
 <div class="list" id="list"></div>
 
 <p class="foot"><b>How this list was built (Nov 8, 2026):</b> every spot was cross-checked against hidden Mickey guides from Steve Barrett (Hidden Mickey Guy), AllEars, FindMickeys, WDWInfo, Disney Tips, Disney Lists, DVC Shop, Mickey Visit and others. ✓✓ means 2+ independent sources agree. Pins use Disney's own attraction coordinates (via ThemeParks.wiki) offset to where you stand; expect 10 to 20 m. Retired spots (Splash Mountain, Tom Sawyer Island, Riverboat) are excluded. Ride status updates live when the park feed is reachable. Some on-ride Mickeys move when props get cleaned.</p>
@@ -211,9 +832,10 @@ button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-
 </div>
 <div id="mapView" hidden>
   <div class="mtop"><div id="mapSearch"></div></div>
-  <svg id="mapSvg" viewBox="0 0 360 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Interactive park map"></svg>
-  <div class="zoom"><button type="button" id="zIn" aria-label="Zoom in">+</button><button type="button" id="zOut" aria-label="Zoom out">−</button><button type="button" id="zMe" class="me" aria-label="Center on me">◎</button></div>
-  <div class="maphint" id="mapHint">Double-tap to zoom · drag to move · tap a pin</div>
+  <div id="lmap" role="application" aria-label="Interactive park map"></div>
+  <svg id="mapSvg" viewBox="0 0 360 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Interactive park map" hidden></svg>
+  <div class="zoom"><button type="button" id="zIn" aria-label="Zoom in">+</button><button type="button" id="zOut" aria-label="Zoom out">−</button><button type="button" id="zMe" class="me" aria-label="Center on me">◎</button><button type="button" id="zSat" class="lay" aria-label="Satellite view" aria-pressed="false">🛰</button></div>
+  <div class="maphint" id="mapHint">Pinch or double-tap to zoom · tap a pin · 🛰 for satellite</div>
   <div id="sheet3" hidden></div>
 </div>
 <nav id="tabs" aria-label="Views">
@@ -401,7 +1023,7 @@ function drawPark(m,o={}){
   const lt=el("text",{x:mx,y:my-(z?7:10)*(o.k||1),"text-anchor":"middle","font-size":String((z?6:8)*(o.k||1)),"font-weight":"800",fill:"#fff",stroke:"#1c2a14","stroke-width":2,"paint-order":"stroke"},m);lt.textContent="YOU";
   if(o.keepVB);else if(z){const w=150,h=125;m.setAttribute("viewBox",`${mx-w/2} ${my-h/2} ${w} ${h}`)}else m.setAttribute("viewBox","0 0 360 300");
 }
-function drawMap(){drawPark(document.getElementById("map"))}
+function drawMap(){if(useL){drawMini();return}drawPark(document.getElementById("map"))}
 function currentTarget(){if(targetId&&!found.has(targetId))return SPOTS.find(s=>s.id===targetId);const r=SPOTS.filter(s=>!found.has(s.id)&&targetable(s)).sort((a,b)=>dist(me.ll,a.ll)-dist(me.ll,b.ll));return r[0]||null}
 document.getElementById("map").addEventListener("click",()=>setView("map"));
 
@@ -440,9 +1062,9 @@ function drawList(){
   document.getElementById("nearTxt").textContent=near?`${near} within 400 ft`:"Walk toward a cluster";
 }
 function focusCard(id){if(filter!=="near"){filter="near";drawFilters();drawList()}const c=document.getElementById("c-"+id);if(c){c.scrollIntoView({behavior:"smooth",block:"center"});c.classList.remove("flash");void c.offsetWidth;c.classList.add("flash")}}
-function toggleFound(id){if(found.has(id))found.delete(id);else{found.add(id);burst()}store.set("mh_found",[...found]);render()}
+function toggleFound(id){if(found.has(id))found.delete(id);else{found.add(id);burst();try{navigator.vibrate&&navigator.vibrate([30,40,30])}catch(e){}}store.set("mh_found",[...found]);render()}
 function drawRing(){const n=found.size,t=SPOTS.length;document.getElementById("ringTxt").textContent=n;document.getElementById("ringArc").setAttribute("stroke-dashoffset",169.6*(1-n/t))}
-function render(){drawMap();drawList();drawRing()}
+function render(){drawMap();drawList();drawRing();drawLands();drawNextUp()}
 function setStatus(t,warn){const s=document.getElementById("status");s.textContent=t;s.className="status"+(warn?" warn":"")}
 const legend=document.getElementById("legend");Object.values(LANDS).forEach(l=>{const s=document.createElement("span");s.innerHTML=`<i style="background:${l.hex}"></i>${l.name}`;legend.appendChild(s)});
 
@@ -453,7 +1075,8 @@ function startGPS(){return new Promise(res=>{if(!navigator.geolocation)return re
 // ---------- AR ----------
 let arOn=false,heading=null,stream=null;
 const FOV=60;
-function onOrient(e){let h=null;if(typeof e.webkitCompassHeading==="number")h=e.webkitCompassHeading;else if(e.absolute&&e.alpha!=null)h=360-e.alpha;if(h!=null){const sa=(screen.orientation&&typeof screen.orientation.angle==="number")?screen.orientation.angle:(typeof window.orientation==="number"?window.orientation:0);h=(h+sa+360)%360;heading=heading==null?h:smooth(heading,h);if(arOn)scheduleAR()}}
+function onOrient(e){let h=null;if(typeof e.webkitCompassHeading==="number")h=e.webkitCompassHeading;else if(e.absolute&&e.alpha!=null)h=360-e.alpha;if(h!=null){const sa=(screen.orientation&&typeof screen.orientation.angle==="number")?screen.orientation.angle:(typeof window.orientation==="number"?window.orientation:0);h=(h+sa+360)%360;heading=heading==null?h:smooth(heading,h);if(arOn)scheduleAR();else if(view==="map")scheduleCone()}}
+let coneQ=false;function scheduleCone(){if(coneQ)return;coneQ=true;requestAnimationFrame(()=>{coneQ=false;lUpdateCone()})}
 let arQueued=false;function scheduleAR(){if(arQueued)return;arQueued=true;requestAnimationFrame(()=>{arQueued=false;if(arOn)drawAR(false)})}
 function smooth(a,b){let d=((b-a+540)%360)-180;return (a+d*0.25+360)%360}
 async function startOrientation(){try{if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){const r=await DeviceOrientationEvent.requestPermission();if(r!=="granted")return false}window.addEventListener("deviceorientationabsolute",onOrient,true);window.addEventListener("deviceorientation",onOrient,true);return true}catch(e){return false}}
@@ -615,12 +1238,12 @@ makeSearch(document.getElementById("mapSearch"),{onSpot:s=>{centerOn(s.ll,110);o
 const MV={x:0,y:0,w:360,h:300};let mvInit=false;
 function mvAspect(){const r=document.getElementById("mapSvg").getBoundingClientRect();return r.width?r.height/r.width:300/360}
 function applyMV(){document.getElementById("mapSvg").setAttribute("viewBox",`${MV.x} ${MV.y} ${MV.w} ${MV.h}`)}
-function centerOn(ll,w){const[x,y]=proj(ll);MV.w=Math.max(40,Math.min(420,w||MV.w));MV.h=MV.w*mvAspect();MV.x=x-MV.w/2;MV.y=y-MV.h/2;drawMapView()}
+function centerOn(ll,w){if(useL){lCenter(ll,w);return}const[x,y]=proj(ll);MV.w=Math.max(40,Math.min(420,w||MV.w));MV.h=MV.w*mvAspect();MV.x=x-MV.w/2;MV.y=y-MV.h/2;drawMapView()}
 let mvAnim=0;
 function zoomBy(f,cx,cy){const nw=Math.max(40,Math.min(420,MV.w*f));if(cx==null){cx=MV.x+MV.w/2;cy=MV.y+MV.h/2}const fx=(cx-MV.x)/MV.w,fy=(cy-MV.y)/MV.h,nh=nw*mvAspect();
   const from={...MV},to={x:cx-fx*nw,y:cy-fy*nh,w:nw,h:nh},t0=performance.now(),D=matchMedia("(prefers-reduced-motion: reduce)").matches?0:220,id=++mvAnim;
   (function step(now){if(id!==mvAnim)return;const k=D?Math.min(1,(now-t0)/D):1,e=1-Math.pow(1-k,3);MV.x=from.x+(to.x-from.x)*e;MV.y=from.y+(to.y-from.y)*e;MV.w=from.w+(to.w-from.w)*e;MV.h=from.h+(to.h-from.h)*e;applyMV();if(k<1)requestAnimationFrame(step);else drawMapView()})(t0)}
-function drawMapView(){const m=document.getElementById("mapSvg");drawPark(m,{k:Math.max(.3,Math.min(1.5,MV.w/220)),cone:true,keepVB:true,delegate:true});applyMV()}
+function drawMapView(){if(useL){lDraw();return}const m=document.getElementById("mapSvg");drawPark(m,{k:Math.max(.3,Math.min(1.5,MV.w/220)),cone:true,keepVB:true,delegate:true});applyMV()}
 (function(){const svg=document.getElementById("mapSvg"),P=new Map();let startVB=null,startPts=null,moved=0,downSpot=null;
   let lastTap={t:0,x:0,y:0},tapTimer=null;
   const snap=()=>{mvAnim++;startVB={...MV};startPts=[...P.values()].map(p=>({...p}))};
@@ -641,9 +1264,71 @@ function drawMapView(){const m=document.getElementById("mapSvg");drawPark(m,{k:M
   svg.addEventListener("pointerup",end);svg.addEventListener("pointercancel",end);
   svg.addEventListener("wheel",e=>{e.preventDefault();const r=svg.getBoundingClientRect();zoomBy(e.deltaY>0?1.15:1/1.15,MV.x+(e.clientX-r.left)*MV.w/r.width,MV.y+(e.clientY-r.top)*MV.h/r.height)},{passive:false});
 })();
-onTap(document.getElementById("zIn"),()=>zoomBy(1/1.4));
-onTap(document.getElementById("zOut"),()=>zoomBy(1.4));
+onTap(document.getElementById("zIn"),()=>useL?lmap&&lmap.zoomIn():zoomBy(1/1.4));
+onTap(document.getElementById("zOut"),()=>useL?lmap&&lmap.zoomOut():zoomBy(1.4));
 onTap(document.getElementById("zMe"),()=>centerOn(me.ll,120));
+onTap(document.getElementById("zSat"),()=>lToggleSat());
+
+// ---------- Real map (Leaflet + OpenStreetMap/CARTO + Esri satellite). Falls back to the drawn map if tiles can't load. ----------
+let useL=typeof L!=="undefined";
+let lmap=null,lmini=null,lBase=null,lSat=null,lLabels=null,lMk=null,lYou=null,lAcc=null,lLine=null,lMiniMk=null,lMiniYou=null,lSig="",lTileOK=false,lTileErr=0,lSatOn=store.get("mh_sat",false);
+const TILES={
+  street:()=>L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{subdomains:"abcd",maxZoom:21,maxNativeZoom:19,attribution:"© OpenStreetMap contributors © CARTO"}),
+  sat:()=>L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:21,maxNativeZoom:19,attribution:"Imagery © Esri, Maxar, Earthstar Geographics"}),
+  labels:()=>L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",maxZoom:21,maxNativeZoom:19,pane:"labels"})
+};
+function lDisable(){if(!useL)return;useL=false;try{lmap&&lmap.remove()}catch(e){}try{lmini&&lmini.remove()}catch(e){}lmap=lmini=null;
+  document.getElementById("lmap").hidden=true;document.getElementById("mapSvg").hidden=false;document.getElementById("lmini").hidden=true;document.getElementById("map").hidden=false;document.getElementById("zSat").hidden=true;
+  mvInit=false;render();if(view==="map"){mvInit=true;requestAnimationFrame(()=>centerOn(me.ll,170))}}
+function lWatchTiles(layer){layer.on("tileload",()=>{lTileOK=true});layer.on("tileerror",()=>{lTileErr++;if(!lTileOK&&lTileErr>=4)lDisable()})}
+function lGroups(){const g=new Map();SPOTS.forEach(s=>{const k=s.ll[0].toFixed(4)+","+s.ll[1].toFixed(4);(g.get(k)||g.set(k,[]).get(k)).push(s)});return[...g.values()]}
+function lIcon(group,opts){const t=currentTarget(),isT=t&&group.some(s=>s.id===t.id),allF=group.every(s=>found.has(s.id)),lead=isT?t:(group.find(s=>!found.has(s.id))||group[0]);
+  const col=LANDS[lead.land].hex,cls="lm"+(isT?" tgt":"")+(allF?" found":"")+(opts.small?" sm":"");
+  const inner=isT?"★":allF?"✓":String(lead.n);const cnt=group.length>1&&!opts.small?`<span class="cnt">${group.length}</span>`:"";
+  const lbl=isT&&!opts.small?`<span class="lbl"></span>`:"";
+  const ic=L.divIcon({className:"lm-wrap",html:`<div class="${cls}" style="--c:${col}">${inner}${cnt}${lbl}</div>`,iconSize:[0,0]});ic._lbl=isT?`${lead.place} · ${fmtD(dist(me.ll,lead.ll))}`:"";return ic}
+function lGroupTap(group){if(group.length===1){openSheet(group[0],"sheet3");return}
+  const sh=document.getElementById("sheet3");sh.style.cssText="background:var(--night2);border:1px solid var(--gold);border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.5)";
+  const gs=group.slice().sort((a,b)=>(found.has(a.id)?1:0)-(found.has(b.id)?1:0));
+  sh.innerHTML=`<h3 style="margin:0;font-family:var(--display);font-size:18px"></h3><div class="sheet-list"></div><div class="row" style="margin-top:8px"><button type="button" data-a="x" style="flex:1;border:0;border-radius:12px;padding:12px;font-weight:800;background:#2a3a66;color:var(--ink)">Close</button></div>`;
+  sh.querySelector("h3").textContent=`${group.length} Mickeys here`;
+  const L2=sh.querySelector(".sheet-list");gs.forEach(s=>{const b=document.createElement("button");b.type="button";b.style.setProperty("--c",LANDS[s.land].c);b.innerHTML=`<span></span><small>${found.has(s.id)?"✓ found":ACCESS[s.access]}</small>`;b.querySelector("span").textContent=`${s.n}. ${s.place}`;onTap(b,()=>openSheet(s,"sheet3"));L2.appendChild(b)});
+  onTap(sh.querySelector('[data-a="x"]'),()=>{sh.hidden=true});sh.hidden=false}
+function lYouIcon(small){return L.divIcon({className:"lm-wrap",html:`<div class="you" style="--h:${(heading||0)}deg">${small?"":'<div class="cone"></div>'}<div class="dot"></div>${small?"":'<span class="lbl">YOU</span>'}</div>`,iconSize:[0,0]})}
+function lUpdateCone(){if(!lmap)return;const c=document.querySelector("#lmap .you");if(c)c.style.setProperty("--h",(heading||0)+"deg")}
+function lEnsure(){if(lmap||!useL)return;
+  lmap=L.map("lmap",{zoomControl:false,attributionControl:true,doubleClickZoom:true,touchZoom:true,bounceAtZoomLimits:false,maxBounds:[[28.405,-81.600],[28.430,-81.565]],minZoom:15,maxZoom:21,zoomSnap:.5,tap:false});
+  lmap.createPane("labels");lmap.getPane("labels").style.zIndex=450;lmap.getPane("labels").style.pointerEvents="none";
+  lBase=TILES.street();lSat=TILES.sat();lLabels=TILES.labels();lWatchTiles(lBase);lWatchTiles(lSat);
+  (lSatOn?[lSat,lLabels]:[lBase]).forEach(t=>t.addTo(lmap));document.getElementById("zSat").classList.toggle("on",lSatOn);document.getElementById("zSat").setAttribute("aria-pressed",String(lSatOn));
+  lmap.attributionControl.setPrefix(false);lMk=L.layerGroup().addTo(lmap);
+  let clickT=null;lmap.on("click",e=>{clearTimeout(clickT);clickT=setTimeout(()=>{if(!document.getElementById("sheet3").hidden){document.getElementById("sheet3").hidden=true;return}if(!me.gps){me.ll=[e.latlng.lat,e.latlng.lng];store.set("mh_me",me.ll);render();setStatus("Your spot is set. Nearest Mickeys re-sorted.")}},300)});
+  lmap.on("dblclick",()=>clearTimeout(clickT));lmap.on("movestart",()=>{document.getElementById("mapHint").hidden=true});
+  lmap.setView(me.ll,18)}
+function lCenter(ll,w){lEnsure();lmap.invalidateSize();const z=w&&w<=60?19.5:w&&w<=120?18.5:w&&w<=200?17.5:lmap.getZoom()||18;lmap.setView(ll,z,{animate:true});lDraw()}
+function lToggleSat(){if(!lmap)return;lSatOn=!lSatOn;store.set("mh_sat",lSatOn);if(lSatOn){lmap.removeLayer(lBase);lSat.addTo(lmap);lLabels.addTo(lmap)}else{lmap.removeLayer(lSat);lmap.removeLayer(lLabels);lBase.addTo(lmap)}
+  const b=document.getElementById("zSat");b.classList.toggle("on",lSatOn);b.setAttribute("aria-pressed",String(lSatOn))}
+function lDraw(){if(!useL)return;lEnsure();
+  const t=currentTarget(),sig=[...found].sort().join(",")+"|"+(t?t.id:"")+"|"+Object.values(LIVE).join("")+"|"+Math.round(dist(me.ll,t?t.ll:me.ll)/5);
+  if(sig!==lSig){lSig=sig;lMk.clearLayers();lGroups().forEach(g=>{const ic=lIcon(g,{});const m=L.marker(g[0].ll,{icon:ic,keyboard:false,zIndexOffset:g.some(s=>t&&s.id===t.id)?1000:0}).addTo(lMk);m.on("click",()=>lGroupTap(g));if(ic._lbl){const el=m.getElement()&&m.getElement().querySelector(".lbl");if(el)el.textContent=ic._lbl}})}
+  if(!lYou){lYou=L.marker(me.ll,{icon:lYouIcon(false),keyboard:false,interactive:false,zIndexOffset:2000}).addTo(lmap);lAcc=L.circle(me.ll,{radius:10,color:"#2f6fe0",weight:1,fillColor:"#2f6fe0",fillOpacity:.15,interactive:false}).addTo(lmap)}
+  lYou.setLatLng(me.ll);lAcc.setLatLng(me.ll);lAcc.setRadius(me.gps&&me.acc?Math.max(6,me.acc):8);lUpdateCone();
+  if(t){const pts=[me.ll,t.ll];if(!lLine)lLine=L.polyline(pts,{color:"#f4b942",weight:4,dashArray:"8 10",opacity:.9,interactive:false}).addTo(lmap);else lLine.setLatLngs(pts)}else if(lLine){lmap.removeLayer(lLine);lLine=null}}
+function drawMini(){if(!useL)return;const el=document.getElementById("lmini");if(!el.offsetWidth)return;
+  if(!lmini){lmini=L.map("lmini",{zoomControl:false,attributionControl:false,dragging:false,touchZoom:false,doubleClickZoom:false,scrollWheelZoom:false,boxZoom:false,keyboard:false,tap:false,zoomSnap:.25});
+    const tl=TILES.street();lWatchTiles(tl);tl.addTo(lmini);lMiniMk=L.layerGroup().addTo(lmini);
+    lmini.fitBounds(L.latLngBounds(SPOTS.map(s=>s.ll)).pad(.05));el.addEventListener("click",()=>setView("map"))}
+  lMiniMk.clearLayers();lGroups().forEach(g=>L.marker(g[0].ll,{icon:lIcon(g,{small:true}),keyboard:false,interactive:false}).addTo(lMiniMk));
+  if(!lMiniYou)lMiniYou=L.marker(me.ll,{icon:lYouIcon(true),keyboard:false,interactive:false,zIndexOffset:2000}).addTo(lmini);lMiniYou.setLatLng(me.ll)}
+
+// ---------- Progress by land + Next-up card ----------
+function drawLands(){const el=document.getElementById("lands");el.innerHTML="";Object.keys(LANDS).forEach(k=>{const all=SPOTS.filter(s=>s.land===k),n=all.filter(s=>found.has(s.id)).length;const d=document.createElement("div");d.innerHTML=`<i><b style="--c:${LANDS[k].hex};width:${all.length?Math.round(n/all.length*100):0}%"></b></i><small><em>${n}</em>/${all.length} ${LANDS[k].name.split(" ")[0]}</small>`;el.appendChild(d)})}
+function drawNextUp(){const el=document.getElementById("nextUp");const t=currentTarget();if(!t){el.innerHTML=`<div class="next-up"><div class="star">🏆</div><div><b>All found!</b><small>Every Mickey on the list. Legend status.</small></div></div>`;return}
+  const d=dist(me.ll,t.ll);el.innerHTML=`<div class="next-up"><div class="star">★</div><div style="min-width:0;flex:1"><b></b><small>${fmtD(d)} · ${walk(d)} · ${ACCESS[t.access]}</small></div><div class="acts"><button type="button" data-a="map">Map</button><button type="button" data-a="ar" class="g">AR</button></div></div>`;
+  el.querySelector("b").textContent=`Next: ${t.n}. ${t.place}`;
+  onTap(el.querySelector('[data-a="map"]'),()=>{targetId=t.id;setView("map");setTimeout(()=>centerOn(t.ll,110),50)});onTap(el.querySelector('[data-a="ar"]'),()=>{targetId=t.id;setView("ar")});
+  el.querySelector(".next-up").addEventListener("click",e=>{if(!e.target.closest("button"))focusCard(t.id)})}
+if(!useL){document.getElementById("lmap").hidden=true;document.getElementById("mapSvg").hidden=false;document.getElementById("lmini").hidden=true;document.getElementById("map").hidden=false;document.getElementById("zSat").hidden=true}
 
 // ---------- Tabs: Map / List / AR ----------
 let view="list";
@@ -655,7 +1340,7 @@ async function setView(v){
     if(stream){document.getElementById("mapView").hidden=true;document.getElementById("over").hidden=true;document.getElementById("ar").hidden=false;arOn=true;drawAR(true)}
   }
   if(v!=="ar"){arOn=false;document.getElementById("ar").hidden=true}
-  if(v==="map"){document.getElementById("mapView").hidden=false;if(!mvInit){mvInit=true;requestAnimationFrame(()=>centerOn(me.ll,170))}else{MV.h=MV.w*mvAspect();drawMapView()}}
+  if(v==="map"){document.getElementById("mapView").hidden=false;if(useL){requestAnimationFrame(()=>{lEnsure();lmap.invalidateSize();if(!mvInit){mvInit=true;lmap.setView(me.ll,18)}lDraw()})}else if(!mvInit){mvInit=true;requestAnimationFrame(()=>centerOn(me.ll,170))}else{MV.h=MV.w*mvAspect();drawMapView()}}
   else document.getElementById("mapView").hidden=true;
   if(v==="list"){render();if(document.getElementById("status").classList.contains("warn"))scrollTo({top:0,behavior:"smooth"})}
   view=v;document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-current",b.dataset.v===v))}
