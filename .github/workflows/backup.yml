@@ -1,5 +1,5 @@
 name: Nightly data backup
-# Calls /api/backup once a night. The site copies its database to the private R2 bucket.
+# Calls /api/backup once a night. The site copies its database to private Workers KV.
 # No data passes through GitHub. A failed run emails the repo owner.
 on:
   schedule:
