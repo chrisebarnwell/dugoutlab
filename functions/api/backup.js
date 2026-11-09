@@ -1,21 +1,21 @@
 /* DugoutLab nightly backup. Cloudflare Pages Function.
 
-   Copies every D1 table (accounts, rosters, pitch counts, lineups, athletes, timer runs...) to an R2 bucket
-   as one gzipped JSON file per day: d1/YYYY-MM-DD.json.gz. Keeps the last 35 days, deletes older ones,
-   so deleted user data leaves backups within 35 days (matches privacy.html).
+   Copies every D1 table (accounts, rosters, pitch counts, lineups, athletes, timer runs...) to Workers KV
+   as one gzipped JSON value per day: d1/YYYY-MM-DD.json.gz. Each copy expires on its own after 35 days,
+   so deleted user data leaves backups within 35 days (matches privacy.html). KV is free on Workers Free.
 
    Called once a night by .github/workflows/backup.yml. Never returns data, only counts.
 
    Setup (Cloudflare dashboard, once):
-     R2 > Create bucket "dugoutlab-backups"
-     Pages > dugoutlab > Settings > Bindings > R2 bucket: name BACKUPS -> dugoutlab-backups
+     Storage & databases > Workers KV > Create namespace "dugoutlab-backups"
+     Pages > dugoutlab > Settings > Bindings > KV namespace: name BACKUPS -> dugoutlab-backups
      Pages > dugoutlab > Settings > Variables: BACKUP_TOKEN (encrypt) = a long random string
      GitHub > repo > Settings > Secrets > Actions: BACKUP_TOKEN = the same string
 
    Route:
      POST /api/backup   header Authorization: Bearer <BACKUP_TOKEN>   -> { ok, key, bytes, tables: { name: rows } } */
 
-const KEEP_DAYS = 35, PAGE = 1000;
+const KEEP_DAYS = 35, PAGE = 1000, MAX_BYTES = 24 * 1024 * 1024;
 
 function json(data, status) {
   return new Response(JSON.stringify(data), { status: status || 200, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
@@ -66,19 +66,8 @@ export async function onRequest(ctx) {
   const day = now.toISOString().slice(0, 10);
   const key = `d1/${day}.json.gz`;
   const body = await gzip(JSON.stringify({ created: now.toISOString(), tables }));
-  await env.BACKUPS.put(key, body, { httpMetadata: { contentType: 'application/gzip' } });
+  if (body.byteLength > MAX_BYTES) return json({ error: 'Backup too big for KV', bytes: body.byteLength }, 507);
+  await env.BACKUPS.put(key, body, { expirationTtl: KEEP_DAYS * 86400 });
 
-  /* Prune: drop daily files older than KEEP_DAYS. */
-  const cutoff = new Date(now.getTime() - KEEP_DAYS * 86400000).toISOString().slice(0, 10);
-  let cursor, pruned = 0;
-  do {
-    const page = await env.BACKUPS.list({ prefix: 'd1/', cursor });
-    for (const o of page.objects) {
-      const d = o.key.slice(3, 13);
-      if (/^\d{4}-\d{2}-\d{2}$/.test(d) && d < cutoff) { await env.BACKUPS.delete(o.key); pruned++; }
-    }
-    cursor = page.truncated ? page.cursor : undefined;
-  } while (cursor);
-
-  return json({ ok: true, key, bytes: body.byteLength, pruned, tables: counts });
+  return json({ ok: true, key, bytes: body.byteLength, keepDays: KEEP_DAYS, tables: counts });
 }
