@@ -1,0 +1,19 @@
+name: Nightly data backup
+# Calls /api/backup once a night. The site copies its database to the private R2 bucket.
+# No data passes through GitHub. A failed run emails the repo owner.
+on:
+  schedule:
+    - cron: '17 8 * * *'   # about 3:17 AM Eastern
+  workflow_dispatch:
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run backup
+        env:
+          TOKEN: ${{ secrets.BACKUP_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then echo "BACKUP_TOKEN secret not set yet. Skipping."; exit 0; fi
+          curl -sS --fail-with-body --max-time 120 -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            https://dugoutlab.com/api/backup
